@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 const Mongoose = require('./mongoose');
 const Express = require('./express');
-const config = require('../config/default');
+const PORT = process.env.PORT || 5000;
 
 const App = {
   init: () => {
@@ -29,8 +29,8 @@ const App = {
 
   start: () => {
     App.init();
-    app.listen(config.port, () => {
-      console.log('running port 3000');
+    app.listen(PORT, () => {
+      console.log(`running port ${PORT}`);
     })
   }
 }
