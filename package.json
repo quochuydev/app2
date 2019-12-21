@@ -4,7 +4,8 @@
   "description": "app2",
   "main": "index.js",
   "dependencies": {
-    "concurrently": "^5.0.2"
+    "concurrently": "^5.0.2",
+    "express": "^4.17.1"
   },
   "devDependencies": {},
   "scripts": {
