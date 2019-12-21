@@ -7,12 +7,9 @@ const PORT = process.env.PORT || 5000;
 
 const App = {
   init: () => {
-    if (process.env.NODE_ENV == 'production') {
-      app.use(express.static(path.join(__dirname, '../client/build')));
-      app.get('/site*', (req, res) => {
-        res.send(express.static(path.join(__dirname, '../client/build/index.html')));
-      });
-    }
+    // if (process.env.NODE_ENV == 'production') {
+      // app.use(express.static(path.join(__dirname, '../client/build')));
+    // }
     Mongoose.load();
     Mongoose.connect()
     .then(db => {
