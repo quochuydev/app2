@@ -6,24 +6,35 @@ import {
   applyMiddleware,
   combineReducers,
 } from 'redux';
+import { createLogger } from 'redux-logger';
 import './index.css';
-import App from './App';
+// import App from './containers/App';
+import Layout from './containers/Layout';
 import * as serviceWorker from './serviceWorker';
+import thunk from 'redux-thunk';
+import CustomerReducer from './views/Admin/Customer/reducers';
+import { Map } from 'immutable';
 
-function counter(state = 0, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    default:
-      return state
+const combinedReducers = combineReducers({
+  customer: CustomerReducer
+});
+
+const middleware = [thunk];
+const logger = createLogger({
+  stateTransformer: state => {
+    const newState = {};
+    Object.keys(state).forEach(key => {
+      const stateItem = state[key];
+      newState[key] = Map.isMap(stateItem) ? stateItem.toJS() : stateItem;
+    });
+    return newState;
   }
-}
-const store = createStore(counter);
+});
+middleware.push(logger);
+const store = createStore(combinedReducers, {}, applyMiddleware(thunk, logger));
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Layout />
   </Provider>,
   document.getElementById('root')
 );

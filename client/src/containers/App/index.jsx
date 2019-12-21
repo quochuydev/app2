@@ -172,15 +172,8 @@ function App(props) {
   ];
 
   const [isShowModal, setIsShowModal] = useState(false);
-  function submit() {
-    console.log(13123)
-    actions.addAdminAccount({});
-    return;
-  }
-
-  function onHandleAddAccount(data) {
-    actions.addAdminAccount(data);
-    // actions.getAccountsAction(currentPage, pageSize);
+  function addCustomer() {
+    actions.addCustomer({name: 'test'});
   }
 
   return (
@@ -211,12 +204,16 @@ function App(props) {
       <Modal
         title="Basic Modal"
         visible={isShowModal}
-        onOk={() => submit()}
+        onOk={() => addCustomer()}
         onCancel={() => setIsShowModal(false)}
       >
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
+            <Button
+              className="hrv-btn hrv-btn-invite"
+              type="primary"
+              onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
       </Modal>
     </div>
   );
