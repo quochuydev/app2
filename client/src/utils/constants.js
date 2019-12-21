@@ -1,5 +1,5 @@
 const PATH_ADMIN = `/site`;
-const CUSTOMER_ROUTE = `${PATH_ADMIN}/homepage`;
+const CUSTOMER_ROUTE = `${PATH_ADMIN}/customer`;
 
 const PATHS = {
   CUSTOMER_ROUTE,
