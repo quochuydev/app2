@@ -33,10 +33,13 @@ module.exports = (app, db) => {
   // app.use(express.static(path.resolve('../client/build/index.html')));
   app.get('/site*', (req, res) => {
     // res.sendFile(express.static(path.join(__dirname, '../client/build/index.html')));
+    console.log(__dirname)
     console.log(path.resolve('../client/public/index.html'))
     console.log(process.env.PUBLIC_URL)
     // res.sendFile(path.resolve('../client/public/index.html'));
-    res.send(express.static(path.resolve('../client/public/index.html')));
+    // res.send(express.static(path.resolve('../client/public/index.html')));
+    console.log(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     // res.send(path.resolve('../client/public/index.html'));
   });
   // }
