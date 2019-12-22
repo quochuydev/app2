@@ -7,14 +7,6 @@ const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/core/config/default'));
 
 module.exports = (app, db) => {
-  if (process.env.NODE_ENV == 'production') {
-    // app.use(express.static(path.join(__dirname, '../client/build')));
-    app.use(express.static(path.resolve('../client/build/index.html')));
-    app.get('*', (req, res) => {
-      // res.send(express.static(path.join(__dirname, '../client/build/index.html')));
-      res.send(express.static(path.resolve('../client/build/index.html')));
-    });
-  }
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
@@ -36,4 +28,16 @@ module.exports = (app, db) => {
       stringify: false
     })
   }))
+  // if (process.env.NODE_ENV == 'production') {
+  // app.use(express.static(path.join(__dirname, '../client/build')));
+  // app.use(express.static(path.resolve('../client/build/index.html')));
+  app.get('/site*', (req, res) => {
+    // res.sendFile(express.static(path.join(__dirname, '../client/build/index.html')));
+    console.log(path.resolve('../client/public/index.html'))
+    console.log(process.env.PUBLIC_URL)
+    // res.sendFile(path.resolve('../client/public/index.html'));
+    res.send(express.static(path.resolve('../client/public/index.html')));
+    // res.send(path.resolve('../client/public/index.html'));
+  });
+  // }
 }
