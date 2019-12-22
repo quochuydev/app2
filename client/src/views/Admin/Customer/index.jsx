@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
@@ -9,8 +9,7 @@ const { Sider } = Layout;
 
 
 function App(props) {
-  const { actions } = props;
-
+  const { customers, actions } = props;
   const dataSource = [
     {
       key: '1',
@@ -32,17 +31,22 @@ function App(props) {
   const columns = [
     {
       title: 'Ngày tạo',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'created_at',
+      key: 'created_at',
     },
     {
-      title: 'Họ Tên',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Họ',
+      dataIndex: 'last_name',
+      key: 'last_name',
+    },
+    {
+      title: 'Tên',
+      dataIndex: 'first_name',
+      key: 'first_name',
     },
     {
       title: 'Ngày sinh',
-      dataIndex: 'birth',
+      dataIndex: 'birthday',
       key: 'birth',
     },
     {
@@ -56,29 +60,14 @@ function App(props) {
       key: 'email',
     },
     {
-      title: 'Trạng thái',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: tags => (
-        <span>
-          {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </span>
-      ),
+      title: 'Address1',
+      dataIndex: 'default_address.address1',
+      key: 'address1',
     },
     {
-      title: 'Doanh thu',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: 'Shop',
+      dataIndex: 'shop',
+      key: 'shop',
     },
     {
       title: 'Edit',
@@ -171,20 +160,25 @@ function App(props) {
   ];
 
   const [isShowModal, setIsShowModal] = useState(false);
+  useEffect(() => {
+    actions.listCustomers();
+  }, []);
+
   function addCustomer() {
-    actions.addCustomer({name: 'test'});
+    actions.addCustomer({ name: 'test' });
   }
   async function syncCustomers() {
-    await actions.syncCustomers({name: 'test'});
+    await actions.syncCustomers();
   }
 
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
+          {/* {JSON.stringify(customers)} */}
           <Button onClick={() => setIsShowModal(true)}>Thêm khách hàng</Button>
           <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table dataSource={dataSource} columns={columns} />;
+          <Table rowKey='id' dataSource={customers} columns={columns} />;
         </Col>
       </Row>
       <Row key='2'>
@@ -213,17 +207,17 @@ function App(props) {
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
-            <Button
-              className="hrv-btn hrv-btn-invite"
-              type="primary"
-              onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
+        <Button
+          className="hrv-btn hrv-btn-invite"
+          type="primary"
+          onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
       </Modal>
     </div>
   );
 }
 
 const mapStateToProps = state => ({
-
+  customers: state.customers.get('customers')
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -10,16 +10,14 @@ import RouteList from '../../views/Admin/routes';
 
 const {Header, Content} = Layout;
 function LayoutContainer(props) {
-  // const owner = localStorage.getItem('me');
   function getTokenFromPath() {
     const url = new URL(window.location.href);
     let searchParams = new URLSearchParams(url.search);
-    console.log(searchParams.get('token'))
-    // let token = getTokenFromPath();
     let token = searchParams.get('token')
     localStorage.setItem('AccessToken', token);
-    return searchParams.get('token');
+    return token;
   }
+  getTokenFromPath();
   return (
     <BrowserRouter>
       <BlockUi tag="div">

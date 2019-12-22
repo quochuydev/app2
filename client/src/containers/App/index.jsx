@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 import * as customerActions from './views/Admin/Customer/actions';
 import { bindActionCreators } from 'redux';
@@ -11,7 +11,6 @@ const { Sider } = Layout;
 
 function App(props) {
   const { actions } = props;
-
   const dataSource = [
     {
       key: '1',
@@ -172,8 +171,12 @@ function App(props) {
   ];
 
   const [isShowModal, setIsShowModal] = useState(false);
+  useEffect(async () => {
+    await actions.listCustomers();
+  }, []);
+  // const [customers, setIsShowModal] = useState(false);
   function addCustomer() {
-    actions.addCustomer({name: 'test'});
+    actions.addCustomer({ name: 'test' });
   }
 
   return (
@@ -210,10 +213,10 @@ function App(props) {
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
-            <Button
-              className="hrv-btn hrv-btn-invite"
-              type="primary"
-              onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
+        <Button
+          className="hrv-btn hrv-btn-invite"
+          type="primary"
+          onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
       </Modal>
     </div>
   );

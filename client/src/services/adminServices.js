@@ -1,8 +1,14 @@
 import ApiClient from '../utils/apiClient';
 
 const URLS = {
-  ADD_CUSTOMER: 'api/customers/list',
-  SYNC_CUSTOMER: 'api/customers',
+  LIST_CUSTOMER: 'api/customers',
+  ADD_CUSTOMER: 'api/customers/add',
+  SYNC_CUSTOMER: 'api/customers/sync',
+}
+
+async function listCustomers() {
+  let data = await ApiClient.getData(URLS.LIST_CUSTOMER);
+  return data
 }
 
 async function addCustomer(customer) {
@@ -13,4 +19,4 @@ async function syncCustomers(customer) {
   return await ApiClient.getData(URLS.SYNC_CUSTOMER, null, customer);
 }
 
-export default { addCustomer, syncCustomers }
+export default { listCustomers, addCustomer, syncCustomers }

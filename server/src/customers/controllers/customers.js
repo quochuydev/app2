@@ -6,6 +6,16 @@ const CustomersMD = mongoose.model('Customers');
 const ShopMD = mongoose.model('Shop');
 
 exports.get = async (req, res) => {
+  try {
+    let count = await CustomersMD.count();
+    let customers = await CustomersMD.find({}).lean(true);
+    res.send({ error: false, count, customers })
+  } catch (error) {
+    res.send({ error: true, count: 0, customers: [] })
+  }
+}
+
+exports.sync = async (req, res) => {
   let shop = req.session.shop;
   let shop_id = req.session.shop_id;
   let access_token = req.access_token;

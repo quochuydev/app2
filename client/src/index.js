@@ -16,7 +16,7 @@ import CustomerReducer from './views/Admin/Customer/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
-  customer: CustomerReducer
+  customers: CustomerReducer
 });
 
 const middleware = [thunk];
