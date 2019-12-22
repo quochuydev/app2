@@ -8,9 +8,11 @@ const config = require(path.resolve('./src/core/config/default'));
 
 module.exports = (app, db) => {
   if (process.env.NODE_ENV == 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    // app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static(path.resolve('../client/build/index.html')));
     app.get('*', (req, res) => {
-      res.send(express.static(path.join(__dirname, '../client/build/index.html')));
+      // res.send(express.static(path.join(__dirname, '../client/build/index.html')));
+      res.send(express.static(path.resolve('../client/build/index.html')));
     });
   }
   app.use(cors());
