@@ -174,12 +174,16 @@ function App(props) {
   function addCustomer() {
     actions.addCustomer({name: 'test'});
   }
+  async function syncCustomers() {
+    await actions.syncCustomers({name: 'test'});
+  }
 
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
           <Button onClick={() => setIsShowModal(true)}>Thêm khách hàng</Button>
+          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table dataSource={dataSource} columns={columns} />;
         </Col>
       </Row>

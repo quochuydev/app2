@@ -1,4 +1,5 @@
 const path = require('path');
+const _ = require('lodash');
 const API = require(path.resolve('./src/core/api/index'));
 const mongoose = require('mongoose');
 const CustomersMD = mongoose.model('Customers');
@@ -7,7 +8,7 @@ const ShopMD = mongoose.model('Shop');
 exports.get = async (req, res) => {
   let shop = req.session.shop;
   let shop_id = req.session.shop_id;
-  let access_token = req.session.access_token;
+  let access_token = req.access_token;
   let HR = {}
   HR.CUSTOMERS = {
     LIST: {

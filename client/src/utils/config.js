@@ -1,3 +1,3 @@
 export default { 
-	backend_url: 'huytest'
+	backend_url: 'https://crmdlc.herokuapp.com'
 };

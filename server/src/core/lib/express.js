@@ -1,10 +1,12 @@
 const path = require('path');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/core/config/default'));
 
 module.exports = (app, db) => {
+  app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(session({
