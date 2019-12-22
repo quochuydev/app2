@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const site = require(path.resolve('./src/site/routes/site'));
 const install = require(path.resolve('./src/install/routes/install'));
 const customers = require(path.resolve('./src/customers/routes/customers'));
 const _ = require('lodash');
