@@ -1,9 +1,7 @@
-const express = require('express');
 const path = require('path');
 const install = require(path.resolve('./src/install/routes/install'));
 const customers = require(path.resolve('./src/customers/routes/customers'));
 const _ = require('lodash');
-const jwt = require('jsonwebtoken');
 
 const routes = (app) => {
   app.use('/*', async (req, res, next) => {
