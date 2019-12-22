@@ -1,3 +1,4 @@
+const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -6,6 +7,12 @@ const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/core/config/default'));
 
 module.exports = (app, db) => {
+  if (process.env.NODE_ENV == 'production') {
+    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.get('*', (req, res) => {
+      res.send(express.static(path.join(__dirname, '../client/build/index.html')));
+    });
+  }
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
