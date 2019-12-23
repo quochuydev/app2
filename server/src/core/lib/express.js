@@ -8,6 +8,9 @@ const config = require(path.resolve('./src/core/config/default'));
 
 module.exports = (app, db) => {
   app.use(cors());
+  if (process.env.NODE_ENV == 'production') {
+    app.use('/', express.static(path.resolve('../client/public')));
+  }
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(session({
@@ -28,10 +31,4 @@ module.exports = (app, db) => {
       stringify: false
     })
   }))
-  // if (process.env.NODE_ENV == 'production') {
-  // app.use('*', express.static(path.resolve('../client/public')));
-  app.use(express.static(path.resolve('../client/public')));
-  app.get('*', (req, res) => {
-    res.send(express.static(path.resolve('../client/public/index.html')));
-  })
 }
