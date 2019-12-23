@@ -29,17 +29,9 @@ module.exports = (app, db) => {
     })
   }))
   // if (process.env.NODE_ENV == 'production') {
-  // app.use(express.static(path.join(__dirname, '../client/build')));
-  console.log(path.resolve('../client/build/index.html'))
-  app.use(express.static(path.resolve('../client/build/index.html')));
-  // app.get('*', (req, res) => {
-    // res.sendFile(express.static(path.join(__dirname, '../client/build/index.html')));
-    // console.log(path.resolve('../client/public/index.html'))
-    // res.sendFile(path.resolve('../client/public/index.html'));
-    // res.send(express.static(path.resolve('../client/public/index.html')));
-    // console.log(path.join(__dirname, 'client/build', 'index.html'))
-    // res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    // res.send(path.resolve('../client/public/index.html'));
-  // });
-  // }
+  // app.use('*', express.static(path.resolve('../client/public')));
+  app.use(express.static(path.resolve('../client/public')));
+  app.get('*', (req, res) => {
+    res.send(express.static(path.resolve('../client/public/index.html')));
+  })
 }
