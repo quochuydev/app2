@@ -62,6 +62,6 @@ exports.post = (req, res) => {
 }
 
 let test = async () => {
-
+  exports.get()
 }
 test()

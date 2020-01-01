@@ -1,1 +1,10 @@
-node_modules
+.vscode
+.idea
+.DS_Store
+.history
+/node_modules
+backend/config/env/local.js
+backend/config/env/local-*.js
+backend/config/local-*.js
+package-lock.json
+.git

@@ -3,163 +3,52 @@ import React, { useState, useEffect } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Layout, Menu, Table, Icon, Tag, Row, Col, Card, Button, Modal } from 'antd';
+import {
+  Layout, Menu, Table, Icon, Tag, Row, Col, Card, Button, Modal,
+  Input, Select, DatePicker, Upload, List, Typography
+} from 'antd';
+
 import 'antd/dist/antd.css';
 const { Sider } = Layout;
 
 
 function App(props) {
+  const { Option } = Select;
   const { customers, actions } = props;
-  const dataSource = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-      id: '1',
-      tags: ['loser']
-    },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-      id: '2',
-      tags: ['cool', 'teacher']
-    },
-  ];
   const columns = [
+    { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
+    { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
+    { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
+    { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
+    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
+    { title: 'Email', dataIndex: 'email', key: 'email', },
+    { title: 'Address1', dataIndex: 'default_address.address1', key: 'address', },
+    { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
-      title: 'Ngày tạo',
-      dataIndex: 'created_at',
-      key: 'created_at',
-    },
-    {
-      title: 'Họ',
-      dataIndex: 'last_name',
-      key: 'last_name',
-    },
-    {
-      title: 'Tên',
-      dataIndex: 'first_name',
-      key: 'first_name',
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'birthday',
-      key: 'birth',
-    },
-    {
-      title: 'Số điện thoại',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Address1',
-      dataIndex: 'default_address.address1',
-      key: 'address1',
-    },
-    {
-      title: 'Shop',
-      dataIndex: 'shop',
-      key: 'shop',
-    },
-    {
-      title: 'Edit',
-      key: 'edit',
+      title: 'Edit', key: 'edit',
       render: edit => (
         <span>{edit.id}
-          <Icon type="edit" />
+          <Icon type="edit" onClick={() => setIsUpdateModal(true)} />
         </span>
       ),
     },
   ];
-  const dataSource2 = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-      id: '1',
-      tags: ['loser']
+  const uploads = {
+    action: '//jsonplaceholder.typicode.com/posts/',
+    listType: 'picture',
+    previewFile(file) {
+      console.log('Your upload file:', file);
+      return fetch('https://next.json-generator.com/api/json/get/4ytyBoLK8', {
+        method: 'POST',
+        body: file,
+      })
+        .then(res => res.json())
+        .then(({ thumbnail }) => thumbnail);
     },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-      id: '2',
-      tags: ['cool', 'teacher']
-    },
-  ];
-  const columns2 = [
-    {
-      title: 'Ngày tạo',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Họ Tên',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'birth',
-      key: 'birth',
-    },
-    {
-      title: 'Số điện thoại',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Trạng thái',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: tags => (
-        <span>
-          {tags.map(tag => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </span>
-      ),
-    },
-    {
-      title: 'Doanh thu',
-      dataIndex: 'amount',
-      key: 'amount',
-    },
-    {
-      title: 'Edit',
-      key: 'edit',
-      render: edit => (
-        <span>{edit.id}
-          <Icon type="edit" />
-        </span>
-      ),
-    },
-  ];
-
-  const [isShowModal, setIsShowModal] = useState(false);
+  };
+  const [isExportModal, setIsExportModal] = useState(false);
+  const [isImportModal, setIsImportModal] = useState(false);
+  const [isUpdateModal, setIsUpdateModal] = useState(false);
   useEffect(() => {
     actions.listCustomers();
   }, []);
@@ -167,50 +56,99 @@ function App(props) {
   function addCustomer() {
     actions.addCustomer({ name: 'test' });
   }
+  function updateCustomer() {
+    actions.addCustomer({ name: 'test' });
+  }
+  function importCustomer() {
+    actions.importCustomer({ name: 'test' });
+  }
+  function exportCustomer() {
+    actions.exportCustomer({ name: 'test' });
+  }
   async function syncCustomers() {
     await actions.syncCustomers();
   }
-
+  const data = [
+    'Racing car sprays burning fuel into crowd.',
+    'Japanese princess to wed commoner.',
+    'Australian walks 100km after outback crash.',
+    'Man charged over missing wedding girl.',
+    'Los Angeles battles huge wildfires.',
+  ];
+  const { Item } = List;
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          {/* {JSON.stringify(customers)} */}
-          <Button onClick={() => setIsShowModal(true)}>Thêm khách hàng</Button>
-          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
+          <Button onClick={() => { }}>Khách hàng</Button>
+          <Button onClick={() => { }}>Messenger</Button>
+        </Col>
+        <Col span={8}>
+          <List
+            header={<div>Header</div>}
+            footer={<div>Footer</div>}
+            bordered
+            dataSource={data}
+            renderItem={item => (
+              <List.Item>
+                <Typography.Text mark>[ITEM]</Typography.Text> {item}
+              </List.Item>
+            )}
+          />
+        </Col>
+        <Col span={16}>
+          <List
+            style={{ height: 320 }}
+            header={<div>Header</div>}
+            footer={<Button>send</Button>}
+          >
+            <Item><strong>Username</strong>: messenger</Item>
+          </List>
+        </Col>
+        <Col span={24}>
+          <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
+          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng HRV</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} />;
         </Col>
       </Row>
-      <Row key='2'>
-        <Col span={8}>
-          <Card title="Default size card" extra={<a href="#">More</a>}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card>
-          <Card size="small" title="Small size card" extra={<a href="#">More</a>}>
-            <p>Card content</p>
-            <p>Card content</p>
-            <p>Card content</p>
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Table dataSource={dataSource2} columns={columns2} />;
-        </Col>
-      </Row>
       <Modal
-        title="Basic Modal"
-        visible={isShowModal}
-        onOk={() => addCustomer()}
-        onCancel={() => setIsShowModal(false)}
+        title="Export excel"
+        visible={isExportModal}
+        onOk={() => exportCustomer()}
+        onCancel={() => setIsExportModal(false)}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <Button
-          className="hrv-btn hrv-btn-invite"
-          type="primary"
-          onClick={() => addCustomer()}>accountSetting.accountSetting.invite</Button>
+      </Modal>
+      <Modal
+        title="Import excel"
+        visible={isImportModal}
+        onOk={() => importCustomer()}
+        onCancel={() => setIsImportModal(false)}
+      >
+        <Upload {...uploads}>
+          <Button>
+            <Icon type="upload" /> Upload
+        </Button>
+        </Upload>
+      </Modal>
+      <Modal
+        title="Update Modal"
+        visible={isUpdateModal}
+        onOk={() => updateCustomer()}
+        onCancel={() => setIsUpdateModal(false)}
+      >
+        <Input value="Basic usage" />
+        <Input value="Basic usage" />
+        <DatePicker />
+        <Input value="Basic usage" />
+        <Input value="Basic usage" />
+        <Input value="Basic usage" />
+
+        <Select defaultValue="lucy" style={{ width: 120 }}>
+          <Option value="jack">Jack</Option>
+          <Option value="lucy">Lucy</Option>
+          <Option value="disabled" disabled> Disabled </Option>
+          <Option value="Yiminghe">yiminghe</Option>
+        </Select>
       </Modal>
     </div>
   );

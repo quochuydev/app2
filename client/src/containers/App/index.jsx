@@ -174,7 +174,6 @@ function App(props) {
   useEffect(async () => {
     await actions.listCustomers();
   }, []);
-  // const [customers, setIsShowModal] = useState(false);
   function addCustomer() {
     actions.addCustomer({ name: 'test' });
   }

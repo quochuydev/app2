@@ -7,8 +7,7 @@ const URLS = {
 }
 
 async function listCustomers() {
-  let data = await ApiClient.getData(URLS.LIST_CUSTOMER);
-  return data
+  return await ApiClient.getData(URLS.LIST_CUSTOMER);
 }
 
 async function addCustomer(customer) {
