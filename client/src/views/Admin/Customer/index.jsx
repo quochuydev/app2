@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-// import { Link } from 'react-router-dom';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Layout, Menu, Table, Icon, Tag, Row, Col, Card, Button, Modal,
+  Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, List, Typography
 } from 'antd';
-
 import 'antd/dist/antd.css';
-const { Sider } = Layout;
 
-
-function App(props) {
+function Customer(props) {
   const { Option } = Select;
   const { customers, actions } = props;
   const columns = [
@@ -162,4 +158,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(customerActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Customer);
