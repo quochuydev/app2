@@ -1,11 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Icon, Breadcrumb } from 'antd';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import 'antd/dist/antd.css';
+import Constants from '../../../utils/constants';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
+const { HOME_ROUTE } = Constants.PATHS;
+const { CUSTOMER_ROUTE } = Constants.PATHS;
+console.log()
+const { MENU_DATA } = Constants;
 
 function Home(props) {
+  const [openKeyList, setOpenKeys] = useState([]);
+  let menuItems = [];
+  menuItems.push(
+    <Menu.Item key={0}>
+      <Link to={HOME_ROUTE}>
+          <span>Home</span>
+      </Link>
+    </Menu.Item>
+  );
+  menuItems.push(
+    <Menu.Item key={'sub_1_1'}>
+      <Link to={CUSTOMER_ROUTE}>
+        <span>{CUSTOMER_ROUTE}</span>
+      </Link>
+    </Menu.Item>
+  );
+
   return (
     <Layout>
       <Header className="header">
@@ -29,6 +57,11 @@ function Home(props) {
         </Breadcrumb>
         <Layout style={{ padding: '24px 0', background: '#fff' }}>
           <Sider width={200} style={{ background: '#fff' }}>
+            <Menu
+              mode="inline"
+              openKeys={openKeyList}>
+              {menuItems}
+            </Menu>
             <Menu
               mode="inline"
               defaultSelectedKeys={['1']}

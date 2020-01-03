@@ -5,11 +5,14 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/core/config/default'));
+var router = express.Router();
+const siteRoute = require('./site_route');
 
 module.exports = (app, db) => {
   app.use(cors());
   if (process.env.NODE_ENV == 'production') {
-    app.use('/', express.static(path.resolve('../client/public')));
+    // app.use('/', express.static(path.resolve('../client/public')));
+    app.use('/', siteRoute)
   }
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
