@@ -25,15 +25,19 @@ function Messenger(props) {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>{edit.id}
-          <Icon type="edit"  />
+          <Icon type="edit"/>
         </span>
       ),
     },
   ];
+  async function loadWooOrders() {
+    await actions.loadWooOrders();
+  }
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
+          <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>

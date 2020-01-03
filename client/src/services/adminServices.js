@@ -4,6 +4,8 @@ const URLS = {
   LIST_CUSTOMER: 'api/customers',
   ADD_CUSTOMER: 'api/customers/add',
   SYNC_CUSTOMER: 'api/customers/sync',
+
+  LIST_WOO_ORDERS: 'api/woo_orders',
 }
 
 async function listCustomers() {
@@ -18,4 +20,8 @@ async function syncCustomers(customer) {
   return await ApiClient.getData(URLS.SYNC_CUSTOMER, null, customer);
 }
 
-export default { listCustomers, addCustomer, syncCustomers }
+async function loadWooOrders() {
+  return await ApiClient.getData(URLS.LIST_WOO_ORDERS);
+}
+
+export default { listCustomers, addCustomer, syncCustomers, loadWooOrders }
