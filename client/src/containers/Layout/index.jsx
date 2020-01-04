@@ -48,7 +48,7 @@ function LayoutContainer(props) {
     <BrowserRouter>
       <BlockUi tag="div" >
         <Layout>
-          <Content style={{ padding: '0 50px' }}>
+          <Content>
             <Breadcrumb style={{ margin: '16px 0' }}>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>List</Breadcrumb.Item>
@@ -69,7 +69,6 @@ function LayoutContainer(props) {
               </Content>
             </Layout>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
         </Layout>
       </BlockUi>
     </BrowserRouter>

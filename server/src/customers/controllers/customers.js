@@ -4,6 +4,7 @@ const API = require(path.resolve('./src/core/api/index'));
 const mongoose = require('mongoose');
 const CustomersMD = mongoose.model('Customers');
 const ShopMD = mongoose.model('Shop');
+const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 
 exports.get = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ exports.get = async (req, res) => {
     let customers = await CustomersMD.find({}).lean(true);
     res.send({ error: false, count, customers })
   } catch (error) {
+    console.log(error)
     res.send({ error: true, count: 0, customers: [] })
   }
 }
@@ -61,7 +63,12 @@ exports.post = (req, res) => {
   res.send({ error: false });
 }
 
+exports.export = (req, res) => {
+
+  res.send({ error: false });
+}
+
 let test = async () => {
   exports.get()
 }
-test()
+// test()

@@ -7,6 +7,8 @@ export const ACTIONS = {
   ADD_CUSTOMER_FAILED: 'ADD_CUSTOMER_FAILED',
   SYNC_CUSTOMER_SUCCESS: 'SYNC_CUSTOMER_SUCCESS',
   SYNC_CUSTOMER_FAILED: 'SYNC_CUSTOMER_FAILED',
+  EXPORT_CUSTOMER_SUCCESS: 'EXPORT_CUSTOMER_SUCCESS',
+  EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED'
 };
 
 export function listCustomers(customer) {
@@ -68,6 +70,28 @@ export function syncCustomers(customer) {
         type: ACTIONS.SYNC_CUSTOMER_FAILED, payload: {
           error: true,
           message: 'createAccountAdmin.message'
+        }
+      });
+    }
+  }
+}
+
+export function exportCustomer(customer) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.exportCustomer();
+      dispatch({
+        type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload: {
+          error: false,
+          message: 'exportCustomer.message',
+          data
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: {
+          error: true,
+          message: 'exportCustomer.message'
         }
       });
     }
