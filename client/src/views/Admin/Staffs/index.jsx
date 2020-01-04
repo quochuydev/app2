@@ -28,7 +28,7 @@ function Staffs(props) {
     },
   ];
   async function createStaffs() {
-    await actions.createStaffs();
+    await actions.loadStaffs();
   }
   async function loadStaffs() {
     await actions.loadStaffs();
@@ -38,7 +38,7 @@ function Staffs(props) {
       <Row key='1'>
         <Col span={24}>
           <Button onClick={() => createStaffs()}>Thêm mới</Button>
-          <Button onClick={() => loadStaffs()}>Áp dụng bộ lọc 123</Button>
+          <Button onClick={() => loadStaffs()}>Áp dụng bộ lọc</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>

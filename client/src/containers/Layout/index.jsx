@@ -15,11 +15,6 @@ import Constants from '../../utils/constants';
 import { Layout, Menu, Icon, Breadcrumb } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
-
-const { HOME_ROUTE } = Constants.PATHS;
-const { CUSTOMER_ROUTE } = Constants.PATHS;
-const { MESSENGER_ROUTE } = Constants.PATHS;
 const { MENU_DATA } = Constants;
 
 function LayoutContainer(props) {
