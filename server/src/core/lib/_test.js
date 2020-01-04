@@ -1,8 +1,8 @@
-const _test = (test) => {
+const _test = async (test) => {
   for(let fn in test){
     if(typeof test[fn] == 'function'){
       try{
-        test[fn]();
+        await test[fn]();
       } catch(e){
         console.log(e)
       }
