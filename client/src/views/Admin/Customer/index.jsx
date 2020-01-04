@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   Table, Icon, Row, Col, Button, Modal,
-  Input, Select, DatePicker, Upload, List, Typography
+  Input, Select, DatePicker, Upload
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -49,9 +49,6 @@ function Customer(props) {
     actions.listCustomers();
   }, []);
 
-  function addCustomer() {
-    actions.addCustomer({ name: 'test' });
-  }
   function updateCustomer() {
     actions.addCustomer({ name: 'test' });
   }
@@ -64,7 +61,7 @@ function Customer(props) {
   async function syncCustomers() {
     await actions.syncCustomers();
   }
-  const { Item } = List;
+
   return (
     <div className="">
       <Row key='1'>

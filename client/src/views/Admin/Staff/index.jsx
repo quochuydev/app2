@@ -3,11 +3,11 @@ import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Table, Icon, Row, Col, Button
+  Table, Icon, Row, Col, Button, List
 } from 'antd';
 import 'antd/dist/antd.css';
 
-function Messenger(props) {
+function Staffs(props) {
   const { actions } = props;
   const columns = [
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
@@ -27,14 +27,18 @@ function Messenger(props) {
       ),
     },
   ];
-  async function loadWooOrders() {
-    await actions.loadWooOrders();
+  async function createStaffs() {
+    await actions.createStaffs();
+  }
+  async function loadStaffs() {
+    await actions.loadStaffs();
   }
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => createStaffs()}>Thêm mới</Button>
+          <Button onClick={() => loadStaffs()}>Áp dụng bộ lọc 123</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>
@@ -50,4 +54,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(customerActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Messenger);
+export default connect(mapStateToProps, mapDispatchToProps)(Staffs);

@@ -1,5 +1,3 @@
-import AdminServices from '../../../services/adminServices';
-
 export const ACTIONS = {
   LOAD_MESSENGER_SUCCESS: 'LOAD_MESSENGER_SUCCESS',
   LOAD_MESSENGER_FAILED: 'LOAD_MESSENGER_FAILED',

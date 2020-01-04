@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Table, Icon, Row, Col, Button, Modal,
-  Input, Select, DatePicker, Upload, List, Typography
+  Row, Col, Button,
+  Select, List, Typography
 } from 'antd';
 import 'antd/dist/antd.css';
 
 function Messenger(props) {
-  const { Option } = Select;
-  const { customers, actions } = props;
   const data = [
     'Racing car sprays burning fuel into crowd.',
     'Japanese princess to wed commoner.',

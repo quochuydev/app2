@@ -3,11 +3,13 @@ const HOME_ROUTE = `${PATH_ADMIN}`;
 const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
 const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_WOO_ROUTE = `${PATH_ADMIN}order_woocommerce`;
+const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
 
 const PATHS = {
   CUSTOMER_ROUTE,
   HOME_ROUTE,
   MESSENGER_ROUTE,
+  STAFFS_ROUTE,
 };
 const MENU_DATA = [
   {
@@ -32,6 +34,12 @@ const MENU_DATA = [
     path: ORDER_WOO_ROUTE,
     key: 'order_woo',
     name: 'Đơn hàng Woocommerce',
+    is_open: false
+  },
+  {
+    path: STAFFS_ROUTE,
+    key: 'staffs',
+    name: 'Nhân viên',
     is_open: false
   }
 ]

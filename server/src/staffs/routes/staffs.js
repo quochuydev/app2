@@ -7,9 +7,9 @@ router.get('/', (req, res) => {
     let data = [
       
     ]
-    res.send({ error: false, count, woo_orders: data })
+    res.send({ error: false, count, staffs: data })
   } catch (error) {
-    res.send({ error: true, count: 0, woo_orders: [] })
+    res.send({ error: true, count: 0, staffs: [] })
   }
 });
 
