@@ -132,7 +132,7 @@ const ExcelLib = {
             Private.files.push(Private.curFile);
           }
 
-          // Private.curFile.worksheet.addRow(row).commit();
+          Private.curFile.worksheet.addRow(row).commit();
   
           Private.writeCount++;
   
@@ -147,6 +147,10 @@ const ExcelLib = {
           return Public;
         },
         end: () => {
+          if (Private.curFile && !Private.curFile._endPromise) {
+            Private.curFile._endPromise = Private.curFile.workbook.commit();
+          }
+
           if (Private.cloudAPI) {
   
           }
@@ -210,6 +214,7 @@ const test = {
     });
     
     await excel.write({ sku: 'test', name: 'san pham 1', price: 100000, created_at: 100000 });
+    await excel.write({ sku: 'test2', name: 'san pham 2', price: 200000, created_at: 100000 });
     
     const { downloadLink } = await excel.end();
     console.log(downloadLink)
