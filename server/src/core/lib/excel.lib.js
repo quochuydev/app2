@@ -222,4 +222,4 @@ const test = {
 }
 
 const { _test } = require(path.resolve('./src/core/lib/_test'));
-_test(test);
+// _test(test);

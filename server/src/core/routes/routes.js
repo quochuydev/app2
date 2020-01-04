@@ -2,6 +2,7 @@ const path = require('path');
 const install = require(path.resolve('./src/install/routes/install'));
 const customers = require(path.resolve('./src/customers/routes/customers'));
 const woo_orders = require(path.resolve('./src/woo_orders/routes/woo_orders'));
+const download = require(path.resolve('./src/download/routes/download'));
 const _ = require('lodash');
 
 const routes = (app) => {
@@ -20,6 +21,8 @@ const routes = (app) => {
   })
 
   app.use('/install', install);
+  app.use('/download', download);
+  
   app.use('/api/customers', customers);
   app.use('/api/woo_orders', woo_orders);
 }

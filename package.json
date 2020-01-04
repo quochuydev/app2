@@ -13,6 +13,7 @@
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
     "jsonwebtoken": "^8.5.1",
+    "mime": "^2.4.4",
     "moment": "^2.24.0",
     "mongoose": "^5.8.2",
     "oauth": "^0.9.15",
