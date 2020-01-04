@@ -3,6 +3,7 @@ const install = require(path.resolve('./src/install/routes/install'));
 const customers = require(path.resolve('./src/customers/routes/customers'));
 const woo_orders = require(path.resolve('./src/woo_orders/routes/woo_orders'));
 const download = require(path.resolve('./src/download/routes/download'));
+const staffs = require(path.resolve('./src/staffs/routes/staffs'));
 const _ = require('lodash');
 
 const routes = (app) => {
@@ -25,6 +26,7 @@ const routes = (app) => {
   
   app.use('/api/customers', customers);
   app.use('/api/woo_orders', woo_orders);
+  app.use('/api/staffs', staffs);
 }
 
 module.exports = routes;

@@ -34,4 +34,11 @@ async function loadStaffs() {
   return await ApiClient.postData(URLS.LIST_STAFFS);
 }
 
-export default { listCustomers, addCustomer, syncCustomers, exportCustomer, loadWooOrders, loadStaffs }
+async function createStaffs() {
+  return await ApiClient.postData(URLS.LIST_STAFFS);
+}
+
+export default { 
+  listCustomers, addCustomer, syncCustomers, exportCustomer, 
+  loadWooOrders, loadStaffs, createStaffs
+}

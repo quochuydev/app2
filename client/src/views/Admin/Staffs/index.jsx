@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Table, Icon, Row, Col, Button, List
+  Table, Icon, Row, Col, Button, List, Modal
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -22,13 +22,15 @@ function Staffs(props) {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>{edit.id}
-          <Icon type="edit"/>
+          <Icon type="edit" />
         </span>
       ),
     },
   ];
+  
+  const [showCreate, setShowCreate] = useState(false);
   async function createStaffs() {
-    await actions.loadStaffs();
+    await actions.createStaffs();
   }
   async function loadStaffs() {
     await actions.loadStaffs();
@@ -37,11 +39,21 @@ function Staffs(props) {
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => createStaffs()}>Thêm mới</Button>
+          <Button onClick={() => setShowCreate(true)}>Thêm mới</Button>
           <Button onClick={() => loadStaffs()}>Áp dụng bộ lọc</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>
+      <Modal
+        title="Basic Modal"
+        visible={showCreate}
+        onOk={() => createStaffs()}
+        onCancel={() => setShowCreate(false)}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     </div>
   );
 }
