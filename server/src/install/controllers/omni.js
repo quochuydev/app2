@@ -47,8 +47,8 @@ exports.grandservice = async (req, res) => {
 		req.session.access_token = authorizeInfo.access_token;
 		req.session.save();
 		// res.send({ error: false, data: req.session });
-		url = `http://localhost:3001/?token=${authorizeInfo.access_token}`;
-		// url = `https://crmdlc.herokuapp.com/?token=${authorizeInfo.access_token}`;
+		// url = `http://localhost:3001/?token=${authorizeInfo.access_token}`;
+		url = `https://crmdlc.herokuapp.com/?token=${authorizeInfo.access_token}`;
 		res.redirect(url);
 
 		//if have use webhook, you need subscribe webhook with org token to use

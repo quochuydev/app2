@@ -6,11 +6,6 @@ const URLS = {
   SYNC_CUSTOMER: 'api/customers/sync',
   EXPORT_CUSTOMER: 'api/customers/export',
 
-  LIST_CUSTOMER_HRV: 'api/hrv_customers',
-  ADD_CUSTOMER_HRV: 'api/hrv_customers/add',
-  SYNC_CUSTOMER_HRV: 'api/hrv_customers/sync',
-  EXPORT_CUSTOMER_HRV: 'api/hrv_customers/export',
-
   LIST_WOO_ORDERS: 'api/woo_orders',
   LIST_STAFFS: 'api/staffs',
 }

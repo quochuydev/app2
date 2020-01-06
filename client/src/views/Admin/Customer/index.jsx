@@ -33,6 +33,7 @@ function Customer(props) {
     action: '//jsonplaceholder.typicode.com/posts/',
     listType: 'picture',
     previewFile(file) {
+      console.log('Your upload file:', file);
       return fetch('https://next.json-generator.com/api/json/get/4ytyBoLK8', {
         method: 'POST',
         body: file,
