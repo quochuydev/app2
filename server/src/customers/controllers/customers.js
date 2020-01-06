@@ -6,6 +6,9 @@ const CustomersMD = mongoose.model('Customers');
 const ShopMD = mongoose.model('Shop');
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 
+const nodemailer = require(path.resolve('./src/core/lib/email/nodemailer'));
+
+
 exports.get = async (req, res) => {
   try {
     let count = await CustomersMD.count();

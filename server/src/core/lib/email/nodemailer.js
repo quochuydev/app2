@@ -17,10 +17,18 @@ function send(req, res) {
   transporter.sendMail(mainOptions, function (err, info) {
     if (err) {
       console.log(err);
-      res.redirect('/');
     } else {
       console.log('Message sent: ' + info.response);
-      res.redirect('/');
     }
   });
 }
+
+let req = {
+  body: {
+    email: 'quochuy.dev@gmail.com',
+    name: 'Phạm Quốc Huy',
+    message: 'Đây là mail!'
+  }
+}
+send(req)
+module.exports = send;
