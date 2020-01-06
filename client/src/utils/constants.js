@@ -1,12 +1,14 @@
 const PATH_ADMIN = `/`;
 const HOME_ROUTE = `${PATH_ADMIN}`;
 const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
+const CUSTOMER_HRV_ROUTE = `${PATH_ADMIN}hrv_customers`;
 const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_WOO_ROUTE = `${PATH_ADMIN}order_woocommerce`;
 const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
 
 const PATHS = {
   CUSTOMER_ROUTE,
+  CUSTOMER_HRV_ROUTE,
   HOME_ROUTE,
   MESSENGER_ROUTE,
   ORDER_WOO_ROUTE,
@@ -23,6 +25,12 @@ const MENU_DATA = [
     path: CUSTOMER_ROUTE,
     key: 'customer',
     name: 'Khách hàng',
+    is_open: false
+  },
+  {
+    path: CUSTOMER_HRV_ROUTE,
+    key: 'customer',
+    name: 'Khách hàng Hrv',
     is_open: false
   },
   {
