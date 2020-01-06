@@ -43,13 +43,23 @@ function Customer(props) {
   };
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
+  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
   useEffect(() => {
     actions.listCustomers();
   }, []);
 
-  function updateCustomer() {
-    actions.addCustomer({ name: 'test' });
+
+  let [customer, setCustomer] = useState({})
+  function onChange(e){
+    setCustomer({ ...customer, [e.target.name]: e.target.value });
+  }
+  
+  function createCustomer() {
+    actions.createCustomer(customer);
+  }
+  function updateCustomer(customer) {
+    actions.updateCustomer(customer);
   }
   function importCustomer() {
     actions.importCustomer({ name: 'test' });
@@ -57,16 +67,14 @@ function Customer(props) {
   function exportCustomer() {
     actions.exportCustomer({ name: 'test' });
   }
-  async function syncCustomers() {
-    await actions.syncCustomers();
-  }
 
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
+          <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
+          <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng HRV</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} />;
         </Col>
       </Row>
@@ -90,6 +98,23 @@ function Customer(props) {
         </Upload>
       </Modal>
       <Modal
+        title="Create Modal"
+        visible={isCreateModal}
+        onOk={createCustomer}
+        onCancel={() => setIsCreateModal(false)}
+      >
+        <Input name="name" onChange={onChange} />
+        <Input name="email" onChange={onChange} />
+        <Input name="phone" onChange={onChange} />
+        <DatePicker name="birthday" onChange={onChange} />
+        <Select defaultValue="lucy" style={{ width: 120 }}>
+          <Option value="jack">Jack</Option>
+          <Option value="lucy">Lucy</Option>
+          <Option value="disabled" disabled> Disabled </Option>
+          <Option value="Yiminghe">yiminghe</Option>
+        </Select>
+      </Modal>
+      <Modal
         title="Update Modal"
         visible={isUpdateModal}
         onOk={() => updateCustomer()}
@@ -97,11 +122,8 @@ function Customer(props) {
       >
         <Input value="Basic usage" />
         <Input value="Basic usage" />
+        <Input value="Basic usage" />
         <DatePicker />
-        <Input value="Basic usage" />
-        <Input value="Basic usage" />
-        <Input value="Basic usage" />
-
         <Select defaultValue="lucy" style={{ width: 120 }}>
           <Option value="jack">Jack</Option>
           <Option value="lucy">Lucy</Option>

@@ -29,7 +29,7 @@ const MENU_DATA = [
   },
   {
     path: CUSTOMER_HRV_ROUTE,
-    key: 'customer',
+    key: 'customerHrv',
     name: 'Khách hàng Hrv',
     is_open: false
   },

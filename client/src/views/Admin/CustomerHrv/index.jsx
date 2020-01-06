@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import 'antd/dist/antd.css';
 
-function Customer(props) {
+function CustomerHrv(props) {
   const { Option } = Select;
   const { customers, actions } = props;
   const columns = [
@@ -121,4 +121,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(customerActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerHrv);
