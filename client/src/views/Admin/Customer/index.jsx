@@ -58,7 +58,7 @@ function Customer(props) {
   function createCustomer() {
     actions.createCustomer(customer);
   }
-  function updateCustomer(customer) {
+  function updateCustomer() {
     actions.updateCustomer(customer);
   }
   function importCustomer() {
