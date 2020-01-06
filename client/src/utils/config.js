@@ -1,3 +1,3 @@
 export default { 
-	backend_url: 'https://crmdlc.herokuapp.com'
+	backend_url: 'http://localhost:3000'
 };
