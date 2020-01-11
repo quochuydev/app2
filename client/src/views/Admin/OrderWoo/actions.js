@@ -3,6 +3,8 @@ import AdminServices from '../../../services/adminServices';
 export const ACTIONS = {
   LOAD_WOO_ORDERS_SUCCESS: 'LOAD_WOO_ORDERS_SUCCESS',
   LOAD_WOO_ORDERS_FAILED: 'LOAD_WOO_ORDERS_FAILED',
+  SYNC_WOO_ORDERS_SUCCESS: 'SYNC_WOO_ORDERS_SUCCESS',
+  SYNC_WOO_ORDERS_FAILED: 'SYNC_WOO_ORDERS_FAILED',
 };
 
 export function loadWooOrders(customer) {
@@ -26,3 +28,25 @@ export function loadWooOrders(customer) {
     }
   }
 }
+
+export function syncWooOrders(customer) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.syncWooOrders();
+      dispatch({
+        type: ACTIONS.SYNC_WOO_ORDERS_SUCCESS, payload: {
+          error: false,
+          message: 'SYNC_WOO_ORDERS_SUCCESS.message'
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.SYNC_WOO_ORDERS_FAILED, payload: {
+          error: true,
+          message: 'SYNC_WOO_ORDERS_FAILED.message'
+        }
+      });
+    }
+  }
+}
+

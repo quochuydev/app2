@@ -13,9 +13,7 @@ const routes = (app) => {
     if (req.originalUrl.indexOf('install') != -1) return next();
     let token = _.get(req, 'headers.accesstoken', '') || req.session.access_token;
     req.access_token = token;
-    // if (req.session.shop && req.session.shop_id && req.session.access_token) return next();
     if (req.access_token) return next();
-    // res.sendStatus(401);
     next();
   })
 
@@ -25,7 +23,7 @@ const routes = (app) => {
 
   app.use('/install', install);
   app.use('/download', download);
-  app.use('/webhook', webhook);
+  app.use(webhook);
   
   app.use('/api/customers', customers);
   app.use('/api/woo_orders', woo_orders);

@@ -12,6 +12,8 @@ const URLS = {
   EXPORT_CUSTOMER_HRV: 'api/hrv_customers/export',
 
   LIST_WOO_ORDERS: 'api/woo_orders',
+  SYNC_WOO_ORDERS: 'api/woo_orders/sync',
+  
   LIST_STAFFS: 'api/staffs',
 }
 
@@ -35,6 +37,10 @@ async function loadWooOrders() {
   return await ApiClient.getData(URLS.LIST_WOO_ORDERS);
 }
 
+async function syncWooOrders() {
+  return await ApiClient.postData(URLS.SYNC_WOO_ORDERS);
+}
+
 async function loadStaffs() {
   return await ApiClient.postData(URLS.LIST_STAFFS);
 }
@@ -45,5 +51,5 @@ async function createStaffs() {
 
 export default { 
   listCustomers, addCustomer, syncCustomers, exportCustomer, 
-  loadWooOrders, loadStaffs, createStaffs
+  loadWooOrders, syncWooOrders, loadStaffs, createStaffs
 }

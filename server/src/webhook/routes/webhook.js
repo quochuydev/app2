@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const WooOrderMD = mongoose.model('WooOrder');
 
-router.post('', async (req, res) => {
+router.post('/webhook', async (req, res) => {
   try {
     let order = req.body;
     let found = await WooOrderMD.findOne({ id: order.id }).lean(true);
@@ -16,7 +16,7 @@ router.post('', async (req, res) => {
       type = 'create';
       orderWebhook = await WooOrderMD.create(order);
     }
-    res.send({ error: false, type, woo_orders: orderWebhook })
+    res.send({ error: false, type, woo_orders: orderWebhook });
   } catch (error) {
     console.log(error)
     res.send({ error: true, woo_orders: [] })

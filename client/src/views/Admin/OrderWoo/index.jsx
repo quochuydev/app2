@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -27,14 +27,22 @@ function Messenger(props) {
       ),
     },
   ];
+  useEffect(async () => {
+    await actions.loadWooOrders();
+  }, []);
+  
   async function loadWooOrders() {
     await actions.loadWooOrders();
+  }
+  async function syncWooOrders() {
+    await actions.syncWooOrders();
   }
   return (
     <div className="">
       <Row key='1'>
         <Col span={24}>
           <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>

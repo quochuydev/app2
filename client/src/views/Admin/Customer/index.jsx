@@ -69,7 +69,7 @@ function Customer(props) {
   }
 
   return (
-    <div className="">
+    <div>
       <Row key='1'>
         <Col span={24}>
           <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>

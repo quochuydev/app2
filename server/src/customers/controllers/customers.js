@@ -46,8 +46,7 @@ exports.sync = async (req, res) => {
       customer.shop = shop;
       customer.shop_id = shop_id;
       if (!found) {
-        let customerNew = new CustomersMD(customer);
-        await customerNew.save()
+        await CustomersMD.create(customer)
         count.new++;
       } else {
         await CustomersMD.findOneAndUpdate({ id: customer.id }, { $set: customer }, { lean: true, new: true });

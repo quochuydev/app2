@@ -30,5 +30,5 @@ let req = {
     message: 'Đây là mail!'
   }
 }
-send(req)
+// send(req)
 module.exports = send;
