@@ -15,7 +15,7 @@ export function loadWooOrders(customer) {
         type: ACTIONS.LOAD_WOO_ORDERS_SUCCESS, payload: {
           error: false,
           message: 'LOAD_WOO_ORDERS_SUCCESS.message',
-          data
+          ...data
         }
       });
     } catch (error) {

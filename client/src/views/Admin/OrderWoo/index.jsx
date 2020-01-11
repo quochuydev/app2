@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import * as customerActions from './actions';
+import React, { useState, useEffect } from 'react';
+import * as wooOrderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -7,8 +7,8 @@ import {
 } from 'antd';
 import 'antd/dist/antd.css';
 
-function Messenger(props) {
-  const { actions } = props;
+function WooOrders(props) {
+  const { actions, woo_orders } = props;
   const columns = [
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
@@ -22,15 +22,16 @@ function Messenger(props) {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>{edit.id}
-          <Icon type="edit"/>
+          <Icon type="edit" />
         </span>
       ),
     },
   ];
-  useEffect(async () => {
-    await actions.loadWooOrders();
+
+  useEffect(() => {
+    actions.loadWooOrders();
   }, []);
-  
+
   async function loadWooOrders() {
     await actions.loadWooOrders();
   }
@@ -43,7 +44,7 @@ function Messenger(props) {
         <Col span={24}>
           <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='id' dataSource={[]} columns={columns} />;
+          <Table rowKey='id' dataSource={woo_orders} columns={columns} />;
       </Col>
       </Row>
     </div>
@@ -51,11 +52,12 @@ function Messenger(props) {
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.get('customers')
+  customers: state.customers.get('customers'),
+  woo_orders: state.woo_orders.get('woo_orders')
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(customerActions, dispatch)
+  actions: bindActionCreators(wooOrderActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Messenger);
+export default connect(mapStateToProps, mapDispatchToProps)(WooOrders);
