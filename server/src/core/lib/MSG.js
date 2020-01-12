@@ -49,6 +49,6 @@ const test = () => {
   reponse.b = MSG('MS-01', { abc: 'test abc', xyz: 'xyz' });
   reponse.c = MSG('MS-02');
   console.log(reponse);
-  // response => { a: 'test abc Messenger 1', b: 'test abc xyz undefined', c: '' }
+  // { a: 'test abc Messenger 1', b: 'test abc xyz undefined', c: '' }
 }
-test()
+// test()

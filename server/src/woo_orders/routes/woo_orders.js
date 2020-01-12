@@ -50,10 +50,10 @@ router.post('/sync', async (req, res) => {
       let found = await WooOrderMD.findOne({ id: order.id }).lean(true);
       if (found) {
         console.log(order.id, 'update')
-        orderWebhook = await WooOrderMD.findOneAndUpdate({ id: order.id }, { $set: order }, { new: true, lean: true });
+        await WooOrderMD.findOneAndUpdate({ id: order.id }, { $set: order }, { new: true, lean: true });
       } else {
         console.log(order.id, 'create')
-        orderWebhook = await WooOrderMD.create(order);
+        await WooOrderMD.create(order);
       }
     }
     res.send({ error: false, message: 'done' })
