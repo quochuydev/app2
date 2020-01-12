@@ -7,7 +7,8 @@ const MSG = (code, data) => {
     let result = message.toString ? message.toString() : '';
     result = result.replace(matchingPattern, (matcher) => {
       var path = matcher.slice(1, -1).trim();
-      return data[path]
+      if(data[path]) return data[path]
+      return matcher;
     });
     return result;
   }
