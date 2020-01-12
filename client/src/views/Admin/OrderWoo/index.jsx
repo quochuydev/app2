@@ -3,29 +3,27 @@ import * as wooOrderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Table, Icon, Row, Col, Button
+  Table, Row, Col, Button, Tag
 } from 'antd';
+
 import 'antd/dist/antd.css';
+import OrderDetailWoo from './../OrderDetailWoo/index';
 
 function WooOrders(props) {
   const { actions, woo_orders } = props;
   const columns = [
-    { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
-    { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
-    { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
-    { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
-    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
-    { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'default_address.address1', key: 'address', },
-    { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
-      title: 'Edit', key: 'edit',
+      title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <span>{edit.id}
-          <Icon type="edit" />
-        </span>
+        <a onClick={() => openDetailModal(edit)}>{edit.id}</a>
       ),
     },
+    { title: 'Ngày tạo', dataIndex: 'date_created', key: 'date_created', },
+    {
+      title: 'Tình trạng', key: 'status', render: edit => (
+        <Tag color="green">{edit.status}</Tag>)
+    },
+    { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
   useEffect(() => {
@@ -37,6 +35,19 @@ function WooOrders(props) {
   }
   async function syncWooOrders() {
     await actions.syncWooOrders();
+    loadWooOrders();
+  }
+
+  const [isShowDetailModal, setIsShowDetailModal] = useState(false);
+  let [orderDetail, setOrderDetail] = useState({});
+
+  function openDetailModal(order) {
+    setOrderDetail(order)
+    setIsShowDetailModal(true);
+  }
+
+  function onChange(e) {
+    // setOrder({ ...order, [e.target.name]: e.target.value });
   }
   return (
     <div className="">
@@ -47,6 +58,12 @@ function WooOrders(props) {
           <Table rowKey='id' dataSource={woo_orders} columns={columns} />;
       </Col>
       </Row>
+      <OrderDetailWoo
+        showModal={isShowDetailModal}
+        order={orderDetail}
+        handleCancel={() => setIsShowDetailModal(false)}
+      >
+      </OrderDetailWoo>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import Exception from './exception';
-// import { ErrorModel } from 'Models';
 import config from './config';
 import _ from 'lodash';
 
@@ -27,7 +26,6 @@ async function responseHandler(response) {
   if (response.ok) {
     const jsonData = await response.json();
     if (jsonData.is_error) {
-      // const error = new ErrorModel();
       const error = {};
       error.isError = jsonData.is_error;
       error.message = jsonData.message;
@@ -35,7 +33,6 @@ async function responseHandler(response) {
     }
     return jsonData;
   } else {
-    // const error = new ErrorModel();
     const error = {};
     error.code = response.status;
     error.message = response.statusText;

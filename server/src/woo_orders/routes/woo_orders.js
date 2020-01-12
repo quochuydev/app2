@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const WooOrderMD = mongoose.model('WooOrder');
 const WooCommerceAPI = require('woocommerce-api');
 
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     let count = await WooOrderMD.count();
     let woo_orders = await WooOrderMD.find({}).lean(true);

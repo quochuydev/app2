@@ -34,7 +34,7 @@ async function exportCustomer() {
 }
 
 async function loadWooOrders() {
-  return await ApiClient.getData(URLS.LIST_WOO_ORDERS);
+  return await ApiClient.postData(URLS.LIST_WOO_ORDERS);
 }
 
 async function syncWooOrders() {
