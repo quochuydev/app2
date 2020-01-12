@@ -11,7 +11,7 @@ export const ACTIONS = {
   EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED'
 };
 
-export function listCustomers(customer) {
+export function listCustomers() {
   return async (dispatch) => {
     try {
       const data = await AdminServices.listCustomers();
@@ -36,7 +36,6 @@ export function listCustomers(customer) {
 export function createCustomer(customer) {
   return (dispatch) => {
     try {
-      // const createAccountAdmin = await AdminServices.addAdminAccount(customer);
       dispatch({
         type: ACTIONS.ADD_CUSTOMER_SUCCESS, payload: {
           error: false,
@@ -57,7 +56,6 @@ export function createCustomer(customer) {
 export function addCustomer(customer) {
   return (dispatch) => {
     try {
-      // const createAccountAdmin = await AdminServices.addAdminAccount(customer);
       dispatch({
         type: ACTIONS.ADD_CUSTOMER_SUCCESS, payload: {
           error: false,

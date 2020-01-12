@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as wooOrderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-  Table, Row, Col, Button, Tag
-} from 'antd';
-
+import { Table, Row, Col, Button, Tag } from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetailWoo from './../OrderDetailWoo/index';
 
@@ -46,9 +43,6 @@ function WooOrders(props) {
     setIsShowDetailModal(true);
   }
 
-  function onChange(e) {
-    // setOrder({ ...order, [e.target.name]: e.target.value });
-  }
   return (
     <div className="">
       <Row key='1'>
