@@ -1,2 +1,1 @@
-# app2
-app2
+# react_node_app
