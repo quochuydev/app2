@@ -5,15 +5,17 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/core/config/config'));
-var router = express.Router();
-const siteRoute = require('./site_route');
+const router = express.Router();
+// const siteRoute = require('./site_route');
 
 module.exports = (app, db) => {
   app.use(cors());
   if (process.env.NODE_ENV == 'production') {
-    app.use('/site/', express.static(path.resolve('../client', 'build')));
+    console.log(path.resolve('../client', 'public')))
+    app.use('/', express.static(path.resolve('../client', 'public')));
     app.get('/site/*', (req, res) => {
-      res.sendFile(path.resolve('../client/build', 'index.html'));
+      console.log(path.resolve('../client/public', 'index.html'))
+      res.sendFile(path.resolve('../client/public', 'index.html'));
     });
   }
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
