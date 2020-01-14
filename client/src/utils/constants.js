@@ -1,4 +1,4 @@
-const PATH_ADMIN = `/site/`;
+const PATH_ADMIN = `/`;
 const HOME_ROUTE = `${PATH_ADMIN}`;
 const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
 const CUSTOMER_HRV_ROUTE = `${PATH_ADMIN}hrv_customers`;
