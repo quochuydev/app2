@@ -1,7 +1,7 @@
 const fse = require('fs-extra');
 const path = require('path');
 const ExcelJs = require('exceljs');
-const config = require(path.resolve('./src/core/config/default'));
+const config = require(path.resolve('./src/core/config/config'));
 
 const ExcelLib = {
   loadFile: async ({ filePath, headers, emptyCellValue = undefined }) => {
