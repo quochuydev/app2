@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
-const config = require(path.resolve('./src/core/config/config'));
+const config = require(path.resolve('./src/config/config'));
 
 module.exports = (app, db) => {
   app.use(cors());

@@ -1,7 +1,7 @@
 const path = require('path');
 const request = require('request');
 const omniBus = require(path.resolve('./src/core/businesses/token'));
-const config = require(path.resolve('./src/core/config/config'));
+const config = require(path.resolve('./src/config/config'));
 const mongoose = require('mongoose');
 const ShopMD = mongoose.model('Shop');
 

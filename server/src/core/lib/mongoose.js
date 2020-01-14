@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const glob = require('glob');
-const config = require('../config/config');
+const config = require(path.resolve('./src/config/config'));
 
 const Mongoose = {
   connect: async () => {

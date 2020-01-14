@@ -6,7 +6,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const request = require("request");
-const config = require(path.resolve('./src/core/config/config'));
+const config = require(path.resolve('./src/config/config'));
 
 module.exports = { buildUrlLogin, buildUrlInstall, getToken, getUserFromDecodeJwt, getShop, subscribe, webhookValidate }
 
