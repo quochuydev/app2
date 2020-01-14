@@ -11,8 +11,10 @@ const siteRoute = require('./site_route');
 module.exports = (app, db) => {
   app.use(cors());
   if (process.env.NODE_ENV == 'production') {
-    // app.use('/', express.static(path.resolve('../client/public')));
-    app.use('/', siteRoute)
+    app.use('/site/', express.static(path.resolve('../client', 'build')));
+    app.get('/site/*', (req, res) => {
+      res.sendFile(path.resolve('../client/build', 'index.html'));
+    });
   }
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
   app.use(bodyParser.json({ limit: '50mb' }));
