@@ -11,11 +11,11 @@ const router = express.Router();
 module.exports = (app, db) => {
   app.use(cors());
   if (process.env.NODE_ENV == 'production') {
-    console.log(path.resolve('../client', 'public')))
-    app.use('/', express.static(path.resolve('../client', 'public')));
+    console.log(path.resolve('../client', 'build'))
+    app.use('/', express.static(path.resolve('../client', 'build')));
     app.get('/site/*', (req, res) => {
-      console.log(path.resolve('../client/public', 'index.html'))
-      res.sendFile(path.resolve('../client/public', 'index.html'));
+      console.log(path.resolve('../client/build', 'index.html'))
+      res.sendFile(path.resolve('../client/build', 'index.html'));
     });
   }
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
