@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { Table, Row, Col, Modal, Card } from 'antd';
 import 'antd/dist/antd.css';
@@ -19,10 +19,11 @@ function OrderDetailWoo(props) {
     { title: 'Tổng tiền', dataIndex: 'subtotal', key: 'subtotal', },
   ];
 
-  let [orderDetail, setOrderDetail] = useState({});
-  function onChange(e) {
-    setOrderDetail({ ...order, [e.target.name]: e.target.value });
-  }
+  // let [orderDetail, setOrderDetail] = useState({});
+  
+  // function onChange(e) {
+  //   setOrderDetail({ ...order, [e.target.name]: e.target.value });
+  // }
 
   return (
     <Modal

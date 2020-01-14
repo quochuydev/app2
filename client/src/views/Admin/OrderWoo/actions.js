@@ -36,7 +36,8 @@ export function syncWooOrders(customer) {
       dispatch({
         type: ACTIONS.SYNC_WOO_ORDERS_SUCCESS, payload: {
           error: false,
-          message: 'SYNC_WOO_ORDERS_SUCCESS.message'
+          message: 'SYNC_WOO_ORDERS_SUCCESS.message',
+          ...data
         }
       });
     } catch (error) {

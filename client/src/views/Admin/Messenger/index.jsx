@@ -3,8 +3,7 @@ import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button,
-  Select, List, Typography
+  Row, Col, Button, List, Typography
 } from 'antd';
 import 'antd/dist/antd.css';
 

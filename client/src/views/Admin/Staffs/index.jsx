@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Icon, Row, Col, Button, List, Modal } from 'antd';
+import { Table, Icon, Row, Col, Button, Modal } from 'antd';
 import 'antd/dist/antd.css';
 
 function Staffs(props) {

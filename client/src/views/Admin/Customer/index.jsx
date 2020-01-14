@@ -45,10 +45,10 @@ function Customer(props) {
   const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
+  
   useEffect(() => {
     actions.listCustomers();
   }, []);
-
 
   let [customer, setCustomer] = useState({})
   function onChange(e){
