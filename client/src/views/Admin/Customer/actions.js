@@ -9,8 +9,10 @@ export const ACTIONS = {
   UPDATE_CUSTOMER_FAILED: 'UPDATE_CUSTOMER_FAILED',
   SYNC_CUSTOMER_SUCCESS: 'SYNC_CUSTOMER_SUCCESS',
   SYNC_CUSTOMER_FAILED: 'SYNC_CUSTOMER_FAILED',
+  IMPORT_CUSTOMER_SUCCESS: 'EXPORT_CUSTOMER_SUCCESS',
+  IMPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
   EXPORT_CUSTOMER_SUCCESS: 'EXPORT_CUSTOMER_SUCCESS',
-  EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED'
+  EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
 };
 
 export function listCustomers() {
@@ -83,7 +85,7 @@ export function syncCustomers(customer) {
         type: ACTIONS.SYNC_CUSTOMER_SUCCESS, payload: {
           error: false,
           message: 'createAccountAdmin.message',
-          data
+          ...data
         }
       });
     } catch (error) {
@@ -91,6 +93,28 @@ export function syncCustomers(customer) {
         type: ACTIONS.SYNC_CUSTOMER_FAILED, payload: {
           error: true,
           message: 'createAccountAdmin.message'
+        }
+      });
+    }
+  }
+}
+
+export function importCustomer(customer) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.importCustomer();
+      dispatch({
+        type: ACTIONS.IMPORT_CUSTOMER_SUCCESS, payload: {
+          error: false,
+          message: 'message',
+          ...data
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.IMPORT_CUSTOMER_FAILED, payload: {
+          error: true,
+          message: 'message'
         }
       });
     }
@@ -118,3 +142,4 @@ export function exportCustomer(customer) {
     }
   }
 }
+

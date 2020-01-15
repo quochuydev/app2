@@ -52,11 +52,9 @@ function Customer(props) {
     actions.listCustomers();
   }, []);
 
-  let [customer, setCustomer] = useState({})
-  function onChange(e) {
-    setCustomer({ ...customer, [e.target.name]: e.target.value });
+  function onLoadCustomer() {
+    actions.listCustomers();
   }
-
   function createCustomer() {
     actions.createCustomer(customer);
   }
@@ -64,16 +62,22 @@ function Customer(props) {
     actions.updateCustomer(customer);
   }
   function importCustomer() {
-    actions.importCustomer({ name: 'test' });
+    actions.importCustomer();
   }
   function exportCustomer() {
-    actions.exportCustomer({ name: 'test' });
+    actions.exportCustomer();
+  }
+
+  let [customer, setCustomer] = useState({})
+  function onChange(e) {
+    setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
   return (
     <div>
       <Row key='1'>
         <Col span={24}>
+          <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
           <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
@@ -109,11 +113,9 @@ function Customer(props) {
         <Input name="email" onChange={onChange} />
         <Input name="phone" onChange={onChange} />
         <DatePicker name="birthday" onChange={onChange} />
-        <Select defaultValue="lucy" style={{ width: 120 }}>
-          <Option value="jack">Jack</Option>
-          <Option value="lucy">Lucy</Option>
-          <Option value="disabled" disabled> Disabled </Option>
-          <Option value="Yiminghe">yiminghe</Option>
+        <Select defaultValue="gender" style={{ width: 120 }}>
+          <Option value="1">Nam</Option>
+          <Option value="0">Nữ</Option>
         </Select>
       </Modal>
       <Modal
@@ -126,11 +128,9 @@ function Customer(props) {
         <Input value="Basic usage" />
         <Input value="Basic usage" />
         <DatePicker />
-        <Select defaultValue="lucy" style={{ width: 120 }}>
-          <Option value="jack">Jack</Option>
-          <Option value="lucy">Lucy</Option>
-          <Option value="disabled" disabled> Disabled </Option>
-          <Option value="Yiminghe">yiminghe</Option>
+        <Select defaultValue="gender" style={{ width: 120 }}>
+          <Option value="1">Nam</Option>
+          <Option value="0">Nữ</Option>
         </Select>
       </Modal>
     </div>

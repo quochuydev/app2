@@ -5,6 +5,7 @@ const CUSTOMER_HRV_ROUTE = `${PATH_ADMIN}hrv_customers`;
 const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_WOO_ROUTE = `${PATH_ADMIN}order_woocommerce`;
 const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
+const APP_ROUTE = `${PATH_ADMIN}app`;
 
 const PATHS = {
   CUSTOMER_ROUTE,
@@ -13,6 +14,7 @@ const PATHS = {
   MESSENGER_ROUTE,
   ORDER_WOO_ROUTE,
   STAFFS_ROUTE,
+  APP_ROUTE,
 };
 const MENU_DATA = [
   {
@@ -49,6 +51,12 @@ const MENU_DATA = [
     path: STAFFS_ROUTE,
     key: 'staffs',
     name: 'Nhân viên',
+    is_open: false
+  },
+  {
+    path: APP_ROUTE,
+    key: 'app',
+    name: 'Ứng dụng',
     is_open: false
   }
 ]

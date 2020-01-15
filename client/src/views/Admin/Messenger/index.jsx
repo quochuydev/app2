@@ -17,32 +17,54 @@ function Messenger(props) {
   ];
   const { Item } = List;
   return (
-    <div className="">
-      <Row key='1'>
-        <Col span={8}>
-          <List
-            header={<div>Header</div>}
-            footer={<div>Footer</div>}
-            bordered
-            dataSource={data}
-            renderItem={item => (
-              <List.Item>
-                <Typography.Text mark>[ITEM]</Typography.Text> {item}
-              </List.Item>
-            )}
-          />
-        </Col>
-        <Col span={16}>
-          <List
-            style={{ height: 320 }}
-            header={<div>Header</div>}
-            footer={<Button>send</Button>}
-          >
-            <Item><strong>Username</strong>: messenger</Item>
-          </List>
-        </Col>
-      </Row>
-    </div>
+    <Row key='1'>
+      <Col span={8}>
+        <List
+          header={<div>Header</div>}
+          footer={<div>Footer</div>}
+          bordered
+          dataSource={data}
+          renderItem={item => (
+            <List.Item>
+              <Typography.Text mark>[ITEM]</Typography.Text> {item}
+            </List.Item>
+          )}
+        />
+      </Col>
+      <Col span={16}>
+        <List
+          style={{ height: 320 }}
+          header={<div>Header</div>}
+          footer={<Button>send</Button>}
+        >
+          <Item><strong>Username</strong>: messenger</Item>
+        </List>
+
+        <div className="app__content">
+          <h1>chat box</h1>
+          <div className="chat_window">
+            <li className="message right">
+              <div className="avatar"><img src="" alt="user" /></div>
+              <div className="text_wrapper">
+                <div className="box bg-light-info">{'test'}</div>
+              </div>
+              <div className="time">10:56 am</div>
+            </li>
+            <div className="">
+              <div className="bottom_wrapper">
+                <div className="message_input_wrapper">
+                  <input type="text" className="message_input" placeholder="Type your message here" />
+                </div>
+                <div className="send_message">
+                  <div className='icon'></div>
+                  <div className='text'>Send</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Col>
+    </Row >
   );
 }
 

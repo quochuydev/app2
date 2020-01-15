@@ -4,6 +4,7 @@ import CustomerHrv from '../Admin/CustomerHrv/routes';
 import Messenger from '../Admin/Messenger/routes';
 import OrderWoo from '../Admin/OrderWoo/routes';
 import Staffs from '../Admin/Staffs/routes';
+import App from '../Admin/App/routes';
 
 const routes = [
   ...Home,
@@ -12,6 +13,7 @@ const routes = [
   ...Messenger,
   ...OrderWoo,
   ...Staffs,
+  ...App,
 ];
 
 export default routes;
