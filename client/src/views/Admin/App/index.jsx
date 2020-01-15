@@ -10,7 +10,9 @@ const { Item } = List;
 
 function Messenger(props) {
   const data = [
-    { name: 'a', link: 'b'}
+    { name: 'a', link: 'b'},
+    { name: 'a', link: 'b'},
+    { name: 'a', link: 'b'},
   ];
   return (
     <Row key='1'>

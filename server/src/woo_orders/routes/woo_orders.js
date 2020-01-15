@@ -1,8 +1,10 @@
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const WooOrderMD = mongoose.model('WooOrder');
 const WooCommerceAPI = require('woocommerce-api');
+const config = require(path.resolve('./src/config/config'));
 
 router.post('/', async (req, res) => {
   try {
@@ -15,15 +17,8 @@ router.post('/', async (req, res) => {
 });
 
 const getOrdersApi = () => {
-  let wp_host = 'http://localhost:8080/QH1901'
-  let config = {
-    "key_id": 5,
-    "user_id": "1",
-    "consumer_key": "ck_29e1e551ad79a2aabe89abe79dd1aac5e0758cbf",
-    "consumer_secret": "cs_c300baffe04f97296dd210ed691706e18e476fd8",
-    "key_permissions": "read_write"
-  }
-  let { key_id, user_id, consumer_key, consumer_secret, key_permissions } = config
+  let wp_host = config.wordpress.host;
+  let { key_id, user_id, consumer_key, consumer_secret, key_permissions } = config.wordpress.config;
   let WooCommerce = new WooCommerceAPI({
     url: wp_host,
     consumerKey: consumer_key,

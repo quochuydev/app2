@@ -12,9 +12,10 @@ module.exports = {
   },
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
-  
+
   downloadLink: "http://localhost:3000",
 
+  // HARAVAN
   response_mode: 'form_post',
   url_authorize: 'https://accounts.hara.vn/connect/authorize',
   url_connect_token: 'https://accounts.hara.vn/connect/token',
@@ -28,7 +29,19 @@ module.exports = {
   login_callback_url: 'http://localhost:3000/install/login',
   install_callback_url: 'http://localhost:3000/install/grandservice',
   webhook: {
-    hrVerifyToken: 'bOL3XFfZabhKe6dnJfCJuTAfi37dFchQ',  //https://randomkeygen.com/ (CodeIgniter Encryption Keys)
+    hrVerifyToken: '123',  //https://randomkeygen.com/ (CodeIgniter Encryption Keys)
     subscribe: 'https://webhook.hara.vn/api/subscribe'
+  },
+
+  // WORDPRESS + WOOCOMMERCE
+  wordperss: {
+    host: 'http://localhost:8080/QH1901',
+    config: {
+      key_id: 5,
+      user_id: "1",
+      consumer_key: "ck_29e1e551ad79a2aabe89abe79dd1aac5e0758cbf",
+      consumer_secret: "cs_c300baffe04f97296dd210ed691706e18e476fd8",
+      key_permissions: "read_write"
+    },
   }
 }

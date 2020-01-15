@@ -1,6 +1,6 @@
 module.exports = {
-  port: process.env.PORT || 3000,
-  host: process.env.HOST || "localhost",
+  port: process.env.PORT,
+  host: process.env.HOST,
   db: {
     uri: process.env.MONGOHQ_URL || 'mongodb://quochuydev:Quochuydev548!@ds253418.mlab.com:53418/qhdapp',
     options: {
@@ -15,6 +15,7 @@ module.exports = {
   
   downloadLink: "https://crmdlc.herokuapp.com",
 
+  // HARAVAN
   response_mode: 'form_post',
   url_authorize: 'https://accounts.hara.vn/connect/authorize',
   url_connect_token: 'https://accounts.hara.vn/connect/token',
@@ -28,7 +29,19 @@ module.exports = {
   login_callback_url: 'https://crmdlc.herokuapp.com/install/login',
   install_callback_url: 'https://crmdlc.herokuapp.com/install/grandservice',
   webhook: {
-    hrVerifyToken: 'bOL3XFfZabhKe6dnJfCJuTAfi37dFchQ',
+    hrVerifyToken: '123',
     subscribe: 'https://webhook.hara.vn/api/subscribe'
+  },
+  
+  // WORDPRESS + WOOCOMMERCE
+  wordperss: {
+    host: process.env.WP_HOST || 'http://localhost:8080/QH1901',
+    config: {
+      key_id: 5,
+      user_id: "1",
+      consumer_key: process.env.WP_KEY || "ck_29e1e551ad79a2aabe89abe79dd1aac5e0758cbf",
+      consumer_secret: process.env.WP_SECRET || "cs_c300baffe04f97296dd210ed691706e18e476fd8",
+      key_permissions: "read_write"
+    },
   }
 }
