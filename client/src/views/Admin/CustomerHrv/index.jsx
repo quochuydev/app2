@@ -49,7 +49,7 @@ function CustomerHrv(props) {
   }, []);
 
   function updateCustomer() {
-    actions.addCustomer({ name: 'test' });
+    actions.updateCustomer({ name: 'test' });
   }
   function importCustomer() {
     actions.importCustomer({ name: 'test' });

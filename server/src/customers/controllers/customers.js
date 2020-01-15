@@ -5,11 +5,9 @@ const mongoose = require('mongoose');
 const CustomersMD = mongoose.model('Customers');
 const ShopMD = mongoose.model('Shop');
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
+// const nodemailer = require(path.resolve('./src/core/lib/email/nodemailer'));
 
-const nodemailer = require(path.resolve('./src/core/lib/email/nodemailer'));
-
-
-exports.get = async (req, res) => {
+exports.list = async (req, res) => {
   try {
     let count = await CustomersMD.count();
     let customers = await CustomersMD.find({}).lean(true);
@@ -61,12 +59,19 @@ exports.sync = async (req, res) => {
   res.send({ error: false, data: { shop, count } })
 }
 
-exports.post = (req, res) => {
+exports.create = (req, res) => {
+  res.send({ error: false });
+}
+
+exports.update = (req, res) => {
+  res.send({ error: false });
+}
+
+exports.import = (req, res) => {
   res.send({ error: false });
 }
 
 exports.export = (req, res) => {
-
   res.send({ error: false });
 }
 

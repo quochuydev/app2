@@ -7,6 +7,8 @@ import {
   Input, Select, DatePicker, Upload
 } from 'antd';
 import 'antd/dist/antd.css';
+import config from './../../../utils/config';
+const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
   const { Option } = Select;
@@ -30,10 +32,10 @@ function Customer(props) {
     },
   ];
   const uploads = {
-    action: '//jsonplaceholder.typicode.com/posts/',
+    action: `${apiUrl}/customers/import`,
     listType: 'picture',
     previewFile(file) {
-      return fetch('https://next.json-generator.com/api/json/get/4ytyBoLK8', {
+      return fetch(`${apiUrl}/customers/import`, {
         method: 'POST',
         body: file,
       })
@@ -45,16 +47,16 @@ function Customer(props) {
   const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
-  
+
   useEffect(() => {
     actions.listCustomers();
   }, []);
 
   let [customer, setCustomer] = useState({})
-  function onChange(e){
+  function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
-  
+
   function createCustomer() {
     actions.createCustomer(customer);
   }

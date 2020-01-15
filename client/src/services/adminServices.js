@@ -1,8 +1,9 @@
 import ApiClient from '../utils/apiClient';
 
 const URLS = {
-  LIST_CUSTOMER: 'api/customers',
-  ADD_CUSTOMER: 'api/customers/add',
+  LIST_CUSTOMER: 'api/customers/list',
+  ADD_CUSTOMER: 'api/customers/create',
+  UPDATE_CUSTOMER: 'api/customers/:id',
   SYNC_CUSTOMER: 'api/customers/sync',
   EXPORT_CUSTOMER: 'api/customers/export',
 
@@ -18,11 +19,15 @@ const URLS = {
 }
 
 async function listCustomers() {
-  return await ApiClient.getData(URLS.LIST_CUSTOMER);
+  return await ApiClient.postData(URLS.LIST_CUSTOMER);
 }
 
 async function addCustomer(customer) {
   return await ApiClient.postData(URLS.ADD_CUSTOMER, null, customer);
+}
+
+async function updateCustomer(customer) {
+  return await ApiClient.putData(URLS.UPDATE_CUSTOMER, null, customer);
 }
 
 async function syncCustomers(customer) {
@@ -50,6 +55,6 @@ async function createStaffs() {
 }
 
 export default { 
-  listCustomers, addCustomer, syncCustomers, exportCustomer, 
+  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, 
   loadWooOrders, syncWooOrders, loadStaffs, createStaffs
 }
