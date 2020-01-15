@@ -34,7 +34,7 @@ module.exports = {
   },
 
   // WORDPRESS + WOOCOMMERCE
-  wordperss: {
+  wordpress: {
     host: 'http://localhost:8080/QH1901',
     config: {
       key_id: 5,
