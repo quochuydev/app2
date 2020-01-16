@@ -15,6 +15,7 @@ function Messenger(props) {
   ];
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
+
   return (
     <Row key='1'>
       <Col span={24}>
@@ -56,10 +57,9 @@ function Messenger(props) {
             mode="multiple"
             style={{ width: '100%' }}
             placeholder="Please select"
-            defaultValue={['a10', 'c12']}
-            onChange={handleChange}
           >
-            {children}
+            <Option key={1}>orders</Option>
+            <Option key={2}>products</Option>
           </Select>
         </Form>
       </Modal>
