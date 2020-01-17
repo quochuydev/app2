@@ -103,12 +103,12 @@ let test = () => {
     url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
     method: 'get',
     auth: {
-      user: 'ck_d0c9623eec25610148ace47343e192e2f95df3ec',
-      pass: 'cs_6e7d3526d8bd788c72d54d9ae19e20f35881264c'
+      user: 'ck_6575c8fbc02e3a5f922bcfbf4e81213790d6018a',
+      pass: 'cs_8b891c539b864d70184733fb6339bceb4e24ebeb'
     }
   };
   request(option, (err, res, body) => {
     console.log(body)
   })
 }
-test()
+// test()
