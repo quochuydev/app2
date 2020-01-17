@@ -2,7 +2,7 @@ module.exports = {
   port: process.env.PORT,
   host: process.env.HOST,
   db: {
-    uri: process.env.MONGOHQ_URL || 'mongodb://quochuydev:Quochuydev548!@ds253418.mlab.com:53418/qhdapp',
+    uri: process.env.MONGOHQ_URL,
     options: {
       server: { poolSize: 10, socketOptions: { keepAlive: 1 } },
       user: "",
@@ -12,7 +12,8 @@ module.exports = {
   },
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
-  
+
+  app_host: 'https://crmdlc.herokuapp.com',
   downloadLink: "https://crmdlc.herokuapp.com",
 
   // HARAVAN

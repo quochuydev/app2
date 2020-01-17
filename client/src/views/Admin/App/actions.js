@@ -5,15 +5,15 @@ export const ACTIONS = {
   INSTALL_WOOCOMMERCE_APP_FAILED: 'INSTALL_WOOCOMMERCE_APP_FAILED',
 };
 
-export function installWoocommerceApp() {
+export function installWoocommerceApp(data) {
   return async (dispatch) => {
     try {
-      const data = await AdminServices.installWoocommerceApp();
+      const res = await AdminServices.installWoocommerceApp(data);
       dispatch({
         type: ACTIONS.INSTALL_WOOCOMMERCE_APP_SUCCESS, payload: {
           error: false,
           message: 'message',
-          ...data
+          ...res
         }
       });
     } catch (error) {
