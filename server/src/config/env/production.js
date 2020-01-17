@@ -13,8 +13,8 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: process.env.HOST,
-  downloadLink: process.env.HOST,
+  app_host: process.env.APP_HOST,
+  downloadLink: process.env.APP_HOST,
 
   // HARAVAN
   response_mode: 'form_post',
