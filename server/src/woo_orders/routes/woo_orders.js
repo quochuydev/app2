@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const WooOrderMD = mongoose.model('WooOrder');
 const WooCommerceAPI = require('woocommerce-api');
 const config = require(path.resolve('./src/config/config'));
+const SettingMD = mongoose.model('Setting');
 
 router.post('/', async (req, res) => {
   try {
@@ -16,9 +17,9 @@ router.post('/', async (req, res) => {
   }
 });
 
-const getOrdersApi = () => {
-  let wp_host = config.wordpress.host;
-  let { key_id, user_id, consumer_key, consumer_secret, key_permissions } = config.wordpress.config;
+const getOrdersApi = async () => {
+  let setting = await SettingMD.findOne({}).lean(true);
+  let { wp_host, consumer_key, consumer_secret } = setting.woocommerce;
   let WooCommerce = new WooCommerceAPI({
     url: wp_host,
     consumerKey: consumer_key,

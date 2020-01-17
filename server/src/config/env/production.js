@@ -40,8 +40,8 @@ module.exports = {
     config: {
       key_id: 5,
       user_id: "1",
-      consumer_key: process.env.WP_KEY || "ck_29e1e551ad79a2aabe89abe79dd1aac5e0758cbf",
-      consumer_secret: process.env.WP_SECRET || "cs_c300baffe04f97296dd210ed691706e18e476fd8",
+      consumer_key: process.env.WP_KEY,
+      consumer_secret: process.env.WP_SECRET,
       key_permissions: "read_write"
     },
   }
