@@ -40,7 +40,7 @@ const listWebhooks = [
 router.post('/install', async (req, res) => {
   try {
     let { wp_host } = req.body;
-    await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { 'woocommerce.app_host': wp_host } }, { new: true, upsert: true });
+    await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
     let API = new APIBus({ app: { wp_host, app_host, app_name: 'MYAPP', return_url, callback_url } });

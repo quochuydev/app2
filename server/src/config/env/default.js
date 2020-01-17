@@ -33,16 +33,4 @@ module.exports = {
     hrVerifyToken: '123',  //https://randomkeygen.com/ (CodeIgniter Encryption Keys)
     subscribe: 'https://webhook.hara.vn/api/subscribe'
   },
-
-  // WORDPRESS + WOOCOMMERCE
-  wordpress: {
-    host: 'http://localhost:8080/QH1901',
-    config: {
-      key_id: 5,
-      user_id: "1",
-      consumer_key: "ck_29e1e551ad79a2aabe89abe79dd1aac5e0758cbf",
-      consumer_secret: "cs_c300baffe04f97296dd210ed691706e18e476fd8",
-      key_permissions: "read_write"
-    },
-  }
 }

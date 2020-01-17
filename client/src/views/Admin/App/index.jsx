@@ -67,7 +67,7 @@ function App(props) {
         onCancel={() => setIsShowWoocommerceAppModal(false)}
       >
         <Form>
-          <Form.Item label="Shop URL (http://localhost:8080/QH1901)">{(<Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />)}</Form.Item>
+          <Form.Item label="Shop URL">{(<Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />)}</Form.Item>
         </Form>
         <a href={linkInstall}>{linkInstall}</a>
       </Modal>

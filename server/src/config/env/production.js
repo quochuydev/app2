@@ -33,16 +33,4 @@ module.exports = {
     hrVerifyToken: '123',
     subscribe: 'https://webhook.hara.vn/api/subscribe'
   },
-  
-  // WORDPRESS + WOOCOMMERCE
-  wordpress: {
-    host: process.env.WP_HOST,
-    config: {
-      key_id: 5,
-      user_id: "1",
-      consumer_key: process.env.WP_KEY,
-      consumer_secret: process.env.WP_SECRET,
-      key_permissions: "read_write"
-    },
-  }
 }
