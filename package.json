@@ -21,7 +21,7 @@
     "path": "^0.12.7",
     "request": "^2.88.0",
     "uuid": "^3.3.3",
-    "wooapi": "^1.0.6",
+    "wooapi": "^1.0.7",
     "woocommerce-api": "^1.5.0"
   },
   "devDependencies": {},

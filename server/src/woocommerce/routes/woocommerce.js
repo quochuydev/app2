@@ -43,7 +43,7 @@ router.post('/install', async (req, res) => {
     await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
-    let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP${Math.ceil(Math.random()*1000)}`, return_url, callback_url } });
+    let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP${Math.ceil(Math.random() * 1000)}`, return_url, callback_url } });
     let url = API.buildLink();
     res.send({ error: false, url });
   } catch (error) {
@@ -54,9 +54,9 @@ router.post('/install', async (req, res) => {
 
 router.get('/return_url', async (req, res) => {
   if (req.query && req.query.success) {
-    res.send({ error: false, message: 'Install App Success' });
+    res.json({ error: false, message: 'Install App Success' });
   } else {
-    res.send({ error: true, message: 'Install App Failed' });
+    res.json({ error: true, message: 'Install App Failed' });
   }
 });
 
@@ -85,3 +85,30 @@ router.post('/callback_url', async (req, res) => {
 });
 
 module.exports = router;
+
+let test = () => {
+  let request = require('request');
+  // let option = {
+  //   headers: {},
+  //   method: 'get',
+  //   url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+  //   oauth:
+  //   {
+  //     callback: 'https://93263033.ngrok.io',
+  //     consumer_key: 'ck_d0c9623eec25610148ace47343e192e2f95df3ec',
+  //     consumer_secret: 'cs_6e7d3526d8bd788c72d54d9ae19e20f35881264c'
+  //   }
+  // }
+  var option = {
+    url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+    method: 'get',
+    auth: {
+      user: 'ck_d0c9623eec25610148ace47343e192e2f95df3ec',
+      pass: 'cs_6e7d3526d8bd788c72d54d9ae19e20f35881264c'
+    }
+  };
+  request(option, (err, res, body) => {
+    console.log(body)
+  })
+}
+test()
