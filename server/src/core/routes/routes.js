@@ -5,7 +5,7 @@ const woo_orders = require(path.resolve('./src/woo_orders/routes/woo_orders'));
 const download = require(path.resolve('./src/download/routes/download'));
 const staffs = require(path.resolve('./src/staffs/routes/staffs'));
 const webhook = require(path.resolve('./src/webhook/routes/webhook'));
-
+const woocommerce = require(path.resolve('./src/woocommerce/routes/woocommerce'));
 const _ = require('lodash');
 
 const routes = (app) => {
@@ -24,10 +24,10 @@ const routes = (app) => {
   app.use('/install', install);
   app.use('/download', download);
   app.use(webhook);
-  
   app.use('/api/customers', customers);
   app.use('/api/woo_orders', woo_orders);
   app.use('/api/staffs', staffs);
+  app.use('/api/woocommerce', woocommerce);
 }
 
 module.exports = routes;

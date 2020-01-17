@@ -13,6 +13,7 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
+  app_host: 'https://f5a17626.ngrok.io',
   downloadLink: "http://localhost:3000",
 
   // HARAVAN
