@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Typography, Input, Select, Modal, DatePicker, Form
+  Row, Col, Button, List, Input, Select, Modal, DatePicker, Form
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
@@ -50,14 +50,10 @@ function Messenger(props) {
         onCancel={() => setIsShowWoocommerceAppModal(false)}
       >
         <Form>
-          <Form.Item label="Shop URL">
-            {(<Input style={{ width: '100%' }} />)}
-          </Form.Item>
-          <Select
-            mode="multiple"
-            style={{ width: '100%' }}
-            placeholder="Please select"
-          >
+          <Form.Item label="Shop URL">{(<Input style={{ width: '100%' }} />)}</Form.Item>
+          <Form.Item label="Return route (ex: '/return_url')">{(<Input style={{ width: '100%' }} />)}</Form.Item>
+          <Form.Item label="Callback route (ex: '/callback_url')">{(<Input style={{ width: '100%' }} />)}</Form.Item>
+          <Select mode="multiple" style={{ width: '100%' }} placeholder="Please select" >
             <Option key={1}>orders</Option>
             <Option key={2}>products</Option>
           </Select>
