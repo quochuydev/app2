@@ -10,7 +10,7 @@ const { Item } = List;
 const { Option } = Select;
 
 function App(props) {
-  const { url, actions } = props;
+  const { app, actions } = props;
   const ListApp = [
     { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
     { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
@@ -21,13 +21,11 @@ function App(props) {
   const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host:'http://localhost:8080/QH1901', return_url: 'https://2143d9ae.ngrok.io/return_url', callback_url: 'https://2143d9ae.ngrok.io/callback_url'});
   const [linkInstall, setLinkInstall] = useState('');
   function onChange(e) {
-    console.log(dataWoocommerce)
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
   }
   async function installWoocommerceApp(){
-    let res = await actions.installWoocommerceApp(dataWoocommerce);
-    console.log(res)
-    console.log(url)
+    await actions.installWoocommerceApp(dataWoocommerce);
+    setLinkInstall(app.get('url'))
   }
   return (
     <Row key='1'>
@@ -74,7 +72,7 @@ function App(props) {
 }
 
 const mapStateToProps = state => ({
-  url: state.app.get('url')
+  app: state.app
 });
 
 const mapDispatchToProps = (dispatch) => ({

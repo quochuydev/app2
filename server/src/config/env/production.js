@@ -13,8 +13,8 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://crmdlc.herokuapp.com',
-  downloadLink: "https://crmdlc.herokuapp.com",
+  app_host: process.env.HOST,
+  downloadLink: process.env.HOST,
 
   // HARAVAN
   response_mode: 'form_post',
