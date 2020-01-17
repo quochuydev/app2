@@ -8,6 +8,8 @@ const config = require(path.resolve('./src/config/config'));
 
 module.exports = (app, db) => {
   app.use(cors());
+  console.log('process.env.HOST ', process.env.HOST)
+
   if (process.env.NODE_ENV == 'production') {
     app.use('/', express.static(path.resolve('../client', 'build')));
     app.get('/*', (req, res) => {

@@ -3,14 +3,14 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, DatePicker, Form
+  Row, Col, Button, List, Input, Select, Modal, DatePicker, Form, Alert
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
 const { Option } = Select;
 
-function Messenger(props) {
-  const { actions } = props;
+function App(props) {
+  const { url, actions } = props;
   const ListApp = [
     { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
     { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
@@ -19,13 +19,15 @@ function Messenger(props) {
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
 
   const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host:'http://localhost:8080/QH1901', return_url: 'https://2143d9ae.ngrok.io/return_url', callback_url: 'https://2143d9ae.ngrok.io/callback_url'});
+  const [linkInstall, setLinkInstall] = useState('');
   function onChange(e) {
     console.log(dataWoocommerce)
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
   }
-  function installWoocommerceApp(){
-    console.log(dataWoocommerce)
-    actions.installWoocommerceApp(dataWoocommerce);
+  async function installWoocommerceApp(){
+    let res = await actions.installWoocommerceApp(dataWoocommerce);
+    console.log(res)
+    console.log(url)
   }
   return (
     <Row key='1'>
@@ -65,17 +67,18 @@ function Messenger(props) {
           <Form.Item label="Return route (https://app.com/return_url)">{(<Input name="return_url" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.return_url} />)}</Form.Item>
           <Form.Item label="Callback route (https://app.com/callback_url)">{(<Input name="callback_url" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.callback_url} />)}</Form.Item>
         </Form>
+        <Alert message={JSON.stringify(linkInstall)} type="success" />
       </Modal>
     </Row >
   );
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.get('customers')
+  url: state.app.get('url')
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(appActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Messenger);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

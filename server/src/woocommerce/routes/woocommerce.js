@@ -5,7 +5,7 @@ const APIBus = require('wooapi');
 const router = express.Router();
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-console.log(process.env.PORT)
+
 router.post('/install', async (req, res) => {
   try {
     let { wp_host, return_url, callback_url } = req.body;

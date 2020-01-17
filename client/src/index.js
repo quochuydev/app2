@@ -14,11 +14,13 @@ import * as serviceWorker from './serviceWorker';
 import thunk from 'redux-thunk';
 import CustomerReducer from './views/Admin/Customer/reducers';
 import WooOrdersReducer from './views/Admin/OrderWoo/reducers';
+import AppReducer from './views/Admin/App/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
   customers: CustomerReducer,
-  woo_orders: WooOrdersReducer
+  woo_orders: WooOrdersReducer,
+  app: AppReducer,
 });
 
 const middleware = [thunk];
