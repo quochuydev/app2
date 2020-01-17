@@ -5,7 +5,7 @@ const APIBus = require('wooapi');
 const router = express.Router();
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-const { app_host, appslug } = config;
+const { appslug, app_host, pathHook } = config;
 
 let WOO = {};
 WOO.WEBHOOKS = {
@@ -68,7 +68,6 @@ router.post('/callback_url', async (req, res) => {
     let { wp_host } = setting.woocommerce;
     let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
     let webhooks = await API.call(WOO.WEBHOOKS.LIST);
-    console.log(webhooks)
     for (let i = 0; i < listWebhooks.length; i++) {
       let webhook = listWebhooks[i];
       let found = webhooks.find(e => e.topic == webhook.topic);

@@ -14,6 +14,7 @@ module.exports = {
   sessionCollection: 'sessions',
 
   app_host: process.env.APP_HOST,
+  pathHook: `${process.env.APP_HOST}/webhook`,
   downloadLink: process.env.APP_HOST,
 
   // HARAVAN
