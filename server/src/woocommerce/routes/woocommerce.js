@@ -62,12 +62,11 @@ router.get('/return_url', async (req, res) => {
 
 router.post('/callback_url', async (req, res) => {
   try {
-    let key = req.body;
-    let { consumer_key, consumer_secret } = key;
+    let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret };
     let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: dataUpdate }, { lean: true, new: true });
     let { wp_host } = setting.woocommerce;
-    let API = new APIBus({ app: { wp_host, app_host }, key });
+    let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
     let webhooks = await API.call(WOO.WEBHOOKS.LIST);
     console.log(webhooks)
     for (let i = 0; i < listWebhooks.length; i++) {
