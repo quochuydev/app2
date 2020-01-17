@@ -36,7 +36,7 @@ module.exports = {
   
   // WORDPRESS + WOOCOMMERCE
   wordpress: {
-    host: process.env.WP_HOST || 'http://localhost:8080/QH1901',
+    host: process.env.WP_HOST,
     config: {
       key_id: 5,
       user_id: "1",
