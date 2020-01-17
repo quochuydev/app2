@@ -25,6 +25,18 @@ WOO.WEBHOOKS = {
   }
 }
 
+const listWebhooks = [
+  { topic: 'customer.created', status: 'active', },
+  { topic: 'customer.updated', status: 'active', },
+  { topic: 'customer.deleted', status: 'active', },
+  { topic: 'order.created', status: 'active', },
+  { topic: 'order.updated', status: 'active', },
+  { topic: 'order.deleted', status: 'active', },
+  { topic: 'product.created', status: 'active', },
+  { topic: 'product.updated', status: 'active', },
+  { topic: 'product.deleted', status: 'active', },
+]
+
 router.post('/install', async (req, res) => {
   try {
     let { wp_host } = req.body;
@@ -57,6 +69,15 @@ router.post('/callback_url', async (req, res) => {
     let { wp_host } = setting.woocommerce;
     let API = new APIBus({ app: { wp_host, app_host }, key });
     let webhooks = await API.call(WOO.WEBHOOKS.LIST);
+    for (let i = 0; i < listWebhooks.length; i++) {
+      let webhook = listWebhooks[i];
+      let found = webhooks.find(e => e.topic == webhook.topic);
+      if (found) {
+        API.call(WOO.WEBHOOKS.UPDATE, { params: { id: found.id }, body: JSON.stringify({ id: found.id, ...webhook, delivery_url: pathHook }) });
+      } else {
+        API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url: pathHook }) });
+      }
+    }
     res.send({ error: false, webhooks });
   } catch (error) {
     console.log(error)

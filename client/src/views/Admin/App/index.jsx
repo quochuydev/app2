@@ -3,7 +3,7 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, DatePicker, Form, Alert
+  Row, Col, Button, List, Input, Select, Modal, DatePicker, Form
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
