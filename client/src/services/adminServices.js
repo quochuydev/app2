@@ -16,6 +16,9 @@ const URLS = {
   SYNC_WOO_ORDERS: 'api/woo_orders/sync',
   
   LIST_STAFFS: 'api/staffs',
+
+  INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
+  INSTALL_HARAVAN_APP: 'api/haravan/install',
 }
 
 async function listCustomers() {
@@ -54,7 +57,15 @@ async function createStaffs() {
   return await ApiClient.postData(URLS.LIST_STAFFS);
 }
 
+async function installWoocommerceApp(data) {
+  return await ApiClient.postData(URLS.INSTALL_WOOCOMMERCE_APP, null, data);
+}
+
+async function installHaravanApp(data) {
+  return await ApiClient.postData(URLS.INSTALL_HARAVAN_APP, null, data);
+}
+
 export default { 
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, 
-  loadWooOrders, syncWooOrders, loadStaffs, createStaffs
+  loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp, installHaravanApp
 }

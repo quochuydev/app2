@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
@@ -9,13 +10,16 @@ const { Item } = List;
 const { Option } = Select;
 
 function Messenger(props) {
+  const { actions } = props;
   const ListApp = [
     { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
     { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
   ];
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
-
+  function installWoocommerceApp(){
+    actions.installWoocommerceApp();
+  }
   return (
     <Row key='1'>
       <Col span={24}>
@@ -46,17 +50,13 @@ function Messenger(props) {
       <Modal
         title="Woocommerce App"
         visible={isShowWoocommerceAppModal}
-        onOk={() => { }}
+        onOk={() => installWoocommerceApp()}
         onCancel={() => setIsShowWoocommerceAppModal(false)}
       >
         <Form>
-          <Form.Item label="Shop URL">{(<Input style={{ width: '100%' }} />)}</Form.Item>
-          <Form.Item label="Return route (ex: '/return_url')">{(<Input style={{ width: '100%' }} />)}</Form.Item>
-          <Form.Item label="Callback route (ex: '/callback_url')">{(<Input style={{ width: '100%' }} />)}</Form.Item>
-          <Select mode="multiple" style={{ width: '100%' }} placeholder="Please select" >
-            <Option key={1}>orders</Option>
-            <Option key={2}>products</Option>
-          </Select>
+          <Form.Item label="Shop URL (http://localhost:8080/QH1901)">{(<Input style={{ width: '100%' }} />)}</Form.Item>
+          <Form.Item label="Return route (https://2143d9ae.ngrok.io/return_url)">{(<Input style={{ width: '100%' }} />)}</Form.Item>
+          <Form.Item label="Callback route (https://2143d9ae.ngrok.io/callback_url)">{(<Input style={{ width: '100%' }} />)}</Form.Item>
         </Form>
       </Modal>
     </Row >
@@ -68,7 +68,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // actions: bindActionCreators(customerActions, dispatch);
+  actions: bindActionCreators(appActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Messenger);
