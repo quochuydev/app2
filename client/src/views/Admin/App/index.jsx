@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,6 +11,8 @@ const { Option } = Select;
 
 function App(props) {
   const { app, actions } = props;
+  let url = app.get('url');
+
   const ListApp = [
     { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
     { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
@@ -25,8 +27,12 @@ function App(props) {
   }
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
-    setLinkInstall(app.get('url'))
   }
+
+  useEffect(() => {
+    setLinkInstall(url)
+  }, [url])
+
   return (
     <Row key='1'>
       <Col span={24}>

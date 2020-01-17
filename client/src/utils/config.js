@@ -1,9 +1,11 @@
 let configDev = { 
 	backend_url: 'http://localhost:3000',
+	wp_host: 'http://localhost:8080/QH1901',
 };
 
 let configPro = { 
 	backend_url: 'https://crmdlc.herokuapp.com',
+	wp_host: 'http://localhost:8080/QH1901',
 };
 
 let result = configDev;
