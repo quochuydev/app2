@@ -20,7 +20,7 @@ function App(props) {
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
 
-  const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host: 'http://localhost:8080/QH1901', return_url: 'https://2143d9ae.ngrok.io/return_url', callback_url: 'https://2143d9ae.ngrok.io/callback_url' });
+  const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host: 'http://localhost:8080/QH1901' });
   const [linkInstall, setLinkInstall] = useState('');
   function onChange(e) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
@@ -68,8 +68,6 @@ function App(props) {
       >
         <Form>
           <Form.Item label="Shop URL (http://localhost:8080/QH1901)">{(<Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />)}</Form.Item>
-          <Form.Item label="Return route (https://app.com/return_url)">{(<Input name="return_url" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.return_url} />)}</Form.Item>
-          <Form.Item label="Callback route (https://app.com/callback_url)">{(<Input name="callback_url" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.callback_url} />)}</Form.Item>
         </Form>
         <a href={linkInstall}>{linkInstall}</a>
       </Modal>
