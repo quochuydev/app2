@@ -30,10 +30,7 @@ function App(props) {
 
   const [dataHaravan, setDataHaravan] = useState(
     {
-      app_id: '4c5022e7863adb4af30ba766c3211e2b',
-      app_secret: 'bf6a3b119ac3ef53b05d775e9969de3839eae82ae5f804f428bf5ab877fc669f',
-      scope: 'openid profile email org userinfo',
-      callback: 'http://localhost:3000/api/haravan/login'
+      type: 'login'
     });
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
@@ -41,17 +38,21 @@ function App(props) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
     setDataHaravan({ ...dataHaravan, [e.target.name]: e.target.value });
   }
+  function onChangeSelect(e) {
+    setDataHaravan({ ...dataHaravan, type: e });
+  }
+  
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
   }
-  
+
   useEffect(() => {
     setBuildLinkWoocommerce(url)
   }, [url])
-  
+
   useEffect(() => {
     setBuildLinkHaravan(url_haravan)
   }, [url_haravan])
@@ -75,14 +76,12 @@ function App(props) {
         onCancel={() => setIsShowHaravanAppModal(false)}
       >
         <Form>
-          <Form.Item label="App ID">{(<Input name="app_id" onChange={onChange} style={{ width: '100%' }} defaultValue={dataHaravan.app_id} />)}</Form.Item>
-          <Form.Item label="App Secret">{(<Input name="app_secret" onChange={onChange} style={{ width: '100%' }} defaultValue={dataHaravan.app_secret} />)}</Form.Item>
-          <Form.Item label="Scope">{(<Input name="scope" onChange={onChange} style={{ width: '100%' }} defaultValue={dataHaravan.scope} />)}</Form.Item>
-          <Form.Item label="Callback URL">{(<Input name="callback" onChange={onChange} style={{ width: '100%' }} defaultValue={dataHaravan.callback} />)}</Form.Item>
-          <Select name="type" onChange={onChange} defaultValue="1" style={{ width: 120 }}>
-            <Option value="1">Login</Option>
-            <Option value="2">Install</Option>
-          </Select>
+          <Form.Item label="Type">{(
+            <Select name="type" onChange={onChangeSelect} defaultValue={dataHaravan.type} style={{ width: 120 }}>
+              <Option value="login">Login</Option>
+              <Option value="install">Install</Option>
+            </Select>
+          )}</Form.Item>
         </Form>
         <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
