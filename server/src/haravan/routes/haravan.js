@@ -17,20 +17,19 @@ let { app_id, app_secret } = config;
 
 router.post('/install', (req, res) => {
   let { type } = req.body;
-  let callback_url, url_haravan, scope;
+  let app = {};
   if (type == 'install') {
-    callback_url = config.install_callback_url;
-    scope = config.scope_install;
+    app.callback_url = config.install_callback_url;
+    app.scope = config.scope_install;
+    app.func = (f) => f.buildLinkInstall();
   } else {
-    callback_url = config.login_callback_url;
-    scope = config.scope;
+    app.callback_url = config.login_callback_url;
+    app.scope = config.scope;
+    app.func = (f) => f.buildLinkLogin();
   }
+  let { scope, callback_url } = app;
   let HrvAPI = new HaravanAPI({ app_id, app_secret, scope, callback_url });
-  if (type == 'install') {
-    url_haravan = HrvAPI.buildLinkInstall();
-  } else {
-    url_haravan = HrvAPI.buildLinkLogin();
-  }
+  let url_haravan = app.func(HrvAPI);
   res.json({ url_haravan })
 });
 
