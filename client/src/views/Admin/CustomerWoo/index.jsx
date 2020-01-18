@@ -7,7 +7,7 @@ import 'antd/dist/antd.css';
 import OrderDetailWoo from './../OrderDetailWoo/index';
 
 function WooCustomers(props) {
-  const { actions, woo_orders } = props;
+  const { actions, woo_customers } = props;
   const columns = [
     {
       title: 'Mã đơn hàng', key: 'edit',
@@ -24,22 +24,22 @@ function WooCustomers(props) {
   ];
 
   useEffect(() => {
-    actions.loadWooOrders();
+    actions.loadWooCustomers();
   }, []);
 
-  async function loadWooOrders() {
-    await actions.loadWooOrders();
+  async function loadWooCustomers() {
+    await actions.loadWooCustomers();
   }
-  async function syncWooOrders() {
-    await actions.syncWooOrders();
-    loadWooOrders();
+  async function syncWooCustomers() {
+    await actions.syncWooCustomers();
+    loadWooCustomers();
   }
 
   const [isShowDetailModal, setIsShowDetailModal] = useState(false);
-  let [orderDetail, setOrderDetail] = useState({});
+  let [customerDetail, setCustomerDetail] = useState({});
 
-  function openDetailModal(order) {
-    setOrderDetail(order)
+  function openDetailModal(customer) {
+    setCustomerDetail(customer)
     setIsShowDetailModal(true);
   }
 
@@ -47,14 +47,14 @@ function WooCustomers(props) {
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='id' dataSource={woo_orders} columns={columns} />;
+          <Button onClick={() => loadWooCustomers()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => syncWooCustomers()}>Đồng bộ đơn hàng</Button>
+          <Table rowKey='id' dataSource={woo_customers} columns={columns} />;
       </Col>
       </Row>
       <OrderDetailWoo
         showModal={isShowDetailModal}
-        order={orderDetail}
+        order={customerDetail}
         handleCancel={() => setIsShowDetailModal(false)}
       >
       </OrderDetailWoo>
@@ -64,7 +64,8 @@ function WooCustomers(props) {
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
-  woo_orders: state.woo_orders.get('woo_orders')
+  woo_orders: state.woo_orders.get('woo_orders'),
+  woo_customers: state.woo_customers.get('woo_customers')
 });
 
 const mapDispatchToProps = (dispatch) => ({
