@@ -12,6 +12,7 @@ const { Option } = Select;
 function App(props) {
   const { app, actions } = props;
   let url = app.get('url');
+  let url_haravan = app.get('url_haravan');
 
   const ListApp = [
     { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
@@ -50,6 +51,10 @@ function App(props) {
   useEffect(() => {
     setBuildLinkWoocommerce(url)
   }, [url])
+  
+  useEffect(() => {
+    setBuildLinkHaravan(url_haravan)
+  }, [url_haravan])
 
   return (
     <Row key='1'>
