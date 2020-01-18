@@ -65,7 +65,7 @@ function WooProducts(props) {
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   woo_orders: state.woo_orders.get('woo_orders'),
-  woo_products: state.woo_orders.get('woo_products'),
+  woo_products: state.woo_products.get('woo_products'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

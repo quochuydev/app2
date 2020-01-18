@@ -43,7 +43,7 @@ router.post('/install', async (req, res) => {
     await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
-    let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP${Math.ceil(Math.random() * 1000)}`, return_url, callback_url } });
+    let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP`, return_url, callback_url } });
     let url = API.buildLink();
     res.send({ error: false, url });
   } catch (error) {
@@ -77,10 +77,10 @@ router.post('/callback_url', async (req, res) => {
         API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url: pathHook }) });
       }
     }
-    res.send({ error: false, webhooks });
+    res.json({ error: false, webhooks });
   } catch (error) {
     console.log(error)
-    res.send({ error: true });
+    res.status(400).send({ error: true });
   }
 });
 
