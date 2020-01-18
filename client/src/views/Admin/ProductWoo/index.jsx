@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import * as wooOrderActions from './actions';
+import * as wooProductActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table, Row, Col, Button, Tag } from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetailWoo from './../OrderDetailWoo/index';
 
-function WooOrders(props) {
-  const { actions, woo_orders } = props;
+function WooProducts(props) {
+  const { actions, woo_products } = props;
   const columns = [
     {
       title: 'Mã đơn hàng', key: 'edit',
@@ -24,15 +24,15 @@ function WooOrders(props) {
   ];
 
   useEffect(() => {
-    actions.loadWooOrders();
+    actions.loadWooProducts();
   }, []);
 
-  async function loadWooOrders() {
-    await actions.loadWooOrders();
+  async function loadWooProducts() {
+    await actions.loadWooProducts();
   }
-  async function syncWooOrders() {
-    await actions.syncWooOrders();
-    loadWooOrders();
+  async function syncWooProducts() {
+    await actions.syncWooProducts();
+    loadWooProducts();
   }
 
   const [isShowDetailModal, setIsShowDetailModal] = useState(false);
@@ -47,9 +47,9 @@ function WooOrders(props) {
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='id' dataSource={woo_orders} columns={columns} />;
+          <Button onClick={() => loadWooProducts()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => syncWooProducts()}>Đồng bộ đơn hàng</Button>
+          <Table rowKey='id' dataSource={woo_products} columns={columns} />;
       </Col>
       </Row>
       <OrderDetailWoo
@@ -64,11 +64,12 @@ function WooOrders(props) {
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
-  woo_orders: state.woo_orders.get('woo_orders')
+  woo_orders: state.woo_orders.get('woo_orders'),
+  woo_products: state.woo_orders.get('woo_products'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(wooOrderActions, dispatch)
+  actions: bindActionCreators(wooProductActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WooOrders);
+export default connect(mapStateToProps, mapDispatchToProps)(WooProducts);
