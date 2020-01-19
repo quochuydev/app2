@@ -50,6 +50,7 @@ function Customer(props) {
 
   useEffect(() => {
     actions.listCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function onLoadCustomer() {

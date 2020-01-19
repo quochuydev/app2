@@ -6,6 +6,9 @@ const CustomersMD = mongoose.model('Customers');
 const ShopMD = mongoose.model('Shop');
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 // const nodemailer = require(path.resolve('./src/core/lib/email/nodemailer'));
+const SettingMD = mongoose.model('Setting');
+const config = require(path.resolve('./src/config/config'));
+const { appslug } = config;
 
 exports.list = async (req, res) => {
   try {
@@ -19,9 +22,9 @@ exports.list = async (req, res) => {
 }
 
 exports.sync = async (req, res) => {
-  let shop = req.session.shop;
-  let shop_id = req.session.shop_id;
-  let access_token = req.access_token;
+  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  let { haravan } = setting;
+  let { access_token } = haravan;
   let HR = {}
   HR.CUSTOMERS = {
     LIST: {
@@ -40,9 +43,7 @@ exports.sync = async (req, res) => {
   for (let i = 0; i < customers.length; i++) {
     try {
       const customer = customers[i];
-      let found = await CustomersMD.findOne({ id: customer.id, shop_id }).lean(true);
-      customer.shop = shop;
-      customer.shop_id = shop_id;
+      let found = await CustomersMD.findOne({ id: customer.id }).lean(true);
       if (!found) {
         await CustomersMD.create(customer)
         count.new++;
@@ -56,7 +57,7 @@ exports.sync = async (req, res) => {
   }
   count.end_time = new Date();
   count.time = (count.end_time - count.start_time) / 1000 + 's';
-  res.send({ error: false, data: { shop, count } })
+  res.send({ error: false, data: { count } })
 }
 
 exports.create = (req, res) => {

@@ -13,6 +13,7 @@ import Layout from './containers/Layout';
 import * as serviceWorker from './serviceWorker';
 import thunk from 'redux-thunk';
 import CustomerReducer from './views/Admin/Customer/reducers';
+import OrdersReducer from './views/Admin/Order/reducers';
 import WooOrdersReducer from './views/Admin/OrderWoo/reducers';
 import WooCustomersReducer from './views/Admin/CustomerWoo/reducers';
 import WooProductsReducer from './views/Admin/ProductWoo/reducers';
@@ -22,6 +23,7 @@ import { Map } from 'immutable';
 const combinedReducers = combineReducers({
   customers: CustomerReducer,
   woo_orders: WooOrdersReducer,
+  orders: OrdersReducer,
   woo_customers: WooCustomersReducer,
   woo_products: WooProductsReducer,
   app: AppReducer,

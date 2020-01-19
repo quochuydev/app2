@@ -3,7 +3,7 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, Form
+  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
@@ -14,10 +14,6 @@ function App(props) {
   let url = app.get('url');
   let url_haravan = app.get('url_haravan');
 
-  const ListApp = [
-    { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
-    { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
-  ];
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
 
@@ -28,23 +24,19 @@ function App(props) {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
 
-  const [dataHaravan, setDataHaravan] = useState(
-    {
-      type: 'login'
-    });
-  const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
+  const [dataHaravan, setDataHaravan] = useState({ sync_orders: false, sync_products: false, sync_customers: false });
 
   function onChange(e) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
-    setDataHaravan({ ...dataHaravan, [e.target.name]: e.target.value });
   }
-  function onChangeSelect(e) {
-    setDataHaravan({ ...dataHaravan, type: e });
+  function onChangeChecked(e) {
+    setDataHaravan({ ...dataHaravan, [e.target.name]: e.target.checked });
   }
-  
-  async function installWoocommerceApp() {
-    await actions.installWoocommerceApp(dataWoocommerce);
+
+  async function buildLinkHaravanApp() {
+    await actions.buildLinkHaravanApp({ type: 'install' });
   }
+
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
   }
@@ -54,20 +46,21 @@ function App(props) {
   }, [url])
 
   useEffect(() => {
-    setBuildLinkHaravan(url_haravan)
+    buildLinkHaravanApp();
   }, [url_haravan])
 
   return (
     <Row key='1'>
       <Col span={24}>
-        <List
-          header={<div>Danh sách App</div>}
-          bordered
-          dataSource={ListApp}
-          renderItem={item => (
-            <Item>{item.name} <Button target="_blank" onClick={item.install}>Install</Button></Item>
-          )}
-        />
+        <List header={<div>Danh sách App</div>} bordered>
+          <Item>
+            Haravan App <a target="_blank" href={url_haravan}>Install</a>
+            <Button target="_blank" onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
+            <Icon style={{ color: 'green' }} type="check-circle" />
+            <Icon style={{ color: 'red' }} type="close-circle" />
+          </Item>
+          <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
+        </List>
       </Col>
       <Modal
         title="Haravan App"
@@ -76,14 +69,10 @@ function App(props) {
         onCancel={() => setIsShowHaravanAppModal(false)}
       >
         <Form>
-          <Form.Item label="Type">{(
-            <Select name="type" onChange={onChangeSelect} defaultValue={dataHaravan.type} style={{ width: 120 }}>
-              <Option value="login">Login</Option>
-              <Option value="install">Install</Option>
-            </Select>
-          )}</Form.Item>
+          <Form.Item><Checkbox name="sync_orders" onChange={onChangeChecked}>Đồng bộ đơn hàng</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="sync_products" onChange={onChangeChecked}>Đồng bộ sản phẩm</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="sync_customers" onChange={onChangeChecked}>Đồng bộ khách hàng</Checkbox></Form.Item>
         </Form>
-        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
       <Modal
         title="Woocommerce App"
@@ -92,7 +81,9 @@ function App(props) {
         onCancel={() => setIsShowWoocommerceAppModal(false)}
       >
         <Form>
-          <Form.Item label="Shop URL">{(<Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />)}</Form.Item>
+          <Form.Item label="Shop URL">
+            <Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />
+          </Form.Item>
         </Form>
         <a href={buildLinkWoocommerce}>{buildLinkWoocommerce}</a>
       </Modal>

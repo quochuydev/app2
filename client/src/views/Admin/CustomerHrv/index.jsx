@@ -46,6 +46,7 @@ function CustomerHrv(props) {
   const [isUpdateModal, setIsUpdateModal] = useState(false);
   useEffect(() => {
     actions.listCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function updateCustomer() {

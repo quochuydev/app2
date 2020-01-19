@@ -30,13 +30,15 @@ function LayoutContainer(props) {
   let menuItems = [];
   for (let i = 0; i < MENU_DATA.length; i++) {
     const menu = MENU_DATA[i];
-    menuItems.push(
-      <Menu.Item key={'sub_'+menu.key}>
-        <Link to={menu.path}>
-          <span>{menu.name}</span>
-        </Link>
-      </Menu.Item>
-    );
+    if(menu.is_open){
+      menuItems.push(
+        <Menu.Item key={'sub_'+menu.key}>
+          <Link to={menu.path}>
+            <span>{menu.name}</span>
+          </Link>
+        </Menu.Item>
+      );
+    }
   }
 
   return (

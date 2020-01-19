@@ -5,7 +5,7 @@ const APIBus = require('wooapi');
 const router = express.Router();
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host, pathHook } = config;
+const { appslug, app_host, delivery_url, frontend_site } = config;
 
 let WOO = {};
 WOO.WEBHOOKS = {
@@ -47,14 +47,14 @@ router.post('/install', async (req, res) => {
     let url = API.buildLink();
     res.send({ error: false, url });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.send({ error: true });
   }
 });
 
 router.get('/return_url', async (req, res) => {
   if (req.query && req.query.success) {
-    res.json({ error: false, message: 'Install App Success' });
+    res.redirect(`${frontend_site}/app`)
   } else {
     res.json({ error: true, message: 'Install App Failed' });
   }
@@ -72,14 +72,14 @@ router.post('/callback_url', async (req, res) => {
       let webhook = listWebhooks[i];
       let found = webhooks.find(e => e.topic == webhook.topic);
       if (found) {
-        API.call(WOO.WEBHOOKS.UPDATE, { params: { id: found.id }, body: JSON.stringify({ id: found.id, ...webhook, delivery_url: pathHook }) });
+        API.call(WOO.WEBHOOKS.UPDATE, { params: { id: found.id }, body: JSON.stringify({ id: found.id, ...webhook, delivery_url }) });
       } else {
-        API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url: pathHook }) });
+        API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url }) });
       }
     }
-    res.json({ error: false, webhooks });
+    res.json({ error: false });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send({ error: true });
   }
 });
@@ -91,7 +91,7 @@ let test = () => {
   // let option = {
   //   headers: {},
   //   method: 'get',
-  //   url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+  //   url: 'https://xxxx.com/wp-json/wc/v1/webhooks',
   //   oauth:
   //   {
   //     callback: 'https://93263033.ngrok.io',
@@ -100,7 +100,7 @@ let test = () => {
   //   }
   // }
   var option = {
-    url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+    url: 'https://xxxx.com/wp-json/wc/v1/webhooks',
     method: 'get',
     auth: {
       user: 'ck_6575c8fbc02e3a5f922bcfbf4e81213790d6018a',

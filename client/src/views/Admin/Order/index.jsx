@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import * as wooCustomerActions from './actions';
+import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table, Row, Col, Button, Tag } from 'antd';
 import 'antd/dist/antd.css';
-import OrderDetailWoo from './../OrderDetailWoo/index';
+import OrderDetail from '../OrderDetailWoo/index';
 
-function WooCustomers(props) {
-  const { actions, woo_customers } = props;
+function Orders(props) {
+  const { actions, orders } = props;
   const columns = [
     {
       title: 'Mã đơn hàng', key: 'edit',
@@ -24,23 +24,23 @@ function WooCustomers(props) {
   ];
 
   useEffect(() => {
-    actions.loadWooCustomers();
+    actions.loadOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function loadWooCustomers() {
-    await actions.loadWooCustomers();
+  async function loadOrders() {
+    await actions.loadOrders();
   }
-  async function syncWooCustomers() {
-    await actions.syncWooCustomers();
-    loadWooCustomers();
+  async function syncOrders() {
+    await actions.syncOrders();
+    loadOrders();
   }
 
   const [isShowDetailModal, setIsShowDetailModal] = useState(false);
-  let [customerDetail, setCustomerDetail] = useState({});
+  let [orderDetail, setOrderDetail] = useState({});
 
-  function openDetailModal(customer) {
-    setCustomerDetail(customer)
+  function openDetailModal(order) {
+    setOrderDetail(order)
     setIsShowDetailModal(true);
   }
 
@@ -48,17 +48,17 @@ function WooCustomers(props) {
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => loadWooCustomers()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncWooCustomers()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='id' dataSource={woo_customers} columns={columns} />;
+          <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
+          <Table rowKey='id' dataSource={orders} columns={columns} />;
       </Col>
       </Row>
-      <OrderDetailWoo
+      <OrderDetail
         showModal={isShowDetailModal}
-        order={customerDetail}
+        order={orderDetail}
         handleCancel={() => setIsShowDetailModal(false)}
       >
-      </OrderDetailWoo>
+      </OrderDetail>
     </div>
   );
 }
@@ -66,11 +66,11 @@ function WooCustomers(props) {
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   woo_orders: state.woo_orders.get('woo_orders'),
-  woo_customers: state.woo_customers.get('woo_customers')
+  orders: state.orders.get('orders'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(wooCustomerActions, dispatch)
+  actions: bindActionCreators(orderActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WooCustomers);
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);
