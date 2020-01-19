@@ -14,7 +14,7 @@ module.exports = {
   sessionCollection: 'sessions',
 
   app_host: process.env.APP_HOST,
-  route_hook: '/webhook',
+  delivery_url: `${process.env.APP_HOST}/webhook`,
   downloadLink: process.env.APP_HOST,
   frontend_site: `${process.env.APP_HOST}/site`,
 

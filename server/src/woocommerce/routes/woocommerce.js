@@ -5,8 +5,7 @@ const APIBus = require('wooapi');
 const router = express.Router();
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host, route_hook, frontend_site } = config;
-const pathHook = `${app_host}${route_hook}`;
+const { appslug, app_host, delivery_url, frontend_site } = config;
 
 let WOO = {};
 WOO.WEBHOOKS = {
@@ -73,9 +72,9 @@ router.post('/callback_url', async (req, res) => {
       let webhook = listWebhooks[i];
       let found = webhooks.find(e => e.topic == webhook.topic);
       if (found) {
-        API.call(WOO.WEBHOOKS.UPDATE, { params: { id: found.id }, body: JSON.stringify({ id: found.id, ...webhook, delivery_url: pathHook }) });
+        API.call(WOO.WEBHOOKS.UPDATE, { params: { id: found.id }, body: JSON.stringify({ id: found.id, ...webhook, delivery_url }) });
       } else {
-        API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url: pathHook }) });
+        API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url }) });
       }
     }
     res.json({ error: false });
