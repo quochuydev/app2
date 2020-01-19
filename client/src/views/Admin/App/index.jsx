@@ -28,20 +28,17 @@ function App(props) {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
 
-  const [dataHaravan, setDataHaravan] = useState(
-    {
-      type: 'login'
-    });
+  const [dataHaravan, setDataHaravan] = useState({ type: 'login' });
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
   function onChange(e) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
     setDataHaravan({ ...dataHaravan, [e.target.name]: e.target.value });
   }
-  function onChangeSelect(e) {
+  function onChangeType(e) {
     setDataHaravan({ ...dataHaravan, type: e });
   }
-  
+
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
@@ -77,7 +74,7 @@ function App(props) {
       >
         <Form>
           <Form.Item label="Type">{(
-            <Select name="type" onChange={onChangeSelect} defaultValue={dataHaravan.type} style={{ width: 120 }}>
+            <Select name="type" onChange={onChangeType} defaultValue={dataHaravan.type} style={{ width: 120 }}>
               <Option value="login">Login</Option>
               <Option value="install">Install</Option>
             </Select>
