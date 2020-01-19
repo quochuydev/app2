@@ -16,10 +16,10 @@ router.post('/webhook', async (req, res) => {
         await WooOrderMD.create(order);
       }
     }
-    res.send({ error: false });
+    res.send({ error: false, body: req.body });
   } catch (error) {
     console.log(error)
-    res.send({ error: true, woo_orders: [] })
+    res.send({ error: true })
   }
 });
 
