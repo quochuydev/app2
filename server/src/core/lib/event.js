@@ -1,13 +1,7 @@
 var amqp = require('amqplib/callback_api');
 
 const eventBus = {
-  config: {
-    user: 'guest',
-    pass: 'guest',
-    host: 'localhost',
-    port: '5672',
-    vhost: 'qhdapp'
-  },
+  config: { user: 'guest', pass: 'guest', host: 'localhost', port: '5672', vhost: 'qhdapp' },
   events: {
     order: {
       create: 'app.order.create'
