@@ -9,9 +9,9 @@ const initialState = Map({
 
 function AppReducer(state = initialState, { type, payload }) {
   switch (type) {
-    case 'INSTALL_WOOCOMMERCE_APP_SUCCESS':
+    case ACTIONS.INSTALL_WOOCOMMERCE_APP_SUCCESS:
       return state.merge({ ...payload });
-    case ACTIONS.INSTALL_HARAVAN_APP_SUCCESS:
+    case ACTIONS.BUILDLINK_HARAVAN_APP_SUCCESS:
       return state.merge({ ...payload });
     default:
       return state;

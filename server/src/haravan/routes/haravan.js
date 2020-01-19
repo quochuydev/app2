@@ -8,7 +8,7 @@ const config = require(path.resolve('./src/config/config'));
 const { appslug, haravan, frontend_site } = config;
 let { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url } = haravan;
 
-router.post('/install', (req, res) => {
+router.post('/build-link', (req, res) => {
   let { type } = req.body;
   let app = {};
   if (type == 'install') {
@@ -26,6 +26,10 @@ router.post('/install', (req, res) => {
   res.json({ url_haravan })
 });
 
+router.post('/install', (req, res) => {
+  res.json(req.body)
+});
+
 router.post('/login', (req, res) => {
   res.json(req.body)
 });
@@ -35,7 +39,7 @@ router.post('/grandservice', async (req, res) => {
   let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url });
   let { access_token } = await HrvAPI.getToken(code);
   let haravan = { status: 1, access_token }
-  let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravan } }, { lean: true, new: true });
+  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravan } }, { lean: true, new: true });
   res.redirect(`${frontend_site}/app`)
 });
 
