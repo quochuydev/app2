@@ -5,7 +5,8 @@ const APIBus = require('wooapi');
 const router = express.Router();
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host, pathHook } = config;
+const { appslug, app_host, route_hook, frontend_site } = config;
+const pathHook = `${app_host}${route_hook}`;
 
 let WOO = {};
 WOO.WEBHOOKS = {
@@ -47,14 +48,14 @@ router.post('/install', async (req, res) => {
     let url = API.buildLink();
     res.send({ error: false, url });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.send({ error: true });
   }
 });
 
 router.get('/return_url', async (req, res) => {
   if (req.query && req.query.success) {
-    res.json({ error: false, message: 'Install App Success' });
+    res.redirect(`${frontend_site}/app`)
   } else {
     res.json({ error: true, message: 'Install App Failed' });
   }
@@ -79,7 +80,7 @@ router.post('/callback_url', async (req, res) => {
     }
     res.json({ error: false, webhooks });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send({ error: true });
   }
 });
