@@ -7,6 +7,15 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "test queue",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/server/src/core/lib/event.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "server",
       "skipFiles": [
         "<node_internals>/**"

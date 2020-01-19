@@ -4,6 +4,7 @@
   "description": "app2",
   "main": "index.js",
   "dependencies": {
+    "amqplib": "^0.5.5",
     "concurrently": "^5.0.2",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
@@ -30,7 +31,7 @@
     "client": "cd client && npm start",
     "client-test": "cd client && npm test",
     "server": "cd server && node server",
-    "test": "cd server/src/core/lib && node msg",
+    "test": "cd server/src/core/lib && node event",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "concurrently \"npm run server\" \"npm run client-test\"",
     "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"

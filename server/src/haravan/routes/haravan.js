@@ -27,6 +27,7 @@ router.post('/build-link', (req, res) => {
 });
 
 router.post('/install', (req, res) => {
+  let { sync_orders, sync_products, sync_customers } = req.body;
   res.json(req.body)
 });
 
