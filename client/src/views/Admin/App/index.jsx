@@ -55,9 +55,9 @@ function App(props) {
         <List header={<div>Danh sách App</div>} bordered>
           <Item>
             Haravan App <a target="_blank" href={url_haravan}>Install</a>
-            <Button target="_blank" onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-            <Icon style={{ color: 'green' }} type="check-circle" />
-            <Icon style={{ color: 'red' }} type="close-circle" />
+            <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
+            <Button onClick={() => {}}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
+            <Button onClick={() => {}}><Icon style={{ color: 'red' }} type="close-circle" /></Button>
           </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
         </List>

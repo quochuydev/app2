@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
 const getOrdersApi = async () => {
   let setting = await SettingMD.findOne({}).lean(true);
   let { wp_host, consumer_key, consumer_secret } = setting.woocommerce;
+  // TODO convert new call request
   let WooCommerce = new WooCommerceAPI({
     url: wp_host,
     consumerKey: consumer_key,
