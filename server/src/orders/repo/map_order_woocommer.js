@@ -7,3 +7,6 @@ const MapOrderWoocommerce = {
 }
 
 module.exports = MapOrderWoocommerce;
+let order_woo = {};
+let order = MapOrderWoocommerce.gen(order_woo)
+console.log(order);

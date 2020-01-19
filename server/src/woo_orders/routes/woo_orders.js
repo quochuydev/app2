@@ -45,10 +45,10 @@ router.post('/sync', async (req, res) => {
       const order = orders[i];
       let found = await WooOrderMD.findOne({ id: order.id }).lean(true);
       if (found) {
-        console.log(order.id, 'update')
+        console.log(`[WOO] [SYNC] [ORDER] [UPDATE] [${order.id}]`);
         await WooOrderMD.findOneAndUpdate({ id: order.id }, { $set: order }, { new: true, lean: true });
       } else {
-        console.log(order.id, 'create')
+        console.log(`[WOO] [SYNC] [ORDER] [CREATE] [${order.id}]`);
         await WooOrderMD.create(order);
       }
     }
