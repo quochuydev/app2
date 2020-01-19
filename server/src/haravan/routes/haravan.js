@@ -5,7 +5,7 @@ const router = express.Router();
 const HaravanAPI = require('haravan_api');
 const SettingMD = mongoose.model('Setting');
 const config = require(path.resolve('./src/config/config'));
-const { appslug, haravan } = config;
+const { appslug, haravan, frontend_site } = config;
 let { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url } = haravan;
 
 router.post('/install', (req, res) => {
@@ -36,7 +36,7 @@ router.post('/grandservice', async (req, res) => {
   let { access_token } = await HrvAPI.getToken(code);
   let haravan = { status: 1, access_token }
   let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravan } }, { lean: true, new: true });
-  res.json(setting)
+  res.redirect(`${frontend_site}/app`)
 });
 
 module.exports = router;

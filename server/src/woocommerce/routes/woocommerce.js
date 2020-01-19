@@ -78,7 +78,7 @@ router.post('/callback_url', async (req, res) => {
         API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url: pathHook }) });
       }
     }
-    res.json({ error: false, webhooks });
+    res.json({ error: false });
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: true });
@@ -92,7 +92,7 @@ let test = () => {
   // let option = {
   //   headers: {},
   //   method: 'get',
-  //   url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+  //   url: 'https://xxxx.com/wp-json/wc/v1/webhooks',
   //   oauth:
   //   {
   //     callback: 'https://93263033.ngrok.io',
@@ -101,7 +101,7 @@ let test = () => {
   //   }
   // }
   var option = {
-    url: 'https://fpt-dk.com/wp-json/wc/v1/webhooks',
+    url: 'https://xxxx.com/wp-json/wc/v1/webhooks',
     method: 'get',
     auth: {
       user: 'ck_6575c8fbc02e3a5f922bcfbf4e81213790d6018a',

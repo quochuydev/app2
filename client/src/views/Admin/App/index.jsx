@@ -3,7 +3,7 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, Form
+  Row, Col, Button, List, Input, Select, Modal, Form, Icon
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
@@ -24,7 +24,7 @@ function App(props) {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
 
-  const [dataHaravan, setDataHaravan] = useState({ type: 'login' });
+  const [dataHaravan, setDataHaravan] = useState({ type: 'install' });
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
   function onChange(e) {
@@ -44,6 +44,7 @@ function App(props) {
   }, [url])
 
   useEffect(() => {
+    installHaravanApp();
     setBuildLinkHaravan(url_haravan)
   }, [url_haravan])
 
@@ -51,7 +52,11 @@ function App(props) {
     <Row key='1'>
       <Col span={24}>
         <List header={<div>Danh sách App</div>} bordered>
-          <Item>Haravan App <Button target="_blank" onClick={() => setIsShowHaravanAppModal(true)}>Install</Button></Item>
+          <Item>
+            Haravan App <a target="_blank" href={url_haravan}>Install</a>
+            <Icon style={{ color: 'green' }} type="check-circle" />
+            <Icon style={{ color: 'red' }} type="close-circle" />
+          </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
         </List>
       </Col>
