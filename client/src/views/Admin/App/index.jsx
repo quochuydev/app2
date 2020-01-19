@@ -14,10 +14,6 @@ function App(props) {
   let url = app.get('url');
   let url_haravan = app.get('url_haravan');
 
-  const ListApp = [
-    { name: 'Haravan App', install: () => setIsShowHaravanAppModal(true) },
-    { name: 'Woocommerce App', install: () => setIsShowWoocommerceAppModal(true) },
-  ];
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
 
@@ -57,14 +53,10 @@ function App(props) {
   return (
     <Row key='1'>
       <Col span={24}>
-        <List
-          header={<div>Danh sách App</div>}
-          bordered
-          dataSource={ListApp}
-          renderItem={item => (
-            <Item>{item.name} <Button target="_blank" onClick={item.install}>Install</Button></Item>
-          )}
-        />
+        <List header={<div>Danh sách App</div>} bordered>
+          <Item>Haravan App <Button target="_blank" onClick={() => setIsShowHaravanAppModal(true)}>Install</Button></Item>
+          <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
+        </List>
       </Col>
       <Modal
         title="Haravan App"
