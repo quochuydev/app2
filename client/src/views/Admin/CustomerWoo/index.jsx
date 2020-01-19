@@ -12,7 +12,7 @@ function WooCustomers(props) {
     {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <a onClick={() => openDetailModal(edit)}>{edit.id}</a>
+        <a href="/#" onClick={() => openDetailModal(edit)}>{edit.id}</a>
       ),
     },
     { title: 'Ngày tạo', dataIndex: 'date_created', key: 'date_created', },
@@ -25,6 +25,7 @@ function WooCustomers(props) {
 
   useEffect(() => {
     actions.loadWooCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function loadWooCustomers() {

@@ -35,9 +35,6 @@ function App(props) {
     setDataHaravan({ ...dataHaravan, type: e });
   }
 
-  async function installWoocommerceApp() {
-    await actions.installWoocommerceApp(dataWoocommerce);
-  }
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
   }
