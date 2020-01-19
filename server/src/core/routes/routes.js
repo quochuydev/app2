@@ -24,7 +24,7 @@ const routes = (app) => {
 
   app.use('/install', install);
   app.use('/download', download);
-  app.use(webhook);
+  app.use('/api', webhook);
   app.use('/api/customers', customers);
   app.use('/api/woo_orders', woo_orders);
   app.use('/api/staffs', staffs);
