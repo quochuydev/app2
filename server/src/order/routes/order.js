@@ -55,11 +55,9 @@ let syncOrdersWoo = async () => {
         await OrderMD.create(order);
       }
     }
-    console.log(`[order_woo] ${order_woo.id}`)
   }
   let end_at = new Date();
-  console.log(`END: ${(end_at - start_at) / 1000}`)
-
+  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}`);
 }
 
 let syncOrdersHaravan = async () => {
@@ -92,7 +90,7 @@ let syncOrdersHaravan = async () => {
   }
 
   let end_at = new Date();
-  console.log(`END: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}`);
 }
 
 let test = async () => {

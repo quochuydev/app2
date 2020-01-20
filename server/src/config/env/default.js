@@ -51,7 +51,7 @@ module.exports = {
   login_callback_url: 'http://localhost:3000/install/login',
   install_callback_url: 'http://localhost:3000/install/grandservice',
   webhook: {
-    hrVerifyToken: '123',  //https://randomkeygen.com/ (CodeIgniter Encryption Keys)
+    hrVerifyToken: '123',
     subscribe: 'https://webhook.hara.vn/api/subscribe'
   },
 }
