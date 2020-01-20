@@ -12,9 +12,12 @@ const URLS = {
   SYNC_CUSTOMER_HRV: 'api/hrv_customers/sync',
   EXPORT_CUSTOMER_HRV: 'api/hrv_customers/export',
 
+  LIST_ORDERS: 'api/order/list',
+  SYNC_ORDERS: 'api/order/sync',
+
   LIST_WOO_ORDERS: 'api/woo_orders',
   SYNC_WOO_ORDERS: 'api/woo_orders/sync',
-  
+
   LIST_STAFFS: 'api/staffs',
 
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
@@ -40,6 +43,14 @@ async function syncCustomers(customer) {
 
 async function exportCustomer() {
   return await ApiClient.postData(URLS.EXPORT_CUSTOMER, null, null);
+}
+
+async function loadOrders() {
+  return await ApiClient.postData(URLS.LIST_ORDERS);
+}
+
+async function syncOrders() {
+  return await ApiClient.postData(URLS.SYNC_ORDERS);
 }
 
 async function loadWooOrders() {
@@ -70,8 +81,8 @@ async function installHaravanApp(data) {
   return await ApiClient.postData(URLS.INSTALL_HARAVAN_APP, null, data);
 }
 
-export default { 
-  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, 
-  loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp, 
+export default {
+  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
+  loadOrders, syncOrders, loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp
 }

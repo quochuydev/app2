@@ -8,6 +8,7 @@ const OrderSchema = new Schema({
   type: { type: String, default: null },
   id: { type: String, default: null },
   code: { type: String, default: null },
+  status: { type: String, default: null },
   billing: {
     first_name: { type: String, default: null },
     last_name: { type: String, default: null },

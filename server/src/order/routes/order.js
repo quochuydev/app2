@@ -15,7 +15,9 @@ const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo
 
 router.post('/list', async (req, res) => {
   try {
-    res.json({ error: false });
+    let count = await OrderMD.count({});
+    let orders = await OrderMD.find({}).lean(true);
+    res.json({ error: false, count, orders });
   } catch (error) {
     res.status(400).send({ error: true });
   }
