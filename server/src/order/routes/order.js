@@ -99,6 +99,6 @@ let test = async () => {
   await syncOrdersHaravan();
   await syncOrdersWoo();
 }
-test();
+// test();
 
 module.exports = router;

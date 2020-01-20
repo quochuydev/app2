@@ -14,7 +14,8 @@ module.exports = {
   sessionCollection: 'sessions',
 
   app_host: process.env.APP_HOST,
-  delivery_url: `${process.env.APP_HOST}/webhook`,
+  delivery_url: `${process.env.APP_HOST}/api/webhook`,
+  webhook_haravan_url: `${process.env.APP_HOST}/webhook/haravan`,
   downloadLink: process.env.APP_HOST,
   frontend_site: `${process.env.APP_HOST}/site`,
 
@@ -33,7 +34,7 @@ module.exports = {
     login_callback_url: `${process.env.APP_HOST}/api/haravan/login`,
     install_callback_url: `${process.env.APP_HOST}/api/haravan/grandservice`,
     webhook: {
-      verify: '123',  //https://randomkeygen.com/ (CodeIgniter Encryption Keys)
+      verify: '123',
       subscribe: 'https://webhook.hara.vn/api/subscribe'
     },
   },
