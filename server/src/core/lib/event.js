@@ -48,4 +48,4 @@ module.exports = eventBus;
 const test = () => {
   eventBus.emit(eventBus.events.order.create, { order: { id: '123' } })
 }
-test();
+// test();

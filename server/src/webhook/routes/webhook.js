@@ -1,25 +1,77 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const router = express.Router();
-const WooOrderMD = mongoose.model('WooOrder');
+const OrderMD = mongoose.model('Order');
+const { haravan } = require(path.resolve('./src/config/config'));
+const { webhook } = haravan;
+const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
+const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 
-router.post('/webhook', async (req, res) => {
+router.post('/woo', async (req, res) => {
   try {
-    let order = req.body;
-    if(order && order.id){
-      let found = await WooOrderMD.findOne({ id: order.id }).lean(true);
-      if (found) {
-        console.log(`[WOO] [WEBHOOK] [ORDER] [UPDATE] [${order.id}]`);
-        await WooOrderMD.findOneAndUpdate({ id: order.id }, { $set: order }, { new: true, lean: true });
-      } else {
-        console.log(`[WOO] [WEBHOOK] [ORDER] [CREATE] [${order.id}]`);
-        await WooOrderMD.create(order);
-      }
+    let topic = req.headers['x-wc-webhook-topic'];
+    if (!topic) { return res.send({ topic: 'No topic!' }); }
+    switch (topic) {
+      case 'order.updated':
+        let order_woo = req.body;
+        if (order_woo && order_woo.id) {
+          let { id } = order_woo;
+          let order = MapOrderWoocommerce.gen(order_woo);
+          let { type } = order;
+          let found = await OrderMD.findOne({ id, type }).lean(true);
+          if (found) {
+            console.log(`[WOO] [WEBHOOK] [ORDER] [UPDATE] [${id}]`);
+            await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+          } else {
+            console.log(`[WOO] [WEBHOOK] [ORDER] [CREATE] [${id}]`);
+            await OrderMD.create(order);
+          }
+        }
+        break;
     }
     res.send({ error: false });
   } catch (error) {
     console.log(error)
-    res.send({ error: true, woo_orders: [] })
+    res.send({ error: true })
+  }
+});
+
+router.post('/haravan', async (req, res) => {
+  try {
+    let topic = req.headers['x-haravan-topic'];
+    switch(topic){
+      case 'orders/updated':
+        let order_hrv = req.body;
+        if (order_hrv && order_hrv.id) {
+          let { id } = order_hrv;
+          let order = MapOrderHaravan.gen(order_hrv);
+          let { type } = order;
+          let found = await OrderMD.findOne({ id, type }).lean(true);
+          if (found) {
+            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [UPDATE] [${id}]`);
+            await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+          } else {
+            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [CREATE] [${id}]`);
+            await OrderMD.create(order);
+          }
+        }
+        break;
+    }
+    res.send({ error: false });
+  } catch (error) {
+    console.log(error)
+    res.send({ error: true })
+  }
+});
+
+router.get('/haravan', async (req, res) => {
+  try {
+    if (req.query['hub.verify_token'] != webhook.verify) { return res.sendStatus(401); }
+    res.send(req.query['hub.challenge']);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ error: true })
   }
 });
 
