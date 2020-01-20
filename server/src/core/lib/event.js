@@ -26,7 +26,9 @@ const eventBus = {
     let { user, pass, host, port, vhost } = eventBus.config;
     var rabbitUrl = `amqp://${user}:${pass}@${host}:${port}/${vhost}?heartbeat=60`;
     amqp.connect([rabbitUrl], function (error, connection) {
+      if (error) { throw error }
       connection.createChannel(function (err, channel) {
+        if (err) { throw err }
         let queue = event;
         channel.assertQueue(queue, { durable: true });
         channel.prefetch(1);
