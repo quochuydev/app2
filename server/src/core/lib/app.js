@@ -4,6 +4,7 @@ const path = require('path');
 const Mongoose = require('./mongoose');
 const Express = require('./express');
 const PORT = process.env.PORT || 3000;
+const eventBus = require('./event');
 
 const App = {
   init: () => {
@@ -13,6 +14,7 @@ const App = {
       res.header('Access-Control-Allow-Headers', '*');
       next();
     });
+    eventBus.start();
     Mongoose.load();
     Mongoose.connect()
       .then(db => {

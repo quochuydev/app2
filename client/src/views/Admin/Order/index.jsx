@@ -12,15 +12,15 @@ function Orders(props) {
     {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <a href="/#" onClick={() => openDetailModal(edit)}>{edit.id}</a>
+        <a onClick={() => openDetailModal(edit)}>{edit.number}</a>
       ),
     },
-    { title: 'Ngày tạo', dataIndex: 'date_created', key: 'date_created', },
+    { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {
       title: 'Tình trạng', key: 'status', render: edit => (
         <Tag color="green">{edit.status}</Tag>)
     },
-    { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
+    // { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function Orders(props) {
         <Col span={24}>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='id' dataSource={orders} columns={columns} />;
+          <Table rowKey='number' dataSource={orders} columns={columns} />;
       </Col>
       </Row>
       <OrderDetail
