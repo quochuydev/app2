@@ -10,6 +10,8 @@ const WOO = require(path.resolve('./src/woocommerce/CONST'));
 const HRV = require(path.resolve('./src/haravan/CONST'));
 const config = require(path.resolve('./src/config/config'));
 const { appslug, app_host } = config;
+const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
+const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 
 router.post('/list', async (req, res) => {
   try {
@@ -21,6 +23,8 @@ router.post('/list', async (req, res) => {
 
 router.post('/sync', async (req, res) => {
   try {
+    await syncOrdersHaravan();
+    await syncOrdersWoo();
     res.json({ error: false });
   } catch (error) {
     console.log(error)
@@ -36,6 +40,19 @@ let syncOrdersWoo = async () => {
   let orders = await API.call(WOO.ORDERS.LIST);
   for (let i = 0; i < orders.length; i++) {
     const order_woo = orders[i];
+    if (order_woo && order_woo.id) {
+      let { id } = order_woo;
+      let order = MapOrderWoocommerce.gen(order_woo);
+      let { type } = order;
+      let found = await OrderMD.findOne({ id, type }).lean(true);
+      if (found) {
+        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}]`);
+        await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+      } else {
+        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}]`);
+        await OrderMD.create(order);
+      }
+    }
     console.log(`[order_woo] ${order_woo.id}`)
   }
   let end_at = new Date();
@@ -50,15 +67,25 @@ let syncOrdersHaravan = async () => {
   let HrvAPI = new HaravanAPI({});
   let count = await HrvAPI.call(HRV.ORDERS.COUNT, { access_token });
   console.log(`[count_order_hrv] ${count}`);
-
   let limit = 50;
   let totalPage = Math.ceil(count / limit);
   for (let i = 1; i <= totalPage; i++) {
-    console.log(i)
     let orders = await HrvAPI.call(HRV.ORDERS.LIST, { access_token, query: { page: i, limit } });
-    console.log(`page ${i} - ${orders.length}`)
     for (let j = 0; j < orders.length; j++) {
       const order_hrv = orders[j];
+      if(order_hrv && order_hrv.id){
+        let { id } = order_hrv;
+        let order = MapOrderHaravan.gen(order_hrv);
+        let { type } = order;
+        let found = await OrderMD.findOne({ id, type }).lean(true);
+        if (found) {
+          console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}]`);
+          await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        } else {
+          console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}]`);
+          await OrderMD.create(order);
+        }
+      }
     }
   }
 

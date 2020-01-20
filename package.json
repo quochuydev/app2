@@ -13,7 +13,7 @@
     "express-session": "^1.17.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
-    "haravan_api": "^1.0.4",
+    "haravan_api": "^1.0.5",
     "jsonwebtoken": "^8.5.1",
     "mime": "^2.4.4",
     "moment": "^2.24.0",
