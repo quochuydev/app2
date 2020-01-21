@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Row, Col, Button, Tag } from 'antd';
+import { Table, Row, Col, Button, Tag, Icon } from 'antd';
 import 'antd/dist/antd.css';
-import OrderDetail from '../OrderDetailWoo/index';
+import OrderDetail from '../OrderDetail/index';
 
 function Orders(props) {
   const { actions, orders } = props;
@@ -15,12 +15,12 @@ function Orders(props) {
         <a onClick={() => openDetailModal(edit)}>{edit.number}</a>
       ),
     },
+    { title: 'Type', dataIndex: 'type', key: 'type', },
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {
       title: 'Tình trạng', key: 'status', render: edit => (
         <Tag color="green">{edit.status}</Tag>)
     },
-    // { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
   useEffect(() => {

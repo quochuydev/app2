@@ -11,6 +11,10 @@ const SettingSchema = new Schema({
   haravan: {
     status: { type: Number, default: 0 },
     access_token: { type: String, default: null },
+  },
+  last_sync: {
+    woo_orders_at: { type: Date, default: null },
+    hrv_orders_at: { type: Date, default: null },
   }
 })
 

@@ -13,9 +13,9 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://eda294ef.ngrok.io',
-  delivery_url: 'https://eda294ef.ngrok.io/webhook/woo',
-  webhook_haravan_url: 'https://eda294ef.ngrok.io/webhook/haravan',
+  app_host: 'https://36e30315.ngrok.io',
+  delivery_url: 'https://36e30315.ngrok.io/webhook/woo',
+  // webhook_haravan_url: 'https://eda294ef.ngrok.io/webhook/haravan',
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
