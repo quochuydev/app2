@@ -93,10 +93,10 @@ let syncOrdersHaravan = async () => {
         let found = await OrderMD.findOne({ id, type }).lean(true);
         if (found) {
           let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
-          console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
+          // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
         } else {
           let newOrder = await OrderMD.create(order);
-          console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
+          // console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
         }
       }
     }

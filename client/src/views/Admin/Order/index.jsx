@@ -15,7 +15,10 @@ function Orders(props) {
         <a onClick={() => openDetailModal(edit)}>{edit.number}</a>
       ),
     },
-    { title: 'Type', dataIndex: 'type', key: 'type', },
+    {
+      title: 'Type', key: 'type', render: edit => (
+        <Tag color={ edit.type == 'haravan' ? 'blue' : 'magenta'}>{edit.type}</Tag>)
+    },
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {
       title: 'Tình trạng', key: 'status', render: edit => (
