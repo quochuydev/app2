@@ -23,6 +23,9 @@ router.get('/auth/callback', async (req, res) => {
   request(option, (err, response, body) => {
     let { access_token } = JSON.parse(body);
     console.log(access_token)
+    request({ method: 'get', url: 'https://quochuydev1.myshopify.com/admin/products.json', headers: { 'X-Shopify-Access-Token': access_token } }, (err, resp, body) => {
+      console.log(body)
+    })
   })
   res.json({ error: false });
 });
@@ -49,7 +52,6 @@ let test = async () => {
   let query = querystring.stringify(redirectParams);
   let url = 'https://quochuydev1.myshopify.com/admin/oauth/authorize';
   console.log(`${url}?${query}`);
-
   return url;
 }
-test();
+// test();
