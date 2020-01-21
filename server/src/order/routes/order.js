@@ -107,9 +107,41 @@ let syncOrdersHaravan = async () => {
   console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}`);
 }
 
+
+let syncOrdersShopify = async () => {
+  let start_at = new Date();
+  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  let { shopify, last_sync } = setting;
+  // TODO sync
+
+  // let orders = await API.call(SHOPIFY.ORDERS.LIST, { access_token });
+  // console.log(orders)
+  // for (let j = 0; j < orders.length; j++) {
+  //   const order_hrv = orders[j];
+  //   if (order_hrv && order_hrv.id) {
+  //     let { id } = order_hrv;
+  //     let order = MapOrderHaravan.gen(order_hrv);
+  //     let { type } = order;
+  //     let found = await OrderMD.findOne({ id, type }).lean(true);
+  //     if (found) {
+  //       let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+  //       // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
+  //     } else {
+  //       let newOrder = await OrderMD.create(order);
+  //       // console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
+  //     }
+  //   }
+  // }
+
+  let end_at = new Date();
+  // await SettingMD.update({ app: appslug }, { $set: { 'last_sync.hrv_orders_at': end_at } });
+  console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}`);
+}
+
 let test = async () => {
   await syncOrdersHaravan();
   await syncOrdersWoo();
+  await syncOrdersShopify();
 }
 // test();
 

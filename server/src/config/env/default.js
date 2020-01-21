@@ -13,7 +13,7 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://36e30315.ngrok.io',
+  app_host: 'https://dbc01227.ngrok.io',
   delivery_url: 'https://36e30315.ngrok.io/webhook/woo',
   // webhook_haravan_url: 'https://eda294ef.ngrok.io/webhook/haravan',
   downloadLink: "http://localhost:3000",
@@ -38,6 +38,15 @@ module.exports = {
       subscribe: 'https://webhook.hara.vn/api/subscribe'
     },
   },
+
+  shopify: {
+    shopify_host: 'https://quochuydev1.myshopify.com',
+    client_id: "c925250ee1a5f062f01b3c88e508e209",
+    client_secret: "1f44c251898c86a09618d5076b6b1b67",
+    callback_path: '/shopify/auth/callback',
+    address: 'https://dbc01227.ngrok.io/shopify/webhook',
+  },
+
   response_mode: 'form_post',
   url_authorize: 'https://accounts.hara.vn/connect/authorize',
   url_connect_token: 'https://accounts.hara.vn/connect/token',
