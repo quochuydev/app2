@@ -41,7 +41,7 @@ router.post('/haravan', async (req, res) => {
   try {
     let topic = req.headers['x-haravan-topic'];
     switch (topic) {
-      case 'orders/updated':
+      case 'orders/create': case 'orders/updated':
         let order_hrv = req.body;
         if (order_hrv && order_hrv.id) {
           let { id } = order_hrv;
