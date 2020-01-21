@@ -36,7 +36,8 @@ router.post('/sync', async (req, res) => {
 
 let syncOrdersWoo = async () => {
   let start_at = new Date();
-  let { woocommerce } = await SettingMD.findOne({ app: appslug }).lean(true);
+  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  let { woocommerce, last_sync } = setting;
   let { wp_host, consumer_key, consumer_secret } = woocommerce;
   let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
   let orders = await API.call(WOO.ORDERS.LIST);
@@ -48,51 +49,62 @@ let syncOrdersWoo = async () => {
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {
-        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}]`);
-        await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
-        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}]`);
-        await OrderMD.create(order);
+        let newOrder = await OrderMD.create(order);
+        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}] [${updateOrder.number}]`);
       }
     }
-    console.log(`[order_woo] ${order_woo.id}`)
   }
   let end_at = new Date();
-  console.log(`END: ${(end_at - start_at) / 1000}`)
-
+  await SettingMD.update({ app: appslug }, { $set: { 'last_sync.woo_orders_at': end_at } });
+  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}`);
 }
 
 let syncOrdersHaravan = async () => {
   let start_at = new Date();
-  let { haravan } = await SettingMD.findOne({ app: appslug }).lean(true);
+  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  let { haravan, last_sync } = setting;
   let { access_token } = haravan;
   let HrvAPI = new HaravanAPI({});
-  let count = await HrvAPI.call(HRV.ORDERS.COUNT, { access_token });
-  console.log(`[count_order_hrv] ${count}`);
+  let query = {};
+  let moment = require('moment');
+  let created_at_min = null;
+  if (last_sync && last_sync.hrv_orders_at) { created_at_min = (new Date(last_sync.hrv_orders_at)).toISOString(); }
+  if (created_at_min) {
+    query = Object.assign(query, { created_at_min });
+    console.log(`[HARAVAN] [SYNC] [ORDER] [FROM] [${created_at_min}]`);
+  }
+  let count = await HrvAPI.call(HRV.ORDERS.COUNT, { access_token, query });
+  console.log(`[HARAVAN] [SYNC] [ORDER] [COUNT] [${count}]`);
   let limit = 50;
   let totalPage = Math.ceil(count / limit);
   for (let i = 1; i <= totalPage; i++) {
-    let orders = await HrvAPI.call(HRV.ORDERS.LIST, { access_token, query: { page: i, limit } });
+    let query = { page: i, limit };
+    if (created_at_min) { query = Object.assign(query, { created_at_min }); }
+    let orders = await HrvAPI.call(HRV.ORDERS.LIST, { access_token, query });
     for (let j = 0; j < orders.length; j++) {
       const order_hrv = orders[j];
-      if(order_hrv && order_hrv.id){
+      if (order_hrv && order_hrv.id) {
         let { id } = order_hrv;
         let order = MapOrderHaravan.gen(order_hrv);
         let { type } = order;
         let found = await OrderMD.findOne({ id, type }).lean(true);
         if (found) {
-          console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}]`);
-          await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+          let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+          // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
         } else {
-          console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}]`);
-          await OrderMD.create(order);
+          let newOrder = await OrderMD.create(order);
+          // console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
         }
       }
     }
   }
 
   let end_at = new Date();
-  console.log(`END: ${(end_at - start_at) / 1000}`);
+  await SettingMD.update({ app: appslug }, { $set: { 'last_sync.hrv_orders_at': end_at } });
+  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}`);
 }
 
 let test = async () => {

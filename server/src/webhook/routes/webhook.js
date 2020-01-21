@@ -40,8 +40,8 @@ router.post('/woo', async (req, res) => {
 router.post('/haravan', async (req, res) => {
   try {
     let topic = req.headers['x-haravan-topic'];
-    switch(topic){
-      case 'orders/updated':
+    switch (topic) {
+      case 'orders/create': case 'orders/updated':
         let order_hrv = req.body;
         if (order_hrv && order_hrv.id) {
           let { id } = order_hrv;
@@ -49,11 +49,11 @@ router.post('/haravan', async (req, res) => {
           let { type } = order;
           let found = await OrderMD.findOne({ id, type }).lean(true);
           if (found) {
-            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [UPDATE] [${id}]`);
-            await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+            let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
           } else {
-            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [CREATE] [${id}]`);
-            await OrderMD.create(order);
+            let newOrder = await OrderMD.create(order);
+            console.log(`[HARAVAN] [WEBHOOK] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
           }
         }
         break;

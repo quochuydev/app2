@@ -8,6 +8,7 @@ const staffs = require(path.resolve('./src/staffs/routes/staffs'));
 const webhook = require(path.resolve('./src/webhook/routes/webhook'));
 const woocommerce = require(path.resolve('./src/woocommerce/routes/woocommerce'));
 const haravan = require(path.resolve('./src/haravan/routes/haravan'));
+const shopify = require(path.resolve('./src/shopify/routes/shopify'));
 const _ = require('lodash');
 
 const routes = (app) => {
@@ -32,6 +33,7 @@ const routes = (app) => {
   app.use('/api/woocommerce', woocommerce);
   app.use('/api/haravan', haravan);
   app.use('/webhook', webhook);
+  app.use('/shopify', shopify);
 }
 
 module.exports = routes;
