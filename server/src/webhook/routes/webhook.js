@@ -75,4 +75,14 @@ router.get('/haravan', async (req, res) => {
   }
 });
 
+router.post('/shopify', async (req, res) => {
+  try {
+    console.log(req.headers['x-shopify-topic'])
+    res.json({ error: false })
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ error: true })
+  }
+});
+
 module.exports = router;

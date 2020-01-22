@@ -12,9 +12,15 @@ const SettingSchema = new Schema({
     status: { type: Number, default: 0 },
     access_token: { type: String, default: null },
   },
+  shopify: {
+    shopify_host: { type: String, default: null },
+    status: { type: Number, default: 0 },
+    access_token: { type: String, default: null },
+  },
   last_sync: {
     woo_orders_at: { type: Date, default: null },
     hrv_orders_at: { type: Date, default: null },
+    shopify_orders_at: { type: Date, default: null },
   }
 })
 

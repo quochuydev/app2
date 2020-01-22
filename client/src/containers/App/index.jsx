@@ -4,10 +4,8 @@ import * as customerActions from './views/Admin/Customer/actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import './App.css';
-import { Layout, Menu, Table, Icon, Tag, Row, Col, Card, Button, Modal } from 'antd';
+import { Table, Icon, Tag, Row, Col, Card, Button, Modal } from 'antd';
 import 'antd/dist/antd.css';
-const { Sider } = Layout;
-
 
 function App(props) {
   const { actions } = props;

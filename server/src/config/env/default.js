@@ -13,9 +13,9 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://dbc01227.ngrok.io',
-  delivery_url: 'https://36e30315.ngrok.io/webhook/woo',
-  // webhook_haravan_url: 'https://eda294ef.ngrok.io/webhook/haravan',
+  app_host: 'https://a5f3b64c.ngrok.io',
+  delivery_url: 'https://a5f3b64c.ngrok.io/webhook/woo',
+  // webhook_haravan_url: 'https://a5f3b64c.ngrok.io/webhook/haravan',
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
@@ -40,11 +40,10 @@ module.exports = {
   },
 
   shopify: {
-    shopify_host: 'https://quochuydev1.myshopify.com',
     client_id: "c925250ee1a5f062f01b3c88e508e209",
     client_secret: "1f44c251898c86a09618d5076b6b1b67",
-    callback_path: '/shopify/auth/callback',
-    address: 'https://dbc01227.ngrok.io/shopify/webhook',
+    callback_path: '/api/shopify/auth/callback',
+    address: 'https://a5f3b64c.ngrok.io/webhook/shopify',
   },
 
   response_mode: 'form_post',

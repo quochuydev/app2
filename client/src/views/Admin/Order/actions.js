@@ -29,7 +29,7 @@ export function loadOrders(customer) {
   }
 }
 
-export function syncOrders(customer) {
+export function syncOrders() {
   return async (dispatch) => {
     try {
       const data = await AdminServices.syncOrders();

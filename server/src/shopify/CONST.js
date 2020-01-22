@@ -22,7 +22,8 @@ SHOPIFY.WEBHOOKS = {
 SHOPIFY.ORDERS = {
   LIST: {
     method: 'get',
-    url: 'orders.json'
+    url: 'orders.json',
+    resPath: 'orders'
   }
 }
 
@@ -36,11 +37,11 @@ let listWebhooks = [
   { topic: 'orders/cancelled', address },
   { topic: 'orders/create', address },
   { topic: 'orders/delete', address },
-  { topic: 'orders/edited', address },
-  // { topic: 'orders/fulfilled', address },
-  // { topic: 'orders/paid', address },
   { topic: 'orders/partially_fulfilled', address },
   { topic: 'orders/updated', address },
+  // { topic: 'orders/edited', address },
+  // { topic: 'orders/fulfilled', address },
+  // { topic: 'orders/paid', address },
 ]
 
 module.exports = { SHOPIFY, listWebhooks }

@@ -23,6 +23,8 @@ const URLS = {
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
   BUILDLINK_HARAVAN_APP: 'api/haravan/build-link',
   INSTALL_HARAVAN_APP: 'api/haravan/install',
+
+  BUILDLINK_SHOPIFY_APP: 'api/shopify/build-link',
 }
 
 async function listCustomers() {
@@ -81,8 +83,16 @@ async function installHaravanApp(data) {
   return await ApiClient.postData(URLS.INSTALL_HARAVAN_APP, null, data);
 }
 
+async function buildLinkShopifyApp(data) {
+  return await ApiClient.postData(URLS.BUILDLINK_SHOPIFY_APP, null, data);
+}
+
+async function installShopifyApp(data) {
+  return await ApiClient.postData(URLS.BUILDLINK_SHOPIFY_APP, null, data);
+}
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
   loadOrders, syncOrders, loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp,
-  buildLinkHaravanApp, installHaravanApp
+  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp
 }

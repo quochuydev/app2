@@ -32,8 +32,8 @@ const routes = (app) => {
   app.use('/api/staffs', staffs);
   app.use('/api/woocommerce', woocommerce);
   app.use('/api/haravan', haravan);
+  app.use('/api/shopify', shopify);
   app.use('/webhook', webhook);
-  app.use('/shopify', shopify);
 }
 
 module.exports = routes;
