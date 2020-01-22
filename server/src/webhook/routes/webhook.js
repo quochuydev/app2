@@ -30,7 +30,7 @@ router.post('/woo', async (req, res) => {
         }
         break;
     }
-    res.send({ error: false });
+    res.send({ error: false, body: req.body });
   } catch (error) {
     console.log(error)
     res.send({ error: true })
