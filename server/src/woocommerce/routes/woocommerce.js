@@ -62,6 +62,7 @@ router.get('/return_url', async (req, res) => {
 
 router.post('/callback_url', async (req, res) => {
   try {
+    res.json({ error: false });
     let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret };
     let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: dataUpdate }, { lean: true, new: true });
@@ -77,7 +78,6 @@ router.post('/callback_url', async (req, res) => {
         API.call(WOO.WEBHOOKS.CREATE, { body: JSON.stringify({ ...webhook, delivery_url }) });
       }
     }
-    res.json({ error: false });
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: true });

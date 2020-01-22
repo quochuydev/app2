@@ -12,9 +12,9 @@ const WOO = require(path.resolve('./src/woocommerce/CONST'));
 const HRV = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
 const { appslug, app_host } = require(path.resolve('./src/config/config'));
-const MapCustomerHaravan = require(path.resolve('./src/customer/repo/map_customer_hrv'));
-const MapCustomerWoocommerce = require(path.resolve('./src/customer/repo/map_customer_woo'));
-const MapCustomerShopify = require(path.resolve('./src/customer/repo/map_customer_shopify'));
+const MapCustomerHaravan = require(path.resolve('./src/customers/repo/map_customer_hrv'));
+const MapCustomerWoocommerce = require(path.resolve('./src/customers/repo/map_customer_woo'));
+const MapCustomerShopify = require(path.resolve('./src/customers/repo/map_customer_shopify'));
 const logger = require(path.resolve('./src/core/lib/logger'));
 
 const CustomerMD = mongoose.model('Customer');
