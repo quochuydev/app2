@@ -43,8 +43,8 @@ module.exports = {
     shopify_host: 'https://quochuydev1.myshopify.com',
     client_id: "c925250ee1a5f062f01b3c88e508e209",
     client_secret: "1f44c251898c86a09618d5076b6b1b67",
-    callback_path: '/shopify/auth/callback',
-    address: 'https://dbc01227.ngrok.io/shopify/webhook',
+    callback_path: '/api/shopify/auth/callback',
+    address: 'https://dbc01227.ngrok.io/webhook/shopify',
   },
 
   response_mode: 'form_post',
