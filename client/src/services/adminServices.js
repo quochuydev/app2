@@ -40,7 +40,7 @@ async function updateCustomer(customer) {
 }
 
 async function syncCustomers(customer) {
-  return await ApiClient.getData(URLS.SYNC_CUSTOMER, null, customer);
+  return await ApiClient.postData(URLS.SYNC_CUSTOMER, null, customer);
 }
 
 async function exportCustomer() {

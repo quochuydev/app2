@@ -77,7 +77,7 @@ export function addCustomer(customer) {
   }
 }
 
-export function syncCustomers(customer) {
+export function syncCustomers() {
   return async (dispatch) => {
     try {
       const data = await AdminServices.syncCustomers();

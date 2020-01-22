@@ -27,6 +27,14 @@ SHOPIFY.ORDERS = {
   }
 }
 
+SHOPIFY.CUSTOMERS = {
+  LIST: {
+    method: 'get',
+    url: 'customers.json',
+    resPath: 'customers'
+  }
+}
+
 let listWebhooks = [
   { topic: 'app/uninstalled', address },
   { topic: 'shop/update', address },

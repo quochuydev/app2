@@ -21,6 +21,10 @@ const SettingSchema = new Schema({
     woo_orders_at: { type: Date, default: null },
     hrv_orders_at: { type: Date, default: null },
     shopify_orders_at: { type: Date, default: null },
+
+    woo_customers_at: { type: Date, default: null },
+    hrv_customers_at: { type: Date, default: null },
+    shopify_customers_at: { type: Date, default: null },
   }
 })
 

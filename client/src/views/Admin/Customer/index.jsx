@@ -74,6 +74,10 @@ function Customer(props) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
+  function syncCustomers() {
+    actions.syncCustomers();
+  }
+
   return (
     <div>
       <Row key='1'>
@@ -82,6 +86,7 @@ function Customer(props) {
           <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
+          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} />;
         </Col>
       </Row>

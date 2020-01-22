@@ -39,7 +39,7 @@ const MENU_DATA = [
     path: CUSTOMER_HRV_ROUTE,
     key: 'customerHrv',
     name: 'Khách hàng Hrv',
-    is_open: true
+    is_open: false
   },
   {
     path: MESSENGER_ROUTE,
@@ -57,19 +57,19 @@ const MENU_DATA = [
     path: ORDER_WOO_ROUTE,
     key: 'order_woo',
     name: 'Đơn hàng Woocommerce',
-    is_open: true
+    is_open: false
   },
   {
     path: CUSTOMER_WOO_ROUTE,
     key: 'customer_woo',
     name: 'Khách hàng Woocommerce',
-    is_open: true
+    is_open: false
   },
   {
     path: PRODUCT_WOO_ROUTE,
     key: 'product_woo',
     name: 'Sản phẩm Woocommerce',
-    is_open: true
+    is_open: false
   },
   {
     path: STAFFS_ROUTE,
