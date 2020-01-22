@@ -40,7 +40,6 @@ module.exports = {
   },
 
   shopify: {
-    shopify_host: 'https://quochuydev1.myshopify.com',
     client_id: "c925250ee1a5f062f01b3c88e508e209",
     client_secret: "1f44c251898c86a09618d5076b6b1b67",
     callback_path: '/api/shopify/auth/callback',

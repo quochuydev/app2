@@ -13,6 +13,7 @@ const SettingSchema = new Schema({
     access_token: { type: String, default: null },
   },
   shopify: {
+    shopify_host: { type: String, default: null },
     status: { type: Number, default: 0 },
     access_token: { type: String, default: null },
   },

@@ -6,7 +6,7 @@ let router = express.Router();
 const config = require(path.resolve('./src/config/config'));
 const logger = require(path.resolve('./src/core/lib/logger'));
 const { app_host, shopify, appslug } = config;
-const { shopify_host, client_id, client_secret, callback_path } = shopify;
+const { client_id, client_secret, callback_path } = shopify;
 const { SHOPIFY, listWebhooks } = require('./../CONST');
 const SettingMD = mongoose.model('Setting');
 
@@ -19,10 +19,11 @@ router.post('/build-link', async (req, res) => {
 
 router.get('/auth/callback', async (req, res) => {
   res.json({ error: false });
-  let { code } = req.query;
+  let { code, shop } = req.query;
+  let shopify_host = `https://${shop}`
   let API = new ShopifyApi({ shopify_host });
   let { access_token } = await API.getToken({ client_id, client_secret, code });
-  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { shopify: { status: 1, access_token } } }, { lean: true, new: true });
+  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { shopify: { shopify_host, status: 1, access_token } } }, { lean: true, new: true });
   let webhooks = await API.call(SHOPIFY.WEBHOOKS.LIST, { access_token });
   for (let i = 0; i < listWebhooks.length; i++) {
     let webhook = listWebhooks[i];
