@@ -151,11 +151,12 @@ let syncOrdersShopify = async () => {
 function buildQuery(body) {
   let query = {}
   for (f in body) {
-    if (!body[f]) { continue }
+    let vl = body[f];
+    if (!vl || (vl && !vl.length)) { continue }
     if (f.substring(f.length - 3) == '_in') {
-      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: body[f] } })
+      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
     } else {
-      query = Object.assign(query, { [f]: body[f] })
+      query = Object.assign(query, { [f]: vl })
     }
   }
   return query;

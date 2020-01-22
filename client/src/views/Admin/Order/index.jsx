@@ -68,11 +68,10 @@ function Orders(props) {
     setQuery({ ...query, type_in: e })
   }
   function onChange(e) {
-    console.log(e.target.name)
-    console.log(e.target.value)
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
+
   return (
     <div className="">
       <Row key='1'>
@@ -82,7 +81,7 @@ function Orders(props) {
         <Col span={8}>
           <Select
             mode="multiple"
-            name="type"
+            name="type_in"
             style={{ width: '100%' }}
             placeholder="-- Chọn --"
             onChange={onChangeType}
