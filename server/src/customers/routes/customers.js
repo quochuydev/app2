@@ -37,9 +37,9 @@ router.post('/sync', async (req, res) => {
 })
 
 let sync = async () => {
-  // await syncCustomersHaravan();
-  // await syncCustomersWoo();
-  // await syncOrdersShopify();
+  await syncCustomersHaravan();
+  await syncCustomersWoo();
+  await syncCustomersShopify();
 }
 
 let syncCustomersWoo = async () => {
