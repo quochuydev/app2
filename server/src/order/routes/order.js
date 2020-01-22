@@ -12,11 +12,15 @@ const config = require(path.resolve('./src/config/config'));
 const { appslug, app_host } = config;
 const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
+const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
 
 router.post('/list', async (req, res) => {
   try {
     let count = await OrderMD.count({});
-    let orders = await OrderMD.find({}).lean(true);
+    let limit = 20;
+    let page = 2;
+    let skip = (page - 1) * 20;
+    let orders = await OrderMD.find({}).skip(skip).limit(limit).sort({ created_at: -1 }).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
     res.status(400).send({ error: true });
@@ -112,29 +116,27 @@ let syncOrdersShopify = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { shopify, last_sync } = setting;
-  // TODO sync
-
-  // let orders = await API.call(SHOPIFY.ORDERS.LIST, { access_token });
-  // console.log(orders)
-  // for (let j = 0; j < orders.length; j++) {
-  //   const order_hrv = orders[j];
-  //   if (order_hrv && order_hrv.id) {
-  //     let { id } = order_hrv;
-  //     let order = MapOrderHaravan.gen(order_hrv);
-  //     let { type } = order;
-  //     let found = await OrderMD.findOne({ id, type }).lean(true);
-  //     if (found) {
-  //       let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
-  //       // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
-  //     } else {
-  //       let newOrder = await OrderMD.create(order);
-  //       // console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
-  //     }
-  //   }
-  // }
+  let { access_token } = shopify;
+  let orders = await API.call(SHOPIFY.ORDERS.LIST, { access_token });
+  for (let j = 0; j < orders.length; j++) {
+    const order_shopify = orders[j];
+    if (order_hrv && order_hrv.id) {
+          let { id } = order_shopify;
+          let order = MapOrderShopify.gen(order_hrv);
+          let { type } = order;
+          let found = await OrderMD.findOne({ id, type }).lean(true);
+          if (found) {
+            let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+            console.log(`[SHOPIFY] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
+          } else {
+            let newOrder = await OrderMD.create(order);
+            console.log(`[SHOPIFY] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
+          }
+    }
+  }
 
   let end_at = new Date();
-  // await SettingMD.update({ app: appslug }, { $set: { 'last_sync.hrv_orders_at': end_at } });
+  await SettingMD.update({ app: appslug }, { $set: { 'last_sync.shopify_orders_at': end_at } });
   console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}`);
 }
 
