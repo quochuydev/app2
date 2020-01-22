@@ -1,6 +1,5 @@
 const path = require('path');
-const config = require(path.resolve('./src/config/config'));
-const { shopify: { address } } = config;
+const { shopify: { address } } = require(path.resolve('./src/config/config'));
 
 let SHOPIFY = {};
 SHOPIFY.WEBHOOKS = {

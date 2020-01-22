@@ -65,7 +65,7 @@ let syncOrdersWoo = async () => {
         console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
         let newOrder = await OrderMD.create(order);
-        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}] [${updateOrder.number}]`);
+        console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
       }
     }
   }
