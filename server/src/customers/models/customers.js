@@ -29,4 +29,4 @@ const CustomersSchema = new Schema({
   shop_id: { type: Number, default: null }
 })
 
-mongoose.model('Customers', CustomersSchema);
+mongoose.model('Customer', CustomersSchema);

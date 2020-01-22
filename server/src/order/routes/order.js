@@ -4,25 +4,26 @@ const path = require('path');
 const mongoose = require('mongoose');
 const APIBus = require('wooapi');
 const HaravanAPI = require('haravan_api');
-let ShopifyApi = require('shopify_mono');
+const ShopifyApi = require('shopify_mono');
 const OrderMD = mongoose.model('Order');
 const SettingMD = mongoose.model('Setting');
 const WOO = require(path.resolve('./src/woocommerce/CONST'));
 const HRV = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
-const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host } = config;
+const { appslug, app_host } = require(path.resolve('./src/config/config'));
 const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
+const logger = require(path.resolve('./src/core/lib/logger'));
 
 router.post('/list', async (req, res) => {
   try {
-    let count = await OrderMD.count({});
+    let query = buildQuery(req.body);
+    let count = await OrderMD.count(query);
     let limit = 20;
     let page = 1;
     let skip = (page - 1) * 20;
-    let orders = await OrderMD.find({}).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+    let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
     res.status(400).send({ error: true });
@@ -32,14 +33,18 @@ router.post('/list', async (req, res) => {
 router.post('/sync', async (req, res) => {
   try {
     res.json({ error: false });
-    await syncOrdersHaravan();
-    await syncOrdersWoo();
-    await syncOrdersShopify();
+    await sync();
   } catch (error) {
     console.log(error)
     res.status(400).send({ error: true });
   }
 })
+
+let sync = async () => {
+  await syncOrdersHaravan();
+  await syncOrdersWoo();
+  await syncOrdersShopify();
+}
 
 let syncOrdersWoo = async () => {
   let start_at = new Date();
@@ -66,7 +71,7 @@ let syncOrdersWoo = async () => {
   }
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.woo_orders_at': end_at } });
-  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}s`);
 }
 
 let syncOrdersHaravan = async () => {
@@ -110,7 +115,7 @@ let syncOrdersHaravan = async () => {
 
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.hrv_orders_at': end_at } });
-  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}s`);
 }
 
 
@@ -140,10 +145,27 @@ let syncOrdersShopify = async () => {
 
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.shopify_orders_at': end_at } });
-  console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}s`);
+}
+
+function buildQuery(body) {
+  let query = {}
+  for (f in body) {
+    let vl = body[f];
+    if (!vl || (vl && !vl.length)) { continue }
+    if (f.substring(f.length - 3) == '_in') {
+      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
+    } else {
+      query = Object.assign(query, { [f]: vl })
+    }
+  }
+  return query;
 }
 
 let test = async () => {
+  let body = { type_in: ['woocommerce'], number: '' };
+  let query = buildQuery(body);
+  console.log(query)
   // await syncOrdersHaravan();
   // await syncOrdersWoo();
   // await syncOrdersShopify();

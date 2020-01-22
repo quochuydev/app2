@@ -7,10 +7,10 @@ export const ACTIONS = {
   SYNC_ORDERS_FAILED: 'SYNC_ORDERS_FAILED',
 };
 
-export function loadOrders(customer) {
+export function loadOrders(query) {
   return async (dispatch) => {
     try {
-      const data = await AdminServices.loadOrders();
+      const data = await AdminServices.loadOrders(query);
       dispatch({
         type: ACTIONS.LOAD_ORDERS_SUCCESS, payload: {
           error: false,

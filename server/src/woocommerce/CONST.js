@@ -24,4 +24,11 @@ WOO.ORDERS = {
   }
 }
 
+WOO.CUSTOMERS = {
+  LIST: {
+    method: 'get',
+    url: 'customers',
+  }
+}
+
 module.exports = WOO;

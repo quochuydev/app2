@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Row, Col, Button, Tag, Icon } from 'antd';
+import { Table, Row, Col, Button, Tag, Icon, Input, Select } from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetail from '../OrderDetail/index';
+const { Option } = Select;
 
 function Orders(props) {
   const { actions, orders } = props;
@@ -41,34 +42,66 @@ function Orders(props) {
   ];
 
   useEffect(() => {
-    actions.loadOrders();
+    actions.loadOrders(query);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [isShowDetailModal, setIsShowDetailModal] = useState(false);
+  let [orderDetail, setOrderDetail] = useState({});
+  let [query, setQuery] = useState({});
+
   async function loadOrders() {
-    await actions.loadOrders();
+    console.log(query)
+    await actions.loadOrders(query);
   }
   async function syncOrders() {
     await actions.syncOrders();
     loadOrders();
   }
 
-  const [isShowDetailModal, setIsShowDetailModal] = useState(false);
-  let [orderDetail, setOrderDetail] = useState({});
 
   function openDetailModal(order) {
     setOrderDetail(order)
     setIsShowDetailModal(true);
   }
+  function onChangeType(e) {
+    setQuery({ ...query, type_in: e })
+  }
+  function onChange(e) {
+    let { name, value } = e.target;
+    setQuery({ ...query, [name]: value })
+  }
 
   return (
     <div className="">
       <Row key='1'>
+        <Col span={8}>
+          <Input name="number" onChange={onChange} />
+        </Col>
+        <Col span={8}>
+          <Select
+            mode="multiple"
+            name="type_in"
+            style={{ width: '100%' }}
+            placeholder="-- Chọn --"
+            onChange={onChangeType}
+          >
+            <Option value='haravan'>Haravan</Option>
+            <Option value='woocommerce'>Woocommerce</Option>
+            <Option value='shopify'>Shopify</Option>
+          </Select>
+        </Col>
+        <Col span={8}>
+
+        </Col>
+        <Col span={8}>
+
+        </Col>
         <Col span={24}>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />;
-      </Col>
+        </Col>
       </Row>
       <OrderDetail
         showModal={isShowDetailModal}

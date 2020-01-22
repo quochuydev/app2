@@ -11,4 +11,17 @@ HRV.ORDERS = {
     resPath: 'count'
   }
 }
+
+HRV.CUSTOMERS = {
+  LIST: {
+    method: 'get',
+    url: `com/customers.json`,
+    resPath: 'customers'
+  },
+  COUNT: {
+    method: 'get',
+    url: `com/customers/count.json`,
+    resPath: 'count'
+  }
+}
 module.exports = HRV;
