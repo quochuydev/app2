@@ -4,7 +4,6 @@ let mongoose = require('mongoose');
 let ShopifyApi = require('shopify_mono');
 let router = express.Router();
 const config = require(path.resolve('./src/config/config'));
-const logger = require(path.resolve('./src/core/lib/logger'));
 const { app_host, shopify, appslug } = config;
 const { client_id, client_secret, callback_path } = shopify;
 const { SHOPIFY, listWebhooks } = require('./../CONST');

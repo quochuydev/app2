@@ -4,17 +4,17 @@ const path = require('path');
 const mongoose = require('mongoose');
 const APIBus = require('wooapi');
 const HaravanAPI = require('haravan_api');
-let ShopifyApi = require('shopify_mono');
+const ShopifyApi = require('shopify_mono');
 const OrderMD = mongoose.model('Order');
 const SettingMD = mongoose.model('Setting');
 const WOO = require(path.resolve('./src/woocommerce/CONST'));
 const HRV = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
-const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host } = config;
+const { appslug, app_host } = require(path.resolve('./src/config/config'));
 const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
+const logger = require(path.resolve('./src/core/lib/logger'));
 
 router.post('/list', async (req, res) => {
   try {
@@ -66,7 +66,7 @@ let syncOrdersWoo = async () => {
   }
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.woo_orders_at': end_at } });
-  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}s`);
 }
 
 let syncOrdersHaravan = async () => {
@@ -110,7 +110,7 @@ let syncOrdersHaravan = async () => {
 
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.hrv_orders_at': end_at } });
-  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}s`);
 }
 
 
@@ -140,7 +140,7 @@ let syncOrdersShopify = async () => {
 
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.shopify_orders_at': end_at } });
-  console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}`);
+  console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}s`);
 }
 
 let test = async () => {
