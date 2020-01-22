@@ -166,6 +166,6 @@ let test = async () => {
   await syncCustomersShopify();
   await syncCustomersWoo();
 }
-test();
+// test();
 
 module.exports = router;
