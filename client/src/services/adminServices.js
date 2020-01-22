@@ -47,8 +47,8 @@ async function exportCustomer() {
   return await ApiClient.postData(URLS.EXPORT_CUSTOMER, null, null);
 }
 
-async function loadOrders() {
-  return await ApiClient.postData(URLS.LIST_ORDERS);
+async function loadOrders(query) {
+  return await ApiClient.postData(URLS.LIST_ORDERS, null, query);
 }
 
 async function syncOrders() {
