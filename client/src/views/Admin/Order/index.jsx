@@ -8,6 +8,20 @@ import OrderDetail from '../OrderDetail/index';
 
 function Orders(props) {
   const { actions, orders } = props;
+
+  const cssOrderType = (type) => {
+    switch (type) {
+      case 'woocommerce':
+        return 'magenta';
+      case 'haravan':
+        return 'blue';
+      case 'shopify':
+        return 'green';
+      default:
+        return 'blue';
+    }
+  }
+
   const columns = [
     {
       title: 'Mã đơn hàng', key: 'edit',
@@ -17,7 +31,7 @@ function Orders(props) {
     },
     {
       title: 'Type', key: 'type', render: edit => (
-        <Tag color={ edit.type == 'haravan' ? 'blue' : 'magenta'}>{edit.type}</Tag>)
+        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
     },
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {

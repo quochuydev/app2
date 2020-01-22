@@ -22,7 +22,8 @@ SHOPIFY.WEBHOOKS = {
 SHOPIFY.ORDERS = {
   LIST: {
     method: 'get',
-    url: 'orders.json'
+    url: 'orders.json',
+    resPath: 'orders'
   }
 }
 
