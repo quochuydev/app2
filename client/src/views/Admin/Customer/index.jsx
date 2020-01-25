@@ -20,7 +20,7 @@ function Customer(props) {
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'default_address.address1', key: 'address', },
+    { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
     { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
       title: 'Edit', key: 'edit',
@@ -76,6 +76,7 @@ function Customer(props) {
 
   function syncCustomers() {
     actions.syncCustomers();
+    onLoadCustomer();
   }
 
   return (
