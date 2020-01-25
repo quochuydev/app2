@@ -3,8 +3,8 @@ function send(req, res) {
   var transporter = nodemailer.createTransport({ // config mail server
     service: 'Gmail',
     auth: {
-      user: 'quochuydev.mail@gmail.com',
-      pass: 'Quochuydev548!'
+      user: '',
+      pass: ''
     }
   });
   var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
