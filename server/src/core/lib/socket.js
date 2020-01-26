@@ -9,7 +9,7 @@ const socket = ({ app }) => {
     });
     socket.on('send', function(msg){
       console.log('message: ' + msg);
-      io.emit('send', msg);
+      io.emit('onsend', msg);
     });
   });
 

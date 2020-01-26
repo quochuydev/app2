@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -8,29 +8,42 @@ import {
 import 'antd/dist/antd.css';
 import './style.css'
 import io from 'socket.io-client';
-const ENDPOINT = 'http://localhost:3000/'
+import config from './../../../utils/config';
+const ENDPOINT = `${config.backend_url}/`;
 let socket;
 
 function Messenger(props) {
   const data = [
-    'Racing car sprays burning fuel into crowd.',
-    'Japanese princess to wed commoner.',
-    'Australian walks 100km after outback crash.',
-    'Man charged over missing wedding girl.',
-    'Los Angeles battles huge wildfires.',
+    { username: 'quochuydev', msg: 'Los Angeles battles huge wildfires.' }
   ];
   const { Item } = List;
 
-  useEffect(()=>{
+  let image = "https://yt3.ggpht.com/k-gSA9vuhrssghjNGGJY967YBKSeRkTDcfytvayrqVQtxn-0p8wGkjiB_FdOjl5brh4OmfLb=w144-h200-nd"
+
+  useEffect(() => {
     socket = io(ENDPOINT);
     return () => {
       socket.emit('disconnect');
       socket.off();
     }
-  },[ENDPOINT])
+  }, [ENDPOINT])
 
-  function sendMessage(){
-    socket.emit('send', 1000);
+  let [message, setMessage] = useState('');
+  function onChangeMessage(e){
+    setMessage(e.target.value);
+  }
+
+  let [messages, setMessages] = useState([])
+  useEffect(() => {
+    socket.on('onsend', (message) => {
+      setMessages([...messages, message])
+    })
+    console.log(messages)
+  }, [messages])
+
+  function sendMessage() {
+    socket.emit('send', message);
+    setMessage('e.target.value');
   }
 
   return (
@@ -43,7 +56,7 @@ function Messenger(props) {
           dataSource={data}
           renderItem={item => (
             <List.Item>
-              <Typography.Text mark>[ITEM]</Typography.Text> {item}
+              <Typography.Text mark>[ITEM]</Typography.Text> {item.username}: {item.msg}
             </List.Item>
           )}
         />
@@ -58,43 +71,56 @@ function Messenger(props) {
         </List>
       </Col>
       <Col span={24}>
-      <div className="container">
-        <div className="inbox">
-          <aside>
-            <ul ng-controller="chatCtrl as chat">
-              <div ng-repeat="chat in chats">
-                <li ng-click="uid(chat.id)">
-                  <img className="avatar" src="{{chat.avatar}}" />
-                  <p className="username">{'{'}{'{'}chat.username{'}'}{'}'}</p>
-                </li>
+        <div className="container">
+          <div className="inbox">
+            <aside>
+              <ul ng-controller="chatCtrl as chat">
+                <div ng-repeat="chat in chats">
+                  <li ng-click="uid(chat.id)">
+                    <img className="avatar" src={image} />
+                    <p className="username">chat.username</p>
+                  </li>
+                  <li ng-click="uid(chat.id)">
+                    <img className="avatar" src={image} />
+                    <p className="username">chat.username</p>
+                  </li>
+                </div>
+                <div ng-repeat="chat in chats">
+                  <li ng-click="uid(chat.id)">
+                    <img className="avatar" src={image} />
+                    <p className="username">chat.username</p>
+                  </li>
+                  <li ng-click="uid(chat.id)">
+                    <img className="avatar" src={image} />
+                    <p className="username">chat.username</p>
+                  </li>
+                </div>
+              </ul>
+            </aside>
+            <main ng-controller="chatCtrl as chat">
+              <div className="init">
+                <i className="fa fa-inbox" />
+                <h4>Choose a conversation from the left</h4>
               </div>
-            </ul>
-          </aside>
-          <main ng-controller="chatCtrl as chat">
-            <div className="init">
-              <i className="fa fa-inbox" />
-              <h4>Choose a conversation from the left</h4>
-            </div>
-            <div className="loader">
-              <p />
-              <h4>Loading</h4>
-            </div>
-            <div className="message-wrap" ng-repeat="message in chats" ng-show="value == message.id">
-              <div className="message" ng-repeat="i in message.messages track by $index">
-                <p>{'{'}{'{'}i{'}'}{'}'}</p>
-                <img ng-src="{{message.avatar}}" />
+              <div className="loader">
+                <p />
+                <h4>Loading</h4>
               </div>
-            </div>
-            <footer>
-              <form ng-submit="add()">
-                <input ng-model="text" placeholder="Enter a message" type="text" />
-                <input type="submit" onClick={() => sendMessage()} defaultValue="Send" />
-                <Button onClick={() => sendMessage()}>Guirw tin </Button>
-              </form>
-            </footer>
-          </main>
+              <div className="message-wrap" >
+                <div className="message" ng-repeat="msg in messages track by $index">
+                  <p>msg</p>
+                  <img src={image} />
+                </div>
+              </div>
+              <footer>
+                <form ng-submit="add()">
+                  <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message}/>
+                  <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
+                </form>
+              </footer>
+            </main>
+          </div>
         </div>
-      </div>
       </Col>
     </Row >
   );

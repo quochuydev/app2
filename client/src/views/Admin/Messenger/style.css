@@ -123,12 +123,12 @@ outline: none;
 color: #AAA;
 width: 100%;
 }
-.inbox main footer input[type="submit"] {
+.inbox main footer .send {
 background: #43d3c5;
 color: #FFF;
 width: 17%;
 border-radius: 4px;
-padding: 0.8em;
+height: 3em;
 margin: 0 1em;
 border: none;
 cursor: pointer;
