@@ -45,7 +45,7 @@ const MENU_DATA = [
     path: MESSENGER_ROUTE,
     key: 'messenger',
     name: 'Tin nhắn',
-    is_open: false
+    is_open: true
   },
   {
     path: ORDER_ROUTE,

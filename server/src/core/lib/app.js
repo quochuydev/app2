@@ -5,6 +5,7 @@ const Mongoose = require('./mongoose');
 const Express = require('./express');
 const PORT = process.env.PORT || 3000;
 // const eventBus = require('./event');
+const socket = require('./socket');
 
 const App = {
   init: () => {
@@ -31,9 +32,9 @@ const App = {
 
   start: () => {
     App.init();
-    app.listen(PORT, () => {
+    socket({ app }).listen(PORT, () => {
       console.log(`running port ${PORT}`);
-    })
+    });
   }
 }
 
