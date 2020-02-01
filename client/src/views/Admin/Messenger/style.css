@@ -6,8 +6,8 @@ font-family: 'Montserrat', sans-serif;
 }
 
 html, body {
-background: -webkit-gradient(linear, left top, left bottom, from(#2EC4B6), to(#9EB1E9));
-background: linear-gradient(180deg, #2EC4B6, #9EB1E9);
+/* background: -webkit-gradient(linear, left top, left bottom, from(#2EC4B6), to(#9EB1E9)); */
+/* background: linear-gradient(180deg, #2EC4B6, #9EB1E9); */
 overflow-x: hidden;
 }
 
