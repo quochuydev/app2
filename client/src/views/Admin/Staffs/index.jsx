@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Icon, Row, Col, Button, Modal } from 'antd';
+import {
+  Table, Icon, Row, Col, Button, Modal, Upload
+} from 'antd';
 import 'antd/dist/antd.css';
+import config from './../../../utils/config';
+const apiUrl = `${config.backend_url}/api`;
 
 function Staffs(props) {
   const { actions } = props;
@@ -25,6 +29,18 @@ function Staffs(props) {
       ),
     },
   ];
+  const uploads = {
+    action: `${apiUrl}/staffs/import`,
+    listType: 'picture',
+    previewFile(file) {
+      return fetch(`${apiUrl}/staffs/import`, {
+        method: 'POST',
+        body: file,
+      })
+        .then(res => res.json())
+        .then(({ thumbnail }) => thumbnail);
+    },
+  };
 
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
@@ -34,6 +50,12 @@ function Staffs(props) {
   }
   async function loadStaffs() {
     await actions.loadStaffs();
+  }
+  function importStaffs() {
+    actions.importStaffs();
+  }
+  function exportStaffs() {
+    actions.exportStaffs();
   }
   return (
     <div className="">
@@ -55,20 +77,23 @@ function Staffs(props) {
         <p>Some contents...</p>
       </Modal>
       <Modal
-        title="isImportModal Modal"
+        title="Import excel"
         visible={isImportModal}
-        onOk={() => createStaffs()}
+        onOk={() => importStaffs()}
         onCancel={() => setIsImportModal(false)}
       >
-        <p>Some contents...</p>
+        <Upload {...uploads}>
+          <Button>
+            <Icon type="upload" /> Upload
+        </Button>
+        </Upload>
       </Modal>
       <Modal
-        title="isExportModal Modal"
+        title="Export excel"
         visible={isExportModal}
-        onOk={() => createStaffs()}
+        onOk={() => exportStaffs()}
         onCancel={() => setIsExportModal(false)}
       >
-        <p>Some contents...</p>
       </Modal>
     </div>
   );

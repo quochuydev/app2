@@ -13,4 +13,22 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/import', async (req, res) => {
+  try {
+    res.send({ error: false, body: req.body })
+  } catch (error) {
+    console.log(error)
+    res.send({ error: true })
+  }
+});
+
+router.post('/export', async (req, res) => {
+  try {
+    res.send({ error: false, body: req.body })
+  } catch (error) {
+    console.log(error)
+    res.send({ error: true })
+  }
+});
+
 module.exports = router;
