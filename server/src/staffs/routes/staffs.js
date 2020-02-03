@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const StaffMD = mongoose.model('Staffs');
 
-const route = ({ app }) => {
+const router = ({ app }) => {
   app.post('/api/staffs', async (req, res) => {
     try {
       let count = await StaffMD.count();
@@ -31,4 +31,4 @@ const route = ({ app }) => {
   });
 }
 
-module.exports = route;
+module.exports = router;

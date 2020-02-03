@@ -1,15 +1,6 @@
 const path = require('path');
-const _ = require('lodash');
 
 const routes = (app) => {
-  app.use('/*', async (req, res, next) => {
-    if (req.originalUrl.indexOf('install') != -1) return next();
-    let token = _.get(req, 'headers.accesstoken', '') || req.session.access_token;
-    req.access_token = token;
-    if (req.access_token) return next();
-    next();
-  })
-
   app.get('/', (req, res) => {
     res.send({ error: false });
   })
