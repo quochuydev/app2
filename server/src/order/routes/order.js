@@ -1,5 +1,3 @@
-const express = require('express');
-const router = express.Router();
 const path = require('path');
 const mongoose = require('mongoose');
 const APIBus = require('wooapi');
@@ -16,29 +14,33 @@ const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
 const logger = require(path.resolve('./src/core/lib/logger'));
 
-router.post('/list', async (req, res) => {
-  try {
-    let query = buildQuery(req.body);
-    let count = await OrderMD.count(query);
-    let limit = 20;
-    let page = 1;
-    let skip = (page - 1) * 20;
-    let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
-    res.json({ error: false, count, orders });
-  } catch (error) {
-    res.status(400).send({ error: true });
-  }
-})
+const router = ({ app }) => {
+  app.post('/api/order/list', async (req, res) => {
+    try {
+      let query = buildQuery(req.body);
+      let count = await OrderMD.count(query);
+      let limit = 20;
+      let page = 1;
+      let skip = (page - 1) * 20;
+      let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+      res.json({ error: false, count, orders });
+    } catch (error) {
+      res.status(400).send({ error: true });
+    }
+  })
+  
+  app.post('/api/order/sync', async (req, res) => {
+    try {
+      res.json({ error: false });
+      await sync();
+    } catch (error) {
+      console.log(error)
+      res.status(400).send({ error: true });
+    }
+  })
+}
 
-router.post('/sync', async (req, res) => {
-  try {
-    res.json({ error: false });
-    await sync();
-  } catch (error) {
-    console.log(error)
-    res.status(400).send({ error: true });
-  }
-})
+module.exports = router;
 
 let sync = async () => {
   await syncOrdersHaravan();
@@ -153,7 +155,7 @@ function buildQuery(body) {
   for (f in body) {
     let vl = body[f];
     if (!vl || (vl && !vl.length)) { continue }
-    if (['_in'].indexOf(f.substring(f.length - 3)) !=  -1 ) {
+    if (['_in'].indexOf(f.substring(f.length - 3)) != -1) {
       query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
     } else {
       query = Object.assign(query, { [f]: vl })
@@ -171,5 +173,3 @@ let test = async () => {
   // await syncOrdersShopify();
 }
 // test();
-
-module.exports = router;

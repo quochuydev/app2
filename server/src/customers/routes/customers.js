@@ -1,7 +1,4 @@
-const express = require('express');
-const router = express.Router();
 const customerController = require('../controllers/customers');
-
 const path = require('path');
 const mongoose = require('mongoose');
 const APIBus = require('wooapi');
@@ -16,25 +13,28 @@ const MapCustomerHaravan = require(path.resolve('./src/customers/repo/map_custom
 const MapCustomerWoocommerce = require(path.resolve('./src/customers/repo/map_customer_woo'));
 const MapCustomerShopify = require(path.resolve('./src/customers/repo/map_customer_shopify'));
 const logger = require(path.resolve('./src/core/lib/logger'));
-
 const CustomerMD = mongoose.model('Customer');
 
-router.post('/list', customerController.list);
-router.post('/create', customerController.create);
-router.put('/:id', customerController.update);
-router.get('/sync', customerController.sync);
-router.post('/import', customerController.import);
-router.post('/export', customerController.export);
+const router = ({ app }) => {
+  app.post('/api/customers/list', customerController.list);
+  app.post('/api/customers/create', customerController.create);
+  app.put('/api/customers/:id', customerController.update);
+  app.get('/api/customers/sync', customerController.sync);
+  app.post('/api/customers/import', customerController.import);
+  app.post('/api/customers/export', customerController.export);
+  app.post('/api/customers/sync', async (req, res) => {
+    try {
+      res.json({ error: false });
+      await sync();
+    } catch (error) {
+      console.log(error)
+      res.status(400).send({ error: true });
+    }
+  })
+}
 
-router.post('/sync', async (req, res) => {
-  try {
-    res.json({ error: false });
-    await sync();
-  } catch (error) {
-    console.log(error)
-    res.status(400).send({ error: true });
-  }
-})
+module.exports = router;
+
 
 let sync = async () => {
   await syncCustomersHaravan();
@@ -167,5 +167,3 @@ let test = async () => {
   await syncCustomersWoo();
 }
 // test();
-
-module.exports = router;
