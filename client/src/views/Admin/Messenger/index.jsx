@@ -64,10 +64,6 @@ function Messenger(props) {
                   </List.Item>
                 )}
               />
-              <li>
-                <img className="avatar" src={image} />
-                <p className="username">chat.username</p>
-              </li>
             </ul>
           </aside>
           <main>
