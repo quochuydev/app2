@@ -1,14 +1,4 @@
 const path = require('path');
-const install = require(path.resolve('./src/install/routes/install'));
-const customers = require(path.resolve('./src/customers/routes/customers'));
-const order = require(path.resolve('./src/order/routes/order'));
-const woo_orders = require(path.resolve('./src/woo_orders/routes/woo_orders'));
-const download = require(path.resolve('./src/download/routes/download'));
-const staffs = require(path.resolve('./src/staffs/routes/staffs'));
-const webhook = require(path.resolve('./src/webhook/routes/webhook'));
-const woocommerce = require(path.resolve('./src/woocommerce/routes/woocommerce'));
-const haravan = require(path.resolve('./src/haravan/routes/haravan'));
-const shopify = require(path.resolve('./src/shopify/routes/shopify'));
 const _ = require('lodash');
 
 const routes = (app) => {
@@ -24,16 +14,16 @@ const routes = (app) => {
     res.send({ error: false });
   })
 
-  app.use('/install', install);
-  app.use('/download', download);
-  app.use('/api/customers', customers);
-  app.use('/api/order', order);
-  app.use('/api/woo_orders', woo_orders);
-  app.use('/api/staffs', staffs);
-  app.use('/api/woocommerce', woocommerce);
-  app.use('/api/haravan', haravan);
-  app.use('/api/shopify', shopify);
-  app.use('/webhook', webhook);
+  require(path.resolve('./src/install/routes/install'))({ app });
+  require(path.resolve('./src/download/routes/download'))({ app });
+  require(path.resolve('./src/customers/routes/customers'))({ app });
+  require(path.resolve('./src/order/routes/order'))({ app });
+  require(path.resolve('./src/woo_orders/routes/woo_orders'))({ app });
+  require(path.resolve('./src/staffs/routes/staffs'))({ app });
+  require(path.resolve('./src/woocommerce/routes/woocommerce'))({ app });
+  require(path.resolve('./src/haravan/routes/haravan'))({ app });
+  require(path.resolve('./src/shopify/routes/shopify'))({ app });
+  require(path.resolve('./src/webhook/routes/webhook'))({ app });
 }
 
 module.exports = routes;
