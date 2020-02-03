@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   Table, Icon, Row, Col, Button, Modal,
-  Input, Select, DatePicker, Upload
+  Input, Select, DatePicker, Upload, Tag
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
@@ -13,8 +13,24 @@ const apiUrl = `${config.backend_url}/api`;
 function Customer(props) {
   const { Option } = Select;
   const { customers, actions } = props;
+  const cssOrderType = (type) => {
+    switch (type) {
+      case 'woocommerce':
+        return 'magenta';
+      case 'haravan':
+        return 'blue';
+      case 'shopify':
+        return 'green';
+      default:
+        return 'blue';
+    }
+  }
   const columns = [
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
+    {
+      title: 'Type', key: 'type', render: edit => (
+        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+    },
     { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
     { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },

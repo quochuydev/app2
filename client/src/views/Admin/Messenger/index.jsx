@@ -29,7 +29,7 @@ function Messenger(props) {
   }, [ENDPOINT])
 
   let [message, setMessage] = useState('');
-  function onChangeMessage(e){
+  function onChangeMessage(e) {
     setMessage(e.target.value);
   }
 
@@ -38,88 +38,71 @@ function Messenger(props) {
     socket.on('onsend', (message) => {
       setMessages([...messages, message])
     })
-    console.log(messages)
+    console.log(messages);
   }, [messages])
 
   function sendMessage() {
+    if (!message) { return }
     socket.emit('send', message);
-    setMessage('e.target.value');
+    setMessage('');
   }
 
   return (
     <Row key='1'>
-      <Col span={8}>
-        <List
-          header={<div>Header</div>}
-          footer={<div>Footer</div>}
-          bordered
-          dataSource={data}
-          renderItem={item => (
-            <List.Item>
-              <Typography.Text mark>[ITEM]</Typography.Text> {item.username}: {item.msg}
-            </List.Item>
-          )}
-        />
-      </Col>
-      <Col span={16}>
-        <List
-          style={{ height: 320 }}
-          header={<div>Header</div>}
-          footer={<Button>send</Button>}
-        >
-          <Item><strong>Username</strong>: messenger</Item>
-        </List>
-      </Col>
       <Col span={24}>
-        <div className="container">
-          <div className="inbox">
-            <aside>
-              <ul ng-controller="chatCtrl as chat">
-                <div ng-repeat="chat in chats">
-                  <li ng-click="uid(chat.id)">
-                    <img className="avatar" src={image} />
-                    <p className="username">chat.username</p>
-                  </li>
-                  <li ng-click="uid(chat.id)">
-                    <img className="avatar" src={image} />
-                    <p className="username">chat.username</p>
-                  </li>
-                </div>
-                <div ng-repeat="chat in chats">
-                  <li ng-click="uid(chat.id)">
-                    <img className="avatar" src={image} />
-                    <p className="username">chat.username</p>
-                  </li>
-                  <li ng-click="uid(chat.id)">
-                    <img className="avatar" src={image} />
-                    <p className="username">chat.username</p>
-                  </li>
-                </div>
-              </ul>
-            </aside>
-            <main ng-controller="chatCtrl as chat">
-              <div className="init">
-                <i className="fa fa-inbox" />
-                <h4>Choose a conversation from the left</h4>
-              </div>
-              <div className="loader">
-                <p />
-                <h4>Loading</h4>
-              </div>
-              <div className="message-wrap" >
-                <div className="message" ng-repeat="msg in messages track by $index">
-                  <p>msg</p>
-                  <img src={image} />
-                </div>
-              </div>
-              <footer>
-                <form ng-submit="add()">
-                  <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message}/>
-                  <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
-                </form>
-              </footer>
-            </main>
-          </div>
+        <div className="inbox">
+          <aside>
+            <ul>
+              <List
+                bordered
+                dataSource={data}
+                renderItem={item => (
+                  <List.Item>
+                    <li>
+                      <img className="avatar" src={image} />
+                      <p className="username">{item.username}</p>
+                    </li>
+                    {/* <Typography.Text mark>[ITEM]</Typography.Text> {item.username}: {item.msg} */}
+                  </List.Item>
+                )}
+              />
+              <li>
+                <img className="avatar" src={image} />
+                <p className="username">chat.username</p>
+              </li>
+            </ul>
+          </aside>
+          <main>
+            <div className="init">
+              <i className="fa fa-inbox" />
+              <h4>Choose a conversation from the left</h4>
+            </div>
+            <div className="loader">
+              <p />
+              <h4>Loading</h4>
+            </div>
+            <div className="message-wrap" >
+              <List
+                bordered
+                dataSource={messages}
+                renderItem={message => (
+                  <List.Item>
+                    <div className="message">
+                      <p>{message}</p>
+                      <img src={image} />
+                    </div>
+                    {/* <Typography.Text mark>[ITEM]</Typography.Text> {item.username}: {item.msg} */}
+                  </List.Item>
+                )}
+              />
+            </div>
+            <footer>
+              <form>
+                <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message} />
+                <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
+              </form>
+            </footer>
+          </main>
         </div>
       </Col>
     </Row >

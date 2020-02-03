@@ -75,7 +75,7 @@ const MENU_DATA = [
     path: STAFFS_ROUTE,
     key: 'staffs',
     name: 'Nhân viên',
-    is_open: false
+    is_open: true
   },
   {
     path: APP_ROUTE,

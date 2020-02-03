@@ -26,7 +26,9 @@ function Staffs(props) {
     },
   ];
 
-  const [showCreate, setShowCreate] = useState(false);
+  const [isCreateModal, setIsCreateModal] = useState(false);
+  const [isImportModal, setIsImportModal] = useState(false);
+  const [isExportModal, setIsExportModal] = useState(false);
   async function createStaffs() {
     await actions.createStaffs();
   }
@@ -37,19 +39,35 @@ function Staffs(props) {
     <div className="">
       <Row key='1'>
         <Col span={24}>
-          <Button onClick={() => setShowCreate(true)}>Thêm mới</Button>
           <Button onClick={() => loadStaffs()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => setIsCreateModal(true)}>Thêm nhân viên</Button>
+          <Button onClick={() => setIsImportModal(true)}>Import nhân viên</Button>
+          <Button onClick={() => setIsExportModal(true)}>Export nhân viên</Button>
           <Table rowKey='id' dataSource={[]} columns={columns} />;
       </Col>
       </Row>
       <Modal
-        title="Basic Modal"
-        visible={showCreate}
+        title="isCreateModal Modal"
+        visible={isCreateModal}
         onOk={() => createStaffs()}
-        onCancel={() => setShowCreate(false)}
+        onCancel={() => setIsCreateModal(false)}
       >
         <p>Some contents...</p>
+      </Modal>
+      <Modal
+        title="isImportModal Modal"
+        visible={isImportModal}
+        onOk={() => createStaffs()}
+        onCancel={() => setIsImportModal(false)}
+      >
         <p>Some contents...</p>
+      </Modal>
+      <Modal
+        title="isExportModal Modal"
+        visible={isExportModal}
+        onOk={() => createStaffs()}
+        onCancel={() => setIsExportModal(false)}
+      >
         <p>Some contents...</p>
       </Modal>
     </div>
