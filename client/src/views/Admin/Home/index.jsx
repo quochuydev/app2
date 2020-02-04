@@ -38,8 +38,8 @@ function Home() {
     }
     setTimeout(() => {
       setAlert({ showAlert: false });
-      clearTimeout();
     }, 3000);
+    clearTimeout();
   }
   function showLoading(timeout = 1000) {
     setIsProcessing(true);

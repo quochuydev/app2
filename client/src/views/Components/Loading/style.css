@@ -1,8 +1,7 @@
 .container-loading {
-  position: relative;
-  margin: 155px auto;
-  width: 200px;
-  right: 130px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
 }
 
 @-moz-keyframes spin {
@@ -36,7 +35,7 @@
   animation: spin 0.7s linear infinite;
   border-style: solid;
   border-width: 2px;
-  border-color: #21469b;
+  border-color: #000;
   border-right-color: transparent;
   border-radius: 100%;
   z-index: 1;
