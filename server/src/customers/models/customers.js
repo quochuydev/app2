@@ -7,7 +7,6 @@ const CustomersSchema = new Schema({
   number: { type: Number, default: null },
   type: { type: String, default: null },
   id: { type: Number, default: null },
-  detail: { type: Schema.Types.Mixed },
   accepts_marketing:  { type: Boolean, default: false },
   addresses: [],
   created_at: { type: Date, default: null },
@@ -31,8 +30,8 @@ const CustomersSchema = new Schema({
   birthday: { type: Date, default: null },
   gender: { type: Number, default: null },
   last_order_date: { type: Date, default: null },
-  shop: { type: String, default: null },
-  shop_id: { type: Number, default: null }
+  url: { type: String, default: null },
+  detail: { type: Schema.Types.Mixed },
 })
 
 CustomersSchema.plugin(autoIncrement.plugin, {

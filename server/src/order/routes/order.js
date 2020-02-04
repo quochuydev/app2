@@ -1,8 +1,8 @@
 const path = require('path');
 const mongoose = require('mongoose');
-const APIBus = require('wooapi');
+const WoocommerceAPI = require('wooapi');
 const HaravanAPI = require('haravan_api');
-const ShopifyApi = require('shopify_mono');
+const ShopifyAPI = require('shopify_mono');
 const OrderMD = mongoose.model('Order');
 const SettingMD = mongoose.model('Setting');
 const WOO = require(path.resolve('./src/woocommerce/CONST'));
@@ -13,6 +13,11 @@ const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
 const logger = require(path.resolve('./src/core/lib/logger'));
+
+// TODO test bus sync order status
+const syncOrderStatus = require(path.resolve('./src/order/business/sync_order_status'));
+// end
+
 
 const router = ({ app }) => {
   app.post('/api/order/list', async (req, res) => {
@@ -28,7 +33,7 @@ const router = ({ app }) => {
       res.status(400).send({ error: true });
     }
   })
-  
+
   app.post('/api/order/sync', async (req, res) => {
     try {
       res.json({ error: false });
@@ -53,7 +58,7 @@ let syncOrdersWoo = async () => {
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { woocommerce, last_sync } = setting;
   let { wp_host, consumer_key, consumer_secret } = woocommerce;
-  let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
+  let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
   let orders = await API.call(WOO.ORDERS.LIST);
   for (let i = 0; i < orders.length; i++) {
     const order_woo = orders[i];
@@ -126,7 +131,7 @@ let syncOrdersShopify = async () => {
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { shopify, last_sync } = setting;
   let { access_token, shopify_host } = shopify;
-  let API = new ShopifyApi({ shopify_host });
+  let API = new ShopifyAPI({ shopify_host });
   let orders = await API.call(SHOPIFY.ORDERS.LIST, { access_token });
   for (let j = 0; j < orders.length; j++) {
     const order_shopify = orders[j];
