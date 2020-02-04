@@ -1,0 +1,35 @@
+.system-bg-noti {
+  bottom: 15px !important;
+  position: fixed !important;
+  left: 50%;
+  z-index: 2000 !important;
+  transform: translateX(-50%);
+  text-align: left !important;
+  min-height: 80px;
+  width: 376px;
+  opacity: 0.8;
+  border-radius: 4px;
+  background-color: #212121;
+  box-shadow: 0 5px 10px 0 rgba(33, 33, 33, 0.1);
+  padding: 30px 33px;
+  margin: 0 auto;
+}
+.color-noti-1 {
+  color: #00C853!important;
+}
+.color-noti-2 {
+  color: #FFC107!important;
+}
+.color-noti-3 {
+  color: #2962FF!important;
+}
+.color-noti-4 {
+  color: #FF5722!important;
+}
+.margin-right-8 {
+  margin-right: 8px;
+}
+
+.text-white {
+  color: white;
+}
