@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import 'antd/dist/antd.css';
@@ -38,19 +38,20 @@ function Home() {
     }
     setTimeout(() => {
       setAlert({ showAlert: false });
-    }, 1000);
+    }, 3000);
     clearTimeout();
   }
   function showLoading(timeout = 1000) {
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
+      clearTimeout();
     }, timeout);
-    clearTimeout();
   }
   return (
     <Content style={{ padding: '0 24px', minHeight: 280 }}>Content
       <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
+      <button onClick={() => showMessage(true, 'message failed')}>show mess failed</button>
       <button onClick={() => showLoading()}>show loading</button>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
     </Content>

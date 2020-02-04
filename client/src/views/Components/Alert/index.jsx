@@ -1,22 +1,20 @@
-import React, {Component, Fragment} from 'react';
-import { Icon, Layout } from 'antd';
+import React, { Component, Fragment } from 'react';
+import { Icon, Layout, Alert } from 'antd';
 import './style.css';
 
-export class Alert extends Component {
+export class AlertPage extends Component {
   showAlert = (messageSuccess, messageFailed, error, showAlert) => {
     if (showAlert) {
       if (error) {
         return (
           <div className="system-bg-noti">
-            <Icon className="color-noti-4 margin-right-8" type="exclamation-circle" theme="filled"/>
-            <span className="text-white">{messageFailed}</span>
+            <Alert message={messageFailed} type="error" showIcon />
           </div>
         );
       } else {
         return (
           <div className="system-bg-noti">
-            <Icon className="color-noti-1 margin-right-8" type="exclamation-circle" theme="filled"/>
-            <span className="text-white">{messageSuccess}</span>
+            <Alert message={messageSuccess} type="success" showIcon/>
           </div>
         );
       }
@@ -24,7 +22,7 @@ export class Alert extends Component {
   };
 
   render() {
-    let {messageSuccess, messageFailed, error, showAlert} = this.props;
+    let { messageSuccess, messageFailed, error, showAlert } = this.props;
     return (
       <Fragment>
         <Layout className="center bottom-0">
@@ -35,4 +33,4 @@ export class Alert extends Component {
   }
 }
 
-export default Alert;
+export default AlertPage;
