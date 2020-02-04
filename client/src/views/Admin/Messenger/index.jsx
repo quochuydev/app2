@@ -56,10 +56,8 @@ function Messenger(props) {
                 dataSource={data}
                 renderItem={item => (
                   <List.Item>
-                    <li>
-                      <img className="avatar" src={image} />
-                      <p className="username">{item.username}</p>
-                    </li>
+                    <img className="avatar" src={image} />
+                    <p className="username">{item.username}</p>
                     {/* <Typography.Text mark>[ITEM]</Typography.Text> {item.username}: {item.msg} */}
                   </List.Item>
                 )}
