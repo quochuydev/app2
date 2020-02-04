@@ -48,7 +48,7 @@ function WooOrders(props) {
       <Row key='1'>
         <Col span={24}>
           <Button onClick={() => loadWooOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng</Button>
+          <Button onClick={() => syncWooOrders()}>Đồng bộ đơn hàng woo</Button>
           <Table rowKey='id' dataSource={woo_orders} columns={columns} />;
       </Col>
       </Row>

@@ -36,8 +36,8 @@ const router = ({ app }) => {
 
   app.post('/api/order/sync', async (req, res) => {
     try {
-      res.json({ error: false });
       await sync();
+      res.json({ error: false });
     } catch (error) {
       console.log(error)
       res.status(400).send({ error: true });

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Table, Row, Col, Button, Tag, Icon, Input, Select } from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetail from '../OrderDetail/index';
+import LoadingPage from '../../Components/Loading/index';
 const { Option } = Select;
 
 function Orders(props) {
@@ -54,9 +55,16 @@ function Orders(props) {
     console.log(query)
     await actions.loadOrders(query);
   }
+  
+  const [isProcessing, setIsProcessing] = useState(false);
+  if (isProcessing) {
+    return <LoadingPage isProcessing={isProcessing} />;
+  }
   async function syncOrders() {
+    setIsProcessing(true);
     await actions.syncOrders();
     loadOrders();
+    setIsProcessing(false);
   }
 
 
