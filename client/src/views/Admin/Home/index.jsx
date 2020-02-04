@@ -13,10 +13,7 @@ function Home() {
     showAlert: false,
     isError: false,
   });
-  const [isProcessing, setIsProcessing] = useState(true);
-  useEffect(() => {
-    setIsProcessing(true)
-  })
+  const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) {
     return <LoadingPage isProcessing={isProcessing} />;
   }
@@ -41,12 +38,20 @@ function Home() {
     }
     setTimeout(() => {
       setAlert({ showAlert: false });
-    }, 2500);
+    }, 1000);
+    clearTimeout();
+  }
+  function showLoading(timeout = 1000) {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+    }, timeout);
     clearTimeout();
   }
   return (
     <Content style={{ padding: '0 24px', minHeight: 280 }}>Content
-      <button onClick={() => showMessage(true, 'messageSuccess')}>show mess</button>
+      <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
+      <button onClick={() => showLoading()}>show loading</button>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
     </Content>
   );
