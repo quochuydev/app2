@@ -13,11 +13,11 @@ const router = ({ app }) => {
     if (type == 'install') {
       application.callback_url = install_callback_url;
       application.scope = scope_install;
-      application.func = (f) => f.buildLinkInstall();
+      application.func = f => f.buildLinkInstall();
     } else {
       application.callback_url = login_callback_url;
       application.scope = scope_login;
-      application.func = (f) => f.buildLinkLogin();
+      application.func = f => f.buildLinkLogin();
     }
     let { scope, callback_url, func } = application;
     let HrvAPI = new HaravanAPI({ app_id, app_secret, scope, callback_url });

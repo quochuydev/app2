@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Row, Col, Button, Tag, Icon, Input, Select } from 'antd';
+import {
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form
+} from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetail from '../OrderDetail/index';
+import LoadingPage from '../../Components/Loading/index';
 const { Option } = Select;
 
 function Orders(props) {
@@ -54,9 +57,16 @@ function Orders(props) {
     console.log(query)
     await actions.loadOrders(query);
   }
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  if (isProcessing) {
+    return <LoadingPage isProcessing={isProcessing} />;
+  }
   async function syncOrders() {
+    setIsProcessing(true);
     await actions.syncOrders();
     loadOrders();
+    setIsProcessing(false);
   }
 
 
@@ -75,28 +85,33 @@ function Orders(props) {
   return (
     <div className="">
       <Row key='1'>
-        <Col span={8}>
-          <Input name="number" onChange={onChange} />
-        </Col>
-        <Col span={8}>
-          <Select
-            mode="multiple"
-            name="type_in"
-            style={{ width: '100%' }}
-            placeholder="-- Chọn --"
-            onChange={onChangeType}
-          >
-            <Option value='haravan'>Haravan</Option>
-            <Option value='woocommerce'>Woocommerce</Option>
-            <Option value='shopify'>Shopify</Option>
-          </Select>
-        </Col>
-        <Col span={8}>
+        <Form>
+          <Col span={8}>
+            <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="Loại đơn hàng">
+              <Select
+                mode="multiple"
+                name="type_in"
+                style={{ width: '100%' }}
+                placeholder="-- Chọn --"
+                onChange={onChangeType}
+              >
+                <Option value='haravan'>Haravan</Option>
+                <Option value='woocommerce'>Woocommerce</Option>
+                <Option value='shopify'>Shopify</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
 
-        </Col>
-        <Col span={8}>
+          </Col>
+          <Col span={8}>
 
-        </Col>
+          </Col>
+        </Form>
+
         <Col span={24}>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
