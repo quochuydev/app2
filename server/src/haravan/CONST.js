@@ -24,4 +24,4 @@ HRV.CUSTOMERS = {
     resPath: 'count'
   }
 }
-module.exports = HRV;
+module.exports = { HRV };

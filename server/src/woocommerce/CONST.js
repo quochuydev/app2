@@ -31,4 +31,4 @@ WOO.CUSTOMERS = {
   }
 }
 
-module.exports = WOO;
+module.exports = { WOO };
