@@ -45,7 +45,9 @@ function Orders(props) {
   ];
 
   useEffect(() => {
+    setIsProcessing(true);
     actions.loadOrders(query);
+    setIsProcessing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
