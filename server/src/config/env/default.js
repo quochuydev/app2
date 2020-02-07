@@ -13,8 +13,7 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://7a8ca1bb.ngrok.io',
-  // webhook_haravan_url: 'https://a5f3b64c.ngrok.io/webhook/haravan',
+  app_host: 'https://32c5dbbc.ngrok.io',
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
@@ -24,7 +23,7 @@ module.exports = {
 
   // WOOCOMMERCE
   woocommerce: {
-    delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
+    delivery_url: 'https://32c5dbbc.ngrok.io/webhook/woo',
   },
 
   // HARAVAN
@@ -45,6 +44,6 @@ module.exports = {
     client_id: "c925250ee1a5f062f01b3c88e508e209",
     client_secret: "1f44c251898c86a09618d5076b6b1b67",
     callback_path: '/api/shopify/auth/callback',
-    address: 'https://7a8ca1bb.ngrok.io/webhook/shopify',
+    address: 'https://32c5dbbc.ngrok.io/webhook/shopify',
   },
 }

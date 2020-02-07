@@ -43,16 +43,16 @@ const grandservice = async (req, res) => {
   const shopAPI = await HrvAPI.call(HRV.SHOP.GET, { access_token });
   let shop_id = shopAPI.id;
   let shop = shopAPI.myharavan_domain;
-  const haravanData = { shop_id, shop, status: 1, access_token, is_test }
-  const setting = await SettingMD.findOne({ app: appslug }).lean(true);
-  const { haravan } = setting;
-  let shopIndex = haravan.findIndex(e => e.shop_id == shop_id);
+  let haravanData = { shop_id, shop, status: 1, access_token, is_test }
+  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  let { haravans } = setting;
+  let shopIndex = haravans.findIndex(e => e.shop_id == shop_id);
   if (shopIndex == -1) {
-    haravan.push(haravanData);
+    haravans.push(haravanData);
   } else {
-    haravan[shopIndex] = Object.assign(haravan[shopIndex], haravanData);
+    haravans[shopIndex] = Object.assign(haravans[shopIndex], haravanData);
   }
-  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravan } }, { lean: true, new: true });
+  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravans } }, { lean: true, new: true });
   res.redirect(`${frontend_site}/app`)
 }
 

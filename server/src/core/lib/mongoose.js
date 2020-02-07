@@ -12,9 +12,10 @@ const Mongoose = {
   },
   load: () => {
     let models = glob.sync('src/*/models/*.js');
-    models.forEach(function (model) {
+    for (let i = 0; i < models.length; i++) {
+      const model = models[i];
       require(path.resolve(model));
-    });
+    }
   }
 }
 

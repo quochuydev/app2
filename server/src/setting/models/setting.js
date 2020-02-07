@@ -8,7 +8,7 @@ const SettingSchema = new Schema({
     consumer_key: { type: String, default: null },
     consumer_secret: { type: String, default: null },
   },
-  haravan: [{
+  haravans: [{
     shop_id: { type: Number, default: null },
     shop: { type: String, default: null },
     access_token: { type: String, default: null },

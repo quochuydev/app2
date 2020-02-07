@@ -41,7 +41,7 @@ const MapOrderHaravan = {
       created_at: order_hrv.created_at,
       currency: order_hrv.currency,
       note: order_hrv.note,
-      customer_id: order_hrv.customer.default_address.id,
+      customer_id: order_hrv.customer.id,
       detail: order_hrv
     };
 
