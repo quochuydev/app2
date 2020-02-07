@@ -47,7 +47,7 @@ let syncCustomersHaravan = async () => {
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { haravan, last_sync } = setting;
   let { access_token } = haravan;
-  let HrvAPI = new HaravanAPI({});
+  let HrvAPI = new HaravanAPI({is_test: true });
   let query = {};
   let created_at_min = null;
   if (last_sync && last_sync.hrv_customers_at) { created_at_min = (new Date(last_sync.hrv_customers_at)).toISOString(); }
