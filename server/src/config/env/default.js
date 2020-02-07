@@ -18,6 +18,10 @@ module.exports = {
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
+  cron: {
+    job1: '*/60 * * * * *'
+  },
+
   // WOOCOMMERCE
   woocommerce: {
     delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
