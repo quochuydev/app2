@@ -6,16 +6,14 @@ const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../bu
 const syncOrderStatus = require(path.resolve('./src/order/business/sync_order_status'));
 // end
 const logger = require(path.resolve('./src/core/lib/logger'));
-const { buildQuery } = require(path.resolve('./src/core/lib/query'));
+const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 const router = ({ app }) => {
   app.post('/api/order/list', async (req, res) => {
     try {
-      let query = buildQuery(req.body);
+      let { limit, page, query } = _parse(req.body);
       let count = await OrderMD.count(query);
-      let limit = 20;
-      let page = 1;
-      let skip = (page - 1) * 20;
+      let skip = (page - 1) * limit;
       let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
       res.json({ error: false, count, orders });
     } catch (error) {

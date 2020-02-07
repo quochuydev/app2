@@ -120,9 +120,6 @@ let syncOrdersShopify = async () => {
 module.exports = { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo }
 
 let test = async () => {
-  // let body = { type_in: ['woocommerce'], number: '' };
-  // let query = buildQuery(body);
-  // console.log(query)
   await syncOrdersHaravan();
   await syncOrdersWoo();
   await syncOrdersShopify();

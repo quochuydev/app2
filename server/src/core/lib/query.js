@@ -1,4 +1,10 @@
-function buildQuery(body) {
+function _parse(body) {
+  let { limit, page } = body;
+  if (!limit) { limit = 20 }
+  if (!page) { page = 1 }
+  delete body.limit;
+  delete body.page;
+
   let query = {}
   for (f in body) {
     let vl = body[f];
@@ -9,7 +15,14 @@ function buildQuery(body) {
       query = Object.assign(query, { [f]: vl })
     }
   }
-  return query;
+  return { limit, page, query };
 }
 
-module.exports = { buildQuery }
+module.exports = { _parse }
+
+let test = () => {
+  let body = { type_in: ['woocommerce'], number: '' };
+  let query = _parse(body);
+  console.log(query)
+}
+// test();
