@@ -30,8 +30,8 @@ module.exports = {
   // HARAVAN
   haravan: {
     is_test: false,
-    app_id: '4c5022e7863adb4af30ba766c3211e2b',
-    app_secret: 'bf6a3b119ac3ef53b05d775e9969de3839eae82ae5f804f428bf5ab877fc669f',
+    app_id: '073ba496454492c5e99411559e1d7cf7',
+    app_secret: 'da6446f0c46a09fa6acb8476df1ef3aa35ac78266638fe6f2285cd28b565f0dc',
     scope_login: 'openid profile email org userinfo',
     scope_install: 'openid profile email org userinfo com.write_products com.write_orders com.write_customers com.write_shippings com.write_inventories com.write_discounts grant_service offline_access wh_api',
     login_callback_url: `${process.env.APP_HOST}/api/haravan/login`,
