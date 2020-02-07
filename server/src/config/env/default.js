@@ -22,9 +22,10 @@ module.exports = {
   woocommerce: {
     delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
   },
-  
+
   // HARAVAN
   haravan: {
+    is_test: true,
     response_mode: 'form_post',
     url_authorize: 'https://accounts.hara.vn/connect/authorize',
     url_connect_token: 'https://accounts.hara.vn/connect/token',

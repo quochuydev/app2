@@ -6,7 +6,7 @@ const SettingMD = mongoose.model('Setting');
 
 const config = require(path.resolve('./src/config/config'));
 const { appslug, haravan, frontend_site } = config;
-const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url } = haravan;
+const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url, is_test } = haravan;
 
 const buildlink = (req, res) => {
   const { type } = req.body;
@@ -21,7 +21,7 @@ const buildlink = (req, res) => {
     application.func = f => f.buildLinkLogin();
   }
   let { scope, callback_url, func } = application;
-  let HrvAPI = new HaravanAPI({ app_id, app_secret, scope, callback_url, is_test: true });
+  let HrvAPI = new HaravanAPI({ app_id, app_secret, scope, callback_url, is_test });
   let url_haravan = func(HrvAPI);
   res.json({ url_haravan })
 }
@@ -37,7 +37,7 @@ const login = (req, res) => {
 
 const grandservice = async (req, res) => {
   const { code } = req.body;
-  const HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test: true });
+  const HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test });
   const { access_token } = await HrvAPI.getToken(code);
   let haravan = { status: 1, access_token }
   await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravan } }, { lean: true, new: true });
