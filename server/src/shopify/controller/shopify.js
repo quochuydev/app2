@@ -1,11 +1,13 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const ShopifyApi = require('shopify_mono');
+
+const SettingMD = mongoose.model('Setting');
+
+const { SHOPIFY, listWebhooks } = require('./../CONST');
 const config = require(path.resolve('./src/config/config'));
 const { app_host, shopify, appslug } = config;
 const { client_id, client_secret, callback_path } = shopify;
-const { SHOPIFY, listWebhooks } = require('./../CONST');
-const SettingMD = mongoose.model('Setting');
 
 const buildlink = async (req, res) => {
   let { shopify_host } = req.body

@@ -1,7 +1,9 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const HaravanAPI = require('haravan_api');
+
 const SettingMD = mongoose.model('Setting');
+
 const config = require(path.resolve('./src/config/config'));
 const { appslug, haravan, frontend_site } = config;
 const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url } = haravan;
@@ -26,7 +28,7 @@ const buildlink = (req, res) => {
 
 const install = (req, res) => {
   let { sync_orders, sync_products, sync_customers } = req.body;
-  res.json(req.body)
+  res.json(req.body);
 }
 
 const login = (req, res) => {
