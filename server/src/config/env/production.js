@@ -33,7 +33,7 @@ module.exports = {
     app_id: '073ba496454492c5e99411559e1d7cf7',
     app_secret: 'da6446f0c46a09fa6acb8476df1ef3aa35ac78266638fe6f2285cd28b565f0dc',
     scope_login: 'openid profile email org userinfo',
-    scope_install: 'openid profile email org userinfo com.write_products com.write_orders com.write_customers com.write_shippings com.write_inventories com.write_discounts grant_service offline_access wh_api',
+    scope_install: 'openid profile email org userinfo com.write_products com.write_orders com.write_customers com.write_shippings com.write_inventories grant_service offline_access wh_api',
     login_callback_url: `${process.env.APP_HOST}/api/haravan/login`,
     install_callback_url: `${process.env.APP_HOST}/api/haravan/grandservice`,
     webhook: {
