@@ -30,12 +30,6 @@ module.exports = {
   // HARAVAN
   haravan: {
     is_test: true,
-    response_mode: 'form_post',
-    url_authorize: 'https://accounts.hara.vn/connect/authorize',
-    url_connect_token: 'https://accounts.hara.vn/connect/token',
-    grant_type: 'authorization_code',
-    nonce: 'asdfasdgd',
-    response_type: 'code id_token',
     app_id: '4c5022e7863adb4af30ba766c3211e2b',
     app_secret: 'bf6a3b119ac3ef53b05d775e9969de3839eae82ae5f804f428bf5ab877fc669f',
     scope_login: 'openid profile email org userinfo',
@@ -44,7 +38,6 @@ module.exports = {
     install_callback_url: 'http://localhost:3000/api/haravan/grandservice',
     webhook: {
       verify: '123123',
-      subscribe: 'https://webhook.hara.vn/api/subscribe'
     },
   },
 
