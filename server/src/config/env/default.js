@@ -18,9 +18,11 @@ module.exports = {
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
+  // WOOCOMMERCE
   woocommerce: {
     delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
   },
+  
   // HARAVAN
   haravan: {
     response_mode: 'form_post',

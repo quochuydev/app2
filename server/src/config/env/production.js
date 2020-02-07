@@ -18,6 +18,7 @@ module.exports = {
   downloadLink: process.env.APP_HOST,
   frontend_site: `${process.env.APP_HOST}/site`,
 
+  // WOOCOMMERCE
   woocommerce: {
     delivery_url: `${process.env.APP_HOST}/api/webhook`,
   },
