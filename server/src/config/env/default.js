@@ -14,7 +14,6 @@ module.exports = {
   sessionCollection: 'sessions',
 
   app_host: 'https://7a8ca1bb.ngrok.io',
-  delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
   // webhook_haravan_url: 'https://a5f3b64c.ngrok.io/webhook/haravan',
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
