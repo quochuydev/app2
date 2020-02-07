@@ -2,6 +2,7 @@ function _parse(body) {
   let { limit, page } = body;
   if (!limit) { limit = 20 }
   if (!page) { page = 1 }
+  let skip = (page - 1) * limit;
   delete body.limit;
   delete body.page;
 
@@ -15,7 +16,7 @@ function _parse(body) {
       query = Object.assign(query, { [f]: vl })
     }
   }
-  return { limit, page, query };
+  return { limit, page, skip, query };
 }
 
 module.exports = { _parse }

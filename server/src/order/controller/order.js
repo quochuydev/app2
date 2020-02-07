@@ -6,9 +6,8 @@ const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../bu
 const order = {
   list: async (req, res) => {
     try {
-      let { limit, page, query } = _parse(req.body);
+      let { limit, skip, query } = _parse(req.body);
       let count = await OrderMD.count(query);
-      let skip = (page - 1) * limit;
       let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
       res.json({ error: false, count, orders });
     } catch (error) {
