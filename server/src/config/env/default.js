@@ -43,7 +43,7 @@ module.exports = {
     login_callback_url: 'http://localhost:3000/api/haravan/login',
     install_callback_url: 'http://localhost:3000/api/haravan/grandservice',
     webhook: {
-      verify: '123',
+      verify: '123123',
       subscribe: 'https://webhook.hara.vn/api/subscribe'
     },
   },
