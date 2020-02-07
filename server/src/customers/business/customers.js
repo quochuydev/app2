@@ -3,16 +3,18 @@ const mongoose = require('mongoose');
 const APIBus = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyApi = require('shopify_mono');
+
 const SettingMD = mongoose.model('Setting');
+const CustomerMD = mongoose.model('Customer');
+
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
-const { appslug, app_host } = require(path.resolve('./src/config/config'));
 const MapCustomerHaravan = require(path.resolve('./src/customers/repo/map_customer_hrv'));
 const MapCustomerWoocommerce = require(path.resolve('./src/customers/repo/map_customer_woo'));
 const MapCustomerShopify = require(path.resolve('./src/customers/repo/map_customer_shopify'));
-const logger = require(path.resolve('./src/core/lib/logger'));
-const CustomerMD = mongoose.model('Customer');
+const { appslug, app_host, haravan } = require(path.resolve('./src/config/config'));
+const { is_test } = haravan;
 
 let syncCustomersWoo = async () => {
   let start_at = new Date();
@@ -46,7 +48,7 @@ let syncCustomersHaravan = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { haravan, last_sync } = setting;
-  let { access_token, is_test } = haravan;
+  let { access_token } = haravan;
   let HrvAPI = new HaravanAPI({ is_test });
   let query = {};
   let created_at_min = null;
