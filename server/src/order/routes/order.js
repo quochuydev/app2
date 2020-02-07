@@ -1,49 +1,13 @@
-const path = require('path');
-const mongoose = require('mongoose');
-const OrderMD = mongoose.model('Order');
-const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../business/order');
+const { list, sync } = require('./../controller/order');
+
 // TODO test bus sync order status
+const path = require('path');
 const syncOrderStatus = require(path.resolve('./src/order/business/sync_order_status'));
 // end
-const logger = require(path.resolve('./src/core/lib/logger'));
-const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 const router = ({ app }) => {
-  app.post('/api/order/list', async (req, res) => {
-    try {
-      let { limit, page, query } = _parse(req.body);
-      let count = await OrderMD.count(query);
-      let skip = (page - 1) * limit;
-      let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
-      res.json({ error: false, count, orders });
-    } catch (error) {
-      logger({ error })
-      res.status(400).send({ error: true });
-    }
-  })
-
-  app.post('/api/order/sync', async (req, res) => {
-    try {
-      await sync();
-      res.json({ error: false });
-    } catch (error) {
-      logger({ error })
-      res.status(400).send({ error: true });
-    }
-  })
+  app.post('/api/order/list', list)
+  app.post('/api/order/sync', sync)
 }
 
 module.exports = router;
-
-let sync = async () => {
-  await syncOrdersHaravan();
-  await syncOrdersWoo();
-  await syncOrdersShopify();
-}
-
-let test = async () => {
-  await syncOrdersHaravan();
-  await syncOrdersWoo();
-  await syncOrdersShopify();
-}
-// test();
