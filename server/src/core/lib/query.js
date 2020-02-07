@@ -12,6 +12,8 @@ function _parse(body) {
     if (!vl || (vl && !vl.length)) { continue }
     if (['_in'].indexOf(f.substring(f.length - 3)) != -1) {
       query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
+    } else if (['_ne'].indexOf(f.substring(f.length - 3)) != -1) {
+      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $ne: vl } })
     } else {
       query = Object.assign(query, { [f]: vl })
     }
