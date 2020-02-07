@@ -1,4 +1,8 @@
 const path = require('path');
+const mongoose = require('mongoose');
+
+const OrderMD = mongoose.model('Order');
+
 const logger = require(path.resolve('./src/core/lib/logger'));
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../business/order');
