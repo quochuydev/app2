@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const WoocommerceAPI = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyAPI = require('shopify_mono');
+
 const SettingMD = mongoose.model('Setting');
+const OrderMD = mongoose.model('Order');
+
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
@@ -11,7 +14,6 @@ const { appslug, app_host } = require(path.resolve('./src/config/config'));
 const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
-const logger = require(path.resolve('./src/core/lib/logger'));
 
 let syncOrdersWoo = async () => {
   let start_at = new Date();
@@ -113,20 +115,6 @@ let syncOrdersShopify = async () => {
   let end_at = new Date();
   await SettingMD.update({ app: appslug }, { $set: { 'last_sync.shopify_orders_at': end_at } });
   console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}s`);
-}
-
-function buildQuery(body) {
-  let query = {}
-  for (f in body) {
-    let vl = body[f];
-    if (!vl || (vl && !vl.length)) { continue }
-    if (['_in'].indexOf(f.substring(f.length - 3)) != -1) {
-      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
-    } else {
-      query = Object.assign(query, { [f]: vl })
-    }
-  }
-  return query;
 }
 
 module.exports = { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo }

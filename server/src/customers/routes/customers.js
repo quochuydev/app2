@@ -1,5 +1,7 @@
+const path = require('path');
 const customerController = require('../controllers/customers');
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
+const logger = require(path.resolve('./src/core/lib/logger'));
 
 const router = ({ app }) => {
   app.post('/api/customers/list', customerController.list);
@@ -13,7 +15,7 @@ const router = ({ app }) => {
       res.json({ error: false });
       await sync();
     } catch (error) {
-      console.log(error)
+      logger(error)
       res.status(400).send({ error: true });
     }
   })
