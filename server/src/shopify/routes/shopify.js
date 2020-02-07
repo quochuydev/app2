@@ -8,7 +8,7 @@ const { SHOPIFY, listWebhooks } = require('./../CONST');
 const SettingMD = mongoose.model('Setting');
 
 const router = ({ app }) => {
-  app.post('/api/shopify/build-link', async (req, res) => {
+  app.post('/api/shopify/buildlink', async (req, res) => {
     let { shopify_host } = req.body
     let API = new ShopifyApi({ client_id, shopify_host });
     let url_shopify = API.buildLink({ app_host, callback_path });

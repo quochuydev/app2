@@ -4,12 +4,11 @@ const APIBus = require('wooapi');
 
 const SettingMD = mongoose.model('Setting');
 
+const logger = require(path.resolve('./src/core/lib/logger'));
 const { WOO, listWebhooks } = require('./../CONST')
 const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host, woocommerce, frontend_site } = config;
+const { appslug, app_host, frontend_site, woocommerce } = config;
 const { delivery_url, wp_host } = woocommerce;
-
-const logger = require(path.resolve('./src/core/lib/logger'));
 
 const install = async (req, res) => {
   try {
@@ -52,7 +51,7 @@ const callback_url = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    logger({ error });
     res.status(400).send({ error: true });
   }
 }
