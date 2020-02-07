@@ -8,7 +8,7 @@ const logger = require(path.resolve('./src/core/lib/logger'));
 const { WOO, listWebhooks } = require('./../CONST')
 const config = require(path.resolve('./src/config/config'));
 const { appslug, app_host, frontend_site, woocommerce } = config;
-const { delivery_url, wp_host } = woocommerce;
+const { delivery_url } = woocommerce;
 
 const install = async (req, res) => {
   try {
@@ -39,6 +39,7 @@ const callback_url = async (req, res) => {
     let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret };
     let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: dataUpdate }, { lean: true, new: true });
+    let { woocommerce: { wp_host } } = setting;
     let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
     let webhooks = await API.call(WOO.WEBHOOKS.LIST);
     for (let i = 0; i < listWebhooks.length; i++) {
