@@ -13,8 +13,7 @@ module.exports = {
   appslug: 'qhdapp',
   sessionCollection: 'sessions',
 
-  app_host: 'https://7a8ca1bb.ngrok.io',
-  // webhook_haravan_url: 'https://a5f3b64c.ngrok.io/webhook/haravan',
+  app_host: 'https://32c5dbbc.ngrok.io',
   downloadLink: "http://localhost:3000",
   frontend_site: 'http://localhost:3001/site',
 
@@ -24,18 +23,12 @@ module.exports = {
 
   // WOOCOMMERCE
   woocommerce: {
-    delivery_url: 'https://7a8ca1bb.ngrok.io/webhook/woo',
+    delivery_url: 'https://32c5dbbc.ngrok.io/webhook/woo',
   },
 
   // HARAVAN
   haravan: {
     is_test: true,
-    response_mode: 'form_post',
-    url_authorize: 'https://accounts.hara.vn/connect/authorize',
-    url_connect_token: 'https://accounts.hara.vn/connect/token',
-    grant_type: 'authorization_code',
-    nonce: 'asdfasdgd',
-    response_type: 'code id_token',
     app_id: '4c5022e7863adb4af30ba766c3211e2b',
     app_secret: 'bf6a3b119ac3ef53b05d775e9969de3839eae82ae5f804f428bf5ab877fc669f',
     scope_login: 'openid profile email org userinfo',
@@ -43,8 +36,7 @@ module.exports = {
     login_callback_url: 'http://localhost:3000/api/haravan/login',
     install_callback_url: 'http://localhost:3000/api/haravan/grandservice',
     webhook: {
-      verify: '123',
-      subscribe: 'https://webhook.hara.vn/api/subscribe'
+      verify: '123123',
     },
   },
 
@@ -52,6 +44,6 @@ module.exports = {
     client_id: "c925250ee1a5f062f01b3c88e508e209",
     client_secret: "1f44c251898c86a09618d5076b6b1b67",
     callback_path: '/api/shopify/auth/callback',
-    address: 'https://7a8ca1bb.ngrok.io/webhook/shopify',
+    address: 'https://32c5dbbc.ngrok.io/webhook/shopify',
   },
 }

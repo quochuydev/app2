@@ -1,4 +1,12 @@
 let HRV = {}
+HRV.SHOP = {
+  GET: {
+    method: 'get',
+    url: `com/shop.json`,
+    resPath: 'shop'
+  }
+}
+
 HRV.ORDERS = {
   LIST: {
     method: 'get',

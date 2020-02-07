@@ -1,6 +1,8 @@
 // TODO
 const MapCustomerHaravan = {
   gen(customer_hrv) {
+    if (!customer_hrv.default_address) { customer_hrv.default_address = {} }
+
     let customer = {
       type: 'haravan',
       id: customer_hrv.id,

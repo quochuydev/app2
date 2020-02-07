@@ -3,7 +3,7 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
+  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox, Radio
 } from 'antd';
 import 'antd/dist/antd.css';
 const { Item } = List;
@@ -35,7 +35,7 @@ function App(props) {
     await actions.buildLinkShopifyApp(dataShopify);
   }
 
-  const [dataHaravan, setDataHaravan] = useState({ sync_orders: false, sync_products: false, sync_customers: false });
+  const [dataHaravan, setDataHaravan] = useState({ type: 'install', is_test: true, api_orders: false, api_products: false, api_customers: false });
 
   function onChange(e) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
@@ -45,7 +45,7 @@ function App(props) {
   }
 
   async function buildLinkHaravanApp() {
-    await actions.buildLinkHaravanApp({ type: 'install' });
+    await actions.buildLinkHaravanApp(dataHaravan);
   }
 
   async function installHaravanApp() {
@@ -81,15 +81,21 @@ function App(props) {
       <Modal
         title="Haravan App"
         visible={isShowHaravanAppModal}
-        onOk={() => installHaravanApp()}
+        onOk={() => buildLinkHaravanApp()}
         onCancel={() => setIsShowHaravanAppModal(false)}
       >
         <Form>
-          <Form.Item><Checkbox name="sync_orders" onChange={onChangeChecked}>Đồng bộ đơn hàng</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="sync_products" onChange={onChangeChecked}>Đồng bộ sản phẩm</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="sync_customers" onChange={onChangeChecked}>Đồng bộ khách hàng</Checkbox></Form.Item>
+          {/* <Form.Item>
+            <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
+              <Radio value={true}>sku</Radio>
+              <Radio value={false}>production</Radio>
+            </Radio.Group>
+          </Form.Item> */}
+          <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item>
         </Form>
-        <Button onClick={buildLinkHaravanApp}>Build</Button>
+        {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
         <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
       <Modal

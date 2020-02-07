@@ -47,37 +47,40 @@ let syncCustomersWoo = async () => {
 let syncCustomersHaravan = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
-  let { haravan, last_sync } = setting;
-  let { access_token } = haravan;
-  let HrvAPI = new HaravanAPI({ is_test });
-  let query = {};
-  let created_at_min = null;
-  if (last_sync && last_sync.hrv_customers_at) { created_at_min = (new Date(last_sync.hrv_customers_at)).toISOString(); }
-  if (created_at_min) {
-    query = Object.assign(query, { created_at_min });
-    console.log(`[HARAVAN] [SYNC] [CUSTOMER] [FROM] [${created_at_min}]`);
-  }
-  let count = await HrvAPI.call(HRV.CUSTOMERS.COUNT, { access_token, query });
-  console.log(`[HARAVAN] [SYNC] [CUSTOMER] [COUNT] [${count}]`);
-  let limit = 50;
-  let totalPage = Math.ceil(count / limit);
-  for (let i = 1; i <= totalPage; i++) {
-    let query = { page: i, limit };
-    if (created_at_min) { query = Object.assign(query, { created_at_min }); }
-    let customers = await HrvAPI.call(HRV.CUSTOMERS.LIST, { access_token, query });
-    for (let j = 0; j < customers.length; j++) {
-      const customer_hrv = customers[j];
-      if (customer_hrv && customer_hrv.id) {
-        let { id } = customer_hrv;
-        let customer = MapCustomerHaravan.gen(customer_hrv);
-        let { type } = customer;
-        let found = await CustomerMD.findOne({ id, type }).lean(true);
-        if (found) {
-          let updateCustomer = await CustomerMD.findOneAndUpdate({ id, type }, { $set: customer }, { new: true, lean: true });
-          console.log(`[HARAVAN] [SYNC] [CUSTOMER] [UPDATE] [${id}] [${updateCustomer.number}]`);
-        } else {
-          let newCustomer = await CustomerMD.create(customer);
-          console.log(`[HARAVAN] [SYNC] [CUSTOMER] [CREATE] [${id}] [${newCustomer.number}]`);
+  let { haravans, last_sync } = setting;
+  for (let i = 0; i < haravans.length; i++) {
+    const haravan = haravans[i];
+    let { access_token } = haravan;
+    let HrvAPI = new HaravanAPI({ is_test });
+    let query = {};
+    let created_at_min = null;
+    if (last_sync && last_sync.hrv_customers_at) { created_at_min = (new Date(last_sync.hrv_customers_at)).toISOString(); }
+    if (created_at_min) {
+      query = Object.assign(query, { created_at_min });
+      console.log(`[HARAVAN] [SYNC] [CUSTOMER] [FROM] [${created_at_min}]`);
+    }
+    let count = await HrvAPI.call(HRV.CUSTOMERS.COUNT, { access_token, query });
+    console.log(`[HARAVAN] [SYNC] [CUSTOMER] [COUNT] [${count}]`);
+    let limit = 50;
+    let totalPage = Math.ceil(count / limit);
+    for (let i = 1; i <= totalPage; i++) {
+      let query = { page: i, limit };
+      if (created_at_min) { query = Object.assign(query, { created_at_min }); }
+      let customers = await HrvAPI.call(HRV.CUSTOMERS.LIST, { access_token, query });
+      for (let j = 0; j < customers.length; j++) {
+        const customer_hrv = customers[j];
+        if (customer_hrv && customer_hrv.id) {
+          let { id } = customer_hrv;
+          let customer = MapCustomerHaravan.gen(customer_hrv);
+          let { type } = customer;
+          let found = await CustomerMD.findOne({ id, type }).lean(true);
+          if (found) {
+            let updateCustomer = await CustomerMD.findOneAndUpdate({ id, type }, { $set: customer }, { new: true, lean: true });
+            console.log(`[HARAVAN] [SYNC] [CUSTOMER] [UPDATE] [${id}] [${updateCustomer.number}]`);
+          } else {
+            let newCustomer = await CustomerMD.create(customer);
+            console.log(`[HARAVAN] [SYNC] [CUSTOMER] [CREATE] [${id}] [${newCustomer.number}]`);
+          }
         }
       }
     }

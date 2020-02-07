@@ -3,7 +3,7 @@ import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal
 } from 'antd';
 import 'antd/dist/antd.css';
 import OrderDetail from '../OrderDetail/index';
@@ -45,7 +45,9 @@ function Orders(props) {
   ];
 
   useEffect(() => {
+    setIsProcessing(true);
     actions.loadOrders(query);
+    setIsProcessing(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -124,6 +126,10 @@ function Orders(props) {
         handleCancel={() => setIsShowDetailModal(false)}
       >
       </OrderDetail>
+      <Modal
+      >
+        
+      </Modal>
     </div>
   );
 }

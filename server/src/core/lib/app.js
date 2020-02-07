@@ -9,13 +9,7 @@ const PORT = process.env.PORT || 3000;
 const socket = require('./socket');
 
 const App = {
-  init: () => {
-    app.use('/*', function (req, res, next) {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', '*');
-      res.header('Access-Control-Allow-Headers', '*');
-      next();
-    });
+  init: (app) => {
     // eventBus.start();
     Mongoose.load();
     Mongoose.connect()
@@ -33,7 +27,7 @@ const App = {
   },
 
   start: () => {
-    App.init();
+    App.init(app);
     socket({ app }).listen(PORT, () => {
       console.log(`running port ${PORT}`);
     });
