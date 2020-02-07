@@ -19,6 +19,8 @@ function App(props) {
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
   const [isShowShopifyAppModal, setIsShowShopifyAppModal] = useState(false);
 
+  const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
+
   const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host: 'http://localhost:8080/QH1901' });
   const [buildLinkWoocommerce, setBuildLinkWoocommerce] = useState('');
 
@@ -32,7 +34,7 @@ function App(props) {
   async function buildLinkShopifyApp() {
     await actions.buildLinkShopifyApp(dataShopify);
   }
-  
+
   const [dataHaravan, setDataHaravan] = useState({ sync_orders: false, sync_products: false, sync_customers: false });
 
   function onChange(e) {
@@ -59,7 +61,7 @@ function App(props) {
   }, [url_shopify])
 
   useEffect(() => {
-    buildLinkHaravanApp();
+    setBuildLinkHaravan(url_haravan)
   }, [url_haravan])
 
   return (
@@ -67,10 +69,10 @@ function App(props) {
       <Col span={24}>
         <List header={<div>Danh sách App</div>} bordered>
           <Item>
-            Haravan App <a target="_blank" href={url_haravan}>Install</a>
+            Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-            <Button onClick={() => {}}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
-            <Button onClick={() => {}}><Icon style={{ color: 'red' }} type="close-circle" /></Button>
+            <Button onClick={() => { }}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
+            <Button onClick={() => { }}><Icon style={{ color: 'red' }} type="close-circle" /></Button>
           </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
           <Item>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></Item>
@@ -87,6 +89,8 @@ function App(props) {
           <Form.Item><Checkbox name="sync_products" onChange={onChangeChecked}>Đồng bộ sản phẩm</Checkbox></Form.Item>
           <Form.Item><Checkbox name="sync_customers" onChange={onChangeChecked}>Đồng bộ khách hàng</Checkbox></Form.Item>
         </Form>
+        <Button onClick={buildLinkHaravanApp}>Build</Button>
+        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
       <Modal
         title="Woocommerce App"
