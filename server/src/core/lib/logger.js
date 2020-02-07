@@ -1,13 +1,13 @@
 const chalk = require('chalk');
 const log = console.log;
 
-function logger(log) {
+function logger(send) {
   let result;
-  let { type, message, error } = log;
-  if (typeof log == 'object') {
+  let { type, message, error } = send;
+  if (typeof send == 'object') {
     result = JSON.stringify(message) || error;
   } else {
-    result = log;
+    result = send;
   }
   if (!type) { type = 'ERROR' }
   switch (type) {
