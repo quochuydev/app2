@@ -1,8 +1,9 @@
 const chalk = require('chalk');
 const log = console.log;
 
-function logger(type, message) {
-  message = JSON.stringify(message);
+function logger({ type, message, error }) {
+  message = JSON.stringify(message) || JSON.stringify(error);
+  if (!type) { type = 'WARNING' }
   switch (type) {
     case 'SUCCESS':
       log(chalk.green(message))
