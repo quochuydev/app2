@@ -21,10 +21,10 @@ const URLS = {
   LIST_STAFFS: 'api/staffs',
 
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
-  BUILDLINK_HARAVAN_APP: 'api/haravan/build-link',
+  BUILDLINK_HARAVAN_APP: 'api/haravan/buildlink',
   INSTALL_HARAVAN_APP: 'api/haravan/install',
 
-  BUILDLINK_SHOPIFY_APP: 'api/shopify/build-link',
+  BUILDLINK_SHOPIFY_APP: 'api/shopify/buildlink',
 }
 
 async function listCustomers() {

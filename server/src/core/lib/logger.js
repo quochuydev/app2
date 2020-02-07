@@ -1,20 +1,27 @@
 const chalk = require('chalk');
 const log = console.log;
 
-function logger(type, message) {
-  message = JSON.stringify(message);
+function logger(log) {
+  let result;
+  let { type, message, error } = log;
+  if (typeof log == 'object') {
+    result = JSON.stringify(message) || error;
+  } else {
+    result = log;
+  }
+  if (!type) { type = 'ERROR' }
   switch (type) {
     case 'SUCCESS':
-      log(chalk.green(message))
-      break;
-    case 'ERROR':
-      log(chalk.red(message))
+      log(chalk.green(result))
       break;
     case 'WARNING':
-      log(chalk.yellow(message))
+      log(chalk.yellow(result))
+      break;
+    case 'ERROR':
+      log(chalk.red(result))
       break;
     default:
-      log(message)
+      log(result)
       break;
   }
   return;

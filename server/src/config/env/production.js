@@ -14,13 +14,22 @@ module.exports = {
   sessionCollection: 'sessions',
 
   app_host: process.env.APP_HOST,
-  delivery_url: `${process.env.APP_HOST}/api/webhook`,
   // webhook_haravan_url: `${process.env.APP_HOST}/webhook/haravan`,
   downloadLink: process.env.APP_HOST,
   frontend_site: `${process.env.APP_HOST}/site`,
 
+  cron: {
+    job1: '*/60 * * * * *'
+  },
+  
+  // WOOCOMMERCE
+  woocommerce: {
+    delivery_url: `${process.env.APP_HOST}/api/webhook`,
+  },
+
   // HARAVAN
   haravan: {
+    is_test: true,
     response_mode: 'form_post',
     url_authorize: 'https://accounts.hara.vn/connect/authorize',
     url_connect_token: 'https://accounts.hara.vn/connect/token',

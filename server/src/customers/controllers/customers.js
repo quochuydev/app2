@@ -1,12 +1,13 @@
 const path = require('path');
-const _ = require('lodash');
-const API = require(path.resolve('./src/core/api/index'));
 const mongoose = require('mongoose');
+
 const CustomersMD = mongoose.model('Customer');
 const ShopMD = mongoose.model('Shop');
-const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
-// const nodemailer = require(path.resolve('./src/core/lib/email/nodemailer'));
 const SettingMD = mongoose.model('Setting');
+
+const logger = require(path.resolve('./src/core/lib/logger'));
+const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
+const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const config = require(path.resolve('./src/config/config'));
 const { appslug } = config;
 
@@ -22,42 +23,15 @@ exports.list = async (req, res) => {
 }
 
 exports.sync = async (req, res) => {
-  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
-  let { haravan } = setting;
-  let { access_token } = haravan;
-  let HR = {}
-  HR.CUSTOMERS = {
-    LIST: {
-      method: 'get',
-      url: 'com/customers.json',
-      resPath: 'body.customers'
-    }
+  try {
+    await syncCustomersHaravan();
+    await syncCustomersWoo();
+    await syncCustomersShopify();
+    res.json({ error: false });
+  } catch (error) {
+    logger(error)
+    res.status(400).send({ error: true });
   }
-  let customers = await API.call(HR.CUSTOMERS.LIST, { access_token });
-  let count = {
-    api: 'customers.json',
-    new: 0,
-    update: 0,
-    start_time: new Date()
-  }
-  for (let i = 0; i < customers.length; i++) {
-    try {
-      const customer = customers[i];
-      let found = await CustomersMD.findOne({ id: customer.id }).lean(true);
-      if (!found) {
-        await CustomersMD.create(customer)
-        count.new++;
-      } else {
-        await CustomersMD.findOneAndUpdate({ id: customer.id }, { $set: customer }, { lean: true, new: true });
-        count.update++;
-      }
-    } catch {
-
-    }
-  }
-  count.end_time = new Date();
-  count.time = (count.end_time - count.start_time) / 1000 + 's';
-  res.send({ error: false, data: { count } })
 }
 
 exports.create = (req, res) => {
@@ -68,15 +42,17 @@ exports.update = (req, res) => {
   res.send({ error: false });
 }
 
-exports.import = (req, res) => {
+exports.importExcel = (req, res) => {
   res.send({ error: false });
 }
 
-exports.export = (req, res) => {
+exports.exportExcel = (req, res) => {
   res.send({ error: false });
 }
 
 let test = async () => {
-  exports.get()
+  await syncCustomersHaravan();
+  await syncCustomersShopify();
+  await syncCustomersWoo();
 }
-// test()
+// test();
