@@ -27,7 +27,7 @@ let syncOrdersWoo = async () => {
     const order_woo = orders[i];
     if (order_woo && order_woo.id) {
       let { id } = order_woo;
-      let order = MapOrderWoocommerce.gen(order_woo);
+      let order = MapOrderWoocommerce.gen(order_woo, wp_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {
@@ -50,7 +50,7 @@ let syncOrdersHaravan = async () => {
   let { haravans, last_sync } = setting;
   for (let k = 0; k < haravans.length; k++) {
     const haravan = haravans[k];
-    let { access_token } = haravan;
+    let { access_token, shop } = haravan;
     let HrvAPI = new HaravanAPI({ is_test });
     let query = {};
     let created_at_min = null;
@@ -71,7 +71,7 @@ let syncOrdersHaravan = async () => {
         const order_hrv = orders[j];
         if (order_hrv && order_hrv.id) {
           let { id } = order_hrv;
-          let order = MapOrderHaravan.gen(order_hrv);
+          let order = MapOrderHaravan.gen(order_hrv, shop);
           let { type } = order;
           let found = await OrderMD.findOne({ id, type }).lean(true);
           if (found) {
@@ -103,7 +103,7 @@ let syncOrdersShopify = async () => {
     const order_shopify = orders[j];
     if (order_shopify && order_shopify.id) {
       let { id } = order_shopify;
-      let order = MapOrderShopify.gen(order_shopify);
+      let order = MapOrderShopify.gen(order_shopify, shopify_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {

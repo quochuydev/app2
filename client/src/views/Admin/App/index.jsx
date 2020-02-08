@@ -6,8 +6,12 @@ import {
   Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox, Radio
 } from 'antd';
 import 'antd/dist/antd.css';
+
+import LoadingPage from '../../Components/Loading/index';
+
 const { Item } = List;
 const { Option } = Select;
+
 
 function App(props) {
   const { app, actions } = props;
@@ -15,9 +19,11 @@ function App(props) {
   let url_haravan = app.get('url_haravan');
   let url_shopify = app.get('url_shopify');
 
+
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
   const [isShowShopifyAppModal, setIsShowShopifyAppModal] = useState(false);
+  const [isShowResetAppModal, setIsShowResetAppModal] = useState(false);
 
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
@@ -52,6 +58,12 @@ function App(props) {
     await actions.installHaravanApp(dataHaravan);
   }
 
+  async function resetTimeSync() {
+    setIsProcessing(true)
+    await actions.resetTimeSync();
+    setIsProcessing(false)
+  }
+
   useEffect(() => {
     setBuildLinkWoocommerce(url)
   }, [url])
@@ -63,6 +75,9 @@ function App(props) {
   useEffect(() => {
     setBuildLinkHaravan(url_haravan)
   }, [url_haravan])
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   return (
     <Row key='1'>
@@ -76,6 +91,7 @@ function App(props) {
           </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
           <Item>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></Item>
+          <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
       </Col>
       <Modal
@@ -124,6 +140,27 @@ function App(props) {
         </Form>
         <a href={buildLinkShopify}>{buildLinkShopify}</a>
       </Modal>
+      <Modal
+        title="Reset time sync"
+        visible={isShowResetAppModal}
+        onOk={() => resetTimeSync()}
+        onCancel={() => setIsShowResetAppModal(false)}
+      >
+        <Form>
+          {/* <Form.Item>
+            <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
+              <Radio value={true}>sku</Radio>
+              <Radio value={false}>production</Radio>
+            </Radio.Group>
+          </Form.Item> */}
+          {/* <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item> */}
+        </Form>
+        {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
+        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
+      </Modal>
+
     </Row >
   );
 }
