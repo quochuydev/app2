@@ -35,7 +35,9 @@ function Orders(props) {
     },
     {
       title: 'Type', key: 'type', render: edit => (
-        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+        <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
+      )
+
     },
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {
@@ -52,6 +54,7 @@ function Orders(props) {
   }, []);
 
   const [isShowDetailModal, setIsShowDetailModal] = useState(false);
+  const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   let [orderDetail, setOrderDetail] = useState({});
   let [query, setQuery] = useState({});
 
@@ -61,9 +64,8 @@ function Orders(props) {
   }
 
   const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) {
-    return <LoadingPage isProcessing={isProcessing} />;
-  }
+  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
+
   async function syncOrders() {
     setIsProcessing(true);
     await actions.syncOrders();
@@ -75,6 +77,10 @@ function Orders(props) {
   function openDetailModal(order) {
     setOrderDetail(order)
     setIsShowDetailModal(true);
+  }
+  function openInfoModal(order) {
+    setOrderDetail(order)
+    setIsShowInfoModal(true);
   }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
@@ -127,8 +133,11 @@ function Orders(props) {
       >
       </OrderDetail>
       <Modal
+        title="Info Order Modal"
+        visible={isShowInfoModal}
+        onCancel={() => setIsShowInfoModal(false)}
       >
-        
+        <p>From: {orderDetail.url}{JSON.stringify(orderDetail)}</p>
       </Modal>
     </div>
   );

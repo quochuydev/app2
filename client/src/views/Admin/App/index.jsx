@@ -18,6 +18,7 @@ function App(props) {
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
   const [isShowShopifyAppModal, setIsShowShopifyAppModal] = useState(false);
+  const [isShowResetAppModal, setIsShowResetAppModal] = useState(false);
 
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
@@ -30,7 +31,7 @@ function App(props) {
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
-
+  
   async function buildLinkShopifyApp() {
     await actions.buildLinkShopifyApp(dataShopify);
   }
@@ -50,6 +51,10 @@ function App(props) {
 
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
+  }
+  
+  async function resetTimeSync() {
+    await actions.resetTimeSync();
   }
 
   useEffect(() => {
@@ -76,6 +81,7 @@ function App(props) {
           </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
           <Item>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></Item>
+          <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
       </Col>
       <Modal
@@ -124,6 +130,27 @@ function App(props) {
         </Form>
         <a href={buildLinkShopify}>{buildLinkShopify}</a>
       </Modal>
+      <Modal
+        title="Reset time sync"
+        visible={isShowResetAppModal}
+        onOk={() => resetTimeSync()}
+        onCancel={() => setIsShowResetAppModal(false)}
+      >
+        <Form>
+          {/* <Form.Item>
+            <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
+              <Radio value={true}>sku</Radio>
+              <Radio value={false}>production</Radio>
+            </Radio.Group>
+          </Form.Item> */}
+          {/* <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
+          <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item> */}
+        </Form>
+        {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
+        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
+      </Modal>
+
     </Row >
   );
 }

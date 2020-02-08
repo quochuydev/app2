@@ -50,7 +50,7 @@ let syncOrdersHaravan = async () => {
   let { haravans, last_sync } = setting;
   for (let k = 0; k < haravans.length; k++) {
     const haravan = haravans[k];
-    let { access_token } = haravan;
+    let { access_token, shop } = haravan;
     let HrvAPI = new HaravanAPI({ is_test });
     let query = {};
     let created_at_min = null;
@@ -71,7 +71,7 @@ let syncOrdersHaravan = async () => {
         const order_hrv = orders[j];
         if (order_hrv && order_hrv.id) {
           let { id } = order_hrv;
-          let order = MapOrderHaravan.gen(order_hrv);
+          let order = MapOrderHaravan.gen(order_hrv, shop);
           let { type } = order;
           let found = await OrderMD.findOne({ id, type }).lean(true);
           if (found) {

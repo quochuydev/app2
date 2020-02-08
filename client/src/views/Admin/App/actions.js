@@ -9,6 +9,8 @@ export const ACTIONS = {
   BUILDLINK_HARAVAN_APP_FAILED: 'BUILDLINK_HARAVAN_APP_FAILED',
   BUILDLINK_SHOPIFY_APP_SUCCESS: 'BUILDLINK_SHOPIFY_APP_SUCCESS',
   BUILDLINK_SHOPIFY_APP_FAILED: 'BUILDLINK_SHOPIFY_APP_FAILED',
+  RESET_TIME_SYNC_SUCCESS: 'RESET_TIME_SYNC_SUCCESS',
+  RESET_TIME_SYNC_FAILED: 'RESET_TIME_SYNC_FAILED'
 };
 
 export function installWoocommerceApp(data) {
@@ -92,6 +94,28 @@ export function buildLinkShopifyApp(data) {
     } catch (error) {
       dispatch({
         type: ACTIONS.BUILDLINK_SHOPIFY_APP_FAILED, payload: {
+          error: true,
+          message: 'message'
+        }
+      });
+    }
+  }
+}
+
+export function resetTimeSync(data) {
+  return async (dispatch) => {
+    try {
+      const res = await AdminServices.resetTimeSync(data);
+      dispatch({
+        type: ACTIONS.RESET_TIME_SYNC_SUCCESS, payload: {
+          error: false,
+          message: 'message',
+          ...res
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.RESET_TIME_SYNC_FAILED, payload: {
           error: true,
           message: 'message'
         }

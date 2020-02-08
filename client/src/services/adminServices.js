@@ -25,6 +25,8 @@ const URLS = {
   INSTALL_HARAVAN_APP: 'api/haravan/install',
 
   BUILDLINK_SHOPIFY_APP: 'api/shopify/buildlink',
+
+  RESET_TIME_SYNC: 'api/setting/reset_time_sync'
 }
 
 async function listCustomers() {
@@ -91,8 +93,12 @@ async function installShopifyApp(data) {
   return await ApiClient.postData(URLS.BUILDLINK_SHOPIFY_APP, null, data);
 }
 
+async function resetTimeSync(data) {
+  return await ApiClient.postData(URLS.RESET_TIME_SYNC, null, data);
+}
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
   loadOrders, syncOrders, loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp,
-  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp
+  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync
 }

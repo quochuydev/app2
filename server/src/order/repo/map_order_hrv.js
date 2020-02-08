@@ -1,5 +1,5 @@
 const MapOrderHaravan = {
-  gen(order_hrv) {
+  gen(order_hrv, url) {
     let order = {
       type: 'haravan',
       id: order_hrv.id,
@@ -42,6 +42,7 @@ const MapOrderHaravan = {
       currency: order_hrv.currency,
       note: order_hrv.note,
       customer_id: order_hrv.customer.id,
+      url: url,
       detail: order_hrv
     };
 
