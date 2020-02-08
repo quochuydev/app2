@@ -16,6 +16,10 @@ function AppReducer(state = initialState, { type, payload }) {
       return state.merge({ ...payload });
     case ACTIONS.BUILDLINK_SHOPIFY_APP_SUCCESS:
       return state.merge({ ...payload });
+    case ACTIONS.RESET_TIME_SYNC_SUCCESS:
+      return state.merge({ ...payload });
+    case ACTIONS.RESET_TIME_SYNC_FAILED:
+      return state.merge({ ...payload });
     default:
       return state;
   }

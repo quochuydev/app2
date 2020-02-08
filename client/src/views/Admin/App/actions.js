@@ -109,7 +109,7 @@ export function resetTimeSync(data) {
       dispatch({
         type: ACTIONS.RESET_TIME_SYNC_SUCCESS, payload: {
           error: false,
-          message: 'message',
+          message: 'RESET_TIME_SYNC_SUCCESS',
           ...res
         }
       });
@@ -117,7 +117,7 @@ export function resetTimeSync(data) {
       dispatch({
         type: ACTIONS.RESET_TIME_SYNC_FAILED, payload: {
           error: true,
-          message: 'message'
+          message: 'RESET_TIME_SYNC_FAILED'
         }
       });
     }
