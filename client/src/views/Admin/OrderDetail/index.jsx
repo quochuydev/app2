@@ -16,7 +16,7 @@ function OrderDetail(props) {
     },
     { title: 'Chi phí', dataIndex: 'price', key: 'price', },
     { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
-    { title: 'Tổng tiền', dataIndex: 'subtotal', key: 'subtotal', },
+    { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
   // let [orderDetail, setOrderDetail] = useState({});

@@ -59,7 +59,6 @@ function Orders(props) {
   let [query, setQuery] = useState({});
 
   async function loadOrders() {
-    console.log(query)
     await actions.loadOrders(query);
   }
 
