@@ -8,6 +8,7 @@ import {
 import 'antd/dist/antd.css';
 
 import LoadingPage from '../../Components/Loading/index';
+import Alert from '../../Components/Alert/index';
 
 const { Item } = List;
 const { Option } = Select;
@@ -19,6 +20,17 @@ function App(props) {
   let url_haravan = app.get('url_haravan');
   let url_shopify = app.get('url_shopify');
 
+  useEffect(() => {
+    setBuildLinkWoocommerce(url)
+  }, [url])
+
+  useEffect(() => {
+    setBuildLinkShopify(url_shopify)
+  }, [url_shopify])
+
+  useEffect(() => {
+    setBuildLinkHaravan(url_haravan)
+  }, [url_haravan])
 
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
@@ -58,23 +70,19 @@ function App(props) {
     await actions.installHaravanApp(dataHaravan);
   }
 
+  let [alert, setAlert] = useState({
+    messageSuccess: '',
+    messageFailed: '',
+    showAlert: false,
+    isError: false,
+  });
+  let { messageSuccess, messageFailed, showAlert, isError } = alert;
+
   async function resetTimeSync() {
     setIsProcessing(true)
     await actions.resetTimeSync();
     setIsProcessing(false)
   }
-
-  useEffect(() => {
-    setBuildLinkWoocommerce(url)
-  }, [url])
-
-  useEffect(() => {
-    setBuildLinkShopify(url_shopify)
-  }, [url_shopify])
-
-  useEffect(() => {
-    setBuildLinkHaravan(url_haravan)
-  }, [url_haravan])
 
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
@@ -94,6 +102,7 @@ function App(props) {
           <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
       </Col>
+
       <Modal
         title="Haravan App"
         visible={isShowHaravanAppModal}
