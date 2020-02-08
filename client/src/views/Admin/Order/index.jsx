@@ -137,7 +137,7 @@ function Orders(props) {
         visible={isShowInfoModal}
         onCancel={() => setIsShowInfoModal(false)}
       >
-        <p>From: {orderDetail.url}{JSON.stringify(orderDetail)}</p>
+        <p>From: {orderDetail.url}</p>
       </Modal>
     </div>
   );

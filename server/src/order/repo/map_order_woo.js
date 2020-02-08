@@ -1,5 +1,5 @@
 const MapOrderWoocommerce = {
-  gen(order_woo) {
+  gen(order_woo, url) {
     let order = {
       type: 'woocommerce',
       id: order_woo.id,
@@ -42,6 +42,7 @@ const MapOrderWoocommerce = {
       currency: order_woo.currency,
       note: order_woo.customer_note,
       customer_id: order_woo.customer_id,
+      url,
       detail: order_woo
     };
 

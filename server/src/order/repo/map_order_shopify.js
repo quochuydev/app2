@@ -1,5 +1,5 @@
 const MapOrderShopify = {
-  gen(order_shopify) {
+  gen(order_shopify, url) {
     let order = {
       type: 'shopify',
       id: order_shopify.id,
@@ -42,6 +42,7 @@ const MapOrderShopify = {
       currency: order_shopify.currency,
       note: order_shopify.note,
       customer_id: order_shopify.customer.id,
+      url,
       detail: order_shopify
     };
 

@@ -27,7 +27,7 @@ let syncOrdersWoo = async () => {
     const order_woo = orders[i];
     if (order_woo && order_woo.id) {
       let { id } = order_woo;
-      let order = MapOrderWoocommerce.gen(order_woo);
+      let order = MapOrderWoocommerce.gen(order_woo, wp_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {
@@ -103,7 +103,7 @@ let syncOrdersShopify = async () => {
     const order_shopify = orders[j];
     if (order_shopify && order_shopify.id) {
       let { id } = order_shopify;
-      let order = MapOrderShopify.gen(order_shopify);
+      let order = MapOrderShopify.gen(order_shopify, shopify_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {

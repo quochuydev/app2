@@ -6,14 +6,19 @@ import {
   Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox, Radio
 } from 'antd';
 import 'antd/dist/antd.css';
+
+import LoadingPage from '../../Components/Loading/index';
+
 const { Item } = List;
 const { Option } = Select;
+
 
 function App(props) {
   const { app, actions } = props;
   let url = app.get('url');
   let url_haravan = app.get('url_haravan');
   let url_shopify = app.get('url_shopify');
+
 
   const [isShowHaravanAppModal, setIsShowHaravanAppModal] = useState(false);
   const [isShowWoocommerceAppModal, setIsShowWoocommerceAppModal] = useState(false);
@@ -31,7 +36,7 @@ function App(props) {
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
-  
+
   async function buildLinkShopifyApp() {
     await actions.buildLinkShopifyApp(dataShopify);
   }
@@ -52,9 +57,11 @@ function App(props) {
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
   }
-  
+
   async function resetTimeSync() {
+    setIsProcessing(true)
     await actions.resetTimeSync();
+    setIsProcessing(false)
   }
 
   useEffect(() => {
@@ -68,6 +75,9 @@ function App(props) {
   useEffect(() => {
     setBuildLinkHaravan(url_haravan)
   }, [url_haravan])
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   return (
     <Row key='1'>
