@@ -37,20 +37,20 @@ const login = (req, res) => {
 }
 
 const grandservice = async (req, res) => {
-  const { code } = req.body;
-  const HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test });
-  const { access_token } = await HrvAPI.getToken(code);
-  const shopAPI = await HrvAPI.call(HRV.SHOP.GET, { access_token });
+  let { code } = req.body;
+  let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, access_token, is_test });
+  let { access_token } = await HrvAPI.getToken(code);
+  let shopAPI = await HrvAPI.call(HRV.SHOP.GET);
   let shop_id = shopAPI.id;
   let shop = shopAPI.myharavan_domain;
   let haravanData = { shop_id, shop, status: 1, access_token, is_test }
   let setting = await SettingMD.findOne({ app: appslug }).lean(true);
   let { haravans } = setting;
-  let shopIndex = haravans.findIndex(e => e.shop_id == shop_id);
-  if (shopIndex == -1) {
+  let index = haravans.findIndex(e => e.shop_id == shop_id);
+  if (index == -1) {
     haravans.push(haravanData);
   } else {
-    haravans[shopIndex] = Object.assign(haravans[shopIndex], haravanData);
+    haravans[index] = Object.assign(haravans[index], haravanData);
   }
   await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravans } }, { lean: true, new: true });
   res.redirect(`${frontend_site}/app`)
