@@ -1,10 +1,12 @@
 # react_node_app
 
-development
+```bash
+# development
 client (reactjs)
 npm run client-test
 server (nodejs)
 npm run server
 
-production
+# production
 npm start
+```
