@@ -1,4 +1,6 @@
-const { list, sync } = require('./../controller/order');
+const { list, sync, detail } = require('./../controller/order');
+let mongoose = require('mongoose')
+const OrderMD = mongoose.model('Order');
 
 // TODO test bus sync order status
 const path = require('path');
@@ -6,8 +8,9 @@ const syncOrderStatus = require(path.resolve('./src/order/business/sync_order_st
 // end
 
 const router = ({ app }) => {
-  app.post('/api/order/list', list)
-  app.post('/api/order/sync', sync)
+  app.post('/api/order/list', list);
+  app.post('/api/order/sync', sync);
+  app.get('/api/order/detail/:id', detail);
 }
 
 module.exports = router;

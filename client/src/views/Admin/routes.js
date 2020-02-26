@@ -3,6 +3,7 @@ import Customer from '../Admin/Customer/routes';
 import CustomerHrv from '../Admin/CustomerHrv/routes';
 import Messenger from '../Admin/Messenger/routes';
 import Order from '../Admin/Order/routes';
+import OrderDetail from '../Admin/OrderDetail/routes';
 import OrderWoo from '../Admin/OrderWoo/routes';
 import CustomerWoo from '../Admin/CustomerWoo/routes';
 import ProductWoo from '../Admin/ProductWoo/routes';
@@ -15,6 +16,7 @@ const routes = [
   ...CustomerHrv,
   ...Messenger,
   ...Order,
+  ...OrderDetail,
   ...OrderWoo,
   ...CustomerWoo,
   ...ProductWoo,

@@ -2,6 +2,9 @@ const path = require('path');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); })
+  app.use('/api/*', (req, res, next) => {
+    next();
+  })
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });
   require(path.resolve('./src/order/routes/order'))({ app });
