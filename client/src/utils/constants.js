@@ -4,6 +4,7 @@ const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
 const CUSTOMER_HRV_ROUTE = `${PATH_ADMIN}hrv_customers`;
 const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_ROUTE = `${PATH_ADMIN}order`;
+const ORDER_DETAIL_ROUTE = `${PATH_ADMIN}order/detail/:orderId`;
 const ORDER_WOO_ROUTE = `${PATH_ADMIN}order_woocommerce`;
 const CUSTOMER_WOO_ROUTE = `${PATH_ADMIN}customer_woocommerce`;
 const PRODUCT_WOO_ROUTE = `${PATH_ADMIN}product_woocommerce`;
@@ -16,6 +17,7 @@ const PATHS = {
   HOME_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
+  ORDER_DETAIL_ROUTE,
   ORDER_WOO_ROUTE,
   CUSTOMER_WOO_ROUTE,
   PRODUCT_WOO_ROUTE,

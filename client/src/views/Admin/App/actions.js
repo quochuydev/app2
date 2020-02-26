@@ -10,7 +10,11 @@ export const ACTIONS = {
   BUILDLINK_SHOPIFY_APP_SUCCESS: 'BUILDLINK_SHOPIFY_APP_SUCCESS',
   BUILDLINK_SHOPIFY_APP_FAILED: 'BUILDLINK_SHOPIFY_APP_FAILED',
   RESET_TIME_SYNC_SUCCESS: 'RESET_TIME_SYNC_SUCCESS',
-  RESET_TIME_SYNC_FAILED: 'RESET_TIME_SYNC_FAILED'
+  RESET_TIME_SYNC_FAILED: 'RESET_TIME_SYNC_FAILED',
+  GET_SETTING_SUCCESS: 'GET_SETTING_SUCCESS',
+  GET_SETTING_FAILED: 'GET_SETTING_FAILED',
+  UPDATE_STATUS_APP_SUCCESS: 'UPDATE_STATUS_APP_SUCCESS',
+  UPDATE_STATUS_APP_FAILED: 'UPDATE_STATUS_APP_FAILED'
 };
 
 export function installWoocommerceApp(data) {
@@ -123,3 +127,48 @@ export function resetTimeSync(data) {
     }
   }
 }
+
+export function getSetting() {
+  return async (dispatch) => {
+    try {
+      const res = await AdminServices.getSetting();
+      dispatch({
+        type: ACTIONS.GET_SETTING_SUCCESS, payload: {
+          error: false,
+          message: 'GET_SETTING_SUCCESS',
+          ...res
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.GET_SETTING_FAILED, payload: {
+          error: true,
+          message: 'GET_SETTING_FAILED'
+        }
+      });
+    }
+  }
+}
+
+export function updateStatusApp(data) {
+  return async (dispatch) => {
+    try {
+      const res = await AdminServices.updateStatusApp(data);
+      dispatch({
+        type: ACTIONS.UPDATE_STATUS_APP_SUCCESS, payload: {
+          error: false,
+          message: 'UPDATE_STATUS_APP_SUCCESS',
+          ...res
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.UPDATE_STATUS_APP_FAILED, payload: {
+          error: true,
+          message: 'UPDATE_STATUS_APP_FAILED'
+        }
+      });
+    }
+  }
+}
+

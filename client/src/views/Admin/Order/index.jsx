@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal
 } from 'antd';
 import 'antd/dist/antd.css';
-import OrderDetail from '../OrderDetail/index';
 import LoadingPage from '../../Components/Loading/index';
 const { Option } = Select;
 
@@ -30,7 +30,7 @@ function Orders(props) {
     {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <a onClick={() => openDetailModal(edit)}>{edit.number}</a>
+        <a href={`order/detail/${edit.number}`}>{edit.number}</a>
       ),
     },
     {
@@ -41,8 +41,14 @@ function Orders(props) {
     },
     { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at', },
     {
-      title: 'Tình trạng', key: 'status', render: edit => (
-        <Tag color="green">{edit.status}</Tag>)
+      title: 'Thanh toán momo', key: 'status', render: edit => (
+        <div>
+          <a target="_blank" href={`${edit.momo_pay}`}>
+            <Tag color="magenta">momo</Tag>
+          </a>
+          <Icon type="mail" onClick={() => openSendMailModal(edit)} />
+        </div>
+      )
     },
   ];
 
@@ -50,11 +56,10 @@ function Orders(props) {
     setIsProcessing(true);
     actions.loadOrders(query);
     setIsProcessing(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [isShowDetailModal, setIsShowDetailModal] = useState(false);
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
+  const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   let [orderDetail, setOrderDetail] = useState({});
   let [query, setQuery] = useState({});
 
@@ -72,14 +77,13 @@ function Orders(props) {
     setIsProcessing(false);
   }
 
-
-  function openDetailModal(order) {
-    setOrderDetail(order)
-    setIsShowDetailModal(true);
-  }
   function openInfoModal(order) {
     setOrderDetail(order)
     setIsShowInfoModal(true);
+  }
+  function openSendMailModal(order) {
+    setOrderDetail(order)
+    setIsShowSendMailModal(true);
   }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
@@ -120,23 +124,27 @@ function Orders(props) {
         </Form>
 
         <Col span={24}>
+          <Button href={'order/detail'}>Tao don</Button>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />;
         </Col>
       </Row>
-      <OrderDetail
-        showModal={isShowDetailModal}
-        order={orderDetail}
-        handleCancel={() => setIsShowDetailModal(false)}
-      >
-      </OrderDetail>
       <Modal
         title="Info Order Modal"
         visible={isShowInfoModal}
         onCancel={() => setIsShowInfoModal(false)}
       >
         <p>From: {orderDetail.url}</p>
+      </Modal>
+      <Modal
+        title="Sendmail Order Modal"
+        visible={isShowSendMailModal}
+        onCancel={() => setIsShowSendMailModal(false)}
+      >
+        <p>Gửi mail thanh toán momo</p>
+        <p>Email bill: {_.get(orderDetail, 'billing.email')} <Icon type="check-circle" /> <Icon type="close-circle" /></p>
+        <p>Email giao hàng:: {_.get(orderDetail, 'shipping.email')} <Icon type="check-circle" /> <Icon type="close-circle" /></p>
       </Modal>
     </div>
   );

@@ -13,6 +13,7 @@ const URLS = {
   EXPORT_CUSTOMER_HRV: 'api/hrv_customers/export',
 
   LIST_ORDERS: 'api/order/list',
+  GET_ORDER_DETAIL: 'api/order/detail',
   SYNC_ORDERS: 'api/order/sync',
 
   LIST_WOO_ORDERS: 'api/woo_orders',
@@ -26,7 +27,9 @@ const URLS = {
 
   BUILDLINK_SHOPIFY_APP: 'api/shopify/buildlink',
 
-  RESET_TIME_SYNC: 'api/setting/reset_time_sync'
+  RESET_TIME_SYNC: 'api/setting/reset_time_sync',
+  GET_SETTING: 'api/setting/get',
+  UPDATE_STATUS_APP: 'api/setting/update-status'
 }
 
 async function listCustomers() {
@@ -51,6 +54,11 @@ async function exportCustomer() {
 
 async function loadOrders(query) {
   return await ApiClient.postData(URLS.LIST_ORDERS, null, query);
+}
+
+async function getOrderDetail(id) {
+  let url = `${URLS.GET_ORDER_DETAIL}/${id}`;
+  return await ApiClient.getData(url);
 }
 
 async function syncOrders() {
@@ -97,8 +105,16 @@ async function resetTimeSync(data) {
   return await ApiClient.postData(URLS.RESET_TIME_SYNC, null, data);
 }
 
+async function getSetting() {
+  return await ApiClient.getData(URLS.GET_SETTING);
+}
+
+async function updateStatusApp(data) {
+  return await ApiClient.putData(URLS.UPDATE_STATUS_APP, null, data);
+}
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
-  loadOrders, syncOrders, loadWooOrders, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp,
-  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync
+  loadOrders, syncOrders, loadWooOrders, getOrderDetail, syncWooOrders, loadStaffs, createStaffs, installWoocommerceApp,
+  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp
 }

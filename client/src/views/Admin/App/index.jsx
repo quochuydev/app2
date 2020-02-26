@@ -19,6 +19,16 @@ function App(props) {
   let url = app.get('url');
   let url_haravan = app.get('url_haravan');
   let url_shopify = app.get('url_shopify');
+  let setting = app.get('setting');
+
+  const [settingApp, setSettingApp] = useState(null);
+
+  useEffect(() => {
+    actions.getSetting();
+    if (!settingApp) { setSettingApp(setting) }
+  }, [settingApp])
+
+
 
   useEffect(() => {
     setBuildLinkWoocommerce(url)
@@ -87,6 +97,33 @@ function App(props) {
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
+  async function updateStatusApp(type, _id, status) {
+    await actions.updateStatusApp({ type, _id, status });
+  }
+
+  let ListHaravanShop;
+  if (setting && setting.haravans) {
+    ListHaravanShop = (
+      <div>
+        {
+          setting.haravans.map(haravan =>
+            <div key={haravan._id}>
+              <p>[{haravan.shop_id}] - {haravan.shop}
+                {haravan.status == 1
+                  ? <Button onClick={() => updateStatusApp('haravan', haravan._id, 0)}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
+                  : <Button onClick={() => updateStatusApp('haravan', haravan._id, 1)}><Icon style={{ color: 'red' }} type="close-circle" /></Button>}
+              </p>
+            </div>
+          )
+        }
+      </div>
+    )
+  } else {
+    ListHaravanShop = (
+      <div>Không có shop haravan</div>
+    )
+  }
+
   return (
     <Row key='1'>
       <Col span={24}>
@@ -94,8 +131,7 @@ function App(props) {
           <Item>
             Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-            <Button onClick={() => { }}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
-            <Button onClick={() => { }}><Icon style={{ color: 'red' }} type="close-circle" /></Button>
+            {ListHaravanShop}
           </Item>
           <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
           <Item>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></Item>
