@@ -41,7 +41,7 @@ function Customer(props) {
     {
       title: 'Edit', key: 'edit',
       render: edit => (
-        <span>{edit.id}
+        <span>
           <Icon type="edit" onClick={() => setIsUpdateModal(true)} />
         </span>
       ),
