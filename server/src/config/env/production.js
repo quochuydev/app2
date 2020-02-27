@@ -49,7 +49,7 @@ module.exports = {
   },
 
   rabbit: {
-    url: process.env.RABBIT_URL,
+    url: process.env.CLOUDAMQP_URL,
     user: 'guest',
     pass: 'guest',
     host: 'localhost',
