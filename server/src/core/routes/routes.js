@@ -8,7 +8,6 @@ const routes = (app) => {
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });
   require(path.resolve('./src/order/routes/order'))({ app });
-  require(path.resolve('./src/woo_orders/routes/woo_orders'))({ app });
   require(path.resolve('./src/staffs/routes/staffs'))({ app });
   require(path.resolve('./src/woocommerce/routes/woocommerce'))({ app });
   require(path.resolve('./src/haravan/routes/haravan'))({ app });

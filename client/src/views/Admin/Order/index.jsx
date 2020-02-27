@@ -189,7 +189,6 @@ function Orders(props) {
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
-  woo_orders: state.woo_orders.get('woo_orders'),
   orders: state.orders.get('orders'),
 });
 
