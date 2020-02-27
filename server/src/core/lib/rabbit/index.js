@@ -30,8 +30,8 @@ let RabbitMqManager = {
 const EventBus = {
   connection: null,
   channels: {},
-  init: async ({ user, pass, host, port, vhost }) => {
-    let connection = await RabbitMqManager.create({ user, pass, host, port, vhost })
+  init: async ({ url, user, pass, host, port, vhost }) => {
+    let connection = await RabbitMqManager.create({ url, user, pass, host, port, vhost })
     EventBus.connection = connection;
     return EventBus;
   },
