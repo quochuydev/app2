@@ -80,12 +80,7 @@ function App(props) {
     await actions.installHaravanApp(dataHaravan);
   }
 
-  let [alert, setAlert] = useState({
-    messageSuccess: '',
-    messageFailed: '',
-    showAlert: false,
-    isError: false,
-  });
+  let [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
   let { messageSuccess, messageFailed, showAlert, isError } = alert;
 
   async function resetTimeSync() {

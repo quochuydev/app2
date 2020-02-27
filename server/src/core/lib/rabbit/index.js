@@ -4,8 +4,10 @@ let RabbitMqManager = {
   async create(config) {
     return new Promise((resolve, reject) => {
       let connection;
-      const { user, pass, host, port, vhost } = config;
-      connection = amqp.connect([`amqp://${user}:${pass}@${host}:${port}/${vhost}`]);
+      const { url, user, pass, host, port, vhost } = config;
+      let url_connect = `amqp://${user}:${pass}@${host}:${port}/${vhost}`;
+      if (url) { url_connect = url; }
+      connection = amqp.connect([url_connect]);
       connection.once('connect', function () {
         return resolve(connection);
       });

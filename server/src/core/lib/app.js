@@ -5,12 +5,20 @@ const Mongoose = require('./mongoose');
 const Express = require('./express');
 const Cron = require('./cron');
 const PORT = process.env.PORT || 3000;
-// const eventBus = require('./event');
 const socket = require('./socket');
+const { rabbit } = require(path.resolve('./src/config/config'));
+const { EventBus } = require('./rabbit/index');
+const { consumer } = require('./rabbit/consumer');
+
+let eventBus = async () => {
+  let { user, pass, host, port, vhost } = rabbit;
+  await EventBus.init({ user, pass, host, port, vhost });
+  consumer();
+}
 
 const App = {
   init: (app) => {
-    // eventBus.start();
+    eventBus();
     Mongoose.load();
     Mongoose.connect()
       .then(db => {

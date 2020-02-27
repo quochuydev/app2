@@ -46,4 +46,14 @@ module.exports = {
     callback_path: '/api/shopify/auth/callback',
     address: 'https://32c5dbbc.ngrok.io/webhook/shopify',
   },
+
+  rabbit: {
+    url: null,
+    user: 'guest',
+    pass: 'guest',
+    host: 'localhost',
+    port: 5672,
+    vhost: 'qhdapp'
+  },
+  
 }
