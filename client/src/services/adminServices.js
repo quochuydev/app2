@@ -21,7 +21,9 @@ const URLS = {
 
   RESET_TIME_SYNC: 'api/setting/reset_time_sync',
   GET_SETTING: 'api/setting/get',
-  UPDATE_STATUS_APP: 'api/setting/update-status'
+  UPDATE_STATUS_APP: 'api/setting/update-status',
+  
+  BUILD_LINK_MOMO: 'api/momo/buildlink'
 }
 
 async function listCustomers() {
@@ -97,8 +99,13 @@ async function updateStatusApp(data) {
   return await ApiClient.putData(URLS.UPDATE_STATUS_APP, null, data);
 }
 
+async function buildLinkMomoOrder(data) {
+  return await ApiClient.postData(URLS.BUILD_LINK_MOMO, null, data);
+}
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
   loadOrders, syncOrders, getOrderDetail, loadStaffs, createStaffs, installWoocommerceApp,
-  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp
+  buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
+  buildLinkMomoOrder,
 }

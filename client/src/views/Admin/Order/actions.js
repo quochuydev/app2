@@ -5,6 +5,8 @@ export const ACTIONS = {
   LOAD_ORDERS_FAILED: 'LOAD_ORDERS_FAILED',
   SYNC_ORDERS_SUCCESS: 'SYNC_ORDERS_SUCCESS',
   SYNC_ORDERS_FAILED: 'SYNC_ORDERS_FAILED',
+  BUILD_LINK_MOMO_SUCCESS: 'BUILD_LINK_MOMO_SUCCESS',
+  BUILD_LINK_MOMO_FAILED: 'BUILD_LINK_MOMO_FAILED'
 };
 
 export function loadOrders(query) {
@@ -51,3 +53,17 @@ export function syncOrders() {
   }
 }
 
+export function buildLinkMomoOrder(order) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.buildLinkMomoOrder(order);
+      dispatch({
+        type: ACTIONS.BUILD_LINK_MOMO_SUCCESS, payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.BUILD_LINK_MOMO_FAILED, payload: {}
+      });
+    }
+  }
+}

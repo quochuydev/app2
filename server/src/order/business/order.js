@@ -10,9 +10,7 @@ const OrderMD = mongoose.model('Order');
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
-const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
-const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
-const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));
+const MapOrder = require(path.resolve('./src/order/repo/map_order'));
 const { appslug, app_host, haravan } = require(path.resolve('./src/config/config'));
 const { is_test } = haravan;
 
@@ -27,7 +25,7 @@ let syncOrdersWoo = async () => {
     const order_woo = orders[i];
     if (order_woo && order_woo.id) {
       let { id } = order_woo;
-      let order = MapOrderWoocommerce.gen(order_woo, wp_host);
+      let order = MapOrder.gen('woocommerce', order_woo, wp_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {
@@ -71,7 +69,7 @@ let syncOrdersHaravan = async () => {
         const order_hrv = orders[j];
         if (order_hrv && order_hrv.id) {
           let { id } = order_hrv;
-          let order = MapOrderHaravan.gen(order_hrv, shop);
+          let order = MapOrder.gen('haravan', order_hrv, shop);
           let { type } = order;
           let found = await OrderMD.findOne({ id, type }).lean(true);
           if (found) {
@@ -103,7 +101,7 @@ let syncOrdersShopify = async () => {
     const order_shopify = orders[j];
     if (order_shopify && order_shopify.id) {
       let { id } = order_shopify;
-      let order = MapOrderShopify.gen(order_shopify, shopify_host);
+      let order = MapOrder.gen('shopify', order_shopify, shopify_host);
       let { type } = order;
       let found = await OrderMD.findOne({ id, type }).lean(true);
       if (found) {

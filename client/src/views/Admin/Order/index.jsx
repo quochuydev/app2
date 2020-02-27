@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
@@ -9,9 +10,11 @@ import {
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
+
+import ModalInfo from './ModalInfo';
+import ModalMail from './ModalMail';
+
 const { Option } = Select;
-const { TextArea } = Input;
-const radioStyle = { display: 'block', height: '30px', lineHeight: '30px', };
 
 function Orders(props) {
   const { actions, orders } = props;
@@ -52,7 +55,7 @@ function Orders(props) {
     {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <a href={`order/detail/${edit.number}`}>{edit.number}</a>
+        <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
       ),
     },
     {
@@ -94,9 +97,9 @@ function Orders(props) {
     setIsProcessing(false);
   }, []);
 
+  const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [orderDetail, setOrderDetail] = useState({});
   let [query, setQuery] = useState({});
 
   async function loadOrders() {
@@ -114,12 +117,13 @@ function Orders(props) {
   }
 
   function openInfoModal(order) {
-    setOrderDetail(order)
+    setOrder(order)
     setIsShowInfoModal(true);
   }
-  function openSendMailModal(order) {
-    setOrderDetail(order)
+  async function openSendMailModal(order) {
+    setOrder(order)
     setIsShowSendMailModal(true);
+    actions.buildLinkMomoOrder(order);
   }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
@@ -154,35 +158,25 @@ function Orders(props) {
         </Form>
 
         <Col span={24}>
-          <Button href={'order/detail'}>Tao don</Button>
+          <Link to={`order/detail`}>
+            <Button>Tạo đơn hàng</Button>
+          </Link>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />;
         </Col>
       </Row>
-      <Modal
-        title="Info Order Modal"
-        visible={isShowInfoModal}
-        onCancel={() => setIsShowInfoModal(false)}
-      >
-        <p>From: {orderDetail.url}</p>
-      </Modal>
-      <Modal
-        title="Sendmail Order Modal"
-        visible={isShowSendMailModal}
-        onCancel={() => setIsShowSendMailModal(false)}
-      >
-        <p>Gửi mail thanh toán momo</p>
-        {/* <p>Email bill: {_.get(orderDetail, 'billing.email')} <Icon type="check-circle" /> <Icon type="close-circle" /></p>
-        <p>Email giao hàng:: {_.get(orderDetail, 'shipping.email')} <Icon type="check-circle" /> <Icon type="close-circle" /></p> */}
-        <Radio.Group onChange={() => { }} defaultValue={1}>
-          <Radio style={radioStyle} value={1}>Email bill: {_.get(orderDetail, 'billing.email')}
-          </Radio>
-          <Radio style={radioStyle} value={2}>Email giao hàng:: {_.get(orderDetail, 'shipping.email')}
-          </Radio>
-        </Radio.Group>
-        <TextArea rows={5} value={'{{momo_pay_url}}'} />
-      </Modal>
+
+      <ModalInfo
+        order={order}
+        isShowInfoModal={isShowInfoModal}
+        setIsShowInfoModal={setIsShowInfoModal}
+      ></ModalInfo>
+      <ModalMail
+        order={order}
+        isShowSendMailModal={isShowSendMailModal}
+        setIsShowSendMailModal={setIsShowSendMailModal}
+      ></ModalMail>
     </div>
   );
 }
@@ -190,6 +184,7 @@ function Orders(props) {
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   orders: state.orders.get('orders'),
+  order: state.order.get('order'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

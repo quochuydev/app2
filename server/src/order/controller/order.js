@@ -13,7 +13,6 @@ const list = async (req, res) => {
     let { limit, skip, query } = _parse(req.body);
     let count = await OrderMD.count(query);
     let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
-    buildLinkMomoOrders(orders)
     res.json({ error: false, count, orders });
   } catch (error) {
     logger({ error })
