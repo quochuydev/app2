@@ -1,10 +1,9 @@
 const amqp = require('amqp-connection-manager');
 
 let RabbitMqManager = {
-  async create(config) {
+  async create({ url, user, pass, host, port, vhost }) {
     return new Promise((resolve, reject) => {
       let connection;
-      const { url, user, pass, host, port, vhost } = config;
       let url_connect = `amqp://${user}:${pass}@${host}:${port}/${vhost}`;
       if (url) { url_connect = url; }
       connection = amqp.connect([url_connect]);

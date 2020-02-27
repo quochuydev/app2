@@ -11,8 +11,8 @@ const { EventBus } = require('./rabbit/index');
 const { consumer } = require('./rabbit/consumer');
 
 let eventBus = async () => {
-  let { user, pass, host, port, vhost } = rabbit;
-  await EventBus.init({ user, pass, host, port, vhost });
+  let { url, user, pass, host, port, vhost } = rabbit;
+  await EventBus.init({ url, user, pass, host, port, vhost });
   consumer();
 }
 
