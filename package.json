@@ -4,6 +4,7 @@
   "description": "app2",
   "main": "index.js",
   "dependencies": {
+    "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.5.5",
     "concurrently": "^5.0.2",
     "connect-mongo": "^3.2.0",
