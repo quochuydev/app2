@@ -49,6 +49,7 @@ module.exports = {
   },
 
   rabbit: {
+    active: process.env.CLOUDAMQP_ACTIVE,
     url: process.env.CLOUDAMQP_URL,
     user: 'guest',
     pass: 'guest',

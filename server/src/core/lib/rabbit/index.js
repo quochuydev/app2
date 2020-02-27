@@ -6,6 +6,7 @@ let RabbitMqManager = {
       let connection;
       let url_connect = `amqp://${user}:${pass}@${host}:${port}/${vhost}`;
       if (url) { url_connect = url; }
+      console.log(url_connect)
       connection = amqp.connect([url_connect]);
       connection.once('connect', function () {
         return resolve(connection);
@@ -29,8 +30,8 @@ let RabbitMqManager = {
 const EventBus = {
   connection: null,
   channels: {},
-  init: async ({ user, pass, host, port, vhost }) => {
-    let connection = await RabbitMqManager.create({ user, pass, host, port, vhost })
+  init: async ({ url, user, pass, host, port, vhost }) => {
+    let connection = await RabbitMqManager.create({ url, user, pass, host, port, vhost })
     EventBus.connection = connection;
     return EventBus;
   },
