@@ -48,7 +48,7 @@ module.exports = {
   },
 
   rabbit: {
-    active: true,
+    active: 1,
     url: null,
     user: 'guest',
     pass: 'guest',
