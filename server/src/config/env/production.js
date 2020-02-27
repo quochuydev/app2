@@ -47,4 +47,13 @@ module.exports = {
     callback_path: '/api/shopify/auth/callback',
     address: `${process.env.APP_HOST}/shopify/webhook`,
   },
+
+  rabbit: {
+    url: process.env.RABBIT_URL,
+    user: 'guest',
+    pass: 'guest',
+    host: 'localhost',
+    port: 5672,
+    vhost: 'qhdapp'
+  },
 }

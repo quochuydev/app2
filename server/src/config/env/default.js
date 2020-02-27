@@ -48,6 +48,7 @@ module.exports = {
   },
 
   rabbit: {
+    url: null,
     user: 'guest',
     pass: 'guest',
     host: 'localhost',
