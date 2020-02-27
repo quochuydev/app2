@@ -6,6 +6,7 @@ let RabbitMqManager = {
       let connection;
       let url_connect = `amqp://${user}:${pass}@${host}:${port}/${vhost}`;
       if (url) { url_connect = url; }
+      console.log(url_connect)
       connection = amqp.connect([url_connect]);
       connection.once('connect', function () {
         return resolve(connection);
