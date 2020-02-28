@@ -1,5 +1,8 @@
 const MapOrderHaravan = {
   gen(order_hrv, url) {
+    if (!order_hrv.billing_address) { order_hrv.billing_address = {} }
+    if (!order_hrv.shipping_address) { order_hrv.shipping_address = {} }
+    if (!order_hrv.customer) { order_hrv.customer = {} }
     let order = {
       type: 'haravan',
       id: order_hrv.id,
