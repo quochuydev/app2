@@ -9,11 +9,14 @@ const MapOrder = {
     if (type == 'haravan') {
       order = MapOrderHaravan.gen(map_order, shop);
     }
-    if (type == 'woocommerce') {
+    else if (type == 'woocommerce') {
       order = MapOrderWoocommerce.gen(map_order, shop);
     }
-    if (type == 'shopify') {
+    else if (type == 'shopify') {
       order = MapOrderShopify.gen(map_order, shop);
+    }
+    else if (type == 'app'){
+      order = map_order;
     }
 
     return order;

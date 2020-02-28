@@ -32,4 +32,17 @@ HRV.CUSTOMERS = {
     resPath: 'count'
   }
 }
+
+HRV.PRODUCTS = {
+  LIST: {
+    method: 'get',
+    url: 'com/products.json',
+    resPath: 'products'
+  },
+  COUNT: {
+    method: 'get',
+    url: `com/products/count.json`,
+    resPath: 'count'
+  }
+}
 module.exports = { HRV };

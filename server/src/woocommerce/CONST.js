@@ -31,6 +31,12 @@ WOO.CUSTOMERS = {
   }
 }
 
+WOO.PRODUCTS = {
+  LIST: {
+    method: 'get',
+    url: 'products'
+  }
+}
 const listWebhooks = [
   { topic: 'customer.created', status: 'active', },
   { topic: 'customer.updated', status: 'active', },
