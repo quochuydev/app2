@@ -184,7 +184,7 @@ function Orders(props) {
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   orders: state.orders.get('orders'),
-  order: state.order.get('order'),
+  order: state.orders.get('order'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

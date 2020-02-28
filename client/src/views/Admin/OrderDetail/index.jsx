@@ -63,7 +63,7 @@ function OrderDetailComponent(props) {
 
 const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
-  order: state.order.get('order'),
+  order: state.orders.get('order'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
