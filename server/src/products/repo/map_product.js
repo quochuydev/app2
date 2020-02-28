@@ -1,6 +1,5 @@
 const path = require('path');
 const mongoose = require('mongoose');
-
 const ProductMD = mongoose.model('Product');
 
 const MapProductHaravan = require(path.resolve('./src/products/repo/map_product_hrv'));
@@ -9,15 +8,15 @@ const MapProductShopify = require(path.resolve('./src/products/repo/map_product_
 
 const MapProduct = {
   gen(type, map_product, shop) {
-    let product = new ProductMD(map_product);
+    let product;
     if (type == 'haravan') {
-      product = MapProductHaravan.gen(product, shop);
+      product = MapProductHaravan.gen(map_product, shop);
     }
     else if (type == 'woocommerce') {
-      product = MapProductWoocommerce.gen(product, shop);
+      product = MapProductWoocommerce.gen(map_product, shop);
     }
     else if (type == 'shopify') {
-      product = MapProductShopify.gen(product, shop);
+      product = MapProductShopify.gen(map_product, shop);
     }
     return product;
   }
