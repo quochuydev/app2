@@ -10,18 +10,23 @@ const scopes = ['email', 'profile', 'openid'];
 const url = oauth2Client.generateAuthUrl({ access_type: 'offline', scope: scopes });
 
 let auth = async (req, res) => {
-  let { authuser, code, prompt, scope, session_state } = req.query;
-  const { tokens } = await oauth2Client.getToken(code)
-  oauth2Client.setCredentials(tokens);
-  let { id_token, access_token, refresh_token, expiry_date } = tokens;
-  let user = jwt.decode(id_token)
-  let { email } = user;
-  // let mongoose = require('mongoose');
-  // let UserMD = mongoose.model('User');
-  // let user = await UserMD.findOne({ email }).lean(true);
-  // if (!user) { return res.redirect(`${frontend_site}/login?message=${encodeURIComponent('User not found!')}`) }
-  let userToken = jwt.sign(user, hash_token);
-  res.redirect(`${frontend_site}/loading?token=${userToken}`)
+  try {
+    let { code } = req.query;
+    const { tokens } = await oauth2Client.getToken(code)
+    oauth2Client.setCredentials(tokens);
+    let { id_token } = tokens;
+    let user = jwt.decode(id_token)
+    // let { email } = user;
+    // let mongoose = require('mongoose');
+    // let UserMD = mongoose.model('User');
+    // let user = await UserMD.findOne({ email }).lean(true);
+    // if (!user) { return res.redirect(`${frontend_site}/login?message=${encodeURIComponent('User not found!')}`) }
+    let userToken = jwt.sign(user, hash_token);
+    res.redirect(`${frontend_site}/loading?token=${userToken}`)
+  } catch (error) {
+    console.log(error);
+    res.redirect(`${frontend_site}/login?message=${encodeURIComponent('Something errror!')}`)
+  }
 }
 
 let login = (req, res) => {
