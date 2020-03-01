@@ -15,6 +15,7 @@ module.exports = {
 
   app_host: 'https://32c5dbbc.ngrok.io',
   downloadLink: "http://localhost:3000",
+  frontend_url: 'http://localhost:3001',
   frontend_site: 'http://localhost:3001/site',
 
   cron: {
