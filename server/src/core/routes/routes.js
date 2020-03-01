@@ -5,7 +5,7 @@ const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); })
 
   app.post('/login', (req, res) => {
-    res.json({ url: `${config.frontend_url}/loading?token=123` });
+    res.json({ url: `${config.frontend_site}/loading?token=123` });
   })
 
   app.post('/logout', (req, res) => {
