@@ -31,10 +31,12 @@ function Middleware(props) {
   let message = getQuery('message');
   let isError = getQuery('error');
   useEffect(() => {
-    if(isError){
-      props.setAlert({ messageSuccess: '', messageFailed: message, showAlert: true, isError: true });
-    } else{
-      props.setAlert({ messageSuccess: message, messageFailed: '', showAlert: true, isError: false });
+    if (message) {
+      if (isError) {
+        props.setAlert({ messageSuccess: '', messageFailed: message, showAlert: true, isError: true });
+      } else {
+        props.setAlert({ messageSuccess: message, messageFailed: '', showAlert: true, isError: false });
+      }
     }
     setTimeout(() => {
       props.setAlert({ showAlert: false, });
