@@ -14,6 +14,8 @@ const routes = (app) => {
   require(path.resolve('./src/shopify/routes/shopify'))({ app });
   require(path.resolve('./src/webhook/routes/webhook'))({ app });
   require(path.resolve('./src/setting/routes/setting'))({ app });
+  require(path.resolve('./src/momo/routes/momo'))({ app });
+  require(path.resolve('./src/products/routes/products'))({ app });
 }
 
 module.exports = routes;

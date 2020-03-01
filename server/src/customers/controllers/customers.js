@@ -2,8 +2,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const CustomersMD = mongoose.model('Customer');
-const ShopMD = mongoose.model('Shop');
-const SettingMD = mongoose.model('Setting');
 
 const logger = require(path.resolve('./src/core/lib/logger'));
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
@@ -24,9 +22,12 @@ exports.list = async (req, res) => {
 
 exports.sync = async (req, res) => {
   try {
-    await syncCustomersHaravan();
-    await syncCustomersWoo();
-    await syncCustomersShopify();
+    try { await syncCustomersHaravan(); }
+    catch (e) { logger(e) }
+    try { await syncCustomersWoo(); }
+    catch (e) { logger(e) }
+    try { await syncCustomersShopify(); }
+    catch (e) { logger(e) }
     res.json({ error: false });
   } catch (error) {
     logger(error)

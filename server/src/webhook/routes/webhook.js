@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const OrderMD = mongoose.model('Order');
 const { haravan } = require(path.resolve('./src/config/config'));
 const { webhook } = haravan;
-const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
-const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
+const MapOrder = require(path.resolve('./src/order/repo/map_order'));
 
 const router = ({ app }) => {
   app.post('/webhook/woo', async (req, res) => {
@@ -16,7 +15,7 @@ const router = ({ app }) => {
           let order_woo = req.body;
           if (order_woo && order_woo.id) {
             let { id } = order_woo;
-            let order = MapOrderWoocommerce.gen(order_woo);
+            let order = MapOrder.gen('woocommerce', order_woo);
             let { type } = order;
             let found = await OrderMD.findOne({ id, type }).lean(true);
             if (found) {
@@ -44,7 +43,7 @@ const router = ({ app }) => {
           let order_hrv = req.body;
           if (order_hrv && order_hrv.id) {
             let { id } = order_hrv;
-            let order = MapOrderHaravan.gen(order_hrv);
+            let order = MapOrder.gen('haravan', order_hrv);
             let { type } = order;
             let found = await OrderMD.findOne({ id, type }).lean(true);
             if (found) {

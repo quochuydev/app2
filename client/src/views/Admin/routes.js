@@ -5,6 +5,7 @@ import Order from '../Admin/Order/routes';
 import OrderDetail from '../Admin/OrderDetail/routes';
 import Staffs from '../Admin/Staffs/routes';
 import App from '../Admin/App/routes';
+import Product from '../Admin/Product/routes';
 
 const routes = [
   ...Home,
@@ -14,6 +15,7 @@ const routes = [
   ...OrderDetail,
   ...Staffs,
   ...App,
+  ...Product,
 ];
 
 export default routes;

@@ -1,21 +1,23 @@
 const PATH_ADMIN = `/site/`;
 const HOME_ROUTE = `${PATH_ADMIN}`;
 const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
-const CUSTOMER_HRV_ROUTE = `${PATH_ADMIN}hrv_customers`;
 const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_ROUTE = `${PATH_ADMIN}order`;
+const ORDER_CREATE_ROUTE = `${PATH_ADMIN}order/detail`;
 const ORDER_DETAIL_ROUTE = `${PATH_ADMIN}order/detail/:orderId`;
+const PRODUCT_ROUTE = `${PATH_ADMIN}products`;
 const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
 const APP_ROUTE = `${PATH_ADMIN}app`;
 
 const PATHS = {
   CUSTOMER_ROUTE,
-  CUSTOMER_HRV_ROUTE,
   HOME_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
+  ORDER_CREATE_ROUTE,
   ORDER_DETAIL_ROUTE,
   STAFFS_ROUTE,
+  PRODUCT_ROUTE,
   APP_ROUTE,
 };
 const MENU_DATA = [
@@ -32,12 +34,6 @@ const MENU_DATA = [
     is_open: true
   },
   {
-    path: CUSTOMER_HRV_ROUTE,
-    key: 'customerHrv',
-    name: 'Khách hàng Hrv',
-    is_open: false
-  },
-  {
     path: MESSENGER_ROUTE,
     key: 'messenger',
     name: 'Tin nhắn',
@@ -47,6 +43,12 @@ const MENU_DATA = [
     path: ORDER_ROUTE,
     key: 'order',
     name: 'Đơn hàng',
+    is_open: true
+  },
+  {
+    path: PRODUCT_ROUTE,
+    key: 'product',
+    name: 'Sản phẩm',
     is_open: true
   },
   {

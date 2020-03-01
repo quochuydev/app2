@@ -1,5 +1,8 @@
 const MapOrderShopify = {
   gen(order_shopify, url) {
+    if (!order_shopify.billing_address) { order_shopify.billing_address = {} }
+    if (!order_shopify.shipping_address) { order_shopify.shipping_address = {} }
+    if (!order_shopify.customer) { order_shopify.customer = {} }
     let order = {
       type: 'shopify',
       id: order_shopify.id,
