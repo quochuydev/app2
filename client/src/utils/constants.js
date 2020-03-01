@@ -1,17 +1,18 @@
-const PATH_ADMIN = `/site/`;
-const HOME_ROUTE = `${PATH_ADMIN}`;
-const CUSTOMER_ROUTE = `${PATH_ADMIN}customers`;
-const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
-const ORDER_ROUTE = `${PATH_ADMIN}order`;
-const ORDER_CREATE_ROUTE = `${PATH_ADMIN}order/detail`;
-const ORDER_DETAIL_ROUTE = `${PATH_ADMIN}order/detail/:orderId`;
-const PRODUCT_ROUTE = `${PATH_ADMIN}products`;
-const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
-const APP_ROUTE = `${PATH_ADMIN}app`;
+const HOME_ROUTE = ``;
+const SITE_ROUTE = `${HOME_ROUTE}/site`;
+const CUSTOMER_ROUTE = `${SITE_ROUTE}/customers`;
+const MESSENGER_ROUTE = `${SITE_ROUTE}/messenger`;
+const ORDER_ROUTE = `${SITE_ROUTE}/order`;
+const ORDER_CREATE_ROUTE = `${SITE_ROUTE}/order/detail`;
+const ORDER_DETAIL_ROUTE = `${SITE_ROUTE}/order/detail/:orderId`;
+const PRODUCT_ROUTE = `${SITE_ROUTE}/products`;
+const STAFFS_ROUTE = `${SITE_ROUTE}/staffs`;
+const APP_ROUTE = `${SITE_ROUTE}/app`;
+const LOGIN_ROUTE = `${SITE_ROUTE}/login`;
 
 const PATHS = {
+  SITE_ROUTE,
   CUSTOMER_ROUTE,
-  HOME_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
   ORDER_CREATE_ROUTE,
@@ -19,10 +20,11 @@ const PATHS = {
   STAFFS_ROUTE,
   PRODUCT_ROUTE,
   APP_ROUTE,
+  LOGIN_ROUTE
 };
 const MENU_DATA = [
   {
-    path: HOME_ROUTE,
+    path: SITE_ROUTE,
     key: 'home',
     name: 'Trang chủ',
     is_open: true

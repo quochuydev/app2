@@ -1,8 +1,7 @@
 import fetch from 'isomorphic-fetch';
+import _ from 'lodash';
 import Exception from './exception';
 import config from './config';
-import _ from 'lodash';
-
 const basedUrl = config.backend_url;
 let token = localStorage.getItem('AccessToken');
 const baseHeaders = {

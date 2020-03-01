@@ -13,22 +13,28 @@ import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
 import Constants from '../../utils/constants';
 import Login from '../../views/Admin/Login/index';
-
-import { Layout, Menu, Icon, Breadcrumb } from 'antd';
+import config from '../../utils/config';
+import Middleware from '../Middleware/index';
+import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
+const basedUrl = config.backend_url;
 
 const { Header, Content, Footer, Sider } = Layout;
-const { MENU_DATA } = Constants;
+const { MENU_DATA, PATHS } = Constants;
+const { LOGIN_ROUTE } = PATHS;
 
-function LayoutContainer(props) {
-  function getTokenFromPath() {
-    const url = new URL(window.location.href);
-    let searchParams = new URLSearchParams(url.search);
-    let token = searchParams.get('token')
-    localStorage.setItem('AccessToken', token);
-    return token;
+function LayoutContainer() {
+  const token = localStorage.getItem('AccessToken');
+  console.log(token)
+  function logout() {
+    return fetch(`${basedUrl}/logout`, { method: "POST" })
+      .then(function (res) {
+        res.json().then(body => {
+          localStorage.clear();
+          window.location.href = LOGIN_ROUTE;
+        });
+      });
   }
-  getTokenFromPath();
-  const [openKeyList, setOpenKeys] = useState([]);
+
   let menuItems = [];
   for (let i = 0; i < MENU_DATA.length; i++) {
     const menu = MENU_DATA[i];
@@ -46,31 +52,29 @@ function LayoutContainer(props) {
   return (
     <BrowserRouter>
       <BlockUi tag="div" >
-        <Layout>
-          <Login></Login>
-          <Content>
-            <Breadcrumb style={{ padding: '0 24px', margin: '16px 0' }}>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
-            <Layout style={{ padding: '24px 0', background: '#fff' }}>
-              <Sider width={250} style={{ background: '#fff' }}>
+        <Content>
+          <Layout style={{ padding: '24px 0', background: '#fff' }}>
+            {
+              token && <Sider width={250} style={{ background: '#fff' }}>
                 <Menu
-                  mode="inline"
-                  openKeys={openKeyList}>
+                  mode="inline">
                   {menuItems}
+                  <Button onClick={() => logout()}>logout</Button>
                 </Menu>
               </Sider>
-              <Content style={{ padding: '0 16px' }}>
-                <Switch>
-                  {RouteList.map((props, index) => <Route key={index} {...props} />)}
+            }
+            <Content style={{ padding: '0 16px' }}>
+              <Switch>
+                <Middleware>
+                  {RouteList.map((props, index) => (< Route key={index} {...props} />))}
                   <Route exact path={'/'} component={NoMatch} />
-                </Switch>
-              </Content>
-            </Layout>
-          </Content>
-        </Layout>
+                </Middleware>
+              </Switch>
+            </Content>
+          </Layout>
+        </Content>
       </BlockUi>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 
