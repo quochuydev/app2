@@ -28,7 +28,7 @@ function Middleware(props) {
     let searchParams = new URLSearchParams(url.search);
     let token = searchParams.get('token')
     localStorage.setItem('AccessToken', token);
-    window.location.href = SITE_ROUTE;
+    window.location.href = `${SITE_ROUTE}/`;
   } else {
     let token = localStorage.getItem('AccessToken');
     token = (!token || token == 'null') ? null : token;
@@ -36,7 +36,7 @@ function Middleware(props) {
       window.location.href = LOGIN_ROUTE;
     }
     if (token && path == LOGIN_ROUTE) {
-      window.location.href = SITE_ROUTE;
+      window.location.href = `${SITE_ROUTE}/`;
     }
   }
 
