@@ -8,7 +8,7 @@ import {
 } from 'redux';
 import { createLogger } from 'redux-logger';
 import './index.css';
-// import App from './containers/App';
+import App from './containers/App';
 import Layout from './containers/Layout';
 import * as serviceWorker from './serviceWorker';
 import thunk from 'redux-thunk';
@@ -40,7 +40,7 @@ middleware.push(logger);
 const store = createStore(combinedReducers, {}, applyMiddleware(thunk, logger));
 ReactDOM.render(
   <Provider store={store}>
-    <Layout />
+    <App />
   </Provider>,
   document.getElementById('root')
 );

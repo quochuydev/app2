@@ -1,10 +1,10 @@
 import HomePage from './index';
 import Constants from '../../../utils/constants';
 
-const { HOME_ROUTE } = Constants.PATHS;
+const { SITE_ROUTE } = Constants.PATHS;
 const routes = [
   {
-    path: HOME_ROUTE,
+    path: SITE_ROUTE,
     component: HomePage,
     permission:[],
     breadcrumbText:'Trang chủ',

@@ -2,7 +2,19 @@ const path = require('path');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); })
+
+  app.post('/login', (req, res) => {
+    res.json({ url: `http://localhost:3001/loading?token=123` });
+  })
+
+  app.post('/logout', (req, res) => {
+    res.json({ error: false, code: 'LOGOUT' });
+  })
+
   app.use('/api/*', (req, res, next) => {
+    if (!req.headers['accesstoken'] || req.headers['accesstoken'] == 'null') {
+      return res.sendStatus(401)
+    }
     next();
   })
   require(path.resolve('./src/download/routes/download'))({ app });
