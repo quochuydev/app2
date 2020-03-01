@@ -7,6 +7,7 @@ import Staffs from '../Admin/Staffs/routes';
 import App from '../Admin/App/routes';
 import Product from '../Admin/Product/routes';
 import Login from '../Admin/Login/routes';
+import ErrorRoute from './ErrorPage/routes';
 
 const routes = [
   ...Home,
@@ -18,6 +19,7 @@ const routes = [
   ...App,
   ...Product,
   ...Login,
+  ...ErrorRoute,
 ];
 
 export default routes;

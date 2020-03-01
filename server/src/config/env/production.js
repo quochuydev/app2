@@ -22,6 +22,13 @@ module.exports = {
     job1: '*/60 * * * * *'
   },
 
+  // GOOGLE
+  google_app: {
+    clientId: process.env.APP_GOOGLE_ID,
+    clientSecret: process.env.APP_GOOGLE_SECRET,
+    redirectUrl: process.env.APP_GOOGLE_REDIRECT
+  },
+
   // WOOCOMMERCE
   woocommerce: {
     delivery_url: `${process.env.APP_HOST}/api/webhook`,

@@ -15,6 +15,7 @@
     "express-session": "^1.17.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
+    "googleapis": "^47.0.0",
     "haravan_api": "^1.0.6",
     "http": "0.0.0",
     "jsonwebtoken": "^8.5.1",
