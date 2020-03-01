@@ -22,7 +22,6 @@ function ModalInfo(props) {
         <Radio style={radioStyle} value={2}>Email giao hàng:: {_.get(order, 'shipping.email')}
         </Radio>
       </Radio.Group>
-      <p>{order.momo_pay}</p>
       <TextArea rows={5} value={'{{momo_pay_url}}'} />
     </Modal>
   )

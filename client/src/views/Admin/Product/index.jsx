@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as orderActions from './actions';
+import * as productActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from "react-router-dom";
@@ -11,14 +11,11 @@ import {
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
 
-import ModalInfo from './ModalInfo';
-import ModalMail from './ModalMail';
-
 const { Option } = Select;
 
-function Orders(props) {
-  const { actions, orders } = props;
-  const cssOrderType = (type) => {
+function Products(props) {
+  const { actions, products } = props;
+  const cssProductType = (type) => {
     switch (type) {
       case 'woocommerce':
         return 'magenta';
@@ -40,7 +37,7 @@ function Orders(props) {
         return 'blue';
     }
   }
-  const cssOrderStatus = (status) => {
+  const cssProductStatus = (status) => {
     switch (status) {
       case 'success':
         return 'green';
@@ -53,16 +50,21 @@ function Orders(props) {
 
   const columns = [
     {
-      title: 'Mã đơn hàng', key: 'edit',
+      title: 'Number', key: 'edit',
       render: edit => (
-        <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
+        <Link to={`product/detail/${edit.number}`}>{edit.number}</Link>
+      ),
+    },
+    {
+      title: 'Tên sản phẩm', key: 'title',
+      render: edit => (
+        <Link to={`product/detail/${edit.number}`}>{edit.title}</Link>
       ),
     },
     {
       title: 'Type', key: 'type', render: edit => (
-        <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
+        <p><Tag color={cssProductType(edit.type)}>{edit.type}</Tag></p>
       )
-
     },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
@@ -76,54 +78,31 @@ function Orders(props) {
     },
     {
       title: 'Trạng thái', key: 'status', render: edit => (
-        <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
+        <Tag color={cssProductStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
-    },
-    {
-      title: 'Thanh toán momo', key: 'momo_pay', render: edit => (
-        <div>
-          <a target="_blank" href={`${edit.momo_pay}`}>
-            <Tag color="magenta">momo</Tag>
-          </a>
-          <Icon type="mail" onClick={() => openSendMailModal(edit)} />
-        </div>
-      )
-    },
+    }
   ];
 
   useEffect(() => {
     setIsProcessing(true);
-    actions.loadOrders(query);
+    actions.loadProducts(query);
     setIsProcessing(false);
   }, []);
 
-  const [order, setOrder] = useState({});
-  const [isShowInfoModal, setIsShowInfoModal] = useState(false);
-  const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   let [query, setQuery] = useState({});
 
-  async function loadOrders() {
-    await actions.loadOrders(query);
+  async function loadProducts() {
+    await actions.loadProducts(query);
   }
 
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-  async function syncOrders() {
+  async function syncProducts() {
     setIsProcessing(true);
-    await actions.syncOrders();
-    loadOrders();
+    await actions.syncProducts();
+    loadProducts();
     setIsProcessing(false);
-  }
-
-  function openInfoModal(order) {
-    setOrder(order)
-    setIsShowInfoModal(true);
-  }
-  async function openSendMailModal(order) {
-    setOrder(order)
-    setIsShowSendMailModal(true);
-    actions.buildLinkMomoOrder(order);
   }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
@@ -158,37 +137,26 @@ function Orders(props) {
         </Form>
 
         <Col span={24}>
-          <Link to={`order/detail`}>
+          <Link to={`product/detail`}>
             <Button>Tạo đơn hàng</Button>
           </Link>
-          <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} />;
+          <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
+          <Button onClick={() => syncProducts()}>Đồng bộ đơn hàng</Button>
+          <Table rowKey='number' dataSource={products} columns={columns} />;
         </Col>
       </Row>
-
-      <ModalInfo
-        order={order}
-        isShowInfoModal={isShowInfoModal}
-        setIsShowInfoModal={setIsShowInfoModal}
-      ></ModalInfo>
-      <ModalMail
-        order={order}
-        isShowSendMailModal={isShowSendMailModal}
-        setIsShowSendMailModal={setIsShowSendMailModal}
-      ></ModalMail>
     </div>
   );
 }
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
-  orders: state.orders.get('orders'),
-  order: state.orders.get('order'),
+  products: state.products.get('products'),
+  product: state.products.get('product'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(orderActions, dispatch)
+  actions: bindActionCreators(productActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Orders);
+export default connect(mapStateToProps, mapDispatchToProps)(Products);

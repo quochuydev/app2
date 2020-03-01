@@ -5,6 +5,7 @@ const MESSENGER_ROUTE = `${PATH_ADMIN}messenger`;
 const ORDER_ROUTE = `${PATH_ADMIN}order`;
 const ORDER_CREATE_ROUTE = `${PATH_ADMIN}order/detail`;
 const ORDER_DETAIL_ROUTE = `${PATH_ADMIN}order/detail/:orderId`;
+const PRODUCT_ROUTE = `${PATH_ADMIN}products`;
 const STAFFS_ROUTE = `${PATH_ADMIN}staffs`;
 const APP_ROUTE = `${PATH_ADMIN}app`;
 
@@ -16,6 +17,7 @@ const PATHS = {
   ORDER_CREATE_ROUTE,
   ORDER_DETAIL_ROUTE,
   STAFFS_ROUTE,
+  PRODUCT_ROUTE,
   APP_ROUTE,
 };
 const MENU_DATA = [
@@ -41,6 +43,12 @@ const MENU_DATA = [
     path: ORDER_ROUTE,
     key: 'order',
     name: 'Đơn hàng',
+    is_open: true
+  },
+  {
+    path: PRODUCT_ROUTE,
+    key: 'product',
+    name: 'Sản phẩm',
     is_open: true
   },
   {

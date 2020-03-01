@@ -14,12 +14,14 @@ import * as serviceWorker from './serviceWorker';
 import thunk from 'redux-thunk';
 import CustomersReducer from './views/Admin/Customer/reducers';
 import OrdersReducer from './views/Admin/Order/reducers';
+import ProductsReducer from './views/Admin/Product/reducers';
 import AppReducer from './views/Admin/App/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
   customers: CustomersReducer,
   orders: OrdersReducer,
+  products: ProductsReducer,
   app: AppReducer,
 });
 

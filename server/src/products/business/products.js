@@ -114,8 +114,8 @@ let syncProductsShopify = async () => {
 module.exports = { syncProductsHaravan, syncProductsShopify, syncProductsWoo }
 
 let test = async () => {
-  await syncProductsHaravan();
-  await syncProductsWoo();
-  await syncProductsShopify();
+  // await syncProductsHaravan();
+  // await syncProductsWoo();
+  // await syncProductsShopify();
 }
 test()

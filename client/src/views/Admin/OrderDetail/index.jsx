@@ -28,11 +28,6 @@ function OrderDetailComponent(props) {
     { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
-
-  // function onChange(e) {
-  //   setOrderDetail({ ...order, [e.target.name]: e.target.value });
-  // }
-
   let orderDetailTable = (<Row></Row>);
   if (order) {
     orderDetailTable = (

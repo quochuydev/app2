@@ -8,7 +8,7 @@ const MapProductShopify = require(path.resolve('./src/products/repo/map_product_
 
 const MapProduct = {
   gen(type, map_product, shop) {
-    let product;
+    let product = map_product;
     if (type == 'haravan') {
       product = MapProductHaravan.gen(map_product, shop);
     }
@@ -17,6 +17,9 @@ const MapProduct = {
     }
     else if (type == 'shopify') {
       product = MapProductShopify.gen(map_product, shop);
+    }
+    else if (type == 'app') {
+      product.type = 'app';
     }
     return product;
   }
