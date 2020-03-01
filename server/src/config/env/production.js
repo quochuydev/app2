@@ -22,6 +22,8 @@ module.exports = {
     job1: '*/60 * * * * *'
   },
 
+  hash_token: '123',
+
   // GOOGLE
   google_app: {
     clientId: process.env.APP_GOOGLE_ID,
