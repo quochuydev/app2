@@ -4,7 +4,6 @@ import config from '../../../utils/config';
 const basedUrl = config.backend_url;
 
 function Login() {
-  let url = 'test';
   function showPopupLogin() {
     return fetch(`${basedUrl}/login`, { method: "POST" })
       .then(function (res) {
