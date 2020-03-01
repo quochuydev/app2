@@ -120,10 +120,3 @@ let syncOrdersShopify = async () => {
 }
 
 module.exports = { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo }
-
-let test = async () => {
-  await syncOrdersHaravan();
-  await syncOrdersWoo();
-  await syncOrdersShopify();
-}
-// test();

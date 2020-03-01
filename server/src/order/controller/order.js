@@ -84,11 +84,3 @@ const create = async (req, res) => {
 }
 
 module.exports = { list, detail, sync, create };
-
-let test = async () => {
-  await syncOrdersHaravan();
-  await syncOrdersWoo();
-  await syncOrdersShopify();
-  // await create({})
-}
-test();

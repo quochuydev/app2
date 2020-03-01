@@ -12,6 +12,8 @@ import {
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
 import Constants from '../../utils/constants';
+import Login from '../../views/Admin/Login/index';
+
 import { Layout, Menu, Icon, Breadcrumb } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -45,6 +47,7 @@ function LayoutContainer(props) {
     <BrowserRouter>
       <BlockUi tag="div" >
         <Layout>
+          <Login></Login>
           <Content>
             <Breadcrumb style={{ padding: '0 24px', margin: '16px 0' }}>
               <Breadcrumb.Item>App</Breadcrumb.Item>
