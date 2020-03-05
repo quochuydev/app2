@@ -1,25 +1,8 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
-import BlockUi from 'react-block-ui';
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import RouteList from '../../views/Admin/routes';
-import NoMatch from '../../views/NoMatch/index';
 import Constants from '../../utils/constants';
-import Login from '../../views/Admin/Login/index';
-import config from '../../utils/config';
-import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
-const basedUrl = config.backend_url;
-
-const { Header, Content, Footer, Sider } = Layout;
-const { MENU_DATA, PATHS } = Constants;
-const { SITE_ROUTE, LOGIN_ROUTE, ERROR_ROUTE } = PATHS;
+const { PATHS } = Constants;
+const { SITE_ROUTE, LOGIN_ROUTE } = PATHS;
 
 function Middleware(props) {
   function getQuery(field) {

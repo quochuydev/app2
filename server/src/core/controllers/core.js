@@ -38,12 +38,17 @@ let logout = (req, res) => {
 }
 
 let middleware = (req, res, next) => {
-  let accesstoken = req.headers['accesstoken'];
-  if (!accesstoken || accesstoken == 'null') { return res.sendStatus(401) }
-  let user = jwt.verify(accesstoken, hash_token);
-  if (!(user && user.email)) { return res.sendStatus(401) }
-  req.user = user;
-  next();
+  try {
+    let accesstoken = req.headers['accesstoken'];
+    if (!accesstoken || accesstoken == 'null') { return res.sendStatus(401) }
+    let user = jwt.verify(accesstoken, hash_token);
+    if (!(user && user.email)) { return res.sendStatus(401) }
+    req.user = user;
+    next();
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(401);
+  }
 }
 
 module.exports = { auth, login, logout, middleware }
