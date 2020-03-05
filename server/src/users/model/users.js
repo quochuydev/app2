@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 let UserSchema = new Schema({
   firstName: { type: String, trim: true, default: '' },
+  type: { type: String, trim: true, default: '' },
   lastName: { type: String, trim: true, default: '' },
   displayName: { type: String, trim: true },
   phone: { type: String, trim: true, default: '' },
