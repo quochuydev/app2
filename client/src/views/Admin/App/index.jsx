@@ -3,16 +3,13 @@ import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox, Radio
+  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
 } from 'antd';
 import 'antd/dist/antd.css';
 
 import LoadingPage from '../../Components/Loading/index';
-import Alert from '../../Components/Alert/index';
 
 const { Item } = List;
-const { Option } = Select;
-
 
 function App(props) {
   const { app, actions } = props;
@@ -21,14 +18,9 @@ function App(props) {
   let url_shopify = app.get('url_shopify');
   let setting = app.get('setting');
 
-  const [settingApp, setSettingApp] = useState(null);
-
   useEffect(() => {
     actions.getSetting();
-    if (!settingApp) { setSettingApp(setting) }
-  }, [settingApp])
-
-
+  }, [])
 
   useEffect(() => {
     setBuildLinkWoocommerce(url)

@@ -138,10 +138,10 @@ function Products(props) {
 
         <Col span={24}>
           <Link to={`product/detail`}>
-            <Button>Tạo đơn hàng</Button>
+            <Button>Tạo sản phẩm</Button>
           </Link>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncProducts()}>Đồng bộ đơn hàng</Button>
+          <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Table rowKey='number' dataSource={products} columns={columns} />;
         </Col>
       </Row>

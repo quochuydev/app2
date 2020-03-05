@@ -39,8 +39,11 @@ exports.create = (req, res) => {
   res.send({ error: false });
 }
 
-exports.update = (req, res) => {
-  res.send({ error: false });
+exports.update = async (req, res) => {
+  let customer_data = req.body;
+  let { _id } = req.params;
+  let customer = await CustomersMD.findOneAndUpdate({ _id }, { $set: customer_data }, { lean: true, new: true });
+  res.send({ error: false, customer });
 }
 
 exports.importExcel = (req, res) => {

@@ -15,13 +15,14 @@ let auth = async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code)
     oauth2Client.setCredentials(tokens);
     let { id_token } = tokens;
-    let user = jwt.decode(id_token)
-    // let { email } = user;
+    let userAuth = jwt.decode(id_token)
+    // let { email } = userAuth;
     // let mongoose = require('mongoose');
     // let UserMD = mongoose.model('User');
     // let user = await UserMD.findOne({ email }).lean(true);
     // if (!user) { return res.redirect(`${frontend_site}/login?message=${encodeURIComponent('User not found!')}`) }
-    let userToken = jwt.sign(user, hash_token);
+    // let userToken = jwt.sign(user, hash_token);
+    let userToken = jwt.sign(userAuth, hash_token);
     res.redirect(`${frontend_site}/loading?token=${userToken}`)
   } catch (error) {
     console.log(error);
@@ -46,7 +47,6 @@ let middleware = (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log(error);
     res.sendStatus(401);
   }
 }

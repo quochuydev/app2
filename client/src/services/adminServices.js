@@ -3,7 +3,7 @@ import ApiClient from '../utils/apiClient';
 const URLS = {
   LIST_CUSTOMER: 'api/customers/list',
   ADD_CUSTOMER: 'api/customers/create',
-  UPDATE_CUSTOMER: 'api/customers/:id',
+  UPDATE_CUSTOMER: 'api/customers',
   SYNC_CUSTOMER: 'api/customers/sync',
   EXPORT_CUSTOMER: 'api/customers/export',
 
@@ -39,7 +39,7 @@ async function addCustomer(customer) {
 }
 
 async function updateCustomer(customer) {
-  return await ApiClient.putData(URLS.UPDATE_CUSTOMER, null, customer);
+  return await ApiClient.putData(`${URLS.UPDATE_CUSTOMER}/${customer._id}`, null, customer);
 }
 
 async function syncCustomers(customer) {
@@ -110,10 +110,13 @@ async function buildLinkMomoOrder(data) {
 async function loadProducts(query) {
   return await ApiClient.postData(URLS.LIST_PRODUCTS, null, query);
 }
+async function syncProducts() {
+  return await ApiClient.postData(URLS.SYNC_PRODUCTS);
+}
 
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
   loadOrders, syncOrders, getOrderDetail, loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts
+  buildLinkMomoOrder, loadProducts, syncProducts
 }
