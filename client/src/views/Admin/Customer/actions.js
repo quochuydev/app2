@@ -143,3 +143,18 @@ export function exportCustomer(customer) {
   }
 }
 
+export function updateCustomer(customer) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.updateCustomer(customer);
+      dispatch({
+        type: ACTIONS.UPDATE_CUSTOMER_SUCCESS, payload: { data }
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.UPDATE_CUSTOMER_FAILED, payload: {}
+      });
+    }
+  }
+}
+

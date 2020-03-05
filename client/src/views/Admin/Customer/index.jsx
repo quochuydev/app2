@@ -42,7 +42,7 @@ function Customer(props) {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => setIsUpdateModal(true)} />
+          <Icon type="edit" onClick={() => onShowUpdate(edit)} />
         </span>
       ),
     },
@@ -74,9 +74,6 @@ function Customer(props) {
   function createCustomer() {
     actions.createCustomer(customer);
   }
-  function updateCustomer() {
-    actions.updateCustomer(customer);
-  }
   function importCustomer() {
     actions.importCustomer();
   }
@@ -87,6 +84,17 @@ function Customer(props) {
   let [customer, setCustomer] = useState({})
   function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
+  }
+
+  function onShowUpdate(customer) {
+    setIsUpdateModal(true);
+    setCustomer(customer)
+  }
+
+  function updateCustomer() {
+    actions.updateCustomer(customer);
+    setIsUpdateModal(false);
+    onLoadCustomer()
   }
 
   function syncCustomers() {
@@ -146,21 +154,16 @@ function Customer(props) {
         onOk={() => updateCustomer()}
         onCancel={() => setIsUpdateModal(false)}
       >
-        <Input value="Basic usage" />
-        <Input value="Basic usage" />
-        <Input value="Basic usage" />
-        <DatePicker />
-        <Select defaultValue="gender" style={{ width: 120 }}>
-          <Option value="1">Nam</Option>
-          <Option value="0">Nữ</Option>
-        </Select>
+        <Input value={customer.first_name} name='first_name' onChange={onChange} />
+        <p>{JSON.stringify(customer)}</p>
       </Modal>
     </div>
   );
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.get('customers')
+  customers: state.customers.get('customers'),
+  customer: state.customers.get('customer'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
