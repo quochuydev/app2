@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   Table, Icon, Row, Col, Button, Modal,
-  Input, Select, DatePicker, Upload, Tag
+  Input, Select, DatePicker, Upload, Tag, Pagination
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
@@ -111,7 +111,8 @@ function Customer(props) {
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} />;
+          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
+          <Pagination defaultCurrent={1} total={50} size="small" onChange={() => { }} />
         </Col>
       </Row>
       <Modal
