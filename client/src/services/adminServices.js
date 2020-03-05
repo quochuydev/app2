@@ -110,10 +110,13 @@ async function buildLinkMomoOrder(data) {
 async function loadProducts(query) {
   return await ApiClient.postData(URLS.LIST_PRODUCTS, null, query);
 }
+async function syncProducts() {
+  return await ApiClient.postData(URLS.SYNC_PRODUCTS);
+}
 
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
   loadOrders, syncOrders, getOrderDetail, loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts
+  buildLinkMomoOrder, loadProducts, syncProducts
 }
