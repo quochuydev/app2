@@ -29,14 +29,14 @@ const SettingMD = mongoose.model('Setting');
 const OrderMD = mongoose.model('Order');
 
 let test = async () => {
-  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
-  let { woocommerce, last_sync } = setting;
-  let { wp_host, consumer_key, consumer_secret } = woocommerce;
-  let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
-  let orders = await API.call(WOO.ORDERS.LIST);
-  // console.log(orders)
+  // let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+  // let { woocommerce, last_sync } = setting;
+  // let { wp_host, consumer_key, consumer_secret } = woocommerce;
+  // let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
+  // let orders = await API.call(WOO.ORDERS.LIST);
+  // // console.log(orders)
 
-  let order = await OrderMD.findOne({}).lean(true);
-  console.log(order)
+  // let order = await OrderMD.findOne({}).lean(true);
+  // console.log(order)
 }
 // test()

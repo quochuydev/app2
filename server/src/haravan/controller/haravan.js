@@ -1,8 +1,10 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const HaravanAPI = require('haravan_api');
+const cache = require('memory-cache');
 
 const SettingMD = mongoose.model('Setting');
+let UserMD = mongoose.model('User');
 
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { appslug, haravan, frontend_site } = require(path.resolve('./src/config/config'));
@@ -37,22 +39,21 @@ const login = (req, res) => {
 }
 
 const grandservice = async (req, res) => {
+  let shop_id = cache.get('shop_id');
   let { code } = req.body;
-  let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, access_token, is_test });
+  let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test });
   let { access_token } = await HrvAPI.getToken(code);
-  let shopAPI = await HrvAPI.call(HRV.SHOP.GET);
-  let shop_id = shopAPI.id;
-  let shop = shopAPI.myharavan_domain;
-  let haravanData = { shop_id, shop, status: 1, access_token, is_test }
-  let setting = await SettingMD.findOne({ app: appslug }).lean(true);
-  let { haravans } = setting;
-  let index = haravans.findIndex(e => e.shop_id == shop_id);
-  if (index == -1) {
-    haravans.push(haravanData);
+  let shopAPI = await HrvAPI.call(HRV.SHOP.GET, { access_token });
+  let haravanData = { shop_id: shopAPI.id, shop: shopAPI.myharavan_domain, status: 1, access_token, is_test }
+  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let { haravan } = setting;
+  haravan = Object.assign({}, haravan, haravanData);
+  let found = await SettingMD.findOne({ shop_id }).lean(true);
+  if (!found) {
+    await SettingMD.create({ shop_id, haravan });
   } else {
-    haravans[index] = Object.assign(haravans[index], haravanData);
+    await SettingMD.findOneAndUpdate({ shop_id }, { $set: { shop_id, haravan } }, { lean: true, new: true });
   }
-  await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravans } }, { lean: true, new: true });
   res.redirect(`${frontend_site}/app`)
 }
 

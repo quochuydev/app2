@@ -1,19 +1,21 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const APIBus = require('wooapi');
+const cache = require('memory-cache');
 
 const SettingMD = mongoose.model('Setting');
 
 const logger = require(path.resolve('./src/core/lib/logger'));
 const { WOO, listWebhooks } = require('./../CONST')
 const config = require(path.resolve('./src/config/config'));
-const { appslug, app_host, frontend_site, woocommerce } = config;
+const { app_host, frontend_site, woocommerce } = config;
 const { delivery_url } = woocommerce;
 
 const install = async (req, res) => {
   try {
+    let shop_id = cache.get('shop_id');
     let { wp_host } = req.body;
-    await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
+    await SettingMD.findOneAndUpdate({ shop_id }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
     let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP`, return_url, callback_url } });
@@ -36,9 +38,16 @@ const return_url = async (req, res) => {
 const callback_url = async (req, res) => {
   try {
     res.json({ error: false });
+    let shop_id = cache.get('shop_id');
     let { consumer_key, consumer_secret } = req.body;
-    let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret };
-    let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: dataUpdate }, { lean: true, new: true });
+    let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret, 'woocommerce.status': 1 };
+    let found = await SettingMD.findOne({ shop_id }).lean(true);
+    let setting = null;
+    if (!found) {
+      setting = await SettingMD.create({ shop_id, ...dataUpdate });
+    } else {
+      setting = await SettingMD.findOneAndUpdate({ shop_id }, { $set: dataUpdate }, { lean: true, new: true });
+    }
     let { woocommerce: { wp_host } } = setting;
     let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
     let webhooks = await API.call(WOO.WEBHOOKS.LIST);

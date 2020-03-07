@@ -99,17 +99,15 @@ function App(props) {
   }
 
   let ListHaravanShop;
-  if (setting && setting.haravans) {
+  if (setting && setting.haravan) {
     ListHaravanShop = (
       <div>
         {
-          setting.haravans.map(haravan =>
-            <div key={haravan._id}>
-              <p>[{haravan.shop_id}] - {haravan.shop}
-                <Button onClick={() => updateStatusApp({ type: 'haravan', _id: haravan._id })}><Icon style={{ color: cssStatus(haravan.status) }} type="check-circle" /></Button>
-              </p>
-            </div>
-          )
+          <div key={setting.haravan._id}>
+            <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
+              <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
+            </p>
+          </div>
         }
       </div>
     )

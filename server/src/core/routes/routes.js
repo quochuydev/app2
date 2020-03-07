@@ -19,6 +19,7 @@ const routes = (app) => {
   require(path.resolve('./src/setting/routes/setting'))({ app });
   require(path.resolve('./src/momo/routes/momo'))({ app });
   require(path.resolve('./src/products/routes/products'))({ app });
+  require(path.resolve('./src/shop/routes/shop'))({ app });
 }
 
 module.exports = routes;
