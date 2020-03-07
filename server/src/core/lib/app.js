@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 const Mongoose = require('./mongoose');
 const Express = require('./express');
@@ -37,6 +36,7 @@ const App = {
   },
 
   start: () => {
+    const app = express();
     App.init(app);
     socket({ app }).listen(PORT, () => {
       console.log(`running port ${PORT}`);
