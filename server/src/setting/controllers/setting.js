@@ -17,7 +17,7 @@ let get = async (req, res) => {
 }
 let update_status = async (req, res) => {
   try {
-    let { type, _id, status } = req.body;
+    let { type, _id } = req.body;
     let setting = await SettingMD.findOne({ app: appslug }).lean(true);
     if (type == 'haravan') {
       let index = setting.haravans.findIndex(e => e._id == _id);
