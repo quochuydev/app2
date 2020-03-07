@@ -21,9 +21,15 @@ let update_status = async (req, res) => {
     let setting = await SettingMD.findOne({ app: appslug }).lean(true);
     if (type == 'haravan') {
       let index = setting.haravans.findIndex(e => e._id == _id);
-      setting.haravans[index].status = status;
+      setting.haravans[index].status = !setting.haravans[index].status;
     }
-    let settingUpdated = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { haravans: setting.haravans } }, { lean: true, new: true });
+    if (type == 'woocommerce') {
+      setting.woocommerce.status = !setting.woocommerce.status;
+    }
+    if (type == 'shopify') {
+      setting.shopify.status = !setting.shopify.status;
+    }
+    let settingUpdated = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: setting }, { lean: true, new: true });
     res.json({ error: false, setting: settingUpdated })
   } catch (error) {
     logger({ error });

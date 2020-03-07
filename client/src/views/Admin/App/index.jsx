@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as appActions from './actions';
 import { bindActionCreators } from 'redux';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
@@ -17,6 +18,15 @@ function App(props) {
   let url_haravan = app.get('url_haravan');
   let url_shopify = app.get('url_shopify');
   let setting = app.get('setting');
+
+  let cssStatus = (status) => {
+    switch (status) {
+      case 1:
+        return 'green';
+      default:
+        return 'red';
+    }
+  }
 
   useEffect(() => {
     actions.getSetting();
@@ -84,7 +94,7 @@ function App(props) {
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-  async function updateStatusApp(type, _id, status) {
+  async function updateStatusApp({ type, _id, status }) {
     await actions.updateStatusApp({ type, _id, status });
   }
 
@@ -96,9 +106,7 @@ function App(props) {
           setting.haravans.map(haravan =>
             <div key={haravan._id}>
               <p>[{haravan.shop_id}] - {haravan.shop}
-                {haravan.status == 1
-                  ? <Button onClick={() => updateStatusApp('haravan', haravan._id, 0)}><Icon style={{ color: 'green' }} type="check-circle" /></Button>
-                  : <Button onClick={() => updateStatusApp('haravan', haravan._id, 1)}><Icon style={{ color: 'red' }} type="close-circle" /></Button>}
+                <Button onClick={() => updateStatusApp({ type: 'haravan', _id: haravan._id })}><Icon style={{ color: cssStatus(haravan.status) }} type="check-circle" /></Button>
               </p>
             </div>
           )
@@ -120,8 +128,25 @@ function App(props) {
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
             {ListHaravanShop}
           </Item>
-          <Item>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></Item>
-          <Item>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></Item>
+          <Item>
+            <p>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></p>
+            <p>{_.get(setting, 'woocommerce.wp_host')}</p>
+            <p>{_.get(setting, 'woocommerce.status')}</p>
+
+            {setting && setting.woocommerce
+              ? <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
+              : null
+            }
+          </Item>
+          <Item>
+            <p>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></p>
+            <p>{_.get(setting, 'shopify.shopify_host')}</p>
+            <p>{_.get(setting, 'shopify.status')}</p>
+            {setting && setting.shopify
+              ? <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+              : null
+            }
+          </Item>
           <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
       </Col>

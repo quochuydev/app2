@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import { ACTIONS } from './actions';
 
 const initialState = Map({
-  setting: {},
+  setting: null,
   url: '',
   url_haravan: '',
   url_shopify: ''

@@ -7,6 +7,7 @@ const SettingSchema = new Schema({
     wp_host: { type: String, default: null },
     consumer_key: { type: String, default: null },
     consumer_secret: { type: String, default: null },
+    status: { type: Number, default: 0 },
   },
   haravans: [{
     shop_id: { type: Number, default: null },
