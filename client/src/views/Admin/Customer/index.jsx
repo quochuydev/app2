@@ -12,7 +12,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
   const { Option } = Select;
-  const { customers, actions } = props;
+  const { customers, actions, downloadLink } = props;
   const cssOrderType = (type) => {
     switch (type) {
       case 'woocommerce':
@@ -78,7 +78,7 @@ function Customer(props) {
     actions.importCustomer();
   }
   function exportCustomer() {
-    actions.exportCustomer();
+    actions.exportCustomer(customer);
   }
 
   let [customer, setCustomer] = useState({})
@@ -121,50 +121,52 @@ function Customer(props) {
         onOk={() => exportCustomer()}
         onCancel={() => setIsExportModal(false)}
       >
+        <a href={downloadLink}>{downloadLink}</a>
       </Modal>
-      <Modal
-        title="Import excel"
-        visible={isImportModal}
-        onOk={() => importCustomer()}
-        onCancel={() => setIsImportModal(false)}
-      >
-        <Upload {...uploads}>
-          <Button>
-            <Icon type="upload" /> Upload
+    <Modal
+      title="Import excel"
+      visible={isImportModal}
+      onOk={() => importCustomer()}
+      onCancel={() => setIsImportModal(false)}
+    >
+      <Upload {...uploads}>
+        <Button>
+          <Icon type="upload" /> Upload
         </Button>
-        </Upload>
-      </Modal>
-      <Modal
-        title="Create Modal"
-        visible={isCreateModal}
-        onOk={createCustomer}
-        onCancel={() => setIsCreateModal(false)}
-      >
-        <Input name="name" onChange={onChange} />
-        <Input name="email" onChange={onChange} />
-        <Input name="phone" onChange={onChange} />
-        <DatePicker name="birthday" onChange={onChange} />
-        <Select defaultValue="gender" style={{ width: 120 }}>
-          <Option value="1">Nam</Option>
-          <Option value="0">Nữ</Option>
-        </Select>
-      </Modal>
-      <Modal
-        title="Update Modal"
-        visible={isUpdateModal}
-        onOk={() => updateCustomer()}
-        onCancel={() => setIsUpdateModal(false)}
-      >
-        <Input value={customer.first_name} name='first_name' onChange={onChange} />
-        <p>{JSON.stringify(customer)}</p>
-      </Modal>
-    </div>
+      </Upload>
+    </Modal>
+    <Modal
+      title="Create Modal"
+      visible={isCreateModal}
+      onOk={createCustomer}
+      onCancel={() => setIsCreateModal(false)}
+    >
+      <Input name="name" onChange={onChange} />
+      <Input name="email" onChange={onChange} />
+      <Input name="phone" onChange={onChange} />
+      <DatePicker name="birthday" onChange={onChange} />
+      <Select defaultValue="gender" style={{ width: 120 }}>
+        <Option value="1">Nam</Option>
+        <Option value="0">Nữ</Option>
+      </Select>
+    </Modal>
+    <Modal
+      title="Update Modal"
+      visible={isUpdateModal}
+      onOk={() => updateCustomer()}
+      onCancel={() => setIsUpdateModal(false)}
+    >
+      <Input value={customer.first_name} name='first_name' onChange={onChange} />
+      <p>{JSON.stringify(customer)}</p>
+    </Modal>
+    </div >
   );
 }
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   customer: state.customers.get('customer'),
+  downloadLink: state.customers.get('downloadLink'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

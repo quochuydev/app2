@@ -124,21 +124,10 @@ export function importCustomer(customer) {
 export function exportCustomer(customer) {
   return async (dispatch) => {
     try {
-      const data = await AdminServices.exportCustomer();
-      dispatch({
-        type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload: {
-          error: false,
-          message: 'exportCustomer.message',
-          data
-        }
-      });
+      const payload = await AdminServices.exportCustomer();
+      dispatch({ type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload });
     } catch (error) {
-      dispatch({
-        type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: {
-          error: true,
-          message: 'exportCustomer.message'
-        }
-      });
+      dispatch({ type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: { error: true } });
     }
   }
 }
@@ -146,14 +135,10 @@ export function exportCustomer(customer) {
 export function updateCustomer(customer) {
   return async (dispatch) => {
     try {
-      const data = await AdminServices.updateCustomer(customer);
-      dispatch({
-        type: ACTIONS.UPDATE_CUSTOMER_SUCCESS, payload: { data }
-      });
+      const payload = await AdminServices.updateCustomer(customer);
+      dispatch({ type: ACTIONS.UPDATE_CUSTOMER_SUCCESS, payload });
     } catch (error) {
-      dispatch({
-        type: ACTIONS.UPDATE_CUSTOMER_FAILED, payload: {}
-      });
+      dispatch({ type: ACTIONS.UPDATE_CUSTOMER_FAILED, payload: { error: true } });
     }
   }
 }
