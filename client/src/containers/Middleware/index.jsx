@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import Constants from '../../utils/constants';
-const { PATHS } = Constants;
+const { PATHS, MENU_DATA } = Constants;
 const { SITE_ROUTE, LOGIN_ROUTE } = PATHS;
+const redirect_route = MENU_DATA.find(e => e.is_open).path || SITE_ROUTE;
 
 function Middleware(props) {
   function getQuery(field) {
@@ -30,7 +31,7 @@ function Middleware(props) {
   if (path.includes('loading')) {
     let token = getQuery('token');
     localStorage.setItem('AccessToken', token);
-    window.location.href = `${SITE_ROUTE}/`;
+    window.location.href = `${redirect_route}/`;
   } else {
     let token = localStorage.getItem('AccessToken');
     token = (!token || token == 'null') ? null : token;
@@ -38,7 +39,7 @@ function Middleware(props) {
       window.location.href = LOGIN_ROUTE;
     }
     if (token && path.includes(LOGIN_ROUTE)) {
-      window.location.href = `${SITE_ROUTE}/`;
+      window.location.href = `${redirect_route}/`;
     }
   }
   return props.children;

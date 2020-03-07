@@ -37,7 +37,6 @@ function LayoutContainer() {
         });
       });
   }
-
   let menuItems = [];
   for (let i = 0; i < MENU_DATA.length; i++) {
     const menu = MENU_DATA[i];
@@ -62,8 +61,8 @@ function LayoutContainer() {
                 <Menu
                   mode="inline">
                   {menuItems}
-                  <Button onClick={() => logout()}>logout</Button>
                 </Menu>
+                <Button onClick={() => logout()}>logout</Button>
               </Sider>
             }
             <Content style={{ padding: '0 16px' }}>

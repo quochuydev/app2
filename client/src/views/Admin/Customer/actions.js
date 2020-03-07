@@ -126,18 +126,11 @@ export function exportCustomer(customer) {
     try {
       const data = await AdminServices.exportCustomer();
       dispatch({
-        type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload: {
-          error: false,
-          message: 'exportCustomer.message',
-          data
-        }
+        type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload: { error: false, ...data }
       });
     } catch (error) {
       dispatch({
-        type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: {
-          error: true,
-          message: 'exportCustomer.message'
-        }
+        type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: { error: true }
       });
     }
   }

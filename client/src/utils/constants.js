@@ -29,7 +29,7 @@ const MENU_DATA = [
     path: SITE_ROUTE,
     key: 'home',
     name: 'Trang chủ',
-    is_open: true
+    is_open: false
   },
   {
     path: CUSTOMER_ROUTE,
