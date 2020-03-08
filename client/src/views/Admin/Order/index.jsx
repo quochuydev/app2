@@ -110,11 +110,6 @@ function Orders(props) {
     setOrder(order)
     setIsShowInfoModal(true);
   }
-  async function openSendMailModal(order) {
-    setOrder(order)
-    setIsShowSendMailModal(true);
-    actions.buildLinkMomoOrder(order);
-  }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
   }
@@ -139,6 +134,7 @@ function Orders(props) {
                 placeholder="-- Chọn --"
                 onChange={onChangeType}
               >
+                <Option value='app'>app</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
