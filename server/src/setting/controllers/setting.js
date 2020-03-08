@@ -3,12 +3,11 @@ const mongoose = require('mongoose');
 
 const SettingMD = mongoose.model('Setting');
 
-const { appslug } = require(path.resolve('./src/config/config'));
 const logger = require(path.resolve('./src/core/lib/logger'));
 
 let get = async (req, res) => {
   try {
-    let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+    let setting = await SettingMD._findOne();
     res.json({ error: false, setting })
   } catch (error) {
     logger({ error });
@@ -17,11 +16,10 @@ let get = async (req, res) => {
 }
 let update_status = async (req, res) => {
   try {
-    let { type, _id } = req.body;
-    let setting = await SettingMD.findOne({ app: appslug }).lean(true);
+    let { type } = req.body;
+    let setting = await SettingMD._findOne();
     if (type == 'haravan') {
-      let index = setting.haravans.findIndex(e => e._id == _id);
-      setting.haravans[index].status = !setting.haravans[index].status;
+      setting.haravan.status = !setting.haravan.status;
     }
     if (type == 'woocommerce') {
       setting.woocommerce.status = !setting.woocommerce.status;
@@ -29,7 +27,7 @@ let update_status = async (req, res) => {
     if (type == 'shopify') {
       setting.shopify.status = !setting.shopify.status;
     }
-    let settingUpdated = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: setting }, { lean: true, new: true });
+    let settingUpdated = await SettingMD._findOneAndUpdate({}, { $set: setting });
     res.json({ error: false, setting: settingUpdated })
   } catch (error) {
     logger({ error });
@@ -39,11 +37,11 @@ let update_status = async (req, res) => {
 
 let reset_time_sync = async (req, res) => {
   try {
-    let { last_sync } = await SettingMD.findOne({ app: appslug }).lean(true);
+    let { last_sync } = await SettingMD._findOne();
     for (let ls in last_sync) {
       last_sync[ls] = null;
     }
-    let setting = await SettingMD.findOneAndUpdate({ app: appslug }, { $set: { last_sync } }, { lean: true, new: true });
+    let setting = await SettingMD._findOneAndUpdate({}, { $set: { last_sync } });
     res.json({ error: false, setting })
   } catch (error) {
     logger({ error });

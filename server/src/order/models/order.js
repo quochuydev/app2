@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const cache = require('memory-cache');
 const autoIncrement = require('mongoose-auto-increment');
+const { Schema } = mongoose;
 autoIncrement.initialize(mongoose.connection);
 
 const OrderSchema = new Schema({
@@ -57,4 +58,42 @@ OrderSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1
 });
 
+OrderSchema.statics._findOne = function (filter = {}, populate = {}, options = { lean: true }) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await _this.findOne({ ...filter, shop_id }, populate, options);
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+OrderSchema.statics._findOneAndUpdate = function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await _this.findOneAndUpdate({ ...filter, shop_id }, data_update, options);
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+OrderSchema.statics._update = function (filter = {}, data_update = {}) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await _this.update({ ...filter, shop_id }, data_update);
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 mongoose.model('Order', OrderSchema);

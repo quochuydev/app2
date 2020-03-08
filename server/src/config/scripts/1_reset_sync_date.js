@@ -11,5 +11,3 @@ Mongoose.connect()
     console.log(err)
     console.log('connect mongo fail');
   })
-
-const SettingMD = mongoose.model('Setting');

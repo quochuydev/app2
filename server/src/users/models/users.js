@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(mongoose.connection);
 
 let UserSchema = new Schema({
+  id: { type: Number, default: null },
+  email: { type: String, lowercase: true, trim: true, default: '' },
+  shop_id: { type: Number, default: null },
+
   firstName: { type: String, trim: true, default: '' },
   type: { type: String, trim: true, default: '' },
   lastName: { type: String, trim: true, default: '' },
@@ -9,9 +15,6 @@ let UserSchema = new Schema({
   phone: { type: String, trim: true, default: '' },
   updated: { type: Date },
   created: { type: Date, default: Date.now },
-  username: { type: String, lowercase: true, trim: true },
-  email: { type: String, lowercase: true, trim: true, default: '' },
-  password: { type: String, default: '' },
   salt: { type: String },
   active: { type: Boolean, default: false },
   provider: { type: String },
@@ -24,4 +27,11 @@ let UserSchema = new Schema({
   google_info: {}
 });
 
-module.exports = mongoose.model('User', UserSchema);
+UserSchema.plugin(autoIncrement.plugin, {
+  model: 'User',
+  field: 'id',
+  startAt: 10000,
+  incrementBy: 1
+});
+
+mongoose.model('User', UserSchema);
