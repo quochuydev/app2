@@ -38,8 +38,13 @@ let sync = async (req, res) => {
   }
 }
 
-let create = (req, res) => {
-  res.send({ error: false });
+let create = async (req, res) => {
+  let { email, first_name, last_name, birthday, gender, phone } = req.body;
+  if (!(email && first_name && last_name && birthday && gender && phone)) { return res.json({ message: 'Chưa nhập đủ thông tin!' }) }
+  let found = await CustomersMD._findOne({ email });
+  if (found) { return res.json({ message: 'Địa chỉ mail đã tồn tại!' }) }
+  let customer = await CustomersMD._create({ email, first_name, last_name, birthday, gender, phone })
+  res.json({ error: false, customer });
 }
 
 let update = async (req, res) => {
