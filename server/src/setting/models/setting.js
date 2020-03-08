@@ -35,6 +35,19 @@ const SettingSchema = new Schema({
   }
 })
 
+SettingSchema.statics._create = function (data = {}) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = await _this.create({ ...data, shop_id });
+      resolve(result)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 SettingSchema.statics._findOne = function (filter = {}, populate = {}, options = { lean: true }) {
   let _this = this;
   let shop_id = cache.get('shop_id');

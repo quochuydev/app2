@@ -19,7 +19,6 @@ const buildlink = async (req, res) => {
 
 const callback = async (req, res) => {
   let shop_id = cache.get('shop_id');
-  // res.json({ error: false });
   let { code, shop } = req.query;
   let shopify_host = `https://${shop}`
   let API = new ShopifyApi({ shopify_host });

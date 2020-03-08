@@ -13,8 +13,8 @@ module.exports = (app, db) => {
     res.header('Access-Control-Allow-Headers', '*');
     next();
   });
-  const Middleware = require('./middleware');
-  app.use(Middleware);
+  const initApp = require('./init_app');
+  app.use(initApp);
 
   app.use(cors());
 
