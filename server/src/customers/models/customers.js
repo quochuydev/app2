@@ -5,6 +5,8 @@ autoIncrement.initialize(mongoose.connection);
 
 const CustomersSchema = new Schema({
   number: { type: Number, default: null },
+  shop_id: { type: Number, default: null },
+
   type: { type: String, default: null },
   id: { type: Number, default: null },
   accepts_marketing:  { type: Boolean, default: false },

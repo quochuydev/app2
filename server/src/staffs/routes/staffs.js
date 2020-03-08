@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 const StaffMD = mongoose.model('Staffs');
 
+const { _parse } = require(path.resolve('./src/core/lib/query'));
+
 const router = ({ app }) => {
   app.post('/api/staffs', async (req, res) => {
     try {
-      let count = await StaffMD.count();
-      let staffs = await StaffMD.find({}).lean(true);
+      let { limit, skip, query } = _parse(req.body);
+      let count = await StaffMD.count(query);
+      let staffs = await StaffMD.find(query).lean(true);
       res.send({ error: false, count, staffs })
     } catch (error) {
       res.send({ error: true, count: 0, staffs: [] })

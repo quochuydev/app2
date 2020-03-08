@@ -25,11 +25,10 @@ let auth = async (req, res) => {
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
     let user = await UserMD.findOne({ email }).lean(true);
-    // if (!user) { return res.redirect(`${frontend_site}/login?message=${encodeURIComponent('User not found!')}`) }
     if (!user) {
       let shop_data = { name: email, code: email }
       let shop = await ShopMD.create(shop_data);
-      let setting = await SettingMD.create({ shop_id: shop.id });
+      await SettingMD.create({ shop_id: shop.id });
       let user_data = { email, shop_id: shop.id }
       let user_new = await UserMD.create(user_data);
       user = await UserMD.findOne({ _id: user_new._id }).lean(true);
