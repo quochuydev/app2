@@ -37,33 +37,15 @@ export function listCustomers() {
   }
 }
 
-export function createCustomer(customer) {
-  return (dispatch) => {
-    try {
-      dispatch({
-        type: ACTIONS.ADD_CUSTOMER_SUCCESS, payload: {
-          error: false,
-          message: 'createAccountAdmin.message'
-        }
-      });
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.ADD_CUSTOMER_FAILED, payload: {
-          error: true,
-          message: 'createAccountAdmin.message'
-        }
-      });
-    }
-  }
-}
-
 export function addCustomer(customer) {
-  return (dispatch) => {
+  return async (dispatch) => {
     try {
+      const result = await AdminServices.addCustomer(customer);
       dispatch({
         type: ACTIONS.ADD_CUSTOMER_SUCCESS, payload: {
           error: false,
-          message: 'createAccountAdmin.message'
+          message: 'createAccountAdmin.message',
+          ...result
         }
       });
     } catch (error) {

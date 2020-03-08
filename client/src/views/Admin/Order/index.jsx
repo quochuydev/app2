@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -17,7 +17,7 @@ import ModalMail from './ModalMail';
 const { Option } = Select;
 
 function Orders(props) {
-  const { actions, orders } = props;
+  const { count, actions, orders } = props;
   const cssOrderType = (type) => {
     switch (type) {
       case 'woocommerce':
@@ -77,16 +77,6 @@ function Orders(props) {
     {
       title: 'Trạng thái', key: 'status', render: edit => (
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
-      )
-    },
-    {
-      title: 'Thanh toán momo', key: 'momo_pay', render: edit => (
-        <div>
-          <a target="_blank" href={`${edit.momo_pay}`}>
-            <Tag color="magenta">momo</Tag>
-          </a>
-          <Icon type="mail" onClick={() => openSendMailModal(edit)} />
-        </div>
       )
     },
   ];
@@ -163,7 +153,8 @@ function Orders(props) {
           </Link>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} />;
+          <Table rowKey='number' dataSource={orders} columns={columns} />
+          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
         </Col>
       </Row>
 
@@ -184,6 +175,7 @@ function Orders(props) {
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   orders: state.orders.get('orders'),
+  count: state.orders.get('count'),
   order: state.orders.get('order'),
 });
 
