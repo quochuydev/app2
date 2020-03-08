@@ -10,10 +10,8 @@ const CustomerMD = mongoose.model('Customer');
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
-const MapCustomerHaravan = require(path.resolve('./src/customers/repo/map_customer_hrv'));
-const MapCustomerWoocommerce = require(path.resolve('./src/customers/repo/map_customer_woo'));
-const MapCustomerShopify = require(path.resolve('./src/customers/repo/map_customer_shopify'));
-const { appslug, app_host, haravan } = require(path.resolve('./src/config/config'));
+const MapCustomer = require(path.resolve('./src/customers/repo/map_customer'));
+const { app_host, haravan } = require(path.resolve('./src/config/config'));
 const { is_test } = haravan;
 
 let syncCustomersWoo = async () => {
@@ -28,7 +26,7 @@ let syncCustomersWoo = async () => {
     const customer_woo = customers[i];
     if (customer_woo && customer_woo.id) {
       let { id } = customer_woo;
-      let customer = MapCustomerWoocommerce.gen(customer_woo);
+      let customer = MapCustomer.gen('woocommerce', customer_woo);
       let { type } = customer;
       let found = await CustomerMD.findOne({ id, type }).lean(true);
       if (found) {
@@ -46,7 +44,7 @@ let syncCustomersWoo = async () => {
 }
 
 let syncCustomersHaravan = async () => {
-  
+
   let start_at = new Date();
   let setting = await SettingMD._findOne();
   let { last_sync } = setting;
@@ -72,7 +70,7 @@ let syncCustomersHaravan = async () => {
       const customer_hrv = customers[j];
       if (customer_hrv && customer_hrv.id) {
         let { id } = customer_hrv;
-        let customer = MapCustomerHaravan.gen(customer_hrv);
+        let customer = MapCustomer.gen('haravan', customer_hrv);
         let { type } = customer;
         let found = await CustomerMD.findOne({ id, type }).lean(true);
         if (found) {
@@ -104,7 +102,7 @@ let syncCustomersShopify = async () => {
     const customer_shopify = customers[j];
     if (customer_shopify && customer_shopify.id) {
       let { id } = customer_shopify;
-      let customer = MapCustomerShopify.gen(customer_shopify);
+      let customer = MapCustomer.gen('shopify', customer_shopify);
       let { type } = customer;
       let found = await CustomerMD.findOne({ id, type }).lean(true);
       if (found) {

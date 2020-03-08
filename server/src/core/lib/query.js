@@ -1,4 +1,7 @@
+const cache = require('memory-cache');
+
 function _parse(body) {
+  let shop_id = cache.get('shop_id');
   let { limit, page } = body;
   if (!limit) { limit = 20 }
   if (!page) { page = 1 }
@@ -6,7 +9,7 @@ function _parse(body) {
   delete body.limit;
   delete body.page;
 
-  let query = {}
+  let query = { shop_id }
   for (f in body) {
     let vl = body[f];
     if (!vl || (vl && !vl.length)) { continue }
@@ -18,6 +21,7 @@ function _parse(body) {
       query = Object.assign(query, { [f]: vl })
     }
   }
+  console.log(query)
   return { limit, page, skip, query };
 }
 

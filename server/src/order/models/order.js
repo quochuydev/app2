@@ -6,6 +6,8 @@ autoIncrement.initialize(mongoose.connection);
 
 const OrderSchema = new Schema({
   number: { type: Number, default: null },
+  shop_id: { type: Number, default: null },
+
   type: { type: String, default: null },
   id: { type: String, default: null },
   code: { type: String, default: null },

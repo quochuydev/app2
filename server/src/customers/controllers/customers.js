@@ -9,11 +9,13 @@ const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const config = require(path.resolve('./src/config/config'));
 const { appslug, app_host } = config;
+const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 let list = async (req, res) => {
   try {
-    let count = await CustomersMD.count();
-    let customers = await CustomersMD.find({}).lean(true);
+    let { limit, skip, query } = _parse(req.body);
+    let count = await CustomersMD._count(query);
+    let customers = await CustomersMD.find(query).lean(true);
     res.send({ error: false, count, customers })
   } catch (error) {
     console.log(error)
@@ -24,14 +26,14 @@ let list = async (req, res) => {
 let sync = async (req, res) => {
   try {
     try { await syncCustomersHaravan(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     try { await syncCustomersWoo(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     try { await syncCustomersShopify(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     res.json({ error: false });
   } catch (error) {
-    logger(error)
+    console.log(error)
     res.status(400).send({ error: true });
   }
 }
@@ -43,7 +45,7 @@ let create = (req, res) => {
 let update = async (req, res) => {
   let customer_data = req.body;
   let { _id } = req.params;
-  let customer = await CustomersMD.findOneAndUpdate({ _id }, { $set: customer_data }, { lean: true, new: true });
+  let customer = await CustomersMD._findOneAndUpdate({ _id }, { $set: customer_data });
   res.send({ error: false, customer });
 }
 
@@ -52,7 +54,8 @@ let importExcel = (req, res) => {
 }
 
 let exportExcel = async (req, res) => {
-  let customers = await CustomersMD.find();
+  let { limit, skip, query } = _parse(req.body);
+  let customers = await CustomersMD.find(query);
 
   const excel = await ExcelLib.init({
     host: app_host,
