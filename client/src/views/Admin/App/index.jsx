@@ -86,9 +86,7 @@ function App(props) {
   let { messageSuccess, messageFailed, showAlert, isError } = alert;
 
   async function resetTimeSync() {
-    setIsProcessing(true)
     await actions.resetTimeSync();
-    setIsProcessing(false)
   }
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -99,15 +97,13 @@ function App(props) {
   }
 
   let ListHaravanShop;
-  if (setting && setting.haravan) {
+  if (setting && setting.haravan.shop) {
     ListHaravanShop = (
       <div>
         {
-          <div key={setting.haravan._id}>
-            <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
-              <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
-            </p>
-          </div>
+          <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
+            <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
+          </p>
         }
       </div>
     )
@@ -128,20 +124,25 @@ function App(props) {
           </Item>
           <Item>
             <p>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></p>
-            <p>{_.get(setting, 'woocommerce.wp_host')}</p>
-            <p>{_.get(setting, 'woocommerce.status')}</p>
-
-            {setting && setting.woocommerce
-              ? <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
+            {setting && setting.woocommerce && setting.woocommerce.wp_host
+              ?
+              <div>
+                <p>{_.get(setting, 'woocommerce.wp_host')}</p>
+                <p>{_.get(setting, 'woocommerce.status')}</p>
+                <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
+              </div>
               : null
             }
           </Item>
           <Item>
             <p>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></p>
-            <p>{_.get(setting, 'shopify.shopify_host')}</p>
-            <p>{_.get(setting, 'shopify.status')}</p>
-            {setting && setting.shopify
-              ? <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+            {setting && setting.shopify && setting.shopify.shopify_host
+              ?
+              <div>
+                <p>{_.get(setting, 'shopify.shopify_host')}</p>
+                <p>{_.get(setting, 'shopify.status')}</p>
+                <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+              </div>
               : null
             }
           </Item>
@@ -201,19 +202,6 @@ function App(props) {
         onOk={() => resetTimeSync()}
         onCancel={() => setIsShowResetAppModal(false)}
       >
-        <Form>
-          {/* <Form.Item>
-            <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
-              <Radio value={true}>sku</Radio>
-              <Radio value={false}>production</Radio>
-            </Radio.Group>
-          </Form.Item> */}
-          {/* <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item> */}
-        </Form>
-        {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
-        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
 
     </Row >
