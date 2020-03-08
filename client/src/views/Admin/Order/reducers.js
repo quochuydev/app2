@@ -11,6 +11,7 @@ function OrdersReducer(state = initialState, { type, payload }) {
     case 'LOAD_ORDERS_SUCCESS':
       return state.merge({ ...payload });
     case 'BUILD_LINK_MOMO_SUCCESS':
+    case 'GET_ORDER_DETAIL_SUCCESS':
       return state.merge({ ...payload });
     default:
       return state;

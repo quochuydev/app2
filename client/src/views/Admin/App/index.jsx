@@ -13,11 +13,7 @@ import LoadingPage from '../../Components/Loading/index';
 const { Item } = List;
 
 function App(props) {
-  const { app, actions } = props;
-  let url = app.get('url');
-  let url_haravan = app.get('url_haravan');
-  let url_shopify = app.get('url_shopify');
-  let setting = app.get('setting');
+  const { actions, url, url_haravan, url_shopify, setting } = props;
 
   let cssStatus = (status) => {
     switch (status) {
@@ -159,17 +155,17 @@ function App(props) {
         onOk={() => buildLinkHaravanApp()}
         onCancel={() => setIsShowHaravanAppModal(false)}
       >
-        <Form>
-          {/* <Form.Item>
+        {/* <Form>
+          <Form.Item>
             <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
               <Radio value={true}>sku</Radio>
               <Radio value={false}>production</Radio>
             </Radio.Group>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
           <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
           <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item>
-        </Form>
+        </Form> */}
         {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
         <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
       </Modal>
@@ -212,7 +208,10 @@ function App(props) {
 }
 
 const mapStateToProps = state => ({
-  app: state.app
+  url: state.app.get('url'),
+  url_haravan: state.app.get('url_haravan'),
+  url_shopify: state.app.get('url_shopify'),
+  setting: state.app.get('setting')
 });
 
 const mapDispatchToProps = (dispatch) => ({

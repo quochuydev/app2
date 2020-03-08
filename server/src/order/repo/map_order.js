@@ -10,7 +10,7 @@ const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify
 
 const MapOrder = {
   gen(type, map_order, shop) {
-    let order = new OrderMD(map_order);
+    let order = { ...map_order };
     let shop_id = cache.get('shop_id');
     if (type == 'haravan') {
       order = MapOrderHaravan.gen(order, shop);
