@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const APIBus = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyApi = require('shopify_mono');
-const cache = require('memory-cache');
 
 const SettingMD = mongoose.model('Setting');
 const CustomerMD = mongoose.model('Customer');

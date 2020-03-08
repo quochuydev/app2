@@ -6,6 +6,7 @@ let cache = require('memory-cache');
 
 let UserMD = mongoose.model('User');
 let ShopMD = mongoose.model('Shop');
+const SettingMD = mongoose.model('Setting');
 
 const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
@@ -28,6 +29,7 @@ let auth = async (req, res) => {
     if (!user) {
       let shop_data = { name: email, code: email }
       let shop = await ShopMD.create(shop_data);
+      let setting = await SettingMD.create({ shop_id: shop.id });
       let user_data = { email, shop_id: shop.id }
       let user_new = await UserMD.create(user_data);
       user = await UserMD.findOne({ _id: user_new._id }).lean(true);
