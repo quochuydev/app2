@@ -123,29 +123,32 @@ function App(props) {
             {ListHaravanShop}
           </Item>
           <Item>
-            <p>Woocommerce App <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button></p>
+            Woocommerce App
+            <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button>
             {setting && setting.woocommerce && setting.woocommerce.wp_host
               ?
-              <div>
-                <p>{_.get(setting, 'woocommerce.wp_host')}</p>
-                <p>{_.get(setting, 'woocommerce.status')}</p>
+              <p>
+                {_.get(setting, 'woocommerce.wp_host')}
+                {_.get(setting, 'woocommerce.status')}
                 <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
-              </div>
+              </p>
               : null
             }
           </Item>
           <Item>
-            <p>Shopify App <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button></p>
+            Shopify App
+           <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button>
             {setting && setting.shopify && setting.shopify.shopify_host
               ?
-              <div>
-                <p>{_.get(setting, 'shopify.shopify_host')}</p>
-                <p>{_.get(setting, 'shopify.status')}</p>
+              <p>
+                {_.get(setting, 'shopify.shopify_host')}
+                {_.get(setting, 'shopify.status')}
                 <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
-              </div>
+              </p>
               : null
             }
           </Item>
+
           <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
       </Col>
