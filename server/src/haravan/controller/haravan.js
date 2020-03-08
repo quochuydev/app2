@@ -38,7 +38,6 @@ const login = (req, res) => {
 }
 
 const grandservice = async (req, res) => {
-  let shop_id = cache.get('shop_id');
   let { code } = req.body;
   let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test });
   let { access_token } = await HrvAPI.getToken(code);
@@ -49,9 +48,9 @@ const grandservice = async (req, res) => {
   haravan = Object.assign({}, haravan, haravanData);
   let found = await SettingMD._findOne();
   if (!found) {
-    await SettingMD.create({ shop_id, haravan });
+    await SettingMD._create({ haravan });
   } else {
-    await SettingMD._findOneAndUpdate({}, { $set: { shop_id, haravan } });
+    await SettingMD._findOneAndUpdate({}, { $set: { haravan } });
   }
   res.redirect(`${frontend_site}/app`)
 }
