@@ -142,11 +142,11 @@ function Products(props) {
           </Link>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
-          <Table rowKey='number' dataSource={products} columns={columns} />;
+          <Table rowKey='number' dataSource={products} columns={columns} />
         </Col>
       </Row>
     </div>
-  );
+  )
 }
 
 const mapStateToProps = state => ({
