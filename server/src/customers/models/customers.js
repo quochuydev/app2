@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const cache = require('memory-cache');
 const { Schema } = mongoose;
 const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
@@ -42,5 +43,18 @@ CustomersSchema.plugin(autoIncrement.plugin, {
   startAt: 10000,
   incrementBy: 1
 });
+
+CustomersSchema.statics._count = function (filter = {}) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await _this.count({ ...filter, shop_id });
+      resolve(data)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 mongoose.model('Customer', CustomersSchema);

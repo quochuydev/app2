@@ -21,6 +21,7 @@ function _parse(body) {
       query = Object.assign(query, { [f]: vl })
     }
   }
+  console.log(query)
   return { limit, page, skip, query };
 }
 

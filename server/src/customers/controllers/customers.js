@@ -14,7 +14,7 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 let list = async (req, res) => {
   try {
     let { limit, skip, query } = _parse(req.body);
-    let count = await CustomersMD._count();
+    let count = await CustomersMD._count(query);
     let customers = await CustomersMD.find(query).lean(true);
     res.send({ error: false, count, customers })
   } catch (error) {
@@ -26,14 +26,14 @@ let list = async (req, res) => {
 let sync = async (req, res) => {
   try {
     try { await syncCustomersHaravan(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     try { await syncCustomersWoo(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     try { await syncCustomersShopify(); }
-    catch (e) { logger(e) }
+    catch (e) { console.log(e) }
     res.json({ error: false });
   } catch (error) {
-    logger(error)
+    console.log(error)
     res.status(400).send({ error: true });
   }
 }
