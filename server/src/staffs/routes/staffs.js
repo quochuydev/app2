@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const path = require('path');
+
 const StaffMD = mongoose.model('Staffs');
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
