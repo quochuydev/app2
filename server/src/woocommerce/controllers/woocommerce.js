@@ -13,9 +13,8 @@ const { delivery_url } = woocommerce;
 
 const install = async (req, res) => {
   try {
-    let shop_id = cache.get('shop_id');
     let { wp_host } = req.body;
-    await SettingMD.findOneAndUpdate({ shop_id }, { $set: { 'woocommerce.wp_host': wp_host } }, { new: true, upsert: true });
+    await SettingMD._findOneAndUpdate({}, { $set: { 'woocommerce.wp_host': wp_host } });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
     let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP`, return_url, callback_url } });
@@ -41,12 +40,12 @@ const callback_url = async (req, res) => {
     let shop_id = cache.get('shop_id');
     let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret, 'woocommerce.status': 1 };
-    let found = await SettingMD.findOne({ shop_id }).lean(true);
+    let found = await SettingMD._findOne();
     let setting = null;
     if (!found) {
       setting = await SettingMD.create({ shop_id, ...dataUpdate });
     } else {
-      setting = await SettingMD.findOneAndUpdate({ shop_id }, { $set: dataUpdate }, { lean: true, new: true });
+      setting = await SettingMD._findOneAndUpdate({}, { $set: dataUpdate });
     }
     let { woocommerce: { wp_host } } = setting;
     let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });

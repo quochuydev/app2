@@ -18,9 +18,8 @@ const { appslug, app_host, haravan } = require(path.resolve('./src/config/config
 const { is_test } = haravan;
 
 let syncCustomersWoo = async () => {
-  let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { woocommerce, last_sync } = setting;
   let { wp_host, consumer_key, consumer_secret, status } = woocommerce;
   if (!status) { return }
@@ -43,12 +42,12 @@ let syncCustomersWoo = async () => {
     }
   }
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.woo_customers_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.woo_customers_at': end_at } });
   console.log(`END SYNC CUSTOMER WOO: ${(end_at - start_at) / 1000}s`);
 }
 
 let syncCustomersHaravan = async () => {
-  let shop_id = cache.get('shop_id');
+  
   let start_at = new Date();
   let setting = await SettingMD._findOne();
   let { last_sync } = setting;
@@ -89,15 +88,14 @@ let syncCustomersHaravan = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.hrv_customers_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.hrv_customers_at': end_at } });
   console.log(`END SYNC CUSTOMER HRV: ${(end_at - start_at) / 1000}s`);
 }
 
 
 let syncCustomersShopify = async () => {
-  let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { shopify, last_sync } = setting;
   let { access_token, shopify_host, status } = shopify;
   if (!status) { return }
@@ -121,7 +119,7 @@ let syncCustomersShopify = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.shopify_customers_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.shopify_customers_at': end_at } });
   console.log(`END SYNC CUSTOMER SHOPIFY: ${(end_at - start_at) / 1000}s`);
 }
 

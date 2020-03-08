@@ -24,11 +24,11 @@ const callback = async (req, res) => {
   let shopify_host = `https://${shop}`
   let API = new ShopifyApi({ shopify_host });
   let { access_token } = await API.getToken({ client_id, client_secret, code });
-  let found = await SettingMD.findOne({ shop_id }).lean(true);
+  let found = await SettingMD._findOne();
   if (!found) {
     await SettingMD.create({ shop_id, ...{ shopify: { shopify_host, status: 1, access_token } } });
   } else {
-    await SettingMD.findOneAndUpdate({ shop_id }, { $set: { shopify: { shopify_host, status: 1, access_token } } }, { lean: true, new: true });
+    await SettingMD._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
   }
   res.redirect(`${frontend_site}/app`)
 
