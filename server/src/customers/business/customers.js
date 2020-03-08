@@ -49,7 +49,7 @@ let syncCustomersWoo = async () => {
 let syncCustomersHaravan = async () => {
   let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { last_sync } = setting;
   let { access_token } = setting.haravan;
   let HrvAPI = new HaravanAPI({ is_test });

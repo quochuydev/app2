@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const WoocommerceAPI = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyAPI = require('shopify_mono');
-const cache = require('memory-cache');
 
 const SettingMD = mongoose.model('Setting');
 const OrderMD = mongoose.model('Order');
@@ -16,9 +15,8 @@ const { appslug, app_host, haravan } = require(path.resolve('./src/config/config
 const { is_test } = haravan;
 
 let syncOrdersWoo = async () => {
-  let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { woocommerce, last_sync } = setting;
   let { wp_host, consumer_key, consumer_secret } = woocommerce;
   let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
@@ -29,9 +27,9 @@ let syncOrdersWoo = async () => {
       let { id } = order_woo;
       let order = MapOrder.gen('woocommerce', order_woo, wp_host);
       let { type } = order;
-      let found = await OrderMD.findOne({ id, type }).lean(true);
+      let found = await OrderMD._findOne({ id, type });
       if (found) {
-        let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, { $set: order });
         console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
         let newOrder = await OrderMD.create(order);
@@ -40,14 +38,13 @@ let syncOrdersWoo = async () => {
     }
   }
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.woo_orders_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.woo_orders_at': end_at } });
   console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}s`);
 }
 
 let syncOrdersHaravan = async () => {
-  let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { last_sync } = setting;
   let { access_token, shop } = setting.haravan;
   let HrvAPI = new HaravanAPI({ is_test });
@@ -72,7 +69,7 @@ let syncOrdersHaravan = async () => {
         let { id } = order_hrv;
         let order = MapOrder.gen('haravan', order_hrv, shop);
         let { type } = order;
-        let found = await OrderMD.findOne({ id, type }).lean(true);
+        let found = await OrderMD._findOne({ id, type });
         if (found) {
           let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
           // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
@@ -85,15 +82,14 @@ let syncOrdersHaravan = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.hrv_orders_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.hrv_orders_at': end_at } });
   console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}s`);
 }
 
 
 let syncOrdersShopify = async () => {
-  let shop_id = cache.get('shop_id');
   let start_at = new Date();
-  let setting = await SettingMD.findOne({ shop_id }).lean(true);
+  let setting = await SettingMD._findOne();
   let { shopify, last_sync } = setting;
   let { access_token, shopify_host } = shopify;
   let API = new ShopifyAPI({ shopify_host });
@@ -104,9 +100,9 @@ let syncOrdersShopify = async () => {
       let { id } = order_shopify;
       let order = MapOrder.gen('shopify', order_shopify, shopify_host);
       let { type } = order;
-      let found = await OrderMD.findOne({ id, type }).lean(true);
+      let found = await OrderMD._findOne({ id, type });
       if (found) {
-        let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
         console.log(`[SHOPIFY] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
         let newOrder = await OrderMD.create(order);
@@ -116,7 +112,7 @@ let syncOrdersShopify = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD.update({ shop_id }, { $set: { 'last_sync.shopify_orders_at': end_at } });
+  await SettingMD._update({}, { $set: { 'last_sync.shopify_orders_at': end_at } });
   console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}s`);
 }
 
