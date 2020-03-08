@@ -18,7 +18,8 @@ let syncOrdersWoo = async () => {
   let start_at = new Date();
   let setting = await SettingMD._findOne();
   let { woocommerce, last_sync } = setting;
-  let { wp_host, consumer_key, consumer_secret } = woocommerce;
+  let { wp_host, consumer_key, consumer_secret, status } = woocommerce;
+  if (!status) { return }
   let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
   let orders = await API.call(WOO.ORDERS.LIST);
   for (let i = 0; i < orders.length; i++) {
@@ -46,7 +47,8 @@ let syncOrdersHaravan = async () => {
   let start_at = new Date();
   let setting = await SettingMD._findOne();
   let { last_sync } = setting;
-  let { access_token, shop } = setting.haravan;
+  let { access_token, shop, status } = setting.haravan;
+  if (!status) { return }
   let HrvAPI = new HaravanAPI({ is_test });
   let query = {};
   let created_at_min = null;
@@ -91,7 +93,8 @@ let syncOrdersShopify = async () => {
   let start_at = new Date();
   let setting = await SettingMD._findOne();
   let { shopify, last_sync } = setting;
-  let { access_token, shopify_host } = shopify;
+  let { access_token, shopify_host, status } = shopify;
+  if (!status) { return }
   let API = new ShopifyAPI({ shopify_host });
   let orders = await API.call(SHOPIFY.ORDERS.LIST, { access_token });
   for (let j = 0; j < orders.length; j++) {

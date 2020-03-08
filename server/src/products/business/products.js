@@ -20,7 +20,8 @@ let syncProductsWoo = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ shop_id }).lean(true);
   let { woocommerce, last_sync } = setting;
-  let { wp_host, consumer_key, consumer_secret } = woocommerce;
+  let { wp_host, consumer_key, consumer_secret, status } = woocommerce;
+  if (!status) { return }
   let API = new WoocommerceAPI({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });
   let products = await API.call(WOO.PRODUCTS.LIST);
   for (let i = 0; i < products.length; i++) {
@@ -49,7 +50,8 @@ let syncProductsHaravan = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ shop_id }).lean(true);
   let { last_sync } = setting;
-  let { access_token, shop } = setting.haravan;
+  let { access_token, shop, status } = setting.haravan;
+  if (!status) { return }
   let HrvAPI = new HaravanAPI({ is_test });
   let count = await HrvAPI.call(HRV.PRODUCTS.COUNT, { access_token });
   console.log(`[HARAVAN] [SYNC] [PRODUCT] [COUNT] [${count}]`);
@@ -87,7 +89,8 @@ let syncProductsShopify = async () => {
   let start_at = new Date();
   let setting = await SettingMD.findOne({ shop_id }).lean(true);
   let { shopify, last_sync } = setting;
-  let { access_token, shopify_host } = shopify;
+  let { access_token, shopify_host, status } = shopify;
+  if (!status) { return }
   let API = new ShopifyAPI({ shopify_host });
   let products = await API.call(SHOPIFY.PRODUCTS.LIST, { access_token });
   for (let j = 0; j < products.length; j++) {
@@ -113,10 +116,3 @@ let syncProductsShopify = async () => {
 }
 
 module.exports = { syncProductsHaravan, syncProductsShopify, syncProductsWoo }
-
-let test = async () => {
-  // await syncProductsHaravan();
-  // await syncProductsWoo();
-  // await syncProductsShopify();
-}
-test()
