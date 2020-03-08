@@ -33,7 +33,7 @@ function OrderDetailComponent(props) {
     orderDetailTable = (
       < Row >
         <Col span={16}>
-          <Table rowKey='_id' dataSource={order.line_items} columns={detailColumns} />;
+          <Table rowKey='_id' dataSource={order.line_items} columns={detailColumns} />
           </Col>
         <Col span={8}>
           <Card title="Thông tin khách hàng">

@@ -43,14 +43,14 @@ let auth = async (req, res) => {
 
 let middleware = (req, res, next) => {
   try {
-    let list = [
+    let authCallback = [
       'haravan/login',
       'haravan/grandservice',
       'shopify/auth/callback',
       'woocommerce/return_url',
       'woocommerce/callback_url',
     ]
-    if (list.find(e => req.originalUrl.includes(e))) { return next() }
+    if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
     let accesstoken = req.headers['accesstoken'];
     if (!accesstoken || accesstoken == 'null') { return res.sendStatus(401) }
     let user = jwt.verify(accesstoken, hash_token);
@@ -59,11 +59,7 @@ let middleware = (req, res, next) => {
     req.shop_id = user.shop_id;
     cache.put('email', user.email);
     cache.put('shop_id', user.shop_id);
-    req.session.shop_id = user.shop_id;
-    req.session.email = user.email;
-    req.session.save(function () {
-      next();
-    })
+    next();
   } catch (error) {
     logger({ error })
     res.sendStatus(401);
