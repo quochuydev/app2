@@ -1,7 +1,6 @@
 const MapOrderWoocommerce = {
   gen(order_woo, url) {
     let order = {
-      type: 'woocommerce',
       id: order_woo.id,
       code: order_woo.number,
       "billing": {

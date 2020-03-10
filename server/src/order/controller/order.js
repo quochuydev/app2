@@ -42,39 +42,12 @@ const sync = async (req, res) => {
   }
 }
 
+
 const create = async (req, res) => {
   try {
     let data = req.body;
-    data = {
-      type: 'app',
-      code: '#00001',
-      billing: {
-        first_name: 'Pham',
-        last_name: 'Quoc Huy',
-        company: 'Hrv',
-        address_1: 'Dia chi 1',
-        address_2: 'Dragonhill',
-        city: 'TPHCM',
-        state: 'Quan 11',
-        country: 'VN',
-        email: 'quochuy.dev@gmail.com',
-        phone: '0382986838'
-      },
-      created_at: new Date(),
-      status: 'pending',
-      line_items: [{
-        product_id: 10000,
-        sku: 'SKU10000',
-        name: 'Product test',
-        variant_id: 20000,
-        quantity: 5,
-        price: 100000,
-        total: 500000,
-      }],
-      detail: {}
-    }
-    let order = await OrderMD.create(data);
-    console.log(body)
+    let order_data = data;
+    let order = await OrderMD._create(order_data);
     res.json({ error: false, order });
   } catch (error) {
     logger({ error })
@@ -82,4 +55,30 @@ const create = async (req, res) => {
   }
 }
 
-module.exports = { list, detail, sync, create };
+const update = async (req, res) => {
+  try {
+    let { customer, line_items } = req.body;
+    let order_data = {
+      type: 'app',
+      billing: customer.billing,
+      shipping: customer.shipping,
+      line_items: line_items.map(line_item => ({
+        product_id: line_item.id,
+        sku: line_item.variant.sku,
+        product_name: line_item.title,
+        name: line_item.variant.title,
+        variant_id: line_item.variant.id,
+        quantity: line_item.quantity,
+        price: line_item.variant.price,
+        total: line_item.variant.price * line_item.quantity,
+      }))
+    }
+    let order = await OrderMD._create(order_data);
+    res.json({ error: false, order });
+  } catch (error) {
+    logger({ error })
+    res.status(400).send({ error: true });
+  }
+}
+
+module.exports = { list, detail, sync, create, update };

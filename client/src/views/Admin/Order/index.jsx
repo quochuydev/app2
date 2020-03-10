@@ -27,7 +27,7 @@ function Orders(props) {
       case 'shopify':
         return 'green';
       default:
-        return 'blue';
+        return 'purple';
     }
   }
   const cssStatus = (status) => {
