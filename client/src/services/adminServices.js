@@ -31,8 +31,8 @@ const URLS = {
   BUILD_LINK_MOMO: 'api/momo/buildlink'
 }
 
-async function listCustomers() {
-  return await ApiClient.postData(URLS.LIST_CUSTOMER);
+async function listCustomers(query) {
+  return await ApiClient.postData(URLS.LIST_CUSTOMER, null, query);
 }
 
 async function addCustomer(customer) {
@@ -121,7 +121,7 @@ async function syncProducts() {
 
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
-  loadOrders, syncOrders, 
+  loadOrders, syncOrders,
   getOrderDetail, createOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,

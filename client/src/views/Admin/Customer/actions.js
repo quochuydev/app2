@@ -15,10 +15,10 @@ export const ACTIONS = {
   EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
 };
 
-export function listCustomers() {
+export function listCustomers(query) {
   return async (dispatch) => {
     try {
-      const data = await AdminServices.listCustomers();
+      const data = await AdminServices.listCustomers(query);
       dispatch({
         type: ACTIONS.LOAD_CUSTOMER_SUCCESS, payload: {
           error: false,

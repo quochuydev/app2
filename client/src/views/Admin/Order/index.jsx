@@ -126,7 +126,7 @@ function Orders(props) {
             <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Loại đơn hàng">
+            <Form.Item label="Commerce">
               <Select
                 mode="multiple"
                 name="type_in"
