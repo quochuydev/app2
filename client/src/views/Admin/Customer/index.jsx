@@ -35,7 +35,7 @@ function Customer(props) {
         <span>{edit.number}</span>
       )
     },
-	{
+    {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
@@ -74,11 +74,7 @@ function Customer(props) {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
     actions.listCustomers(query);
-=======
-    actions.listCustomers();
->>>>>>> master
   }, []);
 
   const [isExportModal, setIsExportModal] = useState(false);
@@ -128,7 +124,6 @@ function Customer(props) {
     await actions.syncCustomers();
     onLoadCustomer();
     setIsProcessing(false);
-<<<<<<< HEAD
   }
 
 
@@ -138,8 +133,6 @@ function Customer(props) {
   function onChange(e) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
-=======
->>>>>>> master
   }
 
   return (
