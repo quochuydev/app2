@@ -125,7 +125,6 @@ function App(props) {
               ?
               <p>
                 {_.get(setting, 'woocommerce.wp_host')}
-                {_.get(setting, 'woocommerce.status')}
                 <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
               </p>
               : null
@@ -138,7 +137,6 @@ function App(props) {
               ?
               <p>
                 {_.get(setting, 'shopify.shopify_host')}
-                {_.get(setting, 'shopify.status')}
                 <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
               </p>
               : null

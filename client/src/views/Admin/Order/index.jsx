@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination,
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -79,6 +80,15 @@ function Orders(props) {
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
     },
+    {
+      title: 'In', key: 'status', render: edit => (
+        <ReactToPrint
+          trigger={() => <Icon type="printer"/>}
+          onClick={() => printOrder(edit)}
+          content={() => componentRef.current}
+        />
+      )
+    },
   ];
 
   useEffect(() => {
@@ -86,11 +96,13 @@ function Orders(props) {
     actions.loadOrders(query);
     setIsProcessing(false);
   }, []);
+  const componentRef = useRef();
 
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   let [query, setQuery] = useState({});
+  let [showPrint, setShowPrint] = useState(false);
 
   async function loadOrders() {
     await actions.loadOrders(query);
@@ -118,8 +130,18 @@ function Orders(props) {
     setQuery({ ...query, [name]: value })
   }
 
+  function printOrder(order) {
+    console.log(123)
+    console.log(order)
+    setShowPrint(true)
+  }
+
   return (
-    <div className="">
+    <div>
+      <div ref={componentRef} style={{ display: showPrint ? 'block' : 'none' }}>
+        123123
+      </div>
+
       <Row key='1'>
         <Form>
           <Col span={8}>
