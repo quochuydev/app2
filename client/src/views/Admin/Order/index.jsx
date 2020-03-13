@@ -81,9 +81,9 @@ function Orders(props) {
       )
     },
     {
-      title: 'In', key: 'status', render: edit => (
+      title: 'In', key: 'print', render: edit => (
         <ReactToPrint
-          trigger={() => <Icon type="printer"/>}
+          trigger={() => <Icon type="printer" />}
           onClick={() => printOrder(edit)}
           content={() => componentRef.current}
         />
@@ -91,18 +91,20 @@ function Orders(props) {
     },
   ];
 
-  useEffect(() => {
-    setIsProcessing(true);
-    actions.loadOrders(query);
-    setIsProcessing(false);
-  }, []);
+
   const componentRef = useRef();
 
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [query, setQuery] = useState({});
+  let [query, setQuery] = useState({ limit: 20, page: 1 });
   let [showPrint, setShowPrint] = useState(false);
+
+  useEffect(() => {
+    setIsProcessing(true);
+    actions.loadOrders(query);
+    setIsProcessing(false);
+  }, [query]);
 
   async function loadOrders() {
     await actions.loadOrders(query);
@@ -129,6 +131,9 @@ function Orders(props) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
 
   function printOrder(order) {
     console.log(123)
@@ -138,10 +143,6 @@ function Orders(props) {
 
   return (
     <div>
-      <div ref={componentRef} style={{ display: showPrint ? 'block' : 'none' }}>
-        123123
-      </div>
-
       <Row key='1'>
         <Form>
           <Col span={8}>
@@ -172,7 +173,7 @@ function Orders(props) {
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
 
@@ -186,6 +187,10 @@ function Orders(props) {
         isShowSendMailModal={isShowSendMailModal}
         setIsShowSendMailModal={setIsShowSendMailModal}
       ></ModalMail>
+
+      <div ref={componentRef}>
+        123123
+      </div>
     </div>
   );
 }
