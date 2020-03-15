@@ -176,7 +176,6 @@ function Orders(props) {
           <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
-
       <ModalInfo
         order={order}
         isShowInfoModal={isShowInfoModal}
@@ -191,7 +190,7 @@ function Orders(props) {
       <div ref={componentRef}>
         123123
       </div>
-    </div>
+    </div >
   );
 }
 
