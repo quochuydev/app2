@@ -84,7 +84,6 @@ function Orders(props) {
       title: 'In', key: 'print', render: edit => (
         <ReactToPrint
           trigger={() => <Icon type="printer" />}
-          onClick={() => printOrder(edit)}
           content={() => componentRef.current}
         />
       )
@@ -98,7 +97,6 @@ function Orders(props) {
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   let [query, setQuery] = useState({ limit: 20, page: 1 });
-  let [showPrint, setShowPrint] = useState(false);
 
   useEffect(() => {
     setIsProcessing(true);
@@ -133,12 +131,6 @@ function Orders(props) {
   }
   function onChangePage(e) {
     setQuery({ ...query, page: e })
-  }
-
-  function printOrder(order) {
-    console.log(123)
-    console.log(order)
-    setShowPrint(true)
   }
 
   return (
