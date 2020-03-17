@@ -39,7 +39,7 @@
   "scripts": {
     "client": "cd client && npm start",
     "client-test": "cd client && npm test",
-    "server": "cd server && node server",
+    "server": "node server",
     "test": "cd server/src/core/lib && node event",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "concurrently \"npm run server\" \"npm run client-test\"",
