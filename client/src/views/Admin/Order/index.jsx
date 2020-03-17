@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as orderActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination,
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -27,7 +28,7 @@ function Orders(props) {
       case 'shopify':
         return 'green';
       default:
-        return 'blue';
+        return 'purple';
     }
   }
   const cssStatus = (status) => {
@@ -79,18 +80,29 @@ function Orders(props) {
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
     },
+    {
+      title: 'In', key: 'print', render: edit => (
+        <ReactToPrint
+          trigger={() => <Icon type="printer" />}
+          content={() => componentRef.current}
+        />
+      )
+    },
   ];
+
+
+  const componentRef = useRef();
+
+  const [order, setOrder] = useState({});
+  const [isShowInfoModal, setIsShowInfoModal] = useState(false);
+  const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
+  let [query, setQuery] = useState({ limit: 20, page: 1 });
 
   useEffect(() => {
     setIsProcessing(true);
     actions.loadOrders(query);
     setIsProcessing(false);
-  }, []);
-
-  const [order, setOrder] = useState({});
-  const [isShowInfoModal, setIsShowInfoModal] = useState(false);
-  const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [query, setQuery] = useState({});
+  }, [query]);
 
   async function loadOrders() {
     await actions.loadOrders(query);
@@ -110,11 +122,6 @@ function Orders(props) {
     setOrder(order)
     setIsShowInfoModal(true);
   }
-  async function openSendMailModal(order) {
-    setOrder(order)
-    setIsShowSendMailModal(true);
-    actions.buildLinkMomoOrder(order);
-  }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
   }
@@ -122,16 +129,19 @@ function Orders(props) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
 
   return (
-    <div className="">
+    <div>
       <Row key='1'>
         <Form>
           <Col span={8}>
             <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Loại đơn hàng">
+            <Form.Item label="Commerce">
               <Select
                 mode="multiple"
                 name="type_in"
@@ -139,6 +149,7 @@ function Orders(props) {
                 placeholder="-- Chọn --"
                 onChange={onChangeType}
               >
+                <Option value='app'>app</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
@@ -154,10 +165,9 @@ function Orders(props) {
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
-
       <ModalInfo
         order={order}
         isShowInfoModal={isShowInfoModal}
@@ -168,7 +178,11 @@ function Orders(props) {
         isShowSendMailModal={isShowSendMailModal}
         setIsShowSendMailModal={setIsShowSendMailModal}
       ></ModalMail>
-    </div>
+
+      <div ref={componentRef}>
+        123123
+      </div>
+    </div >
   );
 }
 

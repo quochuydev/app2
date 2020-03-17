@@ -30,9 +30,9 @@ let auth = async (req, res) => {
       let shop = await ShopMD.create(shop_data);
       await SettingMD.create({ shop_id: shop.id });
       let user_data = { email, shop_id: shop.id }
-      let user_new = await UserMD.create(user_data);
-      user = await UserMD.findOne({ _id: user_new._id }).lean(true);
+      user = (await UserMD.create(user_data)).toJSON();
     }
+    user.exp = 1584414843;
     let userToken = jwt.sign(user, hash_token);
     res.redirect(`${frontend_site}/loading?token=${userToken}`)
   } catch (error) {

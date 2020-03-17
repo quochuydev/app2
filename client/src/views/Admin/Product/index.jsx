@@ -117,10 +117,10 @@ function Products(props) {
       <Row key='1'>
         <Form>
           <Col span={8}>
-            <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
+            <Form.Item label="Mã sản phẩm"><Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Loại đơn hàng">
+            <Form.Item label="Commerce">
               <Select
                 mode="multiple"
                 name="type_in"

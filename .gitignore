@@ -8,3 +8,4 @@ backend/config/env/local-*.js
 backend/config/local-*.js
 package-lock.json
 .git
+/download/

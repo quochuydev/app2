@@ -4,7 +4,6 @@ const MapOrderHaravan = {
     if (!order_hrv.shipping_address) { order_hrv.shipping_address = {} }
     if (!order_hrv.customer) { order_hrv.customer = {} }
     let order = {
-      type: 'haravan',
       id: order_hrv.id,
       code: order_hrv.order_number,
       "billing": {

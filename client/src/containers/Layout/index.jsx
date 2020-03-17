@@ -51,31 +51,26 @@ function LayoutContainer() {
 
   return (
     <BrowserRouter>
-      <BlockUi tag="div" >
-        <Content>
-          <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
+      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-          <Layout style={{ padding: '24px 0', background: '#fff' }}>
-            {
-              token && <Sider width={250} style={{ background: '#fff' }}>
-                <Menu
-                  mode="inline">
-                  {menuItems}
-                </Menu>
-                <Button onClick={() => logout()}>logout</Button>
-              </Sider>
-            }
-            <Content style={{ padding: '0 16px' }}>
-              <Switch>
-                <Middleware setAlert={setAlert}>
-                  {RouteList.map((props, index) => (< Route key={index} {...props} />))}
-                  <Route exact path={'/'} component={NoMatch} />
-                </Middleware>
-              </Switch>
-            </Content>
-          </Layout>
+      <Layout style={{ padding: '24px 0', background: '#fff' }}>
+        {
+          token && <Sider width={250} style={{ background: '#fff' }}>
+            <Menu>
+              {menuItems}
+            </Menu>
+            <Button onClick={() => logout()}>logout</Button>
+          </Sider>
+        }
+        <Content style={{ padding: '0 16px' }}>
+          <Switch>
+            <Middleware setAlert={setAlert}>
+              {RouteList.map((props, index) => (< Route key={index} {...props} />))}
+              <Route exact path={'/'} component={NoMatch} />
+            </Middleware>
+          </Switch>
         </Content>
-      </BlockUi>
+      </Layout>
     </BrowserRouter >
   );
 }
