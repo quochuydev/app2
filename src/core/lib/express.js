@@ -19,9 +19,9 @@ module.exports = (app, db) => {
   app.use(cors());
 
   if (process.env.NODE_ENV == 'production') {
-    app.use('/', express.static(path.resolve('../client', 'build')));
+    app.use('/', express.static(path.resolve('client', 'build')));
     app.get('/site/*', (req, res) => {
-      res.sendFile(path.resolve('../client/build', 'index.html'));
+      res.sendFile(path.resolve('client/build', 'index.html'));
     });
   }
 
