@@ -37,13 +37,12 @@ const return_url = async (req, res) => {
 const callback_url = async (req, res) => {
   try {
     res.json({ error: false });
-    let shop_id = cache.get('shop_id');
     let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret, 'woocommerce.status': 1 };
     let found = await SettingMD._findOne();
     let setting = null;
     if (!found) {
-      setting = await SettingMD.create({ shop_id, ...dataUpdate });
+      setting = await SettingMD._create(dataUpdate);
     } else {
       setting = await SettingMD._findOneAndUpdate({}, { $set: dataUpdate });
     }

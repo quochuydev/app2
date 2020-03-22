@@ -25,7 +25,7 @@ const callback = async (req, res) => {
   let { access_token } = await API.getToken({ client_id, client_secret, code });
   let found = await SettingMD._findOne();
   if (!found) {
-    await SettingMD.create({ shop_id, ...{ shopify: { shopify_host, status: 1, access_token } } });
+    await SettingMD._create({ shopify: { shopify_host, status: 1, access_token } });
   } else {
     await SettingMD._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
   }
