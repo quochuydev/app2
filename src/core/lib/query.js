@@ -10,26 +10,32 @@ function _parse(body) {
   delete body.page;
 
   let query = { shop_id }
-  for (f in body) {
-    let vl = body[f];
-    if (!vl || (vl && !vl.length)) { continue }
-    if (['_in'].indexOf(f.substring(f.length - 3)) != -1) {
-      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $in: vl } })
-    } else if (['_ne'].indexOf(f.substring(f.length - 3)) != -1) {
-      query = Object.assign(query, { [f.substring(0, f.length - 3)]: { $ne: vl } })
-    } else {
-      query = Object.assign(query, { [f]: vl })
+  for (key in body) {
+    let value = body[key];
+    let operators = ['_in', '_ne'];
+    let in_operator = false;
+    for (let i = 0; i < operators.length; i++) {
+      const operator = operators[i];
+      if (key.endsWith(operator)) {
+        let field = key.slice(0, -operator.length);
+        query = Object.assign(query, { [field]: { $in: value } });
+        in_operator = true;
+        break;
+      }
     }
+    if (!in_operator) {
+      query = Object.assign(query, { [key]: value })
+    }
+
   }
-  console.log(query)
+  console.log(JSON.stringify(query))
   return { limit, page, skip, query };
 }
 
 module.exports = { _parse }
 
 let test = () => {
-  let body = { type_in: ['woocommerce'], number: '' };
-  let query = _parse(body);
-  console.log(query)
+  let body = { shop_id: 123123, number: 12312312, type_in: ['woocommerce'] };
+  let parse = _parse(body);
 }
-// test();
+test();
