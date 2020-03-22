@@ -32,7 +32,8 @@ let auth = async (req, res) => {
       let user_data = { email, shop_id: shop.id }
       user = (await UserMD.create(user_data)).toJSON();
     }
-    user.exp = 1584414843;
+    let expiredAt = new Date(Date.now() + 1584414843);
+    user.exp = expiredAt.getTime() / 1000;
     let userToken = jwt.sign(user, hash_token);
     res.redirect(`${frontend_site}/loading?token=${userToken}`)
   } catch (error) {
