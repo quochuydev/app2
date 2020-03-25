@@ -83,6 +83,8 @@ function Orders(props) {
     {
       title: 'In', key: 'print', render: edit => (
         <ReactToPrint
+          onBeforeGetContent={() => beforePrint(edit)}
+          onAfterPrint={() => setIsShowPrint(false)}
           trigger={() => <Icon type="printer" />}
           content={() => componentRef.current}
         />
@@ -90,13 +92,14 @@ function Orders(props) {
     },
   ];
 
-
   const componentRef = useRef();
 
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   let [query, setQuery] = useState({ limit: 20, page: 1 });
+
+  let [isShowPrint, setIsShowPrint] = useState(false)
 
   useEffect(() => {
     setIsProcessing(true);
@@ -106,6 +109,14 @@ function Orders(props) {
 
   async function loadOrders() {
     await actions.loadOrders(query);
+  }
+
+  function beforePrint(order) {
+    return new Promise(resolve =>{
+      setOrder(order);
+      setIsShowPrint(true);
+      resolve()
+    })
   }
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -179,8 +190,11 @@ function Orders(props) {
         setIsShowSendMailModal={setIsShowSendMailModal}
       ></ModalMail>
 
-      <div ref={componentRef}>
-        123123
+      <div style={{ display: isShowPrint ? 'block' : 'none' }}>
+        <div ref={componentRef}>
+          123123
+          <p>{JSON.stringify(order.type)}</p>
+        </div>
       </div>
     </div >
   );

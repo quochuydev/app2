@@ -21,9 +21,13 @@ function OrderCreateComponent(props) {
         <a onClick={() => { }}>{edit.title}</a>
       )
     },
-    { title: 'Chi phí', dataIndex: 'price', key: 'price', },
+    { title: 'Chi phí', dataIndex: 'variant.price', key: 'price', },
     { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
-    { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
+    {
+      title: 'Tổng tiền', dataIndex: 'total', render: (edit) => {
+        return _.get(edit, 'variant.price', 0) * _.get(edit, 'quantity', 1);
+      }
+    },
   ];
 
 
@@ -58,9 +62,10 @@ function OrderCreateComponent(props) {
     let index = lineItems.findIndex(e => e._id == id);
 
     let item = { ...product, variant }
+    console.log(item)
     if (index != -1) {
       lineItems[index].quantity += 1;
-      setLineItems(lineItems)
+      setLineItems()
     } else {
       item.quantity = 1;
       setLineItems(lineItems.concat(item))
@@ -113,20 +118,6 @@ function OrderCreateComponent(props) {
 
         <Col span={18}>
           <Row >
-            <Col span={8}>
-              <Form.Item label="Loại sản phẩm">
-                <Select
-                  name="collection"
-                  style={{ width: '100%' }}
-                  placeholder="-- Chọn --"
-                  onChange={onChangeCollect}
-                >
-                  <Option value='haravan'>Haravan</Option>
-                  <Option value='woocommerce'>Woocommerce</Option>
-                  <Option value='shopify'>Shopify</Option>
-                </Select>
-              </Form.Item>
-            </Col>
             <Col span={8}>
               <Form.Item label="Sản phẩm">
                 <Select
