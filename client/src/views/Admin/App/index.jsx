@@ -112,7 +112,40 @@ function App(props) {
   return (
     <Row key='1'>
       <Col span={24}>
-        <List header={<div>Danh sách App</div>} bordered>
+        <List header={<div>App</div>} bordered>
+          <Item>
+            Haravan App
+            <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
+            {ListHaravanShop}
+          </Item>
+          <Item>
+            Woocommerce App
+            <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button>
+            {setting && setting.woocommerce && setting.woocommerce.wp_host
+              ?
+              <p>
+                {_.get(setting, 'woocommerce.wp_host')}
+                <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
+              </p>
+              : null
+            }
+          </Item>
+          <Item>
+            Shopify App
+           <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button>
+            {setting && setting.shopify && setting.shopify.shopify_host
+              ?
+              <p>
+                {_.get(setting, 'shopify.shopify_host')}
+                <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+              </p>
+              : null
+            }
+          </Item>
+
+          <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
+        </List>
+        <List header={<div>App</div>} bordered>
           <Item>
             Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>

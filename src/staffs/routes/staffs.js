@@ -8,9 +8,9 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 const router = ({ app }) => {
   app.post('/api/staffs', async (req, res) => {
     try {
-      let { limit, skip, query } = _parse(req.body);
-      let count = await StaffMD.count(query);
-      let staffs = await StaffMD.find(query).lean(true);
+      let { limit, skip, criteria } = _parse(req.body);
+      let count = await StaffMD.count(criteria);
+      let staffs = await StaffMD.find(criteria).lean(true);
       res.send({ error: false, count, staffs })
     } catch (error) {
       res.send({ error: true, count: 0, staffs: [] })

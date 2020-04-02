@@ -10,7 +10,7 @@ const SettingMD = mongoose.model('Setting');
 
 const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
-const logger = require(path.resolve('./src/core/lib/logger'));
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -25,16 +25,21 @@ let auth = async (req, res) => {
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
     let user = await UserMD.findOne({ email }).lean(true);
-    if (!user) {
-      let shop_data = { name: email, code: email }
-      let shop = await ShopMD.create(shop_data);
-      await SettingMD.create({ shop_id: shop.id });
-      let user_data = { email, shop_id: shop.id }
-      user = (await UserMD.create(user_data)).toJSON();
+    // if (!user) {
+    //   let shop_data = { name: email, code: email }
+    //   let shop = await ShopMD.create(shop_data);
+    //   await SettingMD.create({ shop_id: shop.id });
+    //   let user_data = { email, shop_id: shop.id }
+    //   user = (await UserMD.create(user_data)).toJSON();
+    // }
+    if (!user) { return res.sendStatus(401) }
+    let exp = (Date.now() + 60 * 1000) / 1000;
+    let user_gen_token = {
+      email: user.email,
+      shop_id: user.shop_id,
+      exp
     }
-    let expiredAt = new Date(Date.now() + 1584414843);
-    user.exp = expiredAt.getTime() / 1000;
-    let userToken = jwt.sign(user, hash_token);
+    let userToken = jwt.sign(user_gen_token, hash_token);
     res.redirect(`${frontend_site}/loading?token=${userToken}`)
   } catch (error) {
     console.log(error);
@@ -58,11 +63,10 @@ let middleware = (req, res, next) => {
     if (!(user && user.email)) { return res.sendStatus(401) }
     req.user = user;
     req.shop_id = user.shop_id;
-    cache.put('email', user.email);
     cache.put('shop_id', user.shop_id);
     next();
   } catch (error) {
-    logger({ error })
+    logger(error)
     res.sendStatus(401);
   }
 }

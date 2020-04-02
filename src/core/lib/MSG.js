@@ -1,5 +1,9 @@
 const MSG = (code, data) => {
-  let compile = (message, data) => {
+  let messages = {
+    ['MS-001']: '[abc] Messenger 1',
+    ['MS-01']: '[abc] [xyz] [test]',
+  }
+  function compile(message, data) {
     if (!(data && typeof data === 'object')) {
       return message;
     }
@@ -7,14 +11,10 @@ const MSG = (code, data) => {
     let result = message.toString ? message.toString() : '';
     result = result.replace(matchingPattern, (matcher) => {
       var path = matcher.slice(1, -1).trim();
-      if(data[path]) return data[path]
+      if (data[path]) return data[path]
       return matcher;
     });
     return result;
-  }
-  let messages = {
-    ['MS-001']: '[abc] Messenger 1',
-    ['MS-01']: '[abc] [xyz] [test]',
   }
 
   function has(code) {
@@ -38,10 +38,8 @@ if (typeof module === 'object' && module.exports) {
   module.exports = MSG;
 }
 else if (typeof window === 'object') {
-  window[Module.name] = MSG;
+  window['MSG'] = MSG;
 }
-
-module.exports = MSG;
 
 const test = () => {
   let reponse = {};

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const SettingMD = mongoose.model('Setting');
 
-const logger = require(path.resolve('./src/core/lib/logger'));
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 
 let get = async (req, res) => {
   try {

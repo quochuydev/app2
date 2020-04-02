@@ -25,8 +25,6 @@ const App = {
       .then(db => {
         console.log('connect mongo success');
         Express(app, db);
-        const Routes = require(path.resolve('./src/core/routes/routes'))
-        Routes(app);
         Cron();
       })
       .catch(err => {
