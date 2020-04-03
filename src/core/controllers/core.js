@@ -33,7 +33,7 @@ let auth = async (req, res) => {
     //   user = (await UserMD.create(user_data)).toJSON();
     // }
     if (!user) { return res.sendStatus(401) }
-    let exp = (Date.now() + 60 * 1000) / 1000;
+    let exp = (Date.now() + 60 * 60 * 1000) / 1000;
     let user_gen_token = {
       email: user.email,
       shop_id: user.shop_id,
