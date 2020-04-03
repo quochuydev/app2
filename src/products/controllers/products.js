@@ -13,9 +13,9 @@ let sync = async (req, res) => {
 }
 
 let list = async (req, res) => {
-  let { limit, skip, query } = _parse(req.body);
-  let count = await ProductMD.count(query);
-  let products = await ProductMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+  let { limit, skip, criteria } = _parse(req.body);
+  let count = await ProductMD.count(criteria);
+  let products = await ProductMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
   res.json({ error: false, count, products })
 }
 

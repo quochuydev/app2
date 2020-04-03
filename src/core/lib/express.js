@@ -13,9 +13,6 @@ module.exports = (app, db) => {
     res.header('Access-Control-Allow-Headers', '*');
     next();
   });
-  const initApp = require('./init_app');
-  app.use(initApp);
-
   app.use(cors());
 
   if (process.env.NODE_ENV == 'production') {
@@ -46,4 +43,11 @@ module.exports = (app, db) => {
       stringify: false
     })
   }))
+  const Routes = require(path.resolve('./src/core/routes/routes'))
+  Routes(app);
+  app.use(function (error, req, res, next) {
+    if (!error) { next() }
+    console.log(error)
+    res.status(500).send('Server Error!')
+  })
 }

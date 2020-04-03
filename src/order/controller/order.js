@@ -3,15 +3,15 @@ const mongoose = require('mongoose');
 
 const OrderMD = mongoose.model('Order');
 
-const logger = require(path.resolve('./src/core/lib/logger'));
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../business/order');
 
 const list = async (req, res) => {
   try {
-    let { limit, skip, query } = _parse(req.body);
-    let count = await OrderMD.count(query);
-    let orders = await OrderMD.find(query).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+    let { limit, skip, criteria } = _parse(req.body);
+    let count = await OrderMD.count(criteria);
+    let orders = await OrderMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
     logger({ error })

@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const CustomersMD = mongoose.model('Customer');
 
-const logger = require(path.resolve('./src/core/lib/logger'));
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const config = require(path.resolve('./src/config/config'));
@@ -13,9 +13,9 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 let list = async (req, res) => {
   try {
-    let { limit, skip, query } = _parse(req.body);
-    let count = await CustomersMD._count(query);
-    let customers = await CustomersMD.find(query).lean(true);
+    let { limit, skip, criteria } = _parse(req.body);
+    let count = await CustomersMD._count(criteria);
+    let customers = await CustomersMD.find(criteria).lean(true);
     res.send({ error: false, count, customers })
   } catch (error) {
     console.log(error)
@@ -59,8 +59,8 @@ let importExcel = (req, res) => {
 }
 
 let exportExcel = async (req, res) => {
-  let { limit, skip, query } = _parse(req.body);
-  let customers = await CustomersMD.find(query);
+  let { limit, skip, criteria } = _parse(req.body);
+  let customers = await CustomersMD.find(criteria);
 
   const excel = await ExcelLib.init({
     host: app_host,

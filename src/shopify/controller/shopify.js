@@ -18,14 +18,13 @@ const buildlink = async (req, res) => {
 }
 
 const callback = async (req, res) => {
-  let shop_id = cache.get('shop_id');
   let { code, shop } = req.query;
   let shopify_host = `https://${shop}`
   let API = new ShopifyApi({ shopify_host });
   let { access_token } = await API.getToken({ client_id, client_secret, code });
   let found = await SettingMD._findOne();
   if (!found) {
-    await SettingMD.create({ shop_id, ...{ shopify: { shopify_host, status: 1, access_token } } });
+    await SettingMD._create({ shopify: { shopify_host, status: 1, access_token } });
   } else {
     await SettingMD._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
   }

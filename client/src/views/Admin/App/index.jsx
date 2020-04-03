@@ -53,6 +53,9 @@ function App(props) {
   const [dataShopify, setDataShopify] = useState({ shopify_host: 'https://quochuydev1.myshopify.com' });
   const [buildLinkShopify, setBuildLinkShopify] = useState('');
 
+  const [isShowCreateAdapter, setIsShowCreateAdapter] = useState(false);
+  const [isShowCreateWebhook, setIsShowCreateWebhook] = useState(false);
+
   async function installWoocommerceApp() {
     await actions.installWoocommerceApp(dataWoocommerce);
   }
@@ -65,6 +68,7 @@ function App(props) {
 
   function onChange(e) {
     setDataWoocommerce({ ...dataWoocommerce, [e.target.name]: e.target.value });
+    setDataShopify({ ...dataShopify, [e.target.name]: e.target.value })
   }
   function onChangeChecked(e) {
     setDataHaravan({ ...dataHaravan, [e.target.name]: e.target.checked });
@@ -77,9 +81,6 @@ function App(props) {
   async function installHaravanApp() {
     await actions.installHaravanApp(dataHaravan);
   }
-
-  let [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
-  let { messageSuccess, messageFailed, showAlert, isError } = alert;
 
   async function resetTimeSync() {
     await actions.resetTimeSync();
@@ -142,8 +143,13 @@ function App(props) {
               : null
             }
           </Item>
-
           <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
+        </List>
+        <List header={<div>Adapter</div>} bordered>
+          <Item><Button target="_blank" onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
+        </List>
+        <List header={<div>Danh sách Webhook</div>} bordered>
+          <Item><Button target="_blank" onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
         </List>
       </Col>
 
