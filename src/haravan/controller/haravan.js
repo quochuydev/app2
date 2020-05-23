@@ -9,9 +9,7 @@ const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { haravan, frontend_site } = require(path.resolve('./src/config/config'));
 const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url, is_test } = haravan;
 
-const buildlink = (req, res) => {
-  let { type, api_orders, api_products, api_customers } = req.body;
-
+function buildlinkBus(type = 'install') {
   let application = {};
   if (type == 'install') {
     application.callback_url = install_callback_url;
@@ -25,6 +23,13 @@ const buildlink = (req, res) => {
   let { scope, callback_url, func } = application;
   let HrvAPI = new HaravanAPI({ app_id, app_secret, scope, callback_url, is_test });
   let url_haravan = func(HrvAPI);
+  console.log(url_haravan)
+  return url_haravan;
+}
+
+const buildlink = (req, res) => {
+  let { type, api_orders, api_products, api_customers } = req.body;
+  let url_haravan = buildlinkBus();
   res.json({ url_haravan })
 }
 
@@ -41,6 +46,7 @@ const grandservice = async (req, res) => {
   let { code } = req.body;
   let HrvAPI = new HaravanAPI({ app_id, app_secret, callback_url: install_callback_url, is_test });
   let { access_token } = await HrvAPI.getToken(code);
+  console.log(access_token)
   let shopAPI = await HrvAPI.call(HRV.SHOP.GET, { access_token });
   let haravanData = { shop_id: shopAPI.id, shop: shopAPI.myharavan_domain, status: 1, access_token, is_test }
   let setting = await SettingMD._findOne();

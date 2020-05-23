@@ -25,14 +25,14 @@ let auth = async (req, res) => {
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
     let user = await UserMD.findOne({ email }).lean(true);
-    // if (!user) {
-    //   let shop_data = { name: email, code: email }
-    //   let shop = await ShopMD.create(shop_data);
-    //   await SettingMD.create({ shop_id: shop.id });
-    //   let user_data = { email, shop_id: shop.id }
-    //   user = (await UserMD.create(user_data)).toJSON();
-    // }
-    if (!user) { return res.sendStatus(401) }
+    if (!user) {
+      let shop_data = { name: email, code: email }
+      let shop = await ShopMD.create(shop_data);
+      await SettingMD.create({ shop_id: shop.id });
+      let user_data = { email, shop_id: shop.id }
+      user = (await UserMD.create(user_data)).toJSON();
+    }
+    // if (!user) { return res.sendStatus(401) }
     let exp = (Date.now() + 60 * 60 * 1000) / 1000;
     let user_gen_token = {
       email: user.email,
