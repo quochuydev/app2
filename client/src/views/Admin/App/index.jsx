@@ -145,12 +145,12 @@ function App(props) {
           </Item>
           <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
         </List>
-        <List header={<div>Adapter</div>} bordered>
+        {/* <List header={<div>Adapter</div>} bordered>
           <Item><Button target="_blank" onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
         </List>
         <List header={<div>Danh sách Webhook</div>} bordered>
           <Item><Button target="_blank" onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
-        </List>
+        </List> */}
       </Col>
 
       <Modal

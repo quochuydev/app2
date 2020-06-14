@@ -158,7 +158,7 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
+          {/* <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button> */}
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>

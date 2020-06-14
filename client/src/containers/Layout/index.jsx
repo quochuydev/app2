@@ -53,13 +53,13 @@ function LayoutContainer() {
     <BrowserRouter>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-      <Layout style={{ padding: '24px 0', background: '#fff' }}>
+      <Layout style={{ padding: '24px 0 0', background: '#fff' }}>
         {
           token && <Sider width={250} style={{ background: '#fff' }}>
             <Menu>
               {menuItems}
             </Menu>
-            <Button onClick={() => logout()}>logout</Button>
+            <a style={{ position: 'absolute', bottom: 0 }} onClick={() => logout()}><Icon type="logout" /></a>
           </Sider>
         }
         <Content style={{ padding: '0 16px' }}>
