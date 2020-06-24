@@ -20,6 +20,13 @@ import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
 const basedUrl = config.backend_url;
 
 const { Header, Content, Footer, Sider } = Layout;
+import {
+  DesktopOutlined,
+  PieChartOutlined,
+  FileOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
 
@@ -53,16 +60,16 @@ function LayoutContainer() {
     <BrowserRouter>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-      <Layout style={{ padding: '24px 0 0', background: '#fff' }}>
+      <Layout style={{ minHeight: '100vh', padding: '0 0', background: '#fff' }}>
         {
-          token && <Sider width={250} style={{ background: '#fff' }}>
-            <Menu>
+          token && <Sider collapsible width={250}>
+            <Menu theme="dark">
               {menuItems}
             </Menu>
             <a style={{ position: 'absolute', bottom: 0 }} onClick={() => logout()}><Icon type="logout" /></a>
           </Sider>
         }
-        <Content style={{ padding: '0 16px' }}>
+        <Content style={{ padding: '16px' }}>
           <Switch>
             <Middleware setAlert={setAlert}>
               {RouteList.map((props, index) => (< Route key={index} {...props} />))}
