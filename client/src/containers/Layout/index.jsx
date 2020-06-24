@@ -20,13 +20,7 @@ import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
 const basedUrl = config.backend_url;
 
 const { Header, Content, Footer, Sider } = Layout;
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
 
