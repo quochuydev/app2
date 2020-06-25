@@ -9,3 +9,4 @@ backend/config/local-*.js
 package-lock.json
 .git
 /download/
+*.json
