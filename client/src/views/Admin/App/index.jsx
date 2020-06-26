@@ -28,8 +28,13 @@ function App(props) {
   }
 
   const Toast = {
-    success: (message = '', delay = 3000) => {
-      toast.success(message, {
+    success: (message = '', delay = 3000, icon = 'check-circle') => {
+      let Message = () => (
+        <div>
+          <Icon type={icon} theme='filled' /> {message}
+        </div>
+      )
+      toast.success(<Message />, {
         position: "top-right", autoClose: delay, hideProgressBar: true,
         closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined,
       });
