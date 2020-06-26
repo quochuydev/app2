@@ -8,14 +8,6 @@ const routes = (app) => {
   app.post('/logout', logout);
   app.use('/api/*', middleware);
 
-  app.post('/cartproxy/promotioncalculate', function (req, res) {
-    let result = req.body;
-    console.log(result);
-    result.items[0].price = result.items[0].price * 0.5;
-    result.items[0].line_price = result.items[0].line_price * 0.5;
-    res.json(result);
-  });
-
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });
   require(path.resolve('./src/order/routes/order'))({ app });

@@ -20,11 +20,12 @@ let auth = async (req, res) => {
   try {
     let { code } = req.query;
     const { tokens } = await oauth2Client.getToken(code)
-    oauth2Client.setCredentials(tokens);
+    // oauth2Client.setCredentials(tokens);
     let { id_token } = tokens;
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
     let user = await UserMD.findOne({ email }).lean(true);
+    if (!email) { return res.sendStatus(401) }
     if (!user) {
       let shop_data = { name: email, code: email }
       let shop = await ShopMD.create(shop_data);
@@ -79,4 +80,8 @@ let logout = (req, res) => {
   res.json({ error: false, code: 'LOGOUT' });
 }
 
-module.exports = { auth, login, logout, middleware }
+let logout_redirect = (req, res) => {
+  res.redirect(`${frontend_site}/logout`)
+}
+
+module.exports = { auth, login, logout, middleware, logout_redirect }
