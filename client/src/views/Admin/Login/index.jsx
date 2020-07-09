@@ -24,7 +24,7 @@ function Login() {
           <div className="container aside-xl">
             <section id="login-form" className="m-b-lg">
               <form name="userForm" className="signin panel" style={{ minHeight: '200px', width: '100%', display: 'table' }} noValidate autoComplete="off">
-                <div className="list-group" style={{}}>
+                <div className="list-group">
                   <div className="m-b" style={{ boxShadow: 'inset 0 -1px 0 #eee' }}>
                     <div style={{ padding: '18px 0px', textAlign: 'center', fontWeight: 500, fontSize: '22px' }}>
                       CRMDLC

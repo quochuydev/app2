@@ -5,12 +5,12 @@ const Express = require('./express');
 const Cron = require('./cron');
 const PORT = process.env.PORT || 3000;
 const socket = require('./socket');
-const { rabbit } = require(path.resolve('./src/config/config'));
+const config = require(path.resolve('./src/config/config'));
 const { EventBus } = require('./rabbit/index');
 const { consumer } = require('./rabbit/consumer');
 
 let eventBus = async () => {
-  let { active, url, user, pass, host, port, vhost } = rabbit;
+  let { active, url, user, pass, host, port, vhost } = config.rabbit;
   if (Number(active)) {
     await EventBus.init({ url, user, pass, host, port, vhost });
     consumer();
@@ -36,7 +36,7 @@ const App = {
   start: () => {
     const app = express();
     App.init(app);
-    socket({ app }).listen(PORT, () => {
+    socket({ app, config }).listen(PORT, () => {
       console.log(`running port ${PORT}`);
     });
   }
