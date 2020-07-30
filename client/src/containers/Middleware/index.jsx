@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Constants from '../../utils/constants';
 const { PATHS, MENU_DATA } = Constants;
 const { SITE_ROUTE, LOGIN_ROUTE } = PATHS;
-const redirect_route = MENU_DATA.find(e => e.is_open).path || SITE_ROUTE;
+const redirect_route = MENU_DATA.find(e => e.is_open) ? MENU_DATA.find(e => e.is_open).path : SITE_ROUTE;
 
 function Middleware(props) {
   function getQuery(field) {

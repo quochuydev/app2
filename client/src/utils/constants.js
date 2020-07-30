@@ -35,7 +35,8 @@ const MENU_DATA = [
     path: CUSTOMER_ROUTE,
     key: 'customer',
     name: 'Khách hàng',
-    is_open: true
+    is_open: false,
+    icon: 'user'
   },
   {
     path: MESSENGER_ROUTE,
@@ -47,13 +48,15 @@ const MENU_DATA = [
     path: ORDER_ROUTE,
     key: 'order',
     name: 'Đơn hàng',
-    is_open: true
+    is_open: false,
+    icon: 'shopping-cart'
   },
   {
     path: PRODUCT_ROUTE,
     key: 'product',
     name: 'Sản phẩm',
-    is_open: true
+    is_open: false,
+    icon: 'inbox'
   },
   {
     path: STAFFS_ROUTE,
@@ -65,7 +68,8 @@ const MENU_DATA = [
     path: APP_ROUTE,
     key: 'app',
     name: 'Ứng dụng',
-    is_open: true
+    is_open: false,
+    icon: 'appstore'
   }
 ]
 

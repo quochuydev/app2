@@ -55,8 +55,9 @@ function LayoutContainer() {
 
       <Layout style={{ padding: '24px 0', background: '#fff' }}>
         {
-          token && <Sider width={250} style={{ background: '#fff' }}>
-            <Menu>
+          token && <Sider collapsible width={250}>
+            <img src={assetProvider.puma} style={{ maxWidth: '80px', background: '#fff' }} />
+            <Menu theme="light" mode="inline">
               {menuItems}
             </Menu>
             <Button onClick={() => logout()}>logout</Button>
