@@ -170,9 +170,9 @@ function Orders(props) {
         </Form>
 
         <Col span={24}>
-          <Link to={`order/detail`}>
+          {/* <Link to={`order/detail`}>
             <Button>Tạo đơn hàng</Button>
-          </Link>
+          </Link> */}
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />

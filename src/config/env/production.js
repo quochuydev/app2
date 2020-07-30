@@ -60,4 +60,8 @@ module.exports = {
     active: process.env.CLOUDAMQP_ACTIVE,
     url: process.env.CLOUDAMQP_URL
   },
+
+  socket: {
+    active: false,
+  }
 }

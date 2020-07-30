@@ -6,7 +6,10 @@ import { connect } from 'react-redux';
 import {
   Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
 } from 'antd';
+import { ToastContainer, toast } from 'react-toastify';
+
 import 'antd/dist/antd.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import LoadingPage from '../../Components/Loading/index';
 
@@ -21,6 +24,20 @@ function App(props) {
         return 'green';
       default:
         return 'red';
+    }
+  }
+
+  const Toast = {
+    success: (message = '', delay = 3000, icon = 'check-circle') => {
+      let Message = () => (
+        <div>
+          <Icon type={icon} theme='filled' /> {message}
+        </div>
+      )
+      toast.success(<Message />, {
+        position: "top-right", autoClose: delay, hideProgressBar: true,
+        closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined,
+      });
     }
   }
 
@@ -84,6 +101,8 @@ function App(props) {
 
   async function resetTimeSync() {
     await actions.resetTimeSync();
+    Toast.success('Cập nhật thành công!');
+    setIsShowResetAppModal(false);
   }
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -91,6 +110,7 @@ function App(props) {
 
   async function updateStatusApp({ type, _id, status }) {
     await actions.updateStatusApp({ type, _id, status });
+    Toast.success('Cập nhật thành công!');
   }
 
   let ListHaravanShop;
@@ -111,55 +131,56 @@ function App(props) {
   }
 
   return (
-    <Row key='1'>
-      <Col span={24}>
-        <List header={<div>Danh sách App</div>} bordered>
-          <Item>
-            Haravan App
+    <div>
+      <Row key='1'>
+        <Col span={24}>
+          <List header={<div>Danh sách App</div>} bordered>
+            <Item>
+              Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-            {ListHaravanShop}
-          </Item>
-          <Item>
-            Woocommerce App
+              {ListHaravanShop}
+            </Item>
+            <Item>
+              Woocommerce App
             <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button>
-            {setting && setting.woocommerce && setting.woocommerce.wp_host
-              ?
-              <p>
-                {_.get(setting, 'woocommerce.wp_host')}
-                <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
-              </p>
-              : null
-            }
-          </Item>
-          <Item>
-            Shopify App
+              {setting && setting.woocommerce && setting.woocommerce.wp_host
+                ?
+                <p>
+                  {_.get(setting, 'woocommerce.wp_host')}
+                  <Button onClick={() => updateStatusApp({ type: 'woocommerce' })}><Icon style={{ color: cssStatus(setting.woocommerce.status) }} type="check-circle" /></Button>
+                </p>
+                : null
+              }
+            </Item>
+            <Item>
+              Shopify App
            <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button>
-            {setting && setting.shopify && setting.shopify.shopify_host
-              ?
-              <p>
-                {_.get(setting, 'shopify.shopify_host')}
-                <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
-              </p>
-              : null
-            }
-          </Item>
-          <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
-        </List>
-        <List header={<div>Adapter</div>} bordered>
+              {setting && setting.shopify && setting.shopify.shopify_host
+                ?
+                <p>
+                  {_.get(setting, 'shopify.shopify_host')}
+                  <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+                </p>
+                : null
+              }
+            </Item>
+            <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
+          </List>
+          {/* <List header={<div>Adapter</div>} bordered>
           <Item><Button target="_blank" onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
         </List>
         <List header={<div>Danh sách Webhook</div>} bordered>
           <Item><Button target="_blank" onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
-        </List>
-      </Col>
+        </List> */}
+        </Col>
 
-      <Modal
-        title="Haravan App"
-        visible={isShowHaravanAppModal}
-        onOk={() => buildLinkHaravanApp()}
-        onCancel={() => setIsShowHaravanAppModal(false)}
-      >
-        {/* <Form>
+        <Modal
+          title="Haravan App"
+          visible={isShowHaravanAppModal}
+          onOk={() => buildLinkHaravanApp()}
+          onCancel={() => setIsShowHaravanAppModal(false)}
+        >
+          {/* <Form>
           <Form.Item>
             <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
               <Radio value={true}>sku</Radio>
@@ -170,44 +191,56 @@ function App(props) {
           <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
           <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item>
         </Form> */}
-        {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
-        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
-      </Modal>
-      <Modal
-        title="Woocommerce App"
-        visible={isShowWoocommerceAppModal}
-        onOk={() => installWoocommerceApp()}
-        onCancel={() => setIsShowWoocommerceAppModal(false)}
-      >
-        <Form>
-          <Form.Item label="Shop URL">
-            <Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />
-          </Form.Item>
-        </Form>
-        <a href={buildLinkWoocommerce}>{buildLinkWoocommerce}</a>
-      </Modal>
-      <Modal
-        title="Shopify App"
-        visible={isShowShopifyAppModal}
-        onOk={() => buildLinkShopifyApp()}
-        onCancel={() => setIsShowShopifyAppModal(false)}
-      >
-        <Form>
-          <Form.Item label="Shop URL">
-            <Input name="shopify_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataShopify.shopify_host} />
-          </Form.Item>
-        </Form>
-        <a href={buildLinkShopify}>{buildLinkShopify}</a>
-      </Modal>
-      <Modal
-        title="Reset time sync"
-        visible={isShowResetAppModal}
-        onOk={() => resetTimeSync()}
-        onCancel={() => setIsShowResetAppModal(false)}
-      >
-      </Modal>
+          {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
+          <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
+        </Modal>
+        <Modal
+          title="Woocommerce App"
+          visible={isShowWoocommerceAppModal}
+          onOk={() => installWoocommerceApp()}
+          onCancel={() => setIsShowWoocommerceAppModal(false)}
+        >
+          <Form>
+            <Form.Item label="Shop URL">
+              <Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />
+            </Form.Item>
+          </Form>
+          <a href={buildLinkWoocommerce}>{buildLinkWoocommerce}</a>
+        </Modal>
+        <Modal
+          title="Shopify App"
+          visible={isShowShopifyAppModal}
+          onOk={() => buildLinkShopifyApp()}
+          onCancel={() => setIsShowShopifyAppModal(false)}
+        >
+          <Form>
+            <Form.Item label="Shop URL">
+              <Input name="shopify_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataShopify.shopify_host} />
+            </Form.Item>
+          </Form>
+          <a href={buildLinkShopify}>{buildLinkShopify}</a>
+        </Modal>
+        <Modal
+          title="Reset time sync"
+          visible={isShowResetAppModal}
+          onOk={() => resetTimeSync()}
+          onCancel={() => setIsShowResetAppModal(false)}
+        >
+        </Modal>
 
-    </Row >
+      </Row >
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover
+      />
+    </div >
   );
 }
 

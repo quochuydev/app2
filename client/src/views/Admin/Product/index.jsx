@@ -137,9 +137,9 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          <Link to={`product/detail`}>
+          {/* <Link to={`product/detail`}>
             <Button>Tạo sản phẩm</Button>
-          </Link>
+          </Link> */}
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Table rowKey='number' dataSource={products} columns={columns} />
