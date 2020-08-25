@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio
+  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
+  Upload
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -90,6 +91,7 @@ function Products(props) {
   }, []);
 
   let [query, setQuery] = useState({});
+  let [isImportModal, setIsImportModal] = useState(false);
 
   async function loadProducts() {
     await actions.loadProducts(query);
@@ -142,9 +144,22 @@ function Products(props) {
           </Link> */}
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
+          <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Table rowKey='number' dataSource={products} columns={columns} />
         </Col>
       </Row>
+      <Modal
+        title="Import excel"
+        visible={isImportModal}
+        onOk={() => { }}
+        onCancel={() => setIsImportModal(false)}
+      >
+        <Upload>
+          <Button>
+            <Icon type="upload" /> Upload
+        </Button>
+        </Upload>
+      </Modal>
     </div>
   )
 }

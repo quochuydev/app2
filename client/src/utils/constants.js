@@ -38,7 +38,7 @@ const MENU_DATA = [
     path: CUSTOMER_ROUTE,
     key: 'customer',
     name: 'Khách hàng',
-    is_open: false,
+    is_open: true,
     icon: 'user'
   },
   {
@@ -65,7 +65,7 @@ const MENU_DATA = [
     path: PRODUCT_ROUTE,
     key: 'product',
     name: 'Sản phẩm',
-    is_open: false,
+    is_open: true,
     icon: 'inbox'
   },
   {

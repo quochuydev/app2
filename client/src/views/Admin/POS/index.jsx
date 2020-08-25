@@ -133,7 +133,7 @@ function Customer(props) {
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Panel header="This is panel header 1" key="1">
+                <Panel header="Danh sách sản phẩm" key="1">
                   <Row gutter={16}>
                     {
                       products.map(product => {
