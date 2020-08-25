@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import ReactToPrint from "react-to-print";
+import AsyncSelect from 'react-select/async'
+
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
@@ -45,15 +48,19 @@ function Customer(props) {
     },
   };
 
+  const componentRef = useRef();
+
   useEffect(() => {
     actions.listCustomers(query);
   }, []);
 
+  const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
-  let [query, setQuery] = useState({});
+  const [query, setQuery] = useState({});
+  const [selectedOption, setSelectedOption] = useState({});
 
-  let [customer, setCustomer] = useState({})
+  const [customer, setCustomer] = useState({})
   const [lineItems, setLineItems] = useState([])
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -98,9 +105,34 @@ function Customer(props) {
     console.log('create')
     setIsCreateSuccess(true)
   }
+
+  function beforePrint(order) {
+    return new Promise(resolve => {
+      setIsShowPrint(true);
+      resolve()
+    })
+  }
+
+  function fetchData(inputValue, callback) {
+    if (!inputValue) {
+      callback([]);
+    } else {
+      let tempArray = [];
+      customers.forEach(e => {
+        tempArray.push({ label: e.email, value: e.id });
+      })
+      callback(tempArray);
+    }
+  }
+
+  function onSearchChange(selectedOption) {
+    if (selectedOption) {
+      setSelectedOption(selectedOption)
+    }
+  };
   return (
     <div>
-      <Row key='1'>
+      <Row>
         <Form onSubmit={handleSubmit}>
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, height: '300px', right: 0 }}>
@@ -135,12 +167,21 @@ function Customer(props) {
                 name="customer"
                 style={{ width: '100%' }}
                 placeholder="-- Chọn --"
+                addonAfter={<Icon type="edit" />}
               >
                 {
-                  customers.map(e => (<Option key={e._id} value={e._id}>{`${e.first_name} ${e.last_name}`}</Option>))
+                  customers.map(e => (<Option key={e.id} value={e.id}>{`${e.first_name} ${e.last_name}`}</Option>))
                 }
               </Select>
             </Card>
+
+            <AsyncSelect
+              value={selectedOption}
+              loadOptions={fetchData}
+              placeholder="Admin Name"
+              onChange={(e) => { onSearchChange(e); }}
+              defaultOptions={false}
+            />
 
             <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button>
             <button className="" type="submit">Thanh toán</button>
@@ -166,18 +207,30 @@ function Customer(props) {
           subTitle="Mã đơn hàng của bạn là #100051"
           extra={[
             <Button key="buy">Tạo đơn hàng mới</Button>,
-            <Button type="primary" key="console">In hóa đơn</Button>,
+            <ReactToPrint
+              key={'printOrder'}
+              onBeforeGetContent={() => beforePrint({})}
+              onAfterPrint={() => setIsShowPrint(false)}
+              trigger={() => <Button type="primary" key="console"><Icon type="printer" />In hóa đơn</Button>}
+              content={() => componentRef.current}
+            />
+
           ]}
         />
       </Modal>
+      <div style={{ display: isShowPrint ? 'block' : 'none' }}>
+        <div ref={componentRef}>
+          <p>{JSON.stringify({})}</p>
+        </div>
+      </div>
     </div >
   );
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.get('customers'),
-  count: state.customers.get('count'),
-  customer: state.customers.get('customer'),
+  // customers: state.customers.get('customers'),
+  // count: state.customers.get('count'),
+  // customer: state.customers.get('customer'),
   downloadLink: state.customers.get('downloadLink'),
 });
 
