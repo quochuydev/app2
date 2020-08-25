@@ -6,6 +6,8 @@
   "dependencies": {
     "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.5.6",
+    "browserslist": "^4.14.0",
+    "caniuse-lite": "^1.0.30001117",
     "concurrently": "^5.3.0",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
