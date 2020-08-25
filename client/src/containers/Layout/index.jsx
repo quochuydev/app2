@@ -60,7 +60,7 @@ function LayoutContainer() {
 
       <Layout style={{ background: '#fff' }}>
         {
-          token && <Sider collapsible width={250} style={{ background: '#fff' }}>
+          token && <Sider collapsible width={250} style={{ background: '#fff' }} defaultCollapsed={true}>
             <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
             <Menu theme="light" mode="inline">
               {menuItems}

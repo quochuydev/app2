@@ -6,7 +6,7 @@ import moment from 'moment';
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, Card
+  Form, Card, Result
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -25,11 +25,12 @@ function Customer(props) {
   let products = data.products;
 
   const columns = [
-    { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
-    { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
-    { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
-    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
-    { title: 'Email', dataIndex: 'email', key: 'email', },
+    { title: 'id', dataIndex: 'id', key: 'id', },
+    { title: 'Sản phẩm', dataIndex: 'title', key: 'title', },
+    { title: 'Đơn giá', dataIndex: 'price', key: 'price', },
+    { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
+    { title: 'Thành tiền', dataIndex: 'custom_total_price', key: 'custom_total_price', },
+    // { title: '', dataIndex: 'options', key: 'options', },
   ];
   const uploads = {
     action: `${apiUrl}/customers/import`,
@@ -42,17 +43,30 @@ function Customer(props) {
     actions.listCustomers(query);
   }, []);
 
-  const [isExportModal, setIsExportModal] = useState(false);
-  const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
-  const [isUpdateModal, setIsUpdateModal] = useState(false);
+  const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   let [query, setQuery] = useState({});
 
   let [customer, setCustomer] = useState({})
+  const [lineItems, setLineItems] = useState([])
 
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
+  function addLineItem(id) {
+    let line_items = [...lineItems]
+    let index = line_items.findIndex(e => e.id == id);
+    let product = products.find(e => e.id == id);
+    if (index != -1) {
+      line_items[index].quantity += 1;
+    } else {
+      let lineItem = { ...product };
+      lineItem.quantity = 1;
+      lineItem.custom_total_price = lineItem.quantity * lineItem.price;
+      line_items.push(lineItem)
+    }
+    setLineItems(line_items)
+  }
   function onLoadCustomer() {
     actions.listCustomers(query);
   }
@@ -73,56 +87,59 @@ function Customer(props) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
-  console.log(products)
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log('create')
+    setIsCreateSuccess(true)
+  }
   return (
     <div>
       <Row key='1'>
-        <Col span={16} style={{ position: 'relative', height: '100vh' }}>
-          <div style={{ position: 'absolute', bottom: 0, left: 0, height: '300px', right: 0 }}>
-            <Row gutter={16}>
-              {
-                products.map(product => {
-                  return (
-                    <Col span={4} key={product.id}>
-                      <Card
-                        style={{ width: 100 }}
-                        className="cursor-pointer"
-                        cover={<img className="overflow-hidden" style={{ height: "100px", width: "100px" }}
-                          alt={product.images[0].filename} src={product.images[0].src} />}
-                        onClick={() => { console.log(123) }}
-                      >
-                        <Meta title={product.title} />
-                      </Card>
-                    </Col>
-                  )
-                })
-              }
-            </Row>
+        <Form onSubmit={handleSubmit}>
+          <Col span={16} style={{ position: 'relative', height: '100vh' }}>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, height: '300px', right: 0 }}>
+              <Row gutter={16}>
+                {
+                  products.map(product => {
+                    return (
+                      <Col span={4} key={product.id}>
+                        <Card
+                          style={{ width: 100 }}
+                          className="cursor-pointer"
+                          cover={<img className="overflow-hidden" style={{ height: "100px", width: "100px" }}
+                            alt={product.images[0].filename} src={product.images[0].src} />}
+                          onClick={() => addLineItem(product.id)}
+                        >
+                          <Meta title={product.title} />
+                        </Card>
+                      </Col>
+                    )
+                  })
+                }
+              </Row>
+            </div>
+            <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"></Input>
+            <Table rowKey='id' dataSource={lineItems} columns={columns} />
+          </Col>
+          <Col span={8} style={{ padding: 15 }}>
+            <Card title="Thông tin khách hàng">
+              <p>Khách hàng:</p>
+              <Select
+                name="customer"
+                style={{ width: '100%' }}
+                placeholder="-- Chọn --"
+              >
+                {
+                  customers.map(e => (<Option key={e._id} value={e._id}>{`${e.first_name} ${e.last_name}`}</Option>))
+                }
+              </Select>
+            </Card>
 
-
-          </div>
-          <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"></Input>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
-        </Col>
-        <Col span={8}>
-          <Form.Item label="Commerce">
-            <Select
-              mode="multiple"
-              name="type_in"
-              style={{ width: '100%' }}
-              placeholder="-- Chọn --"
-              onChange={onChangeType}
-            >
-              <Option value='haravan'>Haravan</Option>
-              <Option value='woocommerce'>Woocommerce</Option>
-              <Option value='shopify'>Shopify</Option>
-            </Select>
             <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button>
-
-          </Form.Item>
-        </Col>
+            <button className="" type="submit">Thanh toán</button>
+          </Col>
+        </Form>
       </Row>
       <Modal
         title="Thêm khách hàng"
@@ -131,6 +148,22 @@ function Customer(props) {
         onCancel={() => setIsCreateModal(false)}
         width={800}
       />
+      <Modal
+        visible={isCreateSuccess}
+        width={600}
+        footer={null}
+        onCancel={() => setIsCreateSuccess(false)}
+      >
+        <Result
+          status="success"
+          title="Đặt hàng thành công!"
+          subTitle="Mã đơn hàng của bạn là #100051"
+          extra={[
+            <Button key="buy">Tạo đơn hàng mới</Button>,
+            <Button type="primary" key="console">In hóa đơn</Button>,
+          ]}
+        />
+      </Modal>
     </div >
   );
 }
