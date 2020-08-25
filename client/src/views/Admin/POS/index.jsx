@@ -9,7 +9,7 @@ import AsyncSelect from 'react-select/async'
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, Card, Result
+  Form, Card, Result, Tabs, Radio, Collapse
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -23,8 +23,12 @@ const apiUrl = `${config.backend_url}/api`;
 function Customer(props) {
   const { Option } = Select;
   const { Meta } = Card;
+  const { TabPane } = Tabs;
+  const { Panel } = Collapse;
 
-  const { count, actions, downloadLink } = props;
+  const componentRef = useRef();
+
+  const { count, actions } = props;
   let products = data.products;
   let customers = data.customers;
 
@@ -41,21 +45,13 @@ function Customer(props) {
       ),
     },
   ];
-  const uploads = {
-    action: `${apiUrl}/customers/import`,
-    previewFile(file) {
-      console.log(file)
-    },
-  };
-
-  const componentRef = useRef();
 
   useEffect(() => {
     actions.listCustomers(query);
   }, []);
 
   const [isShowPrint, setIsShowPrint] = useState(false)
-  const [isCreateModal, setIsCreateModal] = useState(false);
+  const [isCreateModal, setIsCreateModal] = useState(true);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [query, setQuery] = useState({});
   const [selectedOption, setSelectedOption] = useState({});
@@ -82,8 +78,8 @@ function Customer(props) {
     setLineItems(line_items)
   }
 
-  function addCustomer() {
-    actions.addCustomer(customer);
+  function addCustomer(e) {
+    console.log(e)
   }
   function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
@@ -119,7 +115,7 @@ function Customer(props) {
     } else {
       let tempArray = [];
       customers.forEach(e => {
-        tempArray.push({ label: e.email, value: e.id });
+        tempArray.push({ label: `${e.first_name} ${e.last_name}`, value: e.id });
       })
       callback(tempArray);
     }
@@ -135,66 +131,108 @@ function Customer(props) {
       <Row>
         <Form onSubmit={handleSubmit}>
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
-            <div style={{ position: 'absolute', bottom: 0, left: 0, height: '300px', right: 0 }}>
-              <Row gutter={16}>
-                {
-                  products.map(product => {
-                    return (
-                      <Col span={4} key={product.id}>
-                        <Card className="cursor-pointer"
-                          cover={<div style={{ height: "120px" }}
-                            className="overflow-hidden"
-                          ><img className="overflow-hidden"
-                            style={{ width: "100%" }}
-                            alt={product.images[0].filename} src={product.images[0].src} /></div>}
-                          onClick={() => addLineItem(product.id)}
-                        >
-                          <Meta title={product.title} />
-                        </Card>
-                      </Col>
-                    )
-                  })
-                }
-              </Row>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+              <Collapse defaultActiveKey={['1']} onChange={() => { }}>
+                <Panel header="This is panel header 1" key="1">
+                  <p>A dog is a type of domesticated animal.Known for its loyalty and faithfulness,
+                  it can be found as a welcome guest in many households across the world.
+                  </p>
+                  <Row gutter={16}>
+                    {
+                      products.map(product => {
+                        return (
+                          <Col span={4} key={product.id}>
+                            <Card className="cursor-pointer"
+                              cover={<div style={{ height: "120px" }}
+                                className="overflow-hidden"
+                              ><img className="overflow-hidden"
+                                style={{ width: "100%" }}
+                                alt={product.images[0].filename} src={product.images[0].src} /></div>}
+                              onClick={() => addLineItem(product.id)}
+                            >
+                              <Meta title={product.title} />
+                            </Card>
+                          </Col>
+                        )
+                      })
+                    }
+                  </Row>
+                </Panel>
+              </Collapse>,
+
             </div>
-            <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"></Input>
+            <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
             <Table rowKey='id' dataSource={lineItems} columns={columns} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Card title="Thông tin khách hàng">
-              <p>Khách hàng:</p>
-              <Select
-                name="customer"
-                style={{ width: '100%' }}
-                placeholder="-- Chọn --"
-                addonAfter={<Icon type="edit" />}
-              >
-                {
-                  customers.map(e => (<Option key={e.id} value={e.id}>{`${e.first_name} ${e.last_name}`}</Option>))
-                }
-              </Select>
+              <p>Khách hàng: <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button></p>
+              <AsyncSelect
+                value={selectedOption}
+                loadOptions={fetchData}
+                placeholder="Admin Name"
+                onChange={(e) => { onSearchChange(e); }}
+                defaultOptions={false}
+              />
             </Card>
 
-            <AsyncSelect
-              value={selectedOption}
-              loadOptions={fetchData}
-              placeholder="Admin Name"
-              onChange={(e) => { onSearchChange(e); }}
-              defaultOptions={false}
-            />
 
-            <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button>
             <button className="" type="submit">Thanh toán</button>
           </Col>
         </Form>
       </Row>
       <Modal
-        title="Thêm khách hàng"
+        title="Tạo khách hàng mới"
         visible={isCreateModal}
-        onOk={addCustomer}
+        footer={null}
         onCancel={() => setIsCreateModal(false)}
-        width={800}
-      />
+        width={700}
+      >
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Thông tin" key="1">
+            <Row>
+              <Form onSubmit={addCustomer}>
+                <Col span={24}>
+                  <Radio.Group onChange={() => { }} value={1}>
+                    <Radio value={1}>Anh</Radio>
+                    <Radio value={0}>Chị</Radio>
+                  </Radio.Group>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <DatePicker onChange={() => { }} />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button>Luu</Button>
+                  </Form.Item>
+                </Col>
+              </Form>
+            </Row>
+          </TabPane>
+        </Tabs>
+      </Modal>
       <Modal
         visible={isCreateSuccess}
         width={600}
@@ -228,10 +266,7 @@ function Customer(props) {
 }
 
 const mapStateToProps = state => ({
-  // customers: state.customers.get('customers'),
-  // count: state.customers.get('count'),
-  // customer: state.customers.get('customer'),
-  downloadLink: state.customers.get('downloadLink'),
+
 });
 
 const mapDispatchToProps = (dispatch) => ({

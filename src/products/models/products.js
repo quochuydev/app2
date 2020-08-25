@@ -10,7 +10,6 @@ autoIncrement.initialize(mongoose.connection);
 const ProductSchema = new Schema({
   number: { type: Number, default: null },
   shop_id: { type: Number, default: null },
-
   type: { type: String, default: null },
   id: { type: String, default: null },
   created_at: { type: Date, default: null },

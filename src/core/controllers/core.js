@@ -73,13 +73,18 @@ let middleware = (req, res, next) => {
 }
 
 function signup(req, res) {
-  let { email, password } = req.body;
-  let user = await UserMD.findOne({ email }).lean(true);
-  if (user) {
-    return res.json({ message: 'user đã tồn tại' })
-  }
+  try {
+    let { email, password } = req.body;
+    let user = await UserMD.findOne({ email }).lean(true);
+    if (user) {
+      return res.json({ message: 'user đã tồn tại' })
+    }
 
-  res.json({ message: 'Đăng ký thành công' })
+    res.json({ message: 'Đăng ký thành công' })
+  } catch (error) {
+    console.log(error);
+    res.json({ message: 'Đã có lỗi xảy ra!' })
+  }
 }
 
 let login = async (req, res) => {
