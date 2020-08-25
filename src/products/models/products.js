@@ -1,3 +1,7 @@
+/*
+const { ProductModel } = require(path.resolve('./src/products/models/products.js'));
+*/
+
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const autoIncrement = require('mongoose-auto-increment');
@@ -6,7 +10,7 @@ autoIncrement.initialize(mongoose.connection);
 const ProductSchema = new Schema({
   number: { type: Number, default: null },
   shop_id: { type: Number, default: null },
-  
+
   type: { type: String, default: null },
   id: { type: String, default: null },
   created_at: { type: Date, default: null },
@@ -35,4 +39,6 @@ const ProductSchema = new Schema({
 
 ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'number', startAt: 10000, incrementBy: 1 });
 
-mongoose.model('Product', ProductSchema);
+let ProductModel = mongoose.model('Product', ProductSchema);
+
+module.exports = { ProductModel }
