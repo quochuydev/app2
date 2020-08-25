@@ -65,7 +65,7 @@ function LayoutContainer() {
             <Menu theme="light" mode="inline">
               {menuItems}
               <Menu.Item key={'sub_logout'}>
-                <a onClick={() => logout()}><Icon type="logout" />Đăng xuất</a>
+                <a onClick={() => logout()}><Icon type="logout" /><span>Đăng xuất</span></a>
               </Menu.Item>
             </Menu>
           </Sider>

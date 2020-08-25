@@ -18,8 +18,6 @@ function Home() {
     return <LoadingPage isProcessing={isProcessing} />;
   }
 
-  let { messageSuccess, messageFailed, showAlert, isError } = alert;
-
   function showMessage(error, message) {
     if (error) {
       setAlert({
@@ -40,13 +38,6 @@ function Home() {
       setAlert({ showAlert: false });
     }, 3000);
     clearTimeout();
-  }
-  function showLoading(timeout = 1000) {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      clearTimeout();
-    }, timeout);
   }
   return (
     // <Content style={{ padding: '0 24px', minHeight: 280 }}>

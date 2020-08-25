@@ -1,0 +1,15 @@
+.m-y-15 {
+  margin: 15px 0;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.ant-card-body {
+  padding: 10px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

@@ -1,6 +1,7 @@
 const HOME_ROUTE = ``;
 const SITE_ROUTE = `${HOME_ROUTE}/site`;
 const CUSTOMER_ROUTE = `${SITE_ROUTE}/customers`;
+const POS_ROUTE = `${SITE_ROUTE}/POS`;
 const MESSENGER_ROUTE = `${SITE_ROUTE}/messenger`;
 const ORDER_ROUTE = `${SITE_ROUTE}/order`;
 const ORDER_CREATE_ROUTE = `${SITE_ROUTE}/order/detail`;
@@ -14,6 +15,7 @@ const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 const PATHS = {
   SITE_ROUTE,
   CUSTOMER_ROUTE,
+  POS_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
   ORDER_CREATE_ROUTE,
@@ -36,8 +38,15 @@ const MENU_DATA = [
     path: CUSTOMER_ROUTE,
     key: 'customer',
     name: 'Khách hàng',
-    is_open: true,
+    is_open: false,
     icon: 'user'
+  },
+  {
+    path: POS_ROUTE,
+    key: 'POS',
+    name: 'POS',
+    is_open: true,
+    icon: 'shopping-cart'
   },
   {
     path: MESSENGER_ROUTE,
