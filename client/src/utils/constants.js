@@ -29,13 +29,14 @@ const MENU_DATA = [
     path: SITE_ROUTE,
     key: 'home',
     name: 'Trang chủ',
-    is_open: false
+    is_open: true,
+    icon: 'home'
   },
   {
     path: CUSTOMER_ROUTE,
     key: 'customer',
     name: 'Khách hàng',
-    is_open: false,
+    is_open: true,
     icon: 'user'
   },
   {

@@ -6,7 +6,7 @@ const routes = (app) => {
   app.get('/auth', auth);
   app.post('/login', login);
   app.post('/logout', logout);
-  app.use('/api/*', middleware);
+  // app.use('/api/*', middleware);
 
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });

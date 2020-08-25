@@ -95,10 +95,6 @@ function App(props) {
     await actions.buildLinkHaravanApp(dataHaravan);
   }
 
-  async function installHaravanApp() {
-    await actions.installHaravanApp(dataHaravan);
-  }
-
   async function resetTimeSync() {
     await actions.resetTimeSync();
     Toast.success('Cập nhật thành công!');
@@ -159,7 +155,8 @@ function App(props) {
                 ?
                 <p>
                   {_.get(setting, 'shopify.shopify_host')}
-                  <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+                  <Button onClick={() => updateStatusApp({ type: 'shopify' })}>
+                    <Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
                 </p>
                 : null
               }

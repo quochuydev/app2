@@ -72,8 +72,17 @@ let middleware = (req, res, next) => {
   }
 }
 
-let login = (req, res) => {
-  res.json({ error: false, url });
+let login = async (req, res) => {
+  let { username, password } = req.body;
+  let user = await UserMD.findOne({ email: username }).lean(true);
+  if (!user) { return res.sendStatus(401) }
+  let user_gen_token = {
+    email: user.email,
+    // shop_id: user.shop_id,
+    exp: (Date.now() + 60 * 60 * 1000) / 1000
+  }
+  let userToken = jwt.sign(user_gen_token, hash_token);
+  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
 }
 
 let logout = (req, res) => {

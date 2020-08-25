@@ -58,21 +58,22 @@ function LayoutContainer() {
     <BrowserRouter>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-      <Layout style={{ minHeight: '100vh', padding: '0', background: '#fff' }}>
+      <Layout style={{ background: '#fff' }}>
         {
-          token && <Sider collapsible width={250}>
-            <img src={assetProvider.puma} style={{ maxWidth: '80px', background: '#fff' }} />
+          token && <Sider collapsible width={250} style={{ background: '#fff' }}>
+            <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
             <Menu theme="light" mode="inline">
               {menuItems}
+              <Menu.Item key={'sub_logout'}>
+                <a onClick={() => logout()}><Icon type="logout" />Đăng xuất</a>
+              </Menu.Item>
             </Menu>
-            <a style={{ position: 'absolute', bottom: 0 }} onClick={() => logout()}><Icon type="logout" /></a>
           </Sider>
         }
         <Content style={{ padding: '0 16px' }}>
           <Switch>
             <Middleware setAlert={setAlert}>
               {RouteList.map((props, index) => (< Route key={index} {...props} />))}
-              <Route exact path={'/'} component={NoMatch} />
             </Middleware>
           </Switch>
         </Content>

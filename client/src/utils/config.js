@@ -1,5 +1,5 @@
 let configDev = { 
-	backend_url: 'http://localhost:3000'
+	backend_url: 'http://localhost:3002'
 };
 
 let configPro = { 

@@ -62,14 +62,8 @@ function Customer(props) {
   ];
   const uploads = {
     action: `${apiUrl}/customers/import`,
-    listType: 'picture',
     previewFile(file) {
-      return fetch(`${apiUrl}/customers/import`, {
-        method: 'POST',
-        body: file,
-      })
-        .then(res => res.json())
-        .then(({ thumbnail }) => thumbnail);
+      console.log(file)
     },
   };
 
