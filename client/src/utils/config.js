@@ -3,12 +3,12 @@ let configDev = {
 };
 
 let configPro = { 
-	backend_url: 'https://crmdlc.herokuapp.com'
+	backend_url: 'https://posdlc.herokuapp.com'
 };
 
 let result = configDev;
 const hostname = window && window.location && window.location.hostname;
-if (hostname.indexOf('crmdlc.herokuapp.com') > -1) {
+if (hostname.indexOf('posdlc.herokuapp.com') > -1) {
   result = configPro;
 }
 export default result;
