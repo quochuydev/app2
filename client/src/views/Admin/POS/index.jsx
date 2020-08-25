@@ -9,7 +9,7 @@ import AsyncSelect from 'react-select/async'
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, Card, Result, Tabs, Radio, Collapse
+  Form, Card, Result, Tabs, Radio, Collapse, Layout
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -25,6 +25,7 @@ function Customer(props) {
   const { Meta } = Card;
   const { TabPane } = Tabs;
   const { Panel } = Collapse;
+  const { Content, Footer } = Layout;
 
   const componentRef = useRef();
 
@@ -162,25 +163,41 @@ function Customer(props) {
             <Table rowKey='id' dataSource={lineItems} columns={columns} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
-            <Card title="Thông tin khách hàng">
-              <p>Khách hàng: <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button></p>
-              <AsyncSelect
-                value={selectedOption}
-                loadOptions={fetchData}
-                placeholder="Admin Name"
-                onChange={(e) => { onSearchChange(e); }}
-                defaultOptions={false}
-              />
-            </Card>
+            <Layout>
+              <Content style={{ height: '65vh' }}>
+                <Card title="Thông tin khách hàng">
+                  <p>Khách hàng: <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button></p>
+                  <AsyncSelect
+                    value={selectedOption}
+                    loadOptions={fetchData}
+                    placeholder="Admin Name"
+                    onChange={(e) => { onSearchChange(e); }}
+                    defaultOptions={false}
+                  />
+                </Card>
+              </Content>
+              <Footer style={{ bottom: 0, padding: 15 }}>
+                <Form {...{ labelCol: { span: 5 }, wrapperCol: { span: 19 } }}>
+                  <Form.Item
+                    label="Username"
+                    name="username"
+                    rules={[{ required: true, message: 'Please input your username!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item>
+                    <button className="" type="submit">Thanh toán</button>
+                  </Form.Item>
+                </Form>
 
-
-            <button className="" type="submit">Thanh toán</button>
+              </Footer>
+            </Layout>
           </Col>
         </Form>
       </Row>
       <Modal
         title="Tạo khách hàng mới"
-        visible={isCreateModal}
+        visible={false}
         footer={null}
         onCancel={() => setIsCreateModal(false)}
         width={700}

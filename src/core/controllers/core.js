@@ -72,7 +72,7 @@ let middleware = (req, res, next) => {
   }
 }
 
-function signup(req, res) {
+async function signup(req, res) {
   try {
     let { email, password } = req.body;
     let user = await UserMD.findOne({ email }).lean(true);
