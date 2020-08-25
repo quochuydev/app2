@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+
 import 'antd/dist/antd.css';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
@@ -39,6 +42,16 @@ function Home() {
     }, 3000);
     clearTimeout();
   }
+
+  const options = {
+    title: {
+      text: 'My chart'
+    },
+    series: [{
+      data: [1, 2, 3]
+    }]
+  }
+  
   return (
     // <Content style={{ padding: '0 24px', minHeight: 280 }}>
     //   <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
@@ -46,8 +59,12 @@ function Home() {
     //   <button onClick={() => showLoading()}>show loading</button>
     //   <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
     // </Content>
-    <div>
 
+    <div>
+      <HighchartsReact
+        highcharts={Highcharts}
+        options={options}
+      />
     </div>
   );
 }

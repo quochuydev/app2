@@ -17,6 +17,8 @@
     "glob": "^7.1.6",
     "googleapis": "^47.0.0",
     "haravan_api": "^1.0.6",
+    "highcharts": "^8.2.0",
+    "highcharts-react-official": "^3.0.0",
     "http": "0.0.0",
     "jsonwebtoken": "^8.5.1",
     "memory-cache": "^0.2.0",

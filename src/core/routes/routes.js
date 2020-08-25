@@ -1,11 +1,12 @@
 const path = require('path');
-const { auth, login, logout, middleware } = require('../controllers/core');
+const { auth, login, logout, signup } = require('../controllers/core');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
   app.get('/auth', auth);
   app.post('/login', login);
   app.post('/logout', logout);
+  app.post('/signup', signup);
   // app.use('/api/*', middleware);
 
   require(path.resolve('./src/download/routes/download'))({ app });

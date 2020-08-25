@@ -21,8 +21,9 @@ function Customer(props) {
   const { Option } = Select;
   const { Meta } = Card;
 
-  const { count, customers, actions, downloadLink } = props;
+  const { count, actions, downloadLink } = props;
   let products = data.products;
+  let customers = data.customers;
 
   const columns = [
     { title: 'id', dataIndex: 'id', key: 'id', },
@@ -30,7 +31,12 @@ function Customer(props) {
     { title: 'Đơn giá', dataIndex: 'price', key: 'price', },
     { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
     { title: 'Thành tiền', dataIndex: 'custom_total_price', key: 'custom_total_price', },
-    // { title: '', dataIndex: 'options', key: 'options', },
+    {
+      title: '', key: 'options',
+      render: edit => (
+        <Icon type="edit" onClick={() => { }} />
+      ),
+    },
   ];
   const uploads = {
     action: `${apiUrl}/customers/import`,
@@ -59,6 +65,7 @@ function Customer(props) {
     let product = products.find(e => e.id == id);
     if (index != -1) {
       line_items[index].quantity += 1;
+      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     } else {
       let lineItem = { ...product };
       lineItem.quantity = 1;
@@ -67,9 +74,7 @@ function Customer(props) {
     }
     setLineItems(line_items)
   }
-  function onLoadCustomer() {
-    actions.listCustomers(query);
-  }
+
   function addCustomer() {
     actions.addCustomer(customer);
   }
@@ -104,11 +109,12 @@ function Customer(props) {
                   products.map(product => {
                     return (
                       <Col span={4} key={product.id}>
-                        <Card
-                          style={{ width: 100 }}
-                          className="cursor-pointer"
-                          cover={<img className="overflow-hidden" style={{ height: "100px", width: "100px" }}
-                            alt={product.images[0].filename} src={product.images[0].src} />}
+                        <Card className="cursor-pointer"
+                          cover={<div style={{ height: "120px" }}
+                            className="overflow-hidden"
+                          ><img className="overflow-hidden"
+                            style={{ width: "100%" }}
+                            alt={product.images[0].filename} src={product.images[0].src} /></div>}
                           onClick={() => addLineItem(product.id)}
                         >
                           <Meta title={product.title} />

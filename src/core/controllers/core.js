@@ -72,10 +72,26 @@ let middleware = (req, res, next) => {
   }
 }
 
+function signup(req, res) {
+  let { email, password } = req.body;
+  let user = await UserMD.findOne({ email }).lean(true);
+  if (user) {
+    return res.json({ message: 'user đã tồn tại' })
+  }
+
+  res.json({ message: 'Đăng ký thành công' })
+}
+
 let login = async (req, res) => {
   let { username, password } = req.body;
   let user = await UserMD.findOne({ email: username }).lean(true);
-  if (!user) { return res.sendStatus(401) }
+  if (!user.authenticate(password)) {
+    return res.sendStatus(401)
+  }
+
+  if (!user) {
+    return res.sendStatus(400)
+  }
   let user_gen_token = {
     email: user.email,
     // shop_id: user.shop_id,
@@ -93,4 +109,4 @@ let logout_redirect = (req, res) => {
   res.redirect(`${frontend_site}/logout`)
 }
 
-module.exports = { auth, login, logout, middleware, logout_redirect }
+module.exports = { auth, login, logout, middleware, logout_redirect, signup }
