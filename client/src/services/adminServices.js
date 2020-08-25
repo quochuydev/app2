@@ -9,12 +9,13 @@ const URLS = {
 
   LIST_ORDERS: 'api/order/list',
   GET_ORDER_DETAIL: 'api/order/detail',
+  CREATE_ORDER: 'api/order/create',
   SYNC_ORDERS: 'api/order/sync',
 
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT_DETAIL: 'api/products/detail',
   SYNC_PRODUCTS: 'api/products/sync',
-  
+
   LIST_STAFFS: 'api/staffs',
 
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
@@ -27,11 +28,13 @@ const URLS = {
   GET_SETTING: 'api/setting/get',
   UPDATE_STATUS_APP: 'api/setting/update-status',
 
-  BUILD_LINK_MOMO: 'api/momo/buildlink'
+  BUILD_LINK_MOMO: 'api/momo/buildlink',
+
+  LOGIN: 'login'
 }
 
-async function listCustomers() {
-  return await ApiClient.postData(URLS.LIST_CUSTOMER);
+async function listCustomers(query) {
+  return await ApiClient.postData(URLS.LIST_CUSTOMER, null, query);
 }
 
 async function addCustomer(customer) {
@@ -57,6 +60,10 @@ async function loadOrders(query) {
 async function getOrderDetail(id) {
   let url = `${URLS.GET_ORDER_DETAIL}/${id}`;
   return await ApiClient.getData(url);
+}
+async function createOrder(data) {
+  let url = `${URLS.CREATE_ORDER}`;
+  return await ApiClient.postData(url, null, data);
 }
 
 async function syncOrders() {
@@ -114,9 +121,16 @@ async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
 
+async function login(data) {
+  return await ApiClient.postData(URLS.LOGIN, null, data);
+}
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
-  loadOrders, syncOrders, getOrderDetail, loadStaffs, createStaffs, installWoocommerceApp,
+  loadOrders, syncOrders,
+  getOrderDetail, createOrder,
+  loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts
+  buildLinkMomoOrder, loadProducts, syncProducts,
+  login
 }

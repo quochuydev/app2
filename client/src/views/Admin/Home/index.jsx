@@ -18,8 +18,6 @@ function Home() {
     return <LoadingPage isProcessing={isProcessing} />;
   }
 
-  let { messageSuccess, messageFailed, showAlert, isError } = alert;
-
   function showMessage(error, message) {
     if (error) {
       setAlert({
@@ -41,20 +39,16 @@ function Home() {
     }, 3000);
     clearTimeout();
   }
-  function showLoading(timeout = 1000) {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      clearTimeout();
-    }, timeout);
-  }
   return (
-    <Content style={{ padding: '0 24px', minHeight: 280 }}>Content
-      <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
-      <button onClick={() => showMessage(true, 'message failed')}>show mess failed</button>
-      <button onClick={() => showLoading()}>show loading</button>
-      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
-    </Content>
+    // <Content style={{ padding: '0 24px', minHeight: 280 }}>
+    //   <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
+    //   <button onClick={() => showMessage(true, 'message failed')}>show mess failed</button>
+    //   <button onClick={() => showLoading()}>show loading</button>
+    //   <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
+    // </Content>
+    <div>
+
+    </div>
   );
 }
 

@@ -31,6 +31,11 @@ function Customer(props) {
   }
   const columns = [
     {
+      title: 'Number', key: 'number', render: edit => (
+        <span>{edit.number}</span>
+      )
+    },
+    {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
@@ -57,25 +62,20 @@ function Customer(props) {
   ];
   const uploads = {
     action: `${apiUrl}/customers/import`,
-    listType: 'picture',
     previewFile(file) {
-      return fetch(`${apiUrl}/customers/import`, {
-        method: 'POST',
-        body: file,
-      })
-        .then(res => res.json())
-        .then(({ thumbnail }) => thumbnail);
+      console.log(file)
     },
   };
 
   useEffect(() => {
-    actions.listCustomers();
+    actions.listCustomers(query);
   }, []);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
+  let [query, setQuery] = useState({});
 
   let [customer, setCustomer] = useState({})
 
@@ -83,7 +83,7 @@ function Customer(props) {
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   function onLoadCustomer() {
-    actions.listCustomers();
+    actions.listCustomers(query);
   }
   function addCustomer() {
     actions.addCustomer(customer);
@@ -120,12 +120,39 @@ function Customer(props) {
     setIsProcessing(false);
   }
 
+
+  function onChangeType(e) {
+    setQuery({ ...query, type_in: e })
+  }
+  function onChange(e) {
+    let { name, value } = e.target;
+    setQuery({ ...query, [name]: value })
+  }
+
   return (
     <div>
       <Row key='1'>
+        <Col span={8}>
+          <Form.Item label="Mã khách hàng"><Input name="number" onChange={onChange} /></Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="Commerce">
+            <Select
+              mode="multiple"
+              name="type_in"
+              style={{ width: '100%' }}
+              placeholder="-- Chọn --"
+              onChange={onChangeType}
+            >
+              <Option value='haravan'>Haravan</Option>
+              <Option value='woocommerce'>Woocommerce</Option>
+              <Option value='shopify'>Shopify</Option>
+            </Select>
+          </Form.Item>
+        </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
+          {/* <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button> */}
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>

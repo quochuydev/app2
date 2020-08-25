@@ -9,6 +9,8 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import styled from "styled-components"
+
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
 import Constants from '../../utils/constants';
@@ -17,9 +19,12 @@ import config from '../../utils/config';
 import Middleware from '../Middleware/index';
 import Alert from '../../views/Components/Alert/index';
 import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
+import assetProvider from '../../utils/assetProvider';
+
 const basedUrl = config.backend_url;
 
 const { Header, Content, Footer, Sider } = Layout;
+
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
 
@@ -43,7 +48,7 @@ function LayoutContainer() {
     if (menu.is_open) {
       menuItems.push(
         <Menu.Item key={'sub_' + menu.key}>
-          <Link to={menu.path}> <span>{menu.name}</span></Link>
+          <Link to={menu.path}><Icon type={menu.icon} /><span>{menu.name}</span></Link>
         </Menu.Item>
       );
     }
@@ -51,36 +56,34 @@ function LayoutContainer() {
 
   return (
     <BrowserRouter>
-      <BlockUi tag="div" >
-        <Content>
-          <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
+      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-          <Layout style={{ padding: '24px 0', background: '#fff' }}>
-            {
-              token && <Sider width={250} style={{ background: '#fff' }}>
-                <Menu
-                  mode="inline">
-                  {menuItems}
-                </Menu>
-                <Button onClick={() => logout()}>logout</Button>
-              </Sider>
-            }
-            <Content style={{ padding: '0 16px' }}>
-              <Switch>
-                <Middleware setAlert={setAlert}>
-                  {RouteList.map((props, index) => (< Route key={index} {...props} />))}
-                  <Route exact path={'/'} component={NoMatch} />
-                </Middleware>
-              </Switch>
-            </Content>
-          </Layout>
+      <Layout style={{ background: '#fff' }}>
+        {
+          token && <Sider collapsible width={250} style={{ background: '#fff' }} defaultCollapsed={true}>
+            <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
+            <Menu theme="light" mode="inline">
+              {menuItems}
+              <Menu.Item key={'sub_logout'}>
+                <a onClick={() => logout()}><Icon type="logout" /><span>Đăng xuất</span></a>
+              </Menu.Item>
+            </Menu>
+          </Sider>
+        }
+        <Content style={{ padding: '0 16px' }}>
+          <Switch>
+            <Middleware setAlert={setAlert}>
+              {RouteList.map((props, index) => (< Route key={index} {...props} />))}
+            </Middleware>
+          </Switch>
         </Content>
-      </BlockUi>
+      </Layout>
     </BrowserRouter >
   );
 }
 
 const mapStateToProps = (state) => ({
+
 });
 
 export default connect(mapStateToProps, null)(LayoutContainer);

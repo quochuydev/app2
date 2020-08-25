@@ -117,10 +117,10 @@ function Products(props) {
       <Row key='1'>
         <Form>
           <Col span={8}>
-            <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
+            <Form.Item label="Mã sản phẩm"><Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Loại đơn hàng">
+            <Form.Item label="Commerce">
               <Select
                 mode="multiple"
                 name="type_in"
@@ -137,9 +137,9 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          <Link to={`product/detail`}>
+          {/* <Link to={`product/detail`}>
             <Button>Tạo sản phẩm</Button>
-          </Link>
+          </Link> */}
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Table rowKey='number' dataSource={products} columns={columns} />
