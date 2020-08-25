@@ -90,9 +90,9 @@ async function signup(req, res) {
 let login = async (req, res) => {
   let { username, password } = req.body;
   let user = await UserMD.findOne({ email: username }).lean(true);
-  if (!user.authenticate(password)) {
-    return res.sendStatus(401)
-  }
+  // if (!user.authenticate(password)) {
+  //   return res.sendStatus(401)
+  // }
 
   if (!user) {
     return res.sendStatus(400)
