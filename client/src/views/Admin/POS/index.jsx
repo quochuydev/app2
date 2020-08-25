@@ -134,9 +134,6 @@ function Customer(props) {
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Panel header="This is panel header 1" key="1">
-                  <p>A dog is a type of domesticated animal.Known for its loyalty and faithfulness,
-                  it can be found as a welcome guest in many households across the world.
-                  </p>
                   <Row gutter={16}>
                     {
                       products.map(product => {
