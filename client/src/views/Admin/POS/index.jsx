@@ -52,7 +52,7 @@ function Customer(props) {
   }, []);
 
   const [isShowPrint, setIsShowPrint] = useState(false)
-  const [isCreateModal, setIsCreateModal] = useState(true);
+  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [query, setQuery] = useState({});
   const [selectedOption, setSelectedOption] = useState({});

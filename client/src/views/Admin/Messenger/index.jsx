@@ -17,7 +17,7 @@ function Messenger(props) {
     { username: 'quochuydev', message: 'Los Angeles battles huge wildfires.', msg: 'Los Angeles...' }
   ];
 
-  let image = "https://yt3.ggpht.com/k-gSA9vuhrssghjNGGJY967YBKSeRkTDcfytvayrqVQtxn-0p8wGkjiB_FdOjl5brh4OmfLb=w144-h200-nd"
+  let image = "https://facebook.com"
 
   useEffect(() => {
     socket = io(ENDPOINT);
