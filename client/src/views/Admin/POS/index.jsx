@@ -197,7 +197,7 @@ function Customer(props) {
       </Row>
       <Modal
         title="Tạo khách hàng mới"
-        visible={false}
+        visible={isCreateModal}
         footer={null}
         onCancel={() => setIsCreateModal(false)}
         width={700}
