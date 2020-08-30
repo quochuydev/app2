@@ -71,16 +71,6 @@ function Products(props) {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
-    },
-    {
-      title: 'Email bill', key: 'email', render: edit => (
-        <span>{_.get(edit, 'billing.email')} <Icon type="mail" onClick={() => { }} /></span>
-      )
-    },
-    {
-      title: 'Trạng thái', key: 'status', render: edit => (
-        <Tag color={cssProductStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
-      )
     }
   ];
 

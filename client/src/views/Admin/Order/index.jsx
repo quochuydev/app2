@@ -71,11 +71,6 @@ function Orders(props) {
       )
     },
     {
-      title: 'Email bill', key: 'email', render: edit => (
-        <span>{_.get(edit, 'billing.email')} <Icon type="mail" onClick={() => { }} /></span>
-      )
-    },
-    {
       title: 'Trạng thái', key: 'status', render: edit => (
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
@@ -176,7 +171,7 @@ function Orders(props) {
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} />
-          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
+          {/* <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} /> */}
         </Col>
       </Row>
       <ModalInfo

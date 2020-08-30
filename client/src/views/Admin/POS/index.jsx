@@ -35,8 +35,11 @@ function Customer(props) {
   let customers = data.customers;
 
   const columns = [
-    { title: 'id', dataIndex: 'id', key: 'id', },
-    { title: 'Sản phẩm', dataIndex: 'title', key: 'title', },
+    {
+      title: 'Sản phẩm', key: 'title', render: edit => (
+        <a onClick={() => { }}>{edit.title}</a>
+      )
+    },
     {
       title: 'Đơn giá', key: 'price', render: edit => (
         <CurrencyFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
@@ -49,7 +52,7 @@ function Customer(props) {
           <Icon type="minus-circle" onClick={() => decQuantity(edit.id)} />
           <span>
             <input type="text" value={edit.quantity} onChange={(e) => setQuantity(edit.id, e.target.value)}
-              style={{ width: '40px', textAlign: 'center', margin: 5 }} />
+              style={{ width: '40px', textAlign: 'center', margin: 5, border: '1px solid black' }} />
           </span>
           <Icon type="plus-circle" onClick={() => incQuantity(edit.id)} />
         </div>
@@ -63,7 +66,10 @@ function Customer(props) {
     {
       title: '', key: 'options',
       render: edit => (
-        <Icon type="edit" onClick={() => { }} />
+        <div>
+          {/* <Icon type="edit" onClick={() => { }} /> */}
+          <Icon type="close" onClick={() => removeLine(edit.id)} />
+        </div>
       ),
     },
   ];
@@ -78,7 +84,7 @@ function Customer(props) {
   const [query, setQuery] = useState({});
   const [selectedOption, setSelectedOption] = useState({ value: null, label: '-- Vui lòng chọn --' });
 
-  const [customer, setCustomer] = useState({})
+  const [customer, setCustomer] = useState({ gender: 1 })
   const [lineItems, setLineItems] = useState([])
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -130,13 +136,20 @@ function Customer(props) {
     setLineItems(line_items)
   }
 
-  function addCustomer(e) {
-    console.log(e)
+  function removeLine(id) {
+    let line_items = [...lineItems]
+    line_items = line_items.filter(e => e.id != id);
+    setLineItems(line_items);
   }
-  function onChange(e) {
+
+  function addCustomer(e) {
+    e.preventDefault();
+    console.log(customer);
+  }
+  function onCustomerChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
-  function onChangeField(e, field) {
+  function onCustomerChangeField(e, field) {
     setCustomer({ ...customer, [field]: e });
   }
 
@@ -209,13 +222,13 @@ function Customer(props) {
 
             </div>
             <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
-            <Table rowKey='id' dataSource={lineItems} columns={columns} />
+            <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Layout>
-              <Content style={{ height: '65vh' }}>
+              <Content style={{ height: '63vh' }}>
                 <Card title="Thông tin khách hàng">
-                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} type="plus-circle" /></p>
+                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
                     value={selectedOption}
                     loadOptions={fetchData}
@@ -259,20 +272,20 @@ function Customer(props) {
             <Row>
               <Form onSubmit={addCustomer}>
                 <Col span={24}>
-                  <Radio.Group onChange={() => { }} value={1}>
+                  <Radio.Group onChange={onCustomerChange} name="gender" value={customer.gender}>
                     <Radio value={1}>Anh</Radio>
                     <Radio value={0}>Chị</Radio>
                   </Radio.Group>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label="Email" onChange={onCustomerChange}>
+                    <Input name="email" placeholder="example@gmail.com" />
                   </Form.Item>
-                  <Form.Item label="Field A" required>
-                    <DatePicker onChange={() => { }} />
+                  <Form.Item label="Ngày sinh" required>
+                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')} />
                   </Form.Item>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label="Số điện thoại" required>
+                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -287,12 +300,10 @@ function Customer(props) {
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label="Địa chỉ">
+                    <Input placeholder="Nhập địa chỉ khách hàng" />
                   </Form.Item>
-                  <Form.Item>
-                    <Button>Luu</Button>
-                  </Form.Item>
+                  <button className="btn-primary w-100" type="submit">Thêm mới</button>
                 </Col>
               </Form>
             </Row>

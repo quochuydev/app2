@@ -58,8 +58,8 @@ const MENU_DATA = [
     path: ORDER_ROUTE,
     key: 'order',
     name: 'Đơn hàng',
-    is_open: false,
-    icon: 'shopping-cart'
+    is_open: true,
+    icon: 'snippets'
   },
   {
     path: PRODUCT_ROUTE,

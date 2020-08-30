@@ -156,8 +156,8 @@ function Customer(props) {
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Table rowKey='id' dataSource={customers} columns={columns} />
+          {/* <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} /> */}
         </Col>
       </Row>
       <Modal
