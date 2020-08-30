@@ -11,7 +11,7 @@ function _parse(body) {
   delete body.limit;
   delete body.page;
   let query = body;
-  let criteria = {}
+  let criteria = { shop_id }
   for (field in query) {
     Object.assign(criteria, formatCriteria(field, query[field]))
   }

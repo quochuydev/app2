@@ -9,6 +9,8 @@ import 'antd/dist/antd.css';
 import * as orderActions from '../Order/actions';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
+import AdminServices from '../../../services/adminServices';
+
 const { Content } = Layout;
 
 function Home(props) {
@@ -52,6 +54,12 @@ function Home(props) {
     clearTimeout();
   }
 
+  async function changeShop({ shop_id, user }) {
+    const data = await AdminServices.changeShop({ user, shop_id });
+    console.log(data)
+    window.location.href = data.url;
+  }
+
   const options = {
     title: {
       text: 'My chart'
@@ -74,6 +82,9 @@ function Home(props) {
         highcharts={Highcharts}
         options={options}
       />
+      <button onClick={() => changeShop({ user: { id: 10009 }, shop_id: 10000 })}>shop1</button>
+      <button onClick={() => changeShop({ user: { id: 10009 }, shop_id: 10001 })}>shop2</button>
+
     </div>
   );
 }

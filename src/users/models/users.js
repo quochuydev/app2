@@ -7,23 +7,26 @@ let UserSchema = new Schema({
   id: { type: Number, default: null },
   email: { type: String, lowercase: true, trim: true, default: '' },
   shop_id: { type: Number, default: null },
+  is_root: { type: Boolean, default: false },
 
-  firstName: { type: String, trim: true, default: '' },
-  type: { type: String, trim: true, default: '' },
-  lastName: { type: String, trim: true, default: '' },
+  first_name: { type: String, trim: true, default: '' },
+  last_name: { type: String, trim: true, default: '' },
   displayName: { type: String, trim: true },
   phone: { type: String, trim: true, default: '' },
-  updated: { type: Date },
-  created: { type: Date, default: Date.now },
-  salt: { type: String },
+
+  updated_at: { type: Date },
+  created_at: { type: Date, default: Date.now },
+
+  salt: { type: String, default: null },
+  password: { type: String, default: null },
+
   active: { type: Boolean, default: false },
   provider: { type: String },
   is_deleted: { type: Boolean, default: false },
-  resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date },
-  userType: { type: String },
-  roles: { type: [{ type: String }] },
-  text_search: { type: String, default: '' },
+
+  userType: { type: String, default: null },
+  roles: { type: [{ type: String, default: null }] },
+  text_search: { type: String, default: null },
   google_info: {}
 });
 

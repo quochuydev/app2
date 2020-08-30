@@ -47,7 +47,7 @@ module.exports = (app, db) => {
   Routes(app);
   app.use(function (error, req, res, next) {
     if (!error) { next() }
-    console.log(error)
-    res.status(500).send('Server Error!')
+    console.log(error);
+    res.status(500).json({ message: error.message ? error.message : 'Server Error!', error: JSON.stringify(error) })
   })
 }

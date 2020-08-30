@@ -1,5 +1,5 @@
 const path = require('path');
-const { auth, login, logout, signup } = require('../controllers/core');
+const { auth, login, logout, signup, middleware, changeShop } = require('../controllers/core');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
@@ -7,7 +7,13 @@ const routes = (app) => {
   app.post('/login', login);
   app.post('/logout', logout);
   app.post('/signup', signup);
-  // app.use('/api/*', middleware);
+  app.post('/change-shop', function (req, res, next) {
+    changeShop({ user: req.body.user, shop_id: req.body.shop_id })
+      .then(result => res.json({ error: false, url: result.url }))
+      .catch(error => next(error))
+  });
+
+  app.use('/api/*', middleware);
 
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });

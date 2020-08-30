@@ -25,15 +25,12 @@ let auth = async (req, res) => {
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
     let user = await UserMD.findOne({ email }).lean(true);
-    if (!email) { return res.sendStatus(401) }
-    if (!user) {
-      let shop_data = { name: email, code: email }
-      let shop = await ShopMD.create(shop_data);
-      await SettingMD.create({ shop_id: shop.id });
-      let user_data = { email, shop_id: shop.id }
-      user = (await UserMD.create(user_data)).toJSON();
+    if (!email) {
+      return res.sendStatus(401);
     }
-    // if (!user) { return res.sendStatus(401) }
+    if (!user) {
+      return res.sendStatus(401);
+    }
     let exp = (Date.now() + 60 * 60 * 1000) / 1000;
     let user_gen_token = {
       email: user.email,
@@ -64,7 +61,7 @@ let middleware = (req, res, next) => {
     }
     let user = jwt.verify(accesstoken, hash_token);
     if (!(user && user.email)) {
-      return res.sendStatus(401)
+      return res.sendStatus(401);
     }
     req.user = user;
     req.shop_id = user.shop_id;
@@ -76,27 +73,62 @@ let middleware = (req, res, next) => {
   }
 }
 
-async function signup(req, res) {
+async function changeShop({ user, shop_id }) {
+  let result = {};
+  let found_user = await UserMD.findOne({ id: user.id, shop_id }).lean(true);
+  if (!found_user) {
+    throw { message: 'user + shop' }
+  }
+
+  cache.put('shop_id', shop_id);
+  let user_gen_token = {
+    email: found_user.email,
+    shop_id: found_user.shop_id,
+    exp: (Date.now() + 60 * 60 * 1000) / 1000
+  }
+  
+  let userToken = jwt.sign(user_gen_token, hash_token);
+  result.url = `${frontend_site}/loading?token=${userToken}`
+  return result;
+}
+
+async function signup(req, res, next) {
   try {
-    let { email, password } = req.body;
+    let { email, password, is_create_shop, shop_id } = req.body;
     if (!(email)) {
-      return res.json({ message: 'Thiếu thông tin bắt buộc' });
+      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'email_required' });
     }
 
-    let found_user = await UserMD.findOne({ email }).lean(true);
-    if (found_user) {
-      return res.json({ message: 'user đã tồn tại' })
+    if (is_create_shop) {
+      let shop_data = {
+        name: email, code: email
+      }
+      let shop = await ShopMD.create(shop_data);
+      await SettingMD.create({ shop_id: shop.id });
+      let new_user = {
+        email,
+        shop_id: shop.id
+      }
+      let user = await UserMD.create(new_user);
+      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_SHOP_SUCCESS' });
+    } else {
+      if (!shop_id) {
+        return res.json({ message: 'Thiếu shop_id' });
+      }
+      let found_user = await UserMD.findOne({ email, shop_id }).lean(true);
+      if (found_user) {
+        return res.json({ message: 'Email này đã tồn tại' })
+      }
+      let new_user = {
+        email,
+        shop_id
+      }
+      let user = await UserMD.create(new_user);
+      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_USER_SUCCESS' });
     }
-
-    let new_user = {
-      email,
-    }
-    let user = await UserMD.create(new_user);
-
-    res.json({ message: 'Đăng ký thành công', user });
   } catch (error) {
     console.log(error);
-    res.json({ message: 'Đã có lỗi xảy ra!' })
+    next(error);
   }
 }
 
@@ -112,7 +144,7 @@ let login = async (req, res) => {
   }
   let user_gen_token = {
     email: user.email,
-    // shop_id: user.shop_id,
+    shop_id: user.shop_id,
     exp: (Date.now() + 60 * 60 * 1000) / 1000
   }
   let userToken = jwt.sign(user_gen_token, hash_token);
@@ -127,4 +159,4 @@ let logout_redirect = (req, res) => {
   res.redirect(`${frontend_site}/logout`)
 }
 
-module.exports = { auth, login, logout, middleware, logout_redirect, signup }
+module.exports = { auth, login, logout, middleware, logout_redirect, signup, changeShop }
