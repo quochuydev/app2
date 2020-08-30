@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
+import { bindActionCreators } from 'redux';
 
 import 'antd/dist/antd.css';
+import * as orderActions from '../Order/actions';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
 const { Content } = Layout;
 
-function Home() {
+function Home(props) {
+  let { actions, orders } = props;
+  useEffect(() => {
+    setIsProcessing(true);
+    actions.loadOrders();
+    setIsProcessing(false);
+  }, []);
+
   const [alert, setAlert] = useState({
     messageSuccess: '',
     messageFailed: '',
@@ -48,10 +57,10 @@ function Home() {
       text: 'My chart'
     },
     series: [{
-      data: [1, 2, 3]
+      data: orders.map(e => e.total_price)
     }]
   }
-  
+
   return (
     // <Content style={{ padding: '0 24px', minHeight: 280 }}>
     //   <button onClick={() => showMessage(false, 'messageSuccess')}>show mess</button>
@@ -70,9 +79,11 @@ function Home() {
 }
 
 const mapStateToProps = state => ({
+  orders: state.orders.get('orders'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(orderActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -40,6 +40,8 @@ const MapOrderShopify = {
         total: line_item.price * line_item.quantity,
 
       })),
+      total_price: order_shopify.total_price,
+
       created_at: order_shopify.created_at,
       currency: order_shopify.currency,
       note: order_shopify.note,

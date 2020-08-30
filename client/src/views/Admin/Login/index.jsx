@@ -36,6 +36,7 @@ function Login() {
       {...layout}
       name="basic"
       onSubmit={onFinish}
+      className="login-form"
     >
       <Form.Item
         label="Username"
@@ -58,7 +59,7 @@ function Login() {
       </Form.Item>
 
       <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" className="login-form-button">
           Submit
         </Button>
       </Form.Item>

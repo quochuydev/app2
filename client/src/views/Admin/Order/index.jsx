@@ -107,7 +107,7 @@ function Orders(props) {
   }
 
   function beforePrint(order) {
-    return new Promise(resolve =>{
+    return new Promise(resolve => {
       setOrder(order);
       setIsShowPrint(true);
       resolve()
@@ -170,8 +170,8 @@ function Orders(props) {
           </Link> */}
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} />
-          {/* <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} /> */}
+          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} />
+          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <ModalInfo

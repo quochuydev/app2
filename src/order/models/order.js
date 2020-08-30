@@ -49,6 +49,7 @@ const OrderSchema = new Schema({
   currency: { type: String, default: null },
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
+  total_price: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })

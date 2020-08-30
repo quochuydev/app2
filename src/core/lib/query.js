@@ -1,5 +1,6 @@
 const cache = require('memory-cache');
 const _ = require('lodash');
+const escapeStringRegexp = require('escape-string-regexp');
 
 function _parse(body) {
   let shop_id = cache.get('shop_id');
@@ -10,9 +11,9 @@ function _parse(body) {
   delete body.limit;
   delete body.page;
   let query = body;
-  let criteria = { shop_id }
+  let criteria = {}
   for (field in query) {
-    Object.assign(criteria, format_criteria(field, query[field]))
+    Object.assign(criteria, formatCriteria(field, query[field]))
   }
   console.log(JSON.stringify(criteria))
   return { limit, page, skip, criteria };
@@ -20,16 +21,37 @@ function _parse(body) {
 
 module.exports = { _parse }
 
-function format_criteria(field, value) {
-  if (typeof value == 'string') { value = value.replace(/  +/g, ''); }
-  if (_.endsWith(field, '_gte')) { return { [field.slice(0, -4)]: { $gte: value } }; }
-  if (_.endsWith(field, '_gt')) { return { [field.slice(0, -3)]: { $gt: value } }; }
-  if (_.endsWith(field, '_lte')) { return { [field.slice(0, -4)]: { $lte: value } }; }
-  if (_.endsWith(field, '_lt')) { return { [field.slice(0, -3)]: { $lt: value } }; }
-  if (_.endsWith(field, '_eq')) { return { [field.slice(0, -3)]: { $eq: value } }; }
-  if (_.endsWith(field, '_ne')) { return { [field.slice(0, -3)]: { $ne: value } }; }
-  if (_.endsWith(field, '_nin')) { return { [field.slice(0, -4)]: { $nin: typeof value == 'string' ? value.split(',') : value } }; }
-  if (_.endsWith(field, '_in')) { return { [field.slice(0, -3)]: { $in: typeof value == 'string' ? value.split(',') : value } }; }
+function formatCriteria(field, value) {
+  if (typeof value == 'string') {
+    value = value.replace(/  +/g, '');
+  }
+  if (_.endsWith(field, '_gte')) {
+    return { [field.slice(0, -4)]: { $gte: value } };
+  }
+  if (_.endsWith(field, '_gt')) {
+    return { [field.slice(0, -3)]: { $gt: value } };
+  }
+  if (_.endsWith(field, '_lte')) {
+    return { [field.slice(0, -4)]: { $lte: value } };
+  }
+  if (_.endsWith(field, '_lt')) {
+    return { [field.slice(0, -3)]: { $lt: value } };
+  }
+  if (_.endsWith(field, '_eq')) {
+    return { [field.slice(0, -3)]: { $eq: value } };
+  }
+  if (_.endsWith(field, '_ne')) {
+    return { [field.slice(0, -3)]: { $ne: value } };
+  }
+  if (_.endsWith(field, '_nin')) {
+    return { [field.slice(0, -4)]: { $nin: typeof value == 'string' ? value.split(',') : value } };
+  }
+  if (_.endsWith(field, '_in')) {
+    return { [field.slice(0, -3)]: { $in: typeof value == 'string' ? value.split(',') : value } };
+  }
+  if (_.endsWith(field, '_like')) {
+    return { [field.slice(0, -5)]: { $regex: new RegExp(escapeStringRegexp(value), 'i') } };
+  }
   return { [field]: value }
 }
 

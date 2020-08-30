@@ -37,6 +37,8 @@ const MapOrderWoocommerce = {
         total: Number(line_item.total),
 
       })),
+      total_price: order_woo.total,
+
       created_at: order_woo.date_created,
       currency: order_woo.currency,
       note: order_woo.customer_note,

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as customerActions from './actions';
+import * as customerActions from '../Customer/actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 import ReactToPrint from "react-to-print";
 import AsyncSelect from 'react-select/async';
 import CurrencyFormat from 'react-currency-format';
@@ -14,6 +15,8 @@ import {
 } from 'antd';
 
 import 'antd/dist/antd.css';
+
+import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import './style.css'
@@ -30,9 +33,8 @@ function Customer(props) {
 
   const componentRef = useRef();
 
-  const { count, actions } = props;
+  const { count, actions, customers } = props;
   let products = data.products;
-  let customers = data.customers;
 
   const columns = [
     {
@@ -73,15 +75,15 @@ function Customer(props) {
       ),
     },
   ];
+  const [query, setQuery] = useState({});
 
   useEffect(() => {
     actions.listCustomers(query);
-  }, []);
+  }, [query]);
 
   const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
-  const [query, setQuery] = useState({});
   const [selectedOption, setSelectedOption] = useState({ value: null, label: '-- Vui lòng chọn --' });
 
   const [customer, setCustomer] = useState({ gender: 1 })
@@ -153,14 +155,6 @@ function Customer(props) {
     setCustomer({ ...customer, [field]: e });
   }
 
-  function onChangeType(e) {
-    setQuery({ ...query, type_in: e })
-  }
-  function onChange(e) {
-    let { name, value } = e.target;
-    setQuery({ ...query, [name]: value })
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
     console.log('create')
@@ -174,15 +168,22 @@ function Customer(props) {
     })
   }
 
-  function fetchData(inputValue, callback) {
-    if (!inputValue) {
-      callback([]);
+  let defaultCustomers = formatCustomerOption(customers);
+
+  function formatCustomerOption(customers) {
+    return customers.map(e => Object({
+      label: `${e.first_name} ${e.last_name}`,
+      value: e.id
+    })
+    )
+  }
+
+  async function fetchData(inputValue, callback) {
+    if (inputValue) {
+      let data = await AdminServices.listCustomers({ first_name_like: inputValue });
+      callback(formatCustomerOption(data.customers));
     } else {
-      let tempArray = [];
-      customers.forEach(e => {
-        tempArray.push({ label: `${e.first_name} ${e.last_name}`, value: e.id });
-      })
-      callback(tempArray);
+      callback(defaultCustomers)
     }
   }
 
@@ -230,17 +231,18 @@ function Customer(props) {
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
+                    defaultOptions={defaultCustomers}
                     value={selectedOption}
                     loadOptions={fetchData}
-                    placeholder="Admin Name"
-                    onChange={(e) => { onSearchChange(e); }}
-                    defaultOptions={false}
+                    placeholder="Nhập để tìm kiếm"
+                    onChange={onSearchChange}
+                    debounceInterval={1250}
                   />
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 15 }}>
                 <Form {...{ labelCol: { span: 8 }, wrapperCol: { span: 16 } }}>
-                  <Form.Item label="Tạm đi">
+                  <Form.Item label="Tạm tính">
                     <Input name="username" />
                   </Form.Item>
                   <Form.Item label="Phí vận chuyển">
@@ -360,7 +362,7 @@ function Customer(props) {
 }
 
 const mapStateToProps = state => ({
-
+  customers: state.customers.get('customers'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
