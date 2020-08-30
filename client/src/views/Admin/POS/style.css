@@ -17,3 +17,32 @@
 .ant-layout, .ant-layout-footer {
   background: #fff;
 }
+
+.table {
+  display: table;
+}
+
+.btn-primary {
+  border-radius: 4px!important;
+  padding: 13px 16px!important;
+  font-size: 14px;
+  font-weight: 700;
+  border: none!important;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+  cursor: pointer;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.ant-form-item { 
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+
+.ant-form-item-label {
+  text-align: left;
+}

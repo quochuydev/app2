@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import ReactToPrint from "react-to-print";
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from 'react-select/async';
+import CurrencyFormat from 'react-currency-format';
 
 import {
   Table, Icon, Row, Col, Button, Modal,
@@ -36,9 +37,29 @@ function Customer(props) {
   const columns = [
     { title: 'id', dataIndex: 'id', key: 'id', },
     { title: 'Sản phẩm', dataIndex: 'title', key: 'title', },
-    { title: 'Đơn giá', dataIndex: 'price', key: 'price', },
-    { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
-    { title: 'Thành tiền', dataIndex: 'custom_total_price', key: 'custom_total_price', },
+    {
+      title: 'Đơn giá', key: 'price', render: edit => (
+        <CurrencyFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+      )
+    },
+    {
+      title: 'Số lượng', key: 'quantity',
+      render: edit => (
+        <div>
+          <Icon type="minus-circle" onClick={() => decQuantity(edit.id)} />
+          <span>
+            <input type="text" value={edit.quantity} onChange={(e) => setQuantity(edit.id, e.target.value)}
+              style={{ width: '40px', textAlign: 'center', margin: 5 }} />
+          </span>
+          <Icon type="plus-circle" onClick={() => incQuantity(edit.id)} />
+        </div>
+      )
+    },
+    {
+      title: 'Thành tiền', key: 'custom_total_price', render: edit => (
+        <CurrencyFormat value={edit.custom_total_price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+      )
+    },
     {
       title: '', key: 'options',
       render: edit => (
@@ -55,7 +76,7 @@ function Customer(props) {
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [query, setQuery] = useState({});
-  const [selectedOption, setSelectedOption] = useState({});
+  const [selectedOption, setSelectedOption] = useState({ value: null, label: '-- Vui lòng chọn --' });
 
   const [customer, setCustomer] = useState({})
   const [lineItems, setLineItems] = useState([])
@@ -68,13 +89,43 @@ function Customer(props) {
     let index = line_items.findIndex(e => e.id == id);
     let product = products.find(e => e.id == id);
     if (index != -1) {
-      line_items[index].quantity += 1;
+      line_items[index].quantity = Number(line_items[index].quantity) + 1;
       line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     } else {
       let lineItem = { ...product };
       lineItem.quantity = 1;
       lineItem.custom_total_price = lineItem.quantity * lineItem.price;
       line_items.push(lineItem)
+    }
+    setLineItems(line_items)
+  }
+
+  function decQuantity(id) {
+    let line_items = [...lineItems]
+    let index = line_items.findIndex(e => e.id == id);
+    if (index != -1 && line_items[index].quantity > 1) {
+      line_items[index].quantity -= 1;
+      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
+    }
+    setLineItems(line_items)
+  }
+
+  function incQuantity(id) {
+    let line_items = [...lineItems]
+    let index = line_items.findIndex(e => e.id == id);
+    if (index != -1) {
+      line_items[index].quantity += 1;
+      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
+    }
+    setLineItems(line_items)
+  }
+
+  function setQuantity(id, quantity) {
+    let line_items = [...lineItems]
+    let index = line_items.findIndex(e => e.id == id);
+    if (index != -1) {
+      line_items[index].quantity = quantity;
+      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
     setLineItems(line_items)
   }
@@ -141,13 +192,11 @@ function Customer(props) {
                         return (
                           <Col span={4} key={product.id}>
                             <Card className="cursor-pointer"
-                              cover={<div style={{ height: "120px" }}
-                                className="overflow-hidden"
-                              ><img className="overflow-hidden"
-                                style={{ width: "100%" }}
-                                alt={product.images[0].filename} src={product.images[0].src} /></div>}
-                              onClick={() => addLineItem(product.id)}
-                            >
+                              cover={<div className="overflow-hidden">
+                                <img className="overflow-hidden"
+                                  style={{ width: "100%" }}
+                                  alt={product.images[0].filename} src={product.images[0].src} /></div>}
+                              onClick={() => addLineItem(product.id)}>
                               <Meta title={product.title} />
                             </Card>
                           </Col>
@@ -166,7 +215,7 @@ function Customer(props) {
             <Layout>
               <Content style={{ height: '65vh' }}>
                 <Card title="Thông tin khách hàng">
-                  <p>Khách hàng: <Button onClick={() => setIsCreateModal(true)}><Icon type="edit" /></Button></p>
+                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} type="plus-circle" /></p>
                   <AsyncSelect
                     value={selectedOption}
                     loadOptions={fetchData}
@@ -177,17 +226,20 @@ function Customer(props) {
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 15 }}>
-                <Form {...{ labelCol: { span: 5 }, wrapperCol: { span: 19 } }}>
-                  <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
-                  >
-                    <Input />
+                <Form {...{ labelCol: { span: 8 }, wrapperCol: { span: 16 } }}>
+                  <Form.Item label="Tạm đi">
+                    <Input name="username" />
                   </Form.Item>
-                  <Form.Item>
-                    <button className="" type="submit">Thanh toán</button>
+                  <Form.Item label="Phí vận chuyển">
+                    <Input name="username" />
                   </Form.Item>
+                  <Form.Item label="Khuyến mãi">
+                    <Input name="username" />
+                  </Form.Item>
+                  <Form.Item label="Thành tiền">
+                    <Input name="username" />
+                  </Form.Item>
+                  <button className="btn-primary w-100" type="submit">Thanh toán</button>
                 </Form>
 
               </Footer>
@@ -272,7 +324,24 @@ function Customer(props) {
       </Modal>
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
-          <p>{JSON.stringify({})}</p>
+          <table className="table">
+            <thead>
+              <th>
+                <td>Sản phẩm</td>
+                <td>Số lượng</td>
+                <td>Đơn giá</td>
+                <td>Thành tiền</td>
+              </th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sản phẩm 1</td>
+                <td>2</td>
+                <td>100,000</td>
+                <td>200,000</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div >

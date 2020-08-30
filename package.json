@@ -32,6 +32,7 @@
     "nodemailer": "^6.4.11",
     "oauth": "^0.9.15",
     "path": "^0.12.7",
+    "react-currency-format": "^1.0.0",
     "react-select": "^3.1.0",
     "react-to-print": "^2.10.0",
     "react-toastify": "^6.0.8",

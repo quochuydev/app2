@@ -59,9 +59,13 @@ let middleware = (req, res, next) => {
     ]
     if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
     let accesstoken = req.headers['accesstoken'];
-    if (!accesstoken || accesstoken == 'null') { return res.sendStatus(401) }
+    if (!accesstoken || accesstoken == 'null') {
+      return res.sendStatus(401);
+    }
     let user = jwt.verify(accesstoken, hash_token);
-    if (!(user && user.email)) { return res.sendStatus(401) }
+    if (!(user && user.email)) {
+      return res.sendStatus(401)
+    }
     req.user = user;
     req.shop_id = user.shop_id;
     cache.put('shop_id', user.shop_id);
@@ -75,12 +79,21 @@ let middleware = (req, res, next) => {
 async function signup(req, res) {
   try {
     let { email, password } = req.body;
-    let user = await UserMD.findOne({ email }).lean(true);
-    if (user) {
+    if (!(email)) {
+      return res.json({ message: 'Thiếu thông tin bắt buộc' });
+    }
+
+    let found_user = await UserMD.findOne({ email }).lean(true);
+    if (found_user) {
       return res.json({ message: 'user đã tồn tại' })
     }
 
-    res.json({ message: 'Đăng ký thành công' })
+    let new_user = {
+      email,
+    }
+    let user = await UserMD.create(new_user);
+
+    res.json({ message: 'Đăng ký thành công', user });
   } catch (error) {
     console.log(error);
     res.json({ message: 'Đã có lỗi xảy ra!' })
