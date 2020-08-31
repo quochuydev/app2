@@ -46,3 +46,7 @@
 .ant-form-item-label {
   text-align: left;
 }
+
+.ant-popover-arrow {
+  display: none;
+}

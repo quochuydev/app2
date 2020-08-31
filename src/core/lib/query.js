@@ -15,7 +15,7 @@ function _parse(body) {
   for (field in query) {
     Object.assign(criteria, formatCriteria(field, query[field]))
   }
-  console.log(JSON.stringify(criteria))
+  console.log(JSON.stringify({ limit, page, skip, criteria }))
   return { limit, page, skip, criteria };
 }
 

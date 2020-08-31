@@ -32,9 +32,10 @@ async function responseHandler(response) {
     }
     return jsonData;
   } else {
+    const jsonData = await response.json();
     const error = {};
-    error.code = response.status;
-    error.message = response.statusText;
+    error.code = jsonData.status;
+    error.message = jsonData.message;
     error.isError = true;
     throw error;
   }
@@ -43,7 +44,7 @@ function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
       localStorage.removeItem('AccessToken');
-      window.location.href = '/site/log-out';
+      window.location.href = '/site/logout';
     } else if (e.data === 403) {
       localStorage.removeItem('AccessToken');
       window.location.href = '/site/permission';

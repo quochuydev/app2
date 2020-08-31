@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Layout } from 'antd';
+import { Layout, message } from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { bindActionCreators } from 'redux';
@@ -54,10 +54,14 @@ function Home(props) {
     clearTimeout();
   }
 
-  async function changeShop({ shop_id, user }) {
-    const data = await AdminServices.changeShop({ user, shop_id });
-    console.log(data)
-    window.location.href = data.url;
+  function changeShop({ shop_id, user }) {
+    AdminServices.changeShop({ user, shop_id }).then(data => {
+      console.log(data)
+      window.location.href = data.url;
+    }).catch(error => {
+      console.log(error)
+      message.error(error.message);
+    })
   }
 
   const options = {

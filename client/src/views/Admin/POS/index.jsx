@@ -11,7 +11,7 @@ import CurrencyFormat from 'react-currency-format';
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, Card, Result, Tabs, Radio, Collapse, Layout
+  Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -84,7 +84,7 @@ function Customer(props) {
   const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
-  const [selectedOption, setSelectedOption] = useState({ value: null, label: '-- Vui lòng chọn --' });
+  const [customerSelected, setCustomerSelected] = useState({ value: null, label: '-- Vui lòng chọn --' });
 
   const [customer, setCustomer] = useState({ gender: 1 })
   const [lineItems, setLineItems] = useState([])
@@ -157,7 +157,23 @@ function Customer(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log('create')
+    let order = {
+      type: 'app',
+      line_items: lineItems.map(line_item => ({
+        // product_id: line_item.id,
+        // sku: line_item.variant.sku,
+        // product_name: line_item.title,
+        // name: line_item.variant.title,
+        // variant_id: line_item.variant.id,
+        // quantity: line_item.quantity,
+        // price: line_item.variant.price,
+        // total: line_item.variant.price * line_item.quantity,
+      })),
+      billing: customerSelected.billing,
+      shipping: customerSelected.shipping
+    }
+    console.log(order)
+    // actions.createOrder(order)
     setIsCreateSuccess(true)
   }
 
@@ -187,9 +203,9 @@ function Customer(props) {
     }
   }
 
-  function onSearchChange(selectedOption) {
-    if (selectedOption) {
-      setSelectedOption(selectedOption)
+  function onSearchChange(customerSelected) {
+    if (customerSelected) {
+      setCustomerSelected(customerSelected)
     }
   };
   return (
@@ -220,9 +236,14 @@ function Customer(props) {
                   </Row>
                 </Panel>
               </Collapse>,
-
             </div>
-            <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
+            <Popover placement="bottom" content={<div>
+              <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"></Input>
+            </div>} trigger="click"
+            >
+              <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
+            </Popover>
+
             <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
@@ -232,7 +253,7 @@ function Customer(props) {
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
                     defaultOptions={defaultCustomers}
-                    value={selectedOption}
+                    value={customerSelected}
                     loadOptions={fetchData}
                     placeholder="Nhập để tìm kiếm"
                     onChange={onSearchChange}
