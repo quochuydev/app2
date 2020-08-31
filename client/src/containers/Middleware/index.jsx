@@ -22,7 +22,7 @@ function Middleware(props) {
       let result = await AdminServices.getUser({ token })
       localStorage.setItem('user', JSON.stringify(result.user));
       window.location.href = `${redirect_route}/`;
-    }, 500)
+    }, 200)
   }
   else if (path.includes('logout')) {
     localStorage.clear();

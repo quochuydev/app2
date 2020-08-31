@@ -54,16 +54,6 @@ function Home(props) {
     clearTimeout();
   }
 
-  function changeShop({ shop_id, user }) {
-    AdminServices.changeShop({ user, shop_id }).then(data => {
-      console.log(data)
-      window.location.href = data.url;
-    }).catch(error => {
-      console.log(error)
-      message.error(error.message);
-    })
-  }
-
   const options = {
     title: {
       text: 'My chart'
@@ -72,9 +62,6 @@ function Home(props) {
       data: orders.map(e => e.total_price)
     }]
   }
-  let user = localStorage.getItem('user');
-  user = JSON.parse(user);
-  console.log(user.shops);
 
   return (
     // <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -89,13 +76,6 @@ function Home(props) {
         highcharts={Highcharts}
         options={options}
       />
-
-      {
-        user && user.shops ? user.shops.map(e => (
-          <button key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</button>
-        )) : null
-      }
-
     </div>
   );
 }

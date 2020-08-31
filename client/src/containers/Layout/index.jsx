@@ -10,6 +10,9 @@ import {
   Link
 } from "react-router-dom";
 import styled from "styled-components"
+import {
+  Layout, Menu, Icon, Breadcrumb, Button, Popover, message
+} from 'antd';
 
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
@@ -18,7 +21,7 @@ import Login from '../../views/Admin/Login/index';
 import config from '../../utils/config';
 import Middleware from '../Middleware/index';
 import Alert from '../../views/Components/Alert/index';
-import { Layout, Menu, Icon, Breadcrumb, Button } from 'antd';
+import AdminServices from '../../services/adminServices';
 import assetProvider from '../../utils/assetProvider';
 
 const basedUrl = config.backend_url;
@@ -54,6 +57,18 @@ function LayoutContainer() {
     }
   }
 
+  let user = localStorage.getItem('user');
+  user = JSON.parse(user);
+  function changeShop({ shop_id, user }) {
+    AdminServices.changeShop({ user, shop_id }).then(data => {
+      console.log(data)
+      window.location.href = data.url;
+    }).catch(error => {
+      console.log(error)
+      message.error(error.message);
+    })
+  }
+
   return (
     <BrowserRouter>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
@@ -61,7 +76,17 @@ function LayoutContainer() {
       <Layout style={{ background: '#fff' }}>
         {
           token && <Sider collapsible width={250} style={{ background: '#fff' }} defaultCollapsed={true}>
-            <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
+            <Popover placement="right" content={<div>
+              {
+                user && user.shops ? user.shops.map(e => (
+                  <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
+                )) : null
+              }
+            </div>} trigger="click"
+            >
+              <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
+            </Popover>
+
             <Menu theme="light" mode="inline">
               {menuItems}
               <Menu.Item key={'sub_logout'}>
