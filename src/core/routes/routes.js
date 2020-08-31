@@ -1,5 +1,5 @@
 const path = require('path');
-const { auth, login, logout, signup, middleware, changeShop } = require('../controllers/core');
+const { auth, login, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
@@ -10,6 +10,12 @@ const routes = (app) => {
   app.post('/change-shop', function (req, res, next) {
     changeShop({ user: req.body.user, shop_id: req.body.shop_id })
       .then(result => res.json({ error: false, url: result.url }))
+      .catch(error => next(error))
+  });
+
+  app.post('/check-user', function (req, res, next) {
+    checkUser({ body: req.body })
+      .then(result => res.json(result))
       .catch(error => next(error))
   });
 
@@ -26,6 +32,7 @@ const routes = (app) => {
   require(path.resolve('./src/setting/routes/setting'))({ app });
   require(path.resolve('./src/momo/routes/momo'))({ app });
   require(path.resolve('./src/products/routes/products'))({ app });
+  require(path.resolve('./src/users/routes/users'))({ app });
   require(path.resolve('./src/shop/routes/shop'))({ app });
 }
 

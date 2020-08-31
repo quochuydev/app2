@@ -50,9 +50,10 @@
     "client-test": "cd client && npm test",
     "server": "node server",
     "test": "cd server/src/core/lib && node event",
-    "start": "concurrently \"npm run server\"",
+    "start": "npm run server",
     "dev": "concurrently \"npm run server\" \"npm run client-test\"",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
+    "heroku-postbuild-1": ""
   },
   "repository": {
     "type": "git",

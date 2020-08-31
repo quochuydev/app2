@@ -31,14 +31,14 @@ let auth = async (req, res) => {
     if (!user) {
       return res.sendStatus(401);
     }
-    let exp = (Date.now() + 60 * 60 * 1000) / 1000;
+
     let user_gen_token = {
       email: user.email,
       shop_id: user.shop_id,
-      exp
+      exp: (Date.now() + 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.redirect(`${frontend_site}/loading?token=${userToken}`)
+    res.redirect(`${frontend_site}/loading?token=${userToken}&user_id=${user.id}`)
   } catch (error) {
     console.log(error);
     res.redirect(`${frontend_site}/login?message=${encodeURIComponent('Something errror!')}`)
@@ -86,11 +86,19 @@ async function changeShop({ user, shop_id }) {
     shop_id: found_user.shop_id,
     exp: (Date.now() + 60 * 60 * 1000) / 1000
   }
-  
+
   let userToken = jwt.sign(user_gen_token, hash_token);
-  result.url = `${frontend_site}/loading?token=${userToken}`
+  result.url = `${frontend_site}/loading?token=${userToken}&user_id=${found_user.id}`
   return result;
 }
+
+async function checkUser({ body }) {
+  let verify_user = jwt.verify(body.token, hash_token);
+  let shop_users = await UserMD.find({ email: verify_user.email, is_deleted: false });
+  let user = {};
+  return { error: false, user: { id: 10000, email: '123@gmail.com', shops: [{ id: 10001, name: '123123' }, { id: 10002, name: 'shop2' }] } };
+}
+
 
 async function signup(req, res, next) {
   try {
@@ -148,7 +156,7 @@ let login = async (req, res) => {
     exp: (Date.now() + 60 * 60 * 1000) / 1000
   }
   let userToken = jwt.sign(user_gen_token, hash_token);
-  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
+  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}&user_id=${user.id}` });
 }
 
 let logout = (req, res) => {
@@ -159,4 +167,4 @@ let logout_redirect = (req, res) => {
   res.redirect(`${frontend_site}/logout`)
 }
 
-module.exports = { auth, login, logout, middleware, logout_redirect, signup, changeShop }
+module.exports = { auth, login, logout, middleware, logout_redirect, signup, changeShop, checkUser }

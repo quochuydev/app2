@@ -72,6 +72,9 @@ function Home(props) {
       data: orders.map(e => e.total_price)
     }]
   }
+  let user = localStorage.getItem('user');
+  user = JSON.parse(user);
+  console.log(user.shops);
 
   return (
     // <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -86,8 +89,12 @@ function Home(props) {
         highcharts={Highcharts}
         options={options}
       />
-      <button onClick={() => changeShop({ user: { id: 10009 }, shop_id: 10000 })}>shop1</button>
-      <button onClick={() => changeShop({ user: { id: 10009 }, shop_id: 10001 })}>shop2</button>
+
+      {
+        user && user.shops ? user.shops.map(e => (
+          <button key={e.id} onClick={() => changeShop({ user: { id: user.id }, shop_id: e.id })}>{e.id} - {e.name}</button>
+        )) : null
+      }
 
     </div>
   );

@@ -244,7 +244,7 @@ function Customer(props) {
               <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
             </Popover>
 
-            <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} />
+            <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} size={'small'} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Layout>
