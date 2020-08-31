@@ -38,7 +38,7 @@ let auth = async (req, res) => {
       exp: (Date.now() + 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.redirect(`${frontend_site}/loading?token=${userToken}&user_id=${user.id}`)
+    res.redirect(`${frontend_site}/loading?token=${userToken}`)
   } catch (error) {
     console.log(error);
     res.redirect(`${frontend_site}/login?message=${encodeURIComponent('Something errror!')}`)
@@ -88,19 +88,23 @@ async function changeShop({ user, shop_id }) {
   }
 
   let userToken = jwt.sign(user_gen_token, hash_token);
-  result.url = `${frontend_site}/loading?token=${userToken}&user_id=${found_user.id}`
+  result.url = `${frontend_site}/loading?token=${userToken}`
   return result;
 }
 
 async function checkUser({ body }) {
   let verify_user = jwt.verify(body.token, hash_token);
-  let group_user = await UserMD.aggregate([
+  let group_users = await UserMD.aggregate([
     { $match: { email: verify_user.email, is_deleted: false } },
     { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
   ]);
-  let shops = await ShopMD.find({ id: { $in: group_user.shops } })
-  let user = { email: group_user._id, shops };
-  return { error: false, user };
+  if (group_users && group_users.length) {
+    let group_user = group_users[0];
+    let shops = await ShopMD.find({ id: { $in: group_user.shops } }).lean(true);
+    let user = { email: group_user._id, shops };
+    return { error: false, user };
+  }
+  throw { message: 'check user failed' }
 }
 
 
@@ -160,7 +164,7 @@ let login = async (req, res) => {
     exp: (Date.now() + 60 * 60 * 1000) / 1000
   }
   let userToken = jwt.sign(user_gen_token, hash_token);
-  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}&user_id=${user.id}` });
+  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
 }
 
 let logout = (req, res) => {
