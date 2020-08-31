@@ -92,7 +92,7 @@ function Home(props) {
 
       {
         user && user.shops ? user.shops.map(e => (
-          <button key={e.id} onClick={() => changeShop({ user: { id: user.id }, shop_id: e.id })}>{e.id} - {e.name}</button>
+          <button key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</button>
         )) : null
       }
 

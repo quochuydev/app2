@@ -75,9 +75,9 @@ let middleware = (req, res, next) => {
 
 async function changeShop({ user, shop_id }) {
   let result = {};
-  let found_user = await UserMD.findOne({ id: user.id, shop_id }).lean(true);
+  let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
   if (!found_user) {
-    throw { message: 'user + shop' }
+    throw { message: 'Không thể chuyển cửa hàng' }
   }
 
   cache.put('shop_id', shop_id);
@@ -94,9 +94,13 @@ async function changeShop({ user, shop_id }) {
 
 async function checkUser({ body }) {
   let verify_user = jwt.verify(body.token, hash_token);
-  let shop_users = await UserMD.find({ email: verify_user.email, is_deleted: false });
-  let user = {};
-  return { error: false, user: { id: 10000, email: '123@gmail.com', shops: [{ id: 10001, name: '123123' }, { id: 10002, name: 'shop2' }] } };
+  let group_user = await UserMD.aggregate([
+    { $match: { email: verify_user.email, is_deleted: false } },
+    { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
+  ]);
+  let shops = await ShopMD.find({ id: { $in: group_user.shops } })
+  let user = { email: group_user._id, shops };
+  return { error: false, user };
 }
 
 
