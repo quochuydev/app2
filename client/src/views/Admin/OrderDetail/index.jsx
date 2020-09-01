@@ -32,10 +32,10 @@ function OrderDetailComponent(props) {
   if (order) {
     orderDetailTable = (
       < Row >
-        <Col span={16}>
-          <Table rowKey='_id' dataSource={order.line_items} columns={detailColumns} />
-          </Col>
-        <Col span={8}>
+        <Col span={16} style={{ padding: 15 }}>
+          <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
+        </Col>
+        <Col span={8} style={{ padding: 15 }}>
           <Card title="Thông tin khách hàng">
             <p>Tên: {_.get(order, 'billing.first_name')}</p>
           </Card>

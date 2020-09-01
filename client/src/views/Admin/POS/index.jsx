@@ -11,7 +11,8 @@ import CurrencyFormat from 'react-currency-format';
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover
+  Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover,
+  List, Skeleton, Avatar
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -21,6 +22,7 @@ import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import './style.css'
 import data from './data.json';
+import PrintOrder from './print.jsx';
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -237,10 +239,33 @@ function Customer(props) {
                 </Panel>
               </Collapse>,
             </div>
-            <Popover placement="bottom" content={<div>
-              <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"></Input>
-            </div>} trigger="click"
-            >
+            <Popover placement="bottom"
+              content={
+                <div>
+                  <List 
+                    itemLayout="vertical"
+                    size="large"
+                    dataSource={products}
+                    renderItem={item => (
+                      <List.Item
+                        key={item.title}
+                        actions={true}
+                      >
+                        <Skeleton loading={false} active avatar>
+                          <List.Item.Meta
+                            avatar={<Avatar src={item.avatar} />}
+                            title={<a href={item.href}>{item.title}</a>}
+                            description={item.description}
+                            onClick={() => addLineItem(item.id)}
+                            style={{ cursor: 'pointer' }}
+                          />
+                          {item.content}
+                        </Skeleton>
+                      </List.Item>
+                    )}
+                  />
+                </div>}
+              trigger="click">
               <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
             </Popover>
 
@@ -358,24 +383,7 @@ function Customer(props) {
       </Modal>
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
-          <table className="table">
-            <thead>
-              <th>
-                <td>Sản phẩm</td>
-                <td>Số lượng</td>
-                <td>Đơn giá</td>
-                <td>Thành tiền</td>
-              </th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Sản phẩm 1</td>
-                <td>2</td>
-                <td>100,000</td>
-                <td>200,000</td>
-              </tr>
-            </tbody>
-          </table>
+          <PrintOrder />
         </div>
       </div>
     </div >
