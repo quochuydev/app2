@@ -12,7 +12,7 @@ import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
   Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover,
-  List, Skeleton, Avatar
+  List, Skeleton, Avatar, Dropdown, Menu
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -210,6 +210,7 @@ function Customer(props) {
       setCustomerSelected(customerSelected)
     }
   };
+
   return (
     <div>
       <Row>
@@ -239,35 +240,27 @@ function Customer(props) {
                 </Panel>
               </Collapse>,
             </div>
-            <Popover placement="bottom"
-              content={
-                <div>
-                  <List 
-                    itemLayout="vertical"
-                    size="large"
-                    dataSource={products}
-                    renderItem={item => (
-                      <List.Item
-                        key={item.title}
-                        actions={true}
-                      >
-                        <Skeleton loading={false} active avatar>
-                          <List.Item.Meta
-                            avatar={<Avatar src={item.avatar} />}
-                            title={<a href={item.href}>{item.title}</a>}
-                            description={item.description}
-                            onClick={() => addLineItem(item.id)}
-                            style={{ cursor: 'pointer' }}
-                          />
-                          {item.content}
-                        </Skeleton>
-                      </List.Item>
-                    )}
-                  />
-                </div>}
-              trigger="click">
+
+            <Dropdown overlay={(
+              <Menu>
+                {
+                  products.map(item => (
+                    <Menu.Item key={item.id}>
+                      <Skeleton loading={false} active avatar>
+                        <List.Item.Meta
+                          avatar={<Avatar src={item.images[0].src} />}
+                          title={<a href={item.href}>{item.title}</a>}
+                          description={item.price}
+                          onClick={() => addLineItem(item.id)}
+                        />
+                      </Skeleton>
+                    </Menu.Item>
+                  ))
+                }
+              </Menu>
+            )} trigger={['click']}>
               <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
-            </Popover>
+            </Dropdown>
 
             <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} size={'small'} />
           </Col>

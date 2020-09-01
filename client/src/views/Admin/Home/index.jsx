@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Layout, message } from 'antd';
+import {
+  Layout, message, Statistic, Icon, Row, Col, Card
+} from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { bindActionCreators } from 'redux';
@@ -72,11 +74,51 @@ function Home(props) {
     // </Content>
 
     <div>
+      <Row gutter={16}>
+        <Col span={6}>
+          <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+        </Col>
+        <Col span={6}>
+          <Statistic title="Unmerged" value={93} suffix="/ 100" />
+        </Col>
+        <Col span={6}>
+          <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+        </Col>
+        <Col span={6}>
+          <Statistic title="Unmerged" value={93} suffix="/ 100" />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Card>
+            <Statistic
+              title="Active"
+              value={11.28}
+              precision={2}
+              valueStyle={{ color: '#3f8600' }}
+              prefix={<Icon type="arrow-up" />}
+              suffix="%"
+            />
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card>
+            <Statistic
+              title="Idle"
+              value={9.3}
+              precision={2}
+              valueStyle={{ color: '#cf1322' }}
+              prefix={<Icon type="arrow-down" />}
+              suffix="%"
+            />
+          </Card>
+        </Col>
+      </Row>
       <HighchartsReact
         highcharts={Highcharts}
         options={options}
       />
-    </div>
+    </div >
   );
 }
 
