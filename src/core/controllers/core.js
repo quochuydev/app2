@@ -167,6 +167,10 @@ let login = async (req, res) => {
   res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
 }
 
+function loginGoogle(req, res) {
+  res.json({ error: false, url });
+}
+
 let logout = (req, res) => {
   res.json({ error: false, code: 'LOGOUT' });
 }
@@ -175,4 +179,7 @@ let logout_redirect = (req, res) => {
   res.redirect(`${frontend_site}/logout`)
 }
 
-module.exports = { auth, login, logout, middleware, logout_redirect, signup, changeShop, checkUser }
+module.exports = {
+  auth, login, loginGoogle,
+  logout, middleware, logout_redirect, signup, changeShop, checkUser
+}

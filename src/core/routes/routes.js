@@ -1,10 +1,11 @@
 const path = require('path');
-const { auth, login, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
+const { auth, login, loginGoogle, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
   app.get('/auth', auth);
   app.post('/login', login);
+  app.post('/login-google', loginGoogle);
   app.post('/logout', logout);
   app.post('/signup', signup);
   app.post('/change-shop', function (req, res, next) {

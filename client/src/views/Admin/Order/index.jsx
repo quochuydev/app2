@@ -94,7 +94,7 @@ function Orders(props) {
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [query, setQuery] = useState({ limit: 20, page: 1 });
+  let [query, setQuery] = useState({ limit: 10, page: 1 });
 
   let [isShowPrint, setIsShowPrint] = useState(false)
 
@@ -182,7 +182,7 @@ function Orders(props) {
           <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'} />
         </Col>
         <Col span={24}>
-          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} name="page" onChange={onChangePage} />
+          <Pagination defaultCurrent={1} total={count} name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <ModalInfo

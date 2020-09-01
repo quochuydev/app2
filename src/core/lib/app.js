@@ -3,9 +3,9 @@ const path = require('path');
 const Mongoose = require('./mongoose');
 const Express = require('./express');
 const Cron = require('./cron');
-const PORT = process.env.PORT || 3002;
-const socket = require('./socket');
 const config = require(path.resolve('./src/config/config'));
+const PORT = config.port;
+const socket = require('./socket');
 const { EventBus } = require('./rabbit/index');
 const { consumer } = require('./rabbit/consumer');
 

@@ -74,21 +74,19 @@ function Home(props) {
     // </Content>
 
     <div>
-      <Row gutter={16}>
-        <Col span={6}>
-          <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+      <Row gutter={[15, 15]}>
+        <Col span={12}>
+          <Card>
+            <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+          </Card>
         </Col>
-        <Col span={6}>
-          <Statistic title="Unmerged" value={93} suffix="/ 100" />
-        </Col>
-        <Col span={6}>
-          <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
-        </Col>
-        <Col span={6}>
-          <Statistic title="Unmerged" value={93} suffix="/ 100" />
+        <Col span={12}>
+          <Card>
+            <Statistic title="Unmerged" value={93} suffix="/ 100" />
+          </Card>
         </Col>
       </Row>
-      <Row gutter={16}>
+      <Row gutter={15}>
         <Col span={12}>
           <Card>
             <Statistic

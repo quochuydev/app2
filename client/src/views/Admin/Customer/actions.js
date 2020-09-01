@@ -15,7 +15,7 @@ export const ACTIONS = {
   EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
 };
 
-export function mergeCustomers(data) {
+export function merge(data) {
   return function (dispatch) {
     dispatch({
       type: 'MERGE_CUSTOMERS', payload: {

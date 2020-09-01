@@ -34,7 +34,7 @@ function Customer(props) {
 
   const componentRef = useRef();
 
-  const { count, actions, customers } = props;
+  const { count, CustomerActions, customers } = props;
   let products = data.products;
 
   const columns = [
@@ -78,7 +78,7 @@ function Customer(props) {
   const [query, setQuery] = useState({});
 
   useEffect(() => {
-    actions.listCustomers(query);
+    CustomerActions.listCustomers(query);
   }, [query]);
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -195,7 +195,7 @@ function Customer(props) {
   async function fetchData(inputValue, callback) {
     if (inputValue) {
       let data = await AdminServices.listCustomers({ first_name_like: inputValue });
-      actions.mergeCustomers({ customers: data.customers });
+      CustomerActions.merge(data);
       callback(formatCustomerOption(data.customers));
     } else {
       callback(defaultCustomers)
@@ -263,7 +263,7 @@ function Customer(props) {
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Layout>
-              <Content style={{ height: '63vh' }}>
+              <Content style={{ height: '42vh' }}>
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
@@ -284,21 +284,19 @@ function Customer(props) {
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 15 }}>
-                <Form {...{ labelCol: { span: 8 }, wrapperCol: { span: 16 } }}>
-                  <Form.Item label="Tạm tính">
-                    <Input name="username" />
-                  </Form.Item>
-                  <Form.Item label="Phí vận chuyển">
-                    <Input name="username" />
-                  </Form.Item>
-                  <Form.Item label="Khuyến mãi">
-                    <Input name="username" />
-                  </Form.Item>
-                  <Form.Item label="Thành tiền">
-                    <Input name="username" />
-                  </Form.Item>
-                  <button className="btn-primary w-100" type="submit">Thanh toán</button>
-                </Form>
+                <Form.Item label="Tạm tính">
+                  <Input name="username" />
+                </Form.Item>
+                <Form.Item label="Phí vận chuyển">
+                  <Input name="username" />
+                </Form.Item>
+                <Form.Item label="Khuyến mãi">
+                  <Input name="username" />
+                </Form.Item>
+                <Form.Item label="Thành tiền">
+                  <Input name="username" />
+                </Form.Item>
+                <button className="btn-primary w-100" type="submit">Thanh toán</button>
 
               </Footer>
             </Layout>
@@ -392,7 +390,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(customerActions, dispatch)
+  CustomerActions: bindActionCreators(customerActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customer);
