@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as customerActions from '../Customer/actions';
+import * as orderActions from '../Order/actions';
+import * as orderDetailActions from '../OrderDetail/actions';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -12,7 +15,7 @@ import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
   Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover,
-  List, Skeleton, Avatar, Dropdown, Menu
+  List, Skeleton, Avatar, Dropdown, Menu, message
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -26,6 +29,9 @@ import PrintOrder from './print.jsx';
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
+  const { count, order, OrderActions, OrderDetailActions, CustomerActions, customers } = props;
+  let products = data.products;
+
   const { Option } = Select;
   const { Meta } = Card;
   const { TabPane } = Tabs;
@@ -34,8 +40,6 @@ function Customer(props) {
 
   const componentRef = useRef();
 
-  const { count, CustomerActions, customers } = props;
-  let products = data.products;
 
   const columns = [
     {
@@ -75,6 +79,7 @@ function Customer(props) {
       ),
     },
   ];
+
   const [query, setQuery] = useState({});
 
   useEffect(() => {
@@ -86,24 +91,29 @@ function Customer(props) {
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [customerSelected, setCustomerSelected] = useState({ value: null, label: '-- Vui lòng chọn --' });
   const [customerInfo, setCustomerInfo] = useState(null);
-
   const [customer, setCustomer] = useState({ gender: 1 })
   const [lineItems, setLineItems] = useState([])
+  let setOrder = OrderActions.setOrder;
 
   function addLineItem(id) {
     let line_items = [...lineItems]
     let index = line_items.findIndex(e => e.id == id);
-    let product = products.find(e => e.id == id);
     if (index != -1) {
       line_items[index].quantity = Number(line_items[index].quantity) + 1;
       line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     } else {
-      let lineItem = { ...product };
-      lineItem.quantity = 1;
-      lineItem.custom_total_price = lineItem.quantity * lineItem.price;
-      line_items.push(lineItem)
+      let product = products.find(e => e.id == id);
+      let line_item = {
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+      };
+      line_item.custom_total_price = line_item.quantity * line_item.price;
+      line_items.push(line_item)
     }
     setLineItems(line_items)
+    setOrder({ ...order, line_items })
   }
 
   function decQuantity(id) {
@@ -113,7 +123,8 @@ function Customer(props) {
       line_items[index].quantity -= 1;
       line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items)
+    setLineItems(line_items);
+    setOrder({ ...order, line_items })
   }
 
   function incQuantity(id) {
@@ -123,7 +134,8 @@ function Customer(props) {
       line_items[index].quantity += 1;
       line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items)
+    setLineItems(line_items);
+    setOrder({ ...order, line_items });
   }
 
   function setQuantity(id, quantity) {
@@ -133,18 +145,21 @@ function Customer(props) {
       line_items[index].quantity = quantity;
       line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items)
+    setLineItems(line_items);
+    setOrder({ ...order, line_items });
   }
 
   function removeLine(id) {
     let line_items = [...lineItems]
     line_items = line_items.filter(e => e.id != id);
     setLineItems(line_items);
+    setOrder({ line_items });
   }
 
   function addCustomer(e) {
     e.preventDefault();
     console.log(customer);
+    setIsCreateModal(false)
   }
   function onCustomerChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
@@ -153,26 +168,21 @@ function Customer(props) {
     setCustomer({ ...customer, [field]: e });
   }
 
+  function onChange(e, data, setData) {
+    setData({ ...data, [e.target.name]: e.target.value });
+  }
   function handleSubmit(e) {
     e.preventDefault();
-    let order = {
-      type: 'app',
-      line_items: lineItems.map(line_item => ({
-        // product_id: line_item.id,
-        // sku: line_item.variant.sku,
-        // product_name: line_item.title,
-        // name: line_item.variant.title,
-        // variant_id: line_item.variant.id,
-        // quantity: line_item.quantity,
-        // price: line_item.variant.price,
-        // total: line_item.variant.price * line_item.quantity,
-      })),
-      billing: customerSelected.billing,
-      shipping: customerSelected.shipping
-    }
-    console.log(order)
-    // actions.createOrder(order)
-    setIsCreateSuccess(true)
+    // OrderDetailActions.createOrder(order)
+    AdminServices.createOrder(order)
+      .then(result => {
+        console.log(result);
+        setIsCreateSuccess(true)
+      })
+      .catch(error => {
+        console.log(error);
+        message.error(error.message);
+      })
   }
 
   function beforePrint(order) {
@@ -185,27 +195,26 @@ function Customer(props) {
   let defaultCustomers = formatCustomerOption(customers);
 
   function formatCustomerOption(customers) {
-    return customers.map(e => Object({
+    let option_customers = customers.map(e => Object({
       label: `${e.first_name} ${e.last_name}`,
       value: e.id
-    })
-    )
+    }))
+    option_customers.unshift({ value: null, label: '-- Vui lòng chọn --' });
+    return option_customers;
   }
 
   async function fetchData(inputValue, callback) {
-    if (inputValue) {
-      let data = await AdminServices.listCustomers({ first_name_like: inputValue });
-      CustomerActions.merge(data);
-      callback(formatCustomerOption(data.customers));
-    } else {
-      callback(defaultCustomers)
-    }
+    let data = await AdminServices.listCustomers({ first_name_like: inputValue });
+    CustomerActions.merge(data);
+    callback(formatCustomerOption(data.customers));
   }
 
   function onSearchChange(customerSelected) {
     if (customerSelected) {
-      setCustomerInfo(customers.find(e => e.id == customerSelected.value));
+      let customer = customers.find(e => e.id == customerSelected.value)
+      setCustomerInfo(customer);
       setCustomerSelected(customerSelected);
+      setOrder({ customer });
     }
   };
 
@@ -263,7 +272,7 @@ function Customer(props) {
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Layout>
-              <Content style={{ height: '42vh' }}>
+              <Content style={{ height: '65vh' }}>
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
@@ -272,30 +281,37 @@ function Customer(props) {
                     loadOptions={fetchData}
                     placeholder="Nhập để tìm kiếm"
                     onChange={onSearchChange}
-                    debounceInterval={1250}
                   />
                   {
-                    !!(customerInfo && customerInfo.id) ? <div>
+                    !!(customerInfo && customerInfo.id) ? <div style={{ marginTop: 15 }}>
                       <p>id: {customerInfo.id}</p>
-                      <p>Họ: {customerInfo.last_name} {customerInfo.first_name}</p>
+                      <p>Họ tên: {customerInfo.last_name} {customerInfo.first_name}</p>
                       <p>Email: {customerInfo.email}</p>
                     </div> : null
                   }
                 </Card>
               </Content>
-              <Footer style={{ bottom: 0, padding: 15 }}>
-                <Form.Item label="Tạm tính">
-                  <Input name="username" />
-                </Form.Item>
-                <Form.Item label="Phí vận chuyển">
-                  <Input name="username" />
-                </Form.Item>
-                <Form.Item label="Khuyến mãi">
-                  <Input name="username" />
-                </Form.Item>
-                <Form.Item label="Thành tiền">
-                  <Input name="username" />
-                </Form.Item>
+              <Footer style={{ bottom: 0, padding: 15, color: '#000' }}>
+                <Row>
+                  <Col span={9}>
+                    <p>Tạm tính</p>
+                    <p>Phí vận chuyển</p>
+                    <p>Khuyến mãi</p>
+                    <p>Thành tiền</p>
+                  </Col>
+                  <Col span={15} style={{ textAlign: 'right' }}>
+                    <CurrencyFormat value={order.total_line_items_price} suffix={'đ'}
+                      thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
+                    <CurrencyFormat value={order.custom_total_shipping_price} suffix={'đ'}
+                      thousandSeparator={true} style={{ textAlign: 'right' }}
+                      onValueChange={e => setOrder({ ...order, custom_total_shipping_price: e.floatValue })} />
+                    <CurrencyFormat value={order.total_discounts} suffix={'đ'}
+                      thousandSeparator={true} style={{ textAlign: 'right' }}
+                      onValueChange={e => setOrder({ ...order, total_discounts: e.floatValue })} />
+                    <CurrencyFormat value={order.total_price} suffix={'đ'}
+                      thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
+                  </Col>
+                </Row>
                 <button className="btn-primary w-100" type="submit">Thanh toán</button>
 
               </Footer>
@@ -387,10 +403,13 @@ function Customer(props) {
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
+  order: state.orders.get('order'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  CustomerActions: bindActionCreators(customerActions, dispatch)
+  CustomerActions: bindActionCreators(customerActions, dispatch),
+  OrderActions: bindActionCreators(orderActions, dispatch),
+  OrderDetailActions: bindActionCreators(orderDetailActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customer);

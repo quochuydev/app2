@@ -9,6 +9,16 @@ export const ACTIONS = {
   BUILD_LINK_MOMO_FAILED: 'BUILD_LINK_MOMO_FAILED'
 };
 
+export function setOrder(order) {
+  return function (dispatch) {
+    dispatch({
+      type: 'REFRESH_ORDER', payload: {
+        error: false, message: 'REFRESH_ORDER.message', order
+      }
+    });
+  }
+}
+
 export function loadOrders(query) {
   return async (dispatch) => {
     try {

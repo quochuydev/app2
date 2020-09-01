@@ -35,8 +35,7 @@ export function createOrder(data) {
       const result = await AdminServices.createOrder(data);
       dispatch({
         type: ACTIONS.CREATE_ORDER_SUCCESS, payload: {
-          error: false,
-          ...result
+          error: false, ...result
         }
       });
     } catch (error) {

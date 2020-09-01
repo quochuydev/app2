@@ -11,7 +11,8 @@ import {
 } from "react-router-dom";
 import styled from "styled-components"
 import {
-  Layout, Menu, Icon, Breadcrumb, Button, Popover, message
+  Layout, Menu, Icon, Breadcrumb, Button, Popover,
+  message, List
 } from 'antd';
 
 import RouteList from '../../views/Admin/routes';
@@ -77,11 +78,13 @@ function LayoutContainer() {
         {
           token && <Sider collapsible width={250} style={{ background: '#fff' }} defaultCollapsed={true}>
             <Popover placement="right" content={<div>
-              {
-                user && user.shops ? user.shops.map(e => (
+              <List
+                size="small"
+                bordered={false}
+                dataSource={user.shops}
+                renderItem={e => <List.Item>
                   <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
-                )) : null
-              }
+                </List.Item>}></List>
             </div>} trigger="click"
             >
               <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
