@@ -89,10 +89,8 @@ function Messenger(props) {
               />
             </div>
             <footer>
-              <form>
-                <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message} />
-                <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
-              </form>
+              <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message} />
+              <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
             </footer>
           </main>
         </div>

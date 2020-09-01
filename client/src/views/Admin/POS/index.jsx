@@ -19,7 +19,6 @@ import 'antd/dist/antd.css';
 
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
-import LoadingPage from '../../Components/Loading/index';
 import './style.css'
 import data from './data.json';
 import PrintOrder from './print.jsx';
@@ -71,7 +70,6 @@ function Customer(props) {
       title: '', key: 'options',
       render: edit => (
         <div>
-          {/* <Icon type="edit" onClick={() => { }} /> */}
           <Icon type="close" onClick={() => removeLine(edit.id)} />
         </div>
       ),
@@ -87,12 +85,10 @@ function Customer(props) {
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [customerSelected, setCustomerSelected] = useState({ value: null, label: '-- Vui lòng chọn --' });
+  const [customerInfo, setCustomerInfo] = useState(null);
 
   const [customer, setCustomer] = useState({ gender: 1 })
   const [lineItems, setLineItems] = useState([])
-
-  const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   function addLineItem(id) {
     let line_items = [...lineItems]
@@ -199,6 +195,7 @@ function Customer(props) {
   async function fetchData(inputValue, callback) {
     if (inputValue) {
       let data = await AdminServices.listCustomers({ first_name_like: inputValue });
+      actions.mergeCustomers({ customers: data.customers });
       callback(formatCustomerOption(data.customers));
     } else {
       callback(defaultCustomers)
@@ -207,7 +204,8 @@ function Customer(props) {
 
   function onSearchChange(customerSelected) {
     if (customerSelected) {
-      setCustomerSelected(customerSelected)
+      setCustomerInfo(customers.find(e => e.id == customerSelected.value));
+      setCustomerSelected(customerSelected);
     }
   };
 
@@ -246,20 +244,19 @@ function Customer(props) {
                 {
                   products.map(item => (
                     <Menu.Item key={item.id}>
-                      <Skeleton loading={false} active avatar>
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.images[0].src} />}
-                          title={<a href={item.href}>{item.title}</a>}
-                          description={item.price}
-                          onClick={() => addLineItem(item.id)}
-                        />
-                      </Skeleton>
+                      <List.Item.Meta
+                        avatar={<Avatar shape="square" size={60} src={item.images[0].src} />}
+                        title={<p>{item.title}</p>}
+                        description={item.price}
+                        onClick={() => addLineItem(item.id)}
+                      />
                     </Menu.Item>
                   ))
                 }
               </Menu>
             )} trigger={['click']}>
-              <Input className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm" addonAfter={<Icon type="search" />}></Input>
+              <Input size="large" className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"
+                addonAfter={<Icon type="search" />} onChange={() => { }} />
             </Dropdown>
 
             <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} size={'small'} />
@@ -277,6 +274,13 @@ function Customer(props) {
                     onChange={onSearchChange}
                     debounceInterval={1250}
                   />
+                  {
+                    !!(customerInfo && customerInfo.id) ? <div>
+                      <p>id: {customerInfo.id}</p>
+                      <p>Họ: {customerInfo.last_name} {customerInfo.first_name}</p>
+                      <p>Email: {customerInfo.email}</p>
+                    </div> : null
+                  }
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 15 }}>

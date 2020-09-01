@@ -11,6 +11,7 @@ const initialState = Map({
 
 function CustomerReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case 'MERGE_CUSTOMERS':
     case 'LOAD_CUSTOMER_SUCCESS':
     case 'EXPORT_CUSTOMER_SUCCESS':
     case 'ADD_CUSTOMER_SUCCESS':
