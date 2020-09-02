@@ -44,7 +44,7 @@ function Customer(props) {
 
   const columns = [
     {
-      title: 'Sản phẩm', key: 'title', render: item => (
+      title: (<span>Sản phẩm <Badge count={order.total_items} style={{ backgroundColor: '#52c41a' }} /></span>), key: 'title', render: item => (
         <div>
           <List.Item.Meta
             avatar={<Avatar shape="square" size={45} src={_.get(item, 'images[0].src', null)} />}
