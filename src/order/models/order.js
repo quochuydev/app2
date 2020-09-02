@@ -62,6 +62,13 @@ OrderSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1
 });
 
+OrderSchema.plugin(autoIncrement.plugin, {
+  model: 'Order',
+  field: 'id',
+  startAt: 10000,
+  incrementBy: 1
+});
+
 OrderSchema.statics._findOne = function (filter = {}, populate = {}, options = { lean: true }) {
   let _this = this;
   let shop_id = cache.get('shop_id');

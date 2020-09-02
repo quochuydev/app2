@@ -44,8 +44,15 @@ function Customer(props) {
 
   const columns = [
     {
-      title: 'Sản phẩm', key: 'title', render: edit => (
-        <a onClick={() => { }}>{edit.title} {edit.variant_title}</a>
+      title: 'Sản phẩm', key: 'title', render: item => (
+        <div>
+          <List.Item.Meta
+            avatar={<Avatar shape="square" size={45} src={_.get(item, 'images[0].src', null)} />}
+            title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
+            description={[item.sku, item.barcode, item.price].join(' - ')}
+            onClick={() => addProduct(item.id)}
+          />
+        </div>
       )
     },
     {
@@ -82,7 +89,7 @@ function Customer(props) {
   ];
 
   const [query, setQuery] = useState({});
-  const [queryProducts, setQueryProducts] = useState({});
+  const [queryProducts, setQueryProducts] = useState({ limit: 50 });
 
   useEffect(() => {
     CustomerActions.listCustomers(query);
@@ -96,6 +103,7 @@ function Customer(props) {
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
+  const [orderCreated, setOrderCreated] = useState(null);
 
   const [customer, setCustomer] = useState({ gender: 1 })
   let setOrder = OrderActions.setOrder;
@@ -188,6 +196,7 @@ function Customer(props) {
     AdminServices.createOrder(order)
       .then(result => {
         console.log(result);
+        setOrderCreated(result.order);
         setIsCreateSuccess(true);
       })
       .catch(error => {
@@ -234,6 +243,17 @@ function Customer(props) {
     setIsCreateSuccess(false);
   }
 
+  async function onSearchProduct(e) {
+    let title = e.target.value;
+    if (title) {
+      if (title.length >= 2) {
+        setQueryProducts({ limit: 5, title_like: title })
+      }
+    } else {
+      setQueryProducts({ limit: 50 })
+    }
+  }
+
   return (
     <div>
       <Row>
@@ -241,7 +261,7 @@ function Customer(props) {
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Collapse.Panel header="Danh sách sản phẩm" key="1">
+                <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
                   <Row gutter={10} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
@@ -269,12 +289,12 @@ function Customer(props) {
             <Dropdown overlay={(
               <Menu>
                 {
-                  products.map(item => (
+                  _.cloneDeep(products).splice(0, 8).map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
-                        avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].filename', null)} />}
+                        avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].src', null)} />}
                         title={<p>{item.title}</p>}
-                        description={item.price}
+                        description={item.variants.map(e => e.sku).join(' - ')}
                         onClick={() => addProduct(item.id)}
                       />
                     </Menu.Item>
@@ -283,7 +303,7 @@ function Customer(props) {
               </Menu>
             )} trigger={['click']}>
               <Input size="large" className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"
-                addonAfter={<Icon type="search" />} onChange={() => { }} />
+                addonAfter={<Icon type="search" />} onChange={e => { onSearchProduct(e) }} />
             </Dropdown>
 
             <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'} />
@@ -432,26 +452,31 @@ function Customer(props) {
         footer={null}
         onCancel={() => setIsCreateSuccess(false)}
       >
-        <Result
-          status="success"
-          title="Đặt hàng thành công!"
-          subTitle="Mã đơn hàng của bạn là #100051"
-          extra={[
-            <Button key="buy" onClick={() => clearOrderCreate()}>Tạo đơn hàng mới</Button>,
-            <ReactToPrint
-              key={'printOrder'}
-              onBeforeGetContent={() => beforePrint({})}
-              onAfterPrint={() => setIsShowPrint(false)}
-              trigger={() => <Button type="primary" key="console"><Icon type="printer" />In hóa đơn</Button>}
-              content={() => componentRef.current}
-            />
+        {
+          orderCreated && orderCreated.id ?
+            <Result
+              status="success"
+              title="Đặt hàng thành công!"
+              subTitle={`Mã đơn hàng của bạn là ${orderCreated.number}`}
+              extra={[
+                <Button key="buy" onClick={() => clearOrderCreate()}>Tạo đơn hàng mới</Button>,
+                <ReactToPrint
+                  key={'printOrder'}
+                  onBeforeGetContent={() => beforePrint({})}
+                  onAfterPrint={() => setIsShowPrint(false)}
+                  trigger={() => <Button type="primary" key="console"><Icon type="printer" />In hóa đơn</Button>}
+                  content={() => componentRef.current}
+                />
 
-          ]}
-        />
+              ]}
+            /> : null
+        }
       </Modal>
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
-          <PrintOrder />
+          {
+            orderCreated ? <PrintOrder order={orderCreated} /> : null
+          }
         </div>
       </div>
     </div >

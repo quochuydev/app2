@@ -65,7 +65,6 @@ const create = async (req, res, next) => {
       customer: data.customer,
       shipping_address: null,
       created_at: new Date(),
-      created_at: new Date(),
     };
     let order = await OrderMD._create(order_data);
     res.json({ error: false, order });

@@ -12,7 +12,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrintOrder);
 
-function PrintOrder() {
+function PrintOrder(props) {
+  let { order } = props;
   return (
     <div id="print-default" className="page-break">
       <div className="printorder">
@@ -34,7 +35,7 @@ function PrintOrder() {
                 src="https://topdev.vn/blog/wp-content/uploads/2020/08/logo-new-retina.png" />
             </div>
             <div className="printcol last" style={{ borderLeft: 'none', backgroundColor: 'transparent' }}>
-              <h4 style={{ margin: '0 0 5px' }}>Ngày đặt hàng: <span style={{ fontWeight: 'normal' }}> orderToPrint.created_at | formatVnDateTimeShort </span></h4>
+              <h4 style={{ margin: '0 0 5px' }}>Ngày đặt hàng: <span style={{ fontWeight: 'normal' }}> {order.created_at} </span></h4>
               <h4 style={{ margin: '0 0 5px' }}>Mã đơn hàng: <span style={{ fontWeight: 'normal' }}> orderToPrint.order_number </span></h4>
               <h4 style={{ margin: '0 0 5px' }}>Chi nhánh: <span style={{ fontWeight: 'normal' }}> orderToPrint.pos_name </span>
               </h4>

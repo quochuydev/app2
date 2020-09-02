@@ -24,6 +24,7 @@ function OrdersReducer(state = initialState, { type, payload }) {
     case 'LOAD_ORDERS_SUCCESS':
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':
+    case 'CREATE_ORDER_SUCCESS':
       return state.merge({ ...payload });
     case 'CLEAR_ORDER_CREATE':
       {
@@ -49,6 +50,7 @@ function OrdersReducer(state = initialState, { type, payload }) {
       order.total_price -= order.total_discounts;
 
       return state.merge({ orderCreate: order });
+      
     default:
       return state.merge({ ...payload });
   }
