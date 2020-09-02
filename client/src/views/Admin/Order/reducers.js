@@ -4,7 +4,8 @@ import _ from 'lodash';
 const initialState = Map({
   total: 0,
   orders: [],
-  order: {
+  order: {},
+  orderCreate: {
     type: 'app',
     line_items: [],
 
@@ -25,7 +26,7 @@ function OrdersReducer(state = initialState, { type, payload }) {
     case 'GET_ORDER_DETAIL_SUCCESS':
       return state.merge({ ...payload });
     case 'REFRESH_ORDER':
-      let order = state.get('order')
+      let order = state.get('orderCreate')
       order = _.assign({}, order, payload.order);
 
       order.total_line_items_price = 0;
@@ -41,7 +42,7 @@ function OrdersReducer(state = initialState, { type, payload }) {
       order.total_price += order.custom_total_shipping_price;
       order.total_price -= order.total_discounts;
 
-      return state.merge({ order });
+      return state.merge({ orderCreate: order });
     default:
       return state.merge({ ...payload });
   }

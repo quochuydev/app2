@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import * as customerActions from '../Customer/actions';
+import * as productActions from '../Product/actions';
 import * as orderActions from '../Order/actions';
 import * as orderDetailActions from '../OrderDetail/actions';
 
@@ -29,8 +31,8 @@ import PrintOrder from './print.jsx';
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
-  const { count, order, OrderActions, OrderDetailActions, CustomerActions, customers } = props;
-  let products = data.products;
+  const { count, products, order, OrderActions, OrderDetailActions, ProductActions, CustomerActions, customers } = props;
+  // let products = data.products;
 
   const { Option } = Select;
   const { Meta } = Card;
@@ -39,7 +41,6 @@ function Customer(props) {
   const { Content, Footer } = Layout;
 
   const componentRef = useRef();
-
 
   const columns = [
     {
@@ -81,10 +82,15 @@ function Customer(props) {
   ];
 
   const [query, setQuery] = useState({});
+  const [queryProducts, setQueryProducts] = useState({});
 
   useEffect(() => {
     CustomerActions.listCustomers(query);
   }, [query]);
+
+  useEffect(() => {
+    ProductActions.loadProducts(queryProducts);
+  }, [queryProducts])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateModal, setIsCreateModal] = useState(false);
@@ -233,19 +239,20 @@ function Customer(props) {
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Panel header="Danh sách sản phẩm" key="1">
-                  <Row gutter={16}>
+                  <Row gutter={5}>
                     {
                       products.map(product => {
                         return (
                           <Col span={4} key={product.id}>
                             <Badge count={99}>
                               <Card className="cursor-pointer"
-                                cover={<div className="overflow-hidden">
-                                  <img className="overflow-hidden"
-                                    style={{ width: "100%" }}
-                                    alt={product.images[0].filename} src={product.images[0].src} /></div>}
+                                cover={<div                                >
+                                  <Avatar shape="square" style={{ width: "100%" }}
+                                    alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
+                                </div>}
                                 onClick={() => addProduct(product.id)}>
-                                <Meta title={product.title} />
+                                {/* <Meta title={product.title} /> */}
+                                <Meta title={product.sku} />
                               </Card>
                             </Badge>
                           </Col>
@@ -263,7 +270,7 @@ function Customer(props) {
                   products.map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
-                        avatar={<Avatar shape="square" size={60} src={item.images[0].src} />}
+                        avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].filename', null)} />}
                         title={<p>{item.title}</p>}
                         description={item.price}
                         onClick={() => addProduct(item.id)}
@@ -283,7 +290,8 @@ function Customer(props) {
             <Layout>
               <Content style={{ height: '65vh' }}>
                 <Card title="Thông tin khách hàng">
-                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }} theme="filled" type="plus-circle" /></p>
+                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }}
+                    theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
                     defaultOptions={defaultCustomers}
                     value={customerSelected}
@@ -304,19 +312,37 @@ function Customer(props) {
                 <Row>
                   <Col span={9}>
                     <p>Tạm tính</p>
-                    <p>Phí vận chuyển</p>
-                    <p>Khuyến mãi</p>
-                    <p>Thành tiền</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
                     <CurrencyFormat value={order.total_line_items_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
-                    <CurrencyFormat value={order.custom_total_shipping_price} suffix={'đ'}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={9}>
+                    <p>Phí vận chuyển</p>
+                  </Col>
+                  <Col span={15} style={{ textAlign: 'right' }}>
+                    <CurrencyFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ custom_total_shipping_price: e.floatValue })} />
-                    <CurrencyFormat value={order.total_discounts} suffix={'đ'}
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={9}>
+                    <p>Khuyến mãi</p>
+                  </Col>
+                  <Col span={15} style={{ textAlign: 'right' }}>
+                    <CurrencyFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ total_discounts: e.floatValue })} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={9}>
+                    <p>Thành tiền</p>
+                  </Col>
+                  <Col span={15} style={{ textAlign: 'right' }}>
                     <CurrencyFormat value={order.total_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
@@ -432,11 +458,13 @@ function Customer(props) {
 
 const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
-  order: state.orders.get('order'),
+  products: state.products.get('products'),
+  order: state.orders.get('orderCreate'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   CustomerActions: bindActionCreators(customerActions, dispatch),
+  ProductActions: bindActionCreators(productActions, dispatch),
   OrderActions: bindActionCreators(orderActions, dispatch),
   OrderDetailActions: bindActionCreators(orderDetailActions, dispatch),
 });

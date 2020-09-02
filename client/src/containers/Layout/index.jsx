@@ -62,10 +62,8 @@ function LayoutContainer() {
   user = JSON.parse(user);
   function changeShop({ shop_id, user }) {
     AdminServices.changeShop({ user, shop_id }).then(data => {
-      console.log(data)
       window.location.href = data.url;
     }).catch(error => {
-      console.log(error)
       message.error(error.message);
     })
   }

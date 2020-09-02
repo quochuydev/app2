@@ -25,12 +25,24 @@ let list = async (req, res) => {
 
 let sync = async (req, res) => {
   try {
-    try { await syncCustomersHaravan(); }
-    catch (e) { console.log(e) }
-    try { await syncCustomersWoo(); }
-    catch (e) { console.log(e) }
-    try { await syncCustomersShopify(); }
-    catch (e) { console.log(e) }
+    try {
+      await syncCustomersHaravan();
+    }
+    catch (e) {
+      console.log(e)
+    }
+    try {
+      await syncCustomersWoo();
+    }
+    catch (e) {
+      console.log(e)
+    }
+    try {
+      await syncCustomersShopify();
+    }
+    catch (e) {
+      console.log(e)
+    }
     res.json({ error: false });
   } catch (error) {
     console.log(error)

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import config from '../../../utils/config';
 import './style.css';
 import { Button, Form, Input, Checkbox } from 'antd';
-import { relative } from 'path';
 import AdminServices from '../../../services/adminServices';
 
 const layout = {
@@ -18,9 +17,7 @@ function Login() {
 
   const onFinish = async (event) => {
     event.preventDefault();
-    console.log('Success:', account);
     const data = await AdminServices.login(account);
-    console.log(data)
     window.location.href = data.url;
   };
 
