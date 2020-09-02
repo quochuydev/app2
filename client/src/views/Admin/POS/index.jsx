@@ -97,8 +97,6 @@ function Customer(props) {
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
 
-  const [customerSelected, setCustomerSelected] = useState({ value: null, label: '-- Vui lòng chọn --' });
-  const [customerInfo, setCustomerInfo] = useState(null);
   const [customer, setCustomer] = useState({ gender: 1 })
   let setOrder = OrderActions.setOrder;
 
@@ -190,7 +188,7 @@ function Customer(props) {
     AdminServices.createOrder(order)
       .then(result => {
         console.log(result);
-        setIsCreateSuccess(true)
+        setIsCreateSuccess(true);
       })
       .catch(error => {
         console.log(error);
@@ -205,13 +203,15 @@ function Customer(props) {
     })
   }
 
-  let defaultCustomers = formatCustomerOption(customers);
+  function formatOptionCustomer(customer) {
+    if (!customer) {
+      return { value: null, label: '-- Vui lòng chọn --' };
+    }
+    return { value: customer.id, label: `${customer.first_name} ${customer.last_name}` }
+  }
 
-  function formatCustomerOption(customers) {
-    let option_customers = customers.map(e => Object({
-      label: `${e.first_name} ${e.last_name}`,
-      value: e.id
-    }))
+  function formatOptionCustomers(customers) {
+    let option_customers = customers.map(e => formatOptionCustomer(e))
     option_customers.unshift({ value: null, label: '-- Vui lòng chọn --' });
     return option_customers;
   }
@@ -219,17 +219,20 @@ function Customer(props) {
   async function fetchData(inputValue, callback) {
     let data = await AdminServices.listCustomers({ first_name_like: inputValue });
     CustomerActions.merge(data);
-    callback(formatCustomerOption(data.customers));
+    callback(formatOptionCustomers(data.customers));
   }
 
   function onSearchChange(customerSelected) {
     if (customerSelected) {
-      let customer = customers.find(e => e.id == customerSelected.value)
-      setCustomerInfo(customer);
-      setCustomerSelected(customerSelected);
+      let customer = customers.find(e => e.id == customerSelected.value);
       setOrder({ customer });
     }
   };
+
+  function clearOrderCreate() {
+    OrderActions.clear();
+    setIsCreateSuccess(false);
+  }
 
   return (
     <div>
@@ -239,12 +242,12 @@ function Customer(props) {
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel header="Danh sách sản phẩm" key="1">
-                  <Row gutter={5} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
+                  <Row gutter={10} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (
-                          <Col span={4} key={product.id}>
-                            <Badge count={99}>
+                          <Col span={3} key={product.id}>
+                            <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
                                   <Avatar shape="square" style={{ width: "100%", height: 80 }}
@@ -292,8 +295,8 @@ function Customer(props) {
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }}
                     theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
-                    defaultOptions={defaultCustomers}
-                    value={customerSelected}
+                    defaultOptions={formatOptionCustomers(customers)}
+                    value={formatOptionCustomer(order.customer)}
                     loadOptions={fetchData}
                     placeholder="Nhập để tìm kiếm"
                     onChange={onSearchChange}
@@ -434,7 +437,7 @@ function Customer(props) {
           title="Đặt hàng thành công!"
           subTitle="Mã đơn hàng của bạn là #100051"
           extra={[
-            <Button key="buy">Tạo đơn hàng mới</Button>,
+            <Button key="buy" onClick={() => clearOrderCreate()}>Tạo đơn hàng mới</Button>,
             <ReactToPrint
               key={'printOrder'}
               onBeforeGetContent={() => beforePrint({})}

@@ -25,6 +25,12 @@ function OrdersReducer(state = initialState, { type, payload }) {
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':
       return state.merge({ ...payload });
+    case 'CLEAR_ORDER_CREATE':
+      {
+        let order = initialState.get('orderCreate');
+        order.line_items = [];
+        return state.merge({ orderCreate: order });
+      }
     case 'REFRESH_ORDER':
       let order = state.get('orderCreate')
       order = _.assign({}, order, payload.order);
