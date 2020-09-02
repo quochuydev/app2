@@ -3,10 +3,8 @@
 .DS_Store
 .history
 /node_modules
-backend/config/env/local.js
-backend/config/env/local-*.js
-backend/config/local-*.js
+/src/config/env/production.js
+src/config/env/production.js
 package-lock.json
 .git
 /download/
-*.json

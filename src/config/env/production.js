@@ -38,8 +38,8 @@ module.exports = {
   // HARAVAN
   haravan: {
     is_test: false,
-    app_id: '073ba496454492c5e99411559e1d7cf7',
-    app_secret: 'da6446f0c46a09fa6acb8476df1ef3aa35ac78266638fe6f2285cd28b565f0dc',
+    app_id: process.env.HRV_APP_ID,
+    app_secret: process.env.HRV_APP_SECRET,
     scope_login: 'openid profile email org userinfo',
     scope_install: 'openid profile email org userinfo com.write_products com.write_orders com.write_customers com.write_shippings com.write_inventories grant_service offline_access wh_api',
     login_callback_url: `${process.env.APP_HOST}/api/haravan/login`,
@@ -50,8 +50,8 @@ module.exports = {
   },
 
   shopify: {
-    client_id: "c925250ee1a5f062f01b3c88e508e209",
-    client_secret: "1f44c251898c86a09618d5076b6b1b67",
+    client_id: process.env.SHOPIFY_APP_ID,
+    client_secret: process.env.SHOPIFY_APP_SECRET,
     callback_path: '/api/shopify/auth/callback',
     address: `${process.env.APP_HOST}/shopify/webhook`,
   },

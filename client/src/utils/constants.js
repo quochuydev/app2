@@ -1,6 +1,7 @@
 const HOME_ROUTE = ``;
 const SITE_ROUTE = `${HOME_ROUTE}/site`;
 const CUSTOMER_ROUTE = `${SITE_ROUTE}/customers`;
+const POS_ROUTE = `${SITE_ROUTE}/POS`;
 const MESSENGER_ROUTE = `${SITE_ROUTE}/messenger`;
 const ORDER_ROUTE = `${SITE_ROUTE}/order`;
 const ORDER_CREATE_ROUTE = `${SITE_ROUTE}/order/detail`;
@@ -9,11 +10,13 @@ const PRODUCT_ROUTE = `${SITE_ROUTE}/products`;
 const STAFFS_ROUTE = `${SITE_ROUTE}/staffs`;
 const APP_ROUTE = `${SITE_ROUTE}/app`;
 const LOGIN_ROUTE = `${SITE_ROUTE}/login`;
+const LOGIN_GOOGLE_ROUTE = `${SITE_ROUTE}/login-google`;
 const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 
 const PATHS = {
   SITE_ROUTE,
   CUSTOMER_ROUTE,
+  POS_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
   ORDER_CREATE_ROUTE,
@@ -22,6 +25,7 @@ const PATHS = {
   PRODUCT_ROUTE,
   APP_ROUTE,
   LOGIN_ROUTE,
+  LOGIN_GOOGLE_ROUTE,
   ERROR_ROUTE
 };
 const MENU_DATA = [
@@ -29,7 +33,8 @@ const MENU_DATA = [
     path: SITE_ROUTE,
     key: 'home',
     name: 'Trang chủ',
-    is_open: false
+    is_open: true,
+    icon: 'home'
   },
   {
     path: CUSTOMER_ROUTE,
@@ -37,6 +42,13 @@ const MENU_DATA = [
     name: 'Khách hàng',
     is_open: true,
     icon: 'user'
+  },
+  {
+    path: POS_ROUTE,
+    key: 'POS',
+    name: 'POS',
+    is_open: true,
+    icon: 'shopping-cart'
   },
   {
     path: MESSENGER_ROUTE,
@@ -49,7 +61,7 @@ const MENU_DATA = [
     key: 'order',
     name: 'Đơn hàng',
     is_open: true,
-    icon: 'shopping-cart'
+    icon: 'snippets'
   },
   {
     path: PRODUCT_ROUTE,
@@ -68,7 +80,7 @@ const MENU_DATA = [
     path: APP_ROUTE,
     key: 'app',
     name: 'Ứng dụng',
-    is_open: true,
+    is_open: false,
     icon: 'appstore'
   }
 ]

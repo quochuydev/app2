@@ -8,9 +8,9 @@ const TYPES = {
 class Exception {
   static TYPES = TYPES;
 
-  constructor(type = TYPES.NONE, statusText = '', isError = false, statusCode = 0, description = '') {
+  constructor(type = TYPES.NONE, message = '', isError = false, statusCode = 0, description = '') {
     this.type = type;
-    this.statusText = statusText;
+    this.message = message;
     this.isError = isError;
     this.statusCode = statusCode;
     this.description = description;

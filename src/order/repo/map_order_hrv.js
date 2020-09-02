@@ -40,6 +40,8 @@ const MapOrderHaravan = {
         total: line_item.price * line_item.quantity,
 
       })),
+      total_price: order_hrv.total_price,
+
       created_at: order_hrv.created_at,
       currency: order_hrv.currency,
       note: order_hrv.note,

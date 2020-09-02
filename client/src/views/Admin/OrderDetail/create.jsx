@@ -98,7 +98,7 @@ function OrderCreateComponent(props) {
   }
 
   return (
-    < Row >
+    < Row key="1">
       <Form onSubmit={handleSubmit}>
         <Col span={6}>
           <Card title="Thông tin khách hàng">

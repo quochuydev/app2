@@ -25,12 +25,24 @@ let list = async (req, res) => {
 
 let sync = async (req, res) => {
   try {
-    try { await syncCustomersHaravan(); }
-    catch (e) { console.log(e) }
-    try { await syncCustomersWoo(); }
-    catch (e) { console.log(e) }
-    try { await syncCustomersShopify(); }
-    catch (e) { console.log(e) }
+    try {
+      await syncCustomersHaravan();
+    }
+    catch (e) {
+      console.log(e)
+    }
+    try {
+      await syncCustomersWoo();
+    }
+    catch (e) {
+      console.log(e)
+    }
+    try {
+      await syncCustomersShopify();
+    }
+    catch (e) {
+      console.log(e)
+    }
     res.json({ error: false });
   } catch (error) {
     console.log(error)
@@ -55,6 +67,7 @@ let update = async (req, res) => {
 }
 
 let importExcel = (req, res) => {
+
   res.send({ error: false });
 }
 
@@ -63,7 +76,7 @@ let exportExcel = async (req, res) => {
   let customers = await CustomersMD.find(criteria);
 
   const excel = await ExcelLib.init({
-    host: app_host,
+    host: config.app_host,
     dir: `./download/${moment().format('YYYY')}/${moment().format('MM-DD')}`,
     fileName: `export-{i}-${moment().utc(7).format('DD-MM-YYYY_HH-mm-ss')}.xlsx`,
     worksheet: {
@@ -95,4 +108,4 @@ let test = async () => {
   // await syncCustomersShopify();
   // await syncCustomersWoo();
 }
-test();
+// test();

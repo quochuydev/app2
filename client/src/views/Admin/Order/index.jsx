@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
 import {
-  Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Pagination,
+  Table, Row, Col, Button, Tag, Icon, Input,
+  Select, Form, Modal, Radio, Pagination, Tabs
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -16,6 +17,7 @@ import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 function Orders(props) {
   const { count, actions, orders } = props;
@@ -71,11 +73,6 @@ function Orders(props) {
       )
     },
     {
-      title: 'Email bill', key: 'email', render: edit => (
-        <span>{_.get(edit, 'billing.email')} <Icon type="mail" onClick={() => { }} /></span>
-      )
-    },
-    {
       title: 'Trạng thái', key: 'status', render: edit => (
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
@@ -97,7 +94,7 @@ function Orders(props) {
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [query, setQuery] = useState({ limit: 20, page: 1 });
+  let [query, setQuery] = useState({ limit: 10, page: 1 });
 
   let [isShowPrint, setIsShowPrint] = useState(false)
 
@@ -112,7 +109,7 @@ function Orders(props) {
   }
 
   function beforePrint(order) {
-    return new Promise(resolve =>{
+    return new Promise(resolve => {
       setOrder(order);
       setIsShowPrint(true);
       resolve()
@@ -144,8 +141,18 @@ function Orders(props) {
     setQuery({ ...query, page: e })
   }
 
+
   return (
     <div>
+      {/* <Tabs tabPosition={'left'}>
+        <TabPane tab="Tab 1" key="1">
+          Content of Tab 1
+      </TabPane>
+        <TabPane tab="Tab 2" key="2">
+          Content of Tab 2
+      </TabPane>
+      </Tabs> */}
+
       <Row key='1'>
         <Form>
           <Col span={8}>
@@ -170,13 +177,12 @@ function Orders(props) {
         </Form>
 
         <Col span={24}>
-          {/* <Link to={`order/detail`}>
-            <Button>Tạo đơn hàng</Button>
-          </Link> */}
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} />
-          <Pagination defaultCurrent={1} defaultPageSize={20} total={count} size="small" name="page" onChange={onChangePage} />
+          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'} />
+        </Col>
+        <Col span={24}>
+          <Pagination defaultCurrent={1} total={count} name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <ModalInfo

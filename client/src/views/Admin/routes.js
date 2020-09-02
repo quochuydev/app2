@@ -1,6 +1,7 @@
 import Home from '../Admin/Home/routes';
 import Customer from '../Admin/Customer/routes';
 import Messenger from '../Admin/Messenger/routes';
+import POS from '../Admin/POS/routes';
 import Order from '../Admin/Order/routes';
 import OrderDetail from '../Admin/OrderDetail/routes';
 import Staffs from '../Admin/Staffs/routes';
@@ -13,6 +14,7 @@ const routes = [
   ...Home,
   ...Customer,
   ...Messenger,
+  ...POS,
   ...Order,
   ...OrderDetail,
   ...Staffs,

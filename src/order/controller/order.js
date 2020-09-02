@@ -10,7 +10,7 @@ const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../bu
 const list = async (req, res) => {
   try {
     let { limit, skip, criteria } = _parse(req.body);
-    let count = await OrderMD.count(criteria);
+    let count = await OrderMD.countDocuments(criteria);
     let orders = await OrderMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
@@ -37,21 +37,40 @@ const sync = async (req, res) => {
     await syncOrdersShopify();
     res.json({ error: false });
   } catch (error) {
-    logger({ error })
+    logger(error);
     res.status(400).send({ error: true });
   }
 }
 
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   try {
     let data = req.body;
-    let order_data = data;
+
+    if (!(data.line_items && data.line_items.length)) {
+      throw { message: 'Chọn sản phẩm' }
+    }
+
+    if (!(data.customer)) {
+      throw { message: 'Chọn khách hàng' }
+    }
+
+    let order_data = {
+      type: data.type,
+      line_items: data.line_items,
+      total_line_items_price: data.total_line_items_price,
+      custom_total_shipping_price: data.custom_total_shipping_price,
+      total_discounts: data.total_discounts,
+      total_price: data.total_price,
+      customer: data.customer,
+      shipping_address: null,
+      created_at: new Date(),
+    };
     let order = await OrderMD._create(order_data);
     res.json({ error: false, order });
   } catch (error) {
-    logger({ error })
-    res.status(400).send({ error: true });
+    logger(error);
+    next(error);
   }
 }
 
@@ -76,7 +95,7 @@ const update = async (req, res) => {
     let order = await OrderMD._create(order_data);
     res.json({ error: false, order });
   } catch (error) {
-    logger({ error })
+    logger({ error });
     res.status(400).send({ error: true });
   }
 }

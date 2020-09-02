@@ -17,7 +17,7 @@ function Messenger(props) {
     { username: 'quochuydev', message: 'Los Angeles battles huge wildfires.', msg: 'Los Angeles...' }
   ];
 
-  let image = "https://yt3.ggpht.com/k-gSA9vuhrssghjNGGJY967YBKSeRkTDcfytvayrqVQtxn-0p8wGkjiB_FdOjl5brh4OmfLb=w144-h200-nd"
+  let image = "https://facebook.com"
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -89,10 +89,8 @@ function Messenger(props) {
               />
             </div>
             <footer>
-              <form>
-                <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message} />
-                <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
-              </form>
+              <input ng-model="text" placeholder="Enter a message" type="text" onChange={onChangeMessage} value={message} />
+              <Button className="send" onClick={() => sendMessage()}>Gửi tin</Button>
             </footer>
           </main>
         </div>
