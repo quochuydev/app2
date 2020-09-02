@@ -238,21 +238,20 @@ function Customer(props) {
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Panel header="Danh sách sản phẩm" key="1">
-                  <Row gutter={5}>
+                <Collapse.Panel header="Danh sách sản phẩm" key="1">
+                  <Row gutter={5} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (
                           <Col span={4} key={product.id}>
                             <Badge count={99}>
                               <Card className="cursor-pointer"
-                                cover={<div                                >
-                                  <Avatar shape="square" style={{ width: "100%" }}
+                                cover={<div>
+                                  <Avatar shape="square" style={{ width: "100%", height: 80 }}
                                     alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
                                 </div>}
                                 onClick={() => addProduct(product.id)}>
-                                {/* <Meta title={product.title} /> */}
-                                <Meta title={product.sku} />
+                                <Meta title={product.title} />
                               </Card>
                             </Badge>
                           </Col>
@@ -260,7 +259,7 @@ function Customer(props) {
                       })
                     }
                   </Row>
-                </Panel>
+                </Collapse.Panel>
               </Collapse>,
             </div>
 
@@ -300,10 +299,10 @@ function Customer(props) {
                     onChange={onSearchChange}
                   />
                   {
-                    !!(customerInfo && customerInfo.id) ? <div style={{ marginTop: 15 }}>
-                      <p>id: {customerInfo.id}</p>
-                      <p>Họ tên: {customerInfo.last_name} {customerInfo.first_name}</p>
-                      <p>Email: {customerInfo.email}</p>
+                    !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
+                      <p>id: {order.customer.id}</p>
+                      <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                      <p>Email: {order.customer.email}</p>
                     </div> : null
                   }
                 </Card>

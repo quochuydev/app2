@@ -38,7 +38,7 @@
   width: 100%;
 }
 
-.ant-form-item { 
+.ant-form-item {
   margin-bottom: 0;
   margin-right: 10px;
 }
@@ -49,4 +49,8 @@
 
 .ant-popover-arrow {
   display: none;
+}
+
+.ant-collapse-content-box {
+  padding: 0 !important;
 }
