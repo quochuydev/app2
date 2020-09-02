@@ -7,10 +7,12 @@ const initialState = Map({
   order: {
     type: 'app',
     line_items: [],
+
     total_line_items_price: 0,
     custom_total_shipping_price: 0,
     total_discounts: 0,
     total_price: 0,
+
     customer: null,
     shipping_address: null
   }
@@ -29,10 +31,12 @@ function OrdersReducer(state = initialState, { type, payload }) {
       order.total_line_items_price = 0;
       order.total_price = 0;
 
-      for (const line_item of order.line_items) {
+      for (let i = 0; i < order.line_items.length; i++) {
+        const line_item = order.line_items[i];
+        line_item.custom_total_price = line_item.quantity * line_item.price;
         order.total_line_items_price += Number(line_item.custom_total_price);
       }
-      
+
       order.total_price = order.total_line_items_price;
       order.total_price += order.custom_total_shipping_price;
       order.total_price -= order.total_discounts;

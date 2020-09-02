@@ -12,10 +12,10 @@ import AsyncSelect from 'react-select/async';
 import CurrencyFormat from 'react-currency-format';
 
 import {
-  Table, Icon, Row, Col, Button, Modal,
+  Table, Icon, Row, Col, Button, Modal, Badge,
   Input, Select, DatePicker, Upload, Tag, Pagination,
   Form, Card, Result, Tabs, Radio, Collapse, Layout, Popover,
-  List, Skeleton, Avatar, Dropdown, Menu, message
+  List, Skeleton, Avatar, Dropdown, Menu, message,
 } from 'antd';
 
 import 'antd/dist/antd.css';
@@ -44,7 +44,7 @@ function Customer(props) {
   const columns = [
     {
       title: 'Sản phẩm', key: 'title', render: edit => (
-        <a onClick={() => { }}>{edit.title}</a>
+        <a onClick={() => { }}>{edit.title} {edit.variant_title}</a>
       )
     },
     {
@@ -89,70 +89,78 @@ function Customer(props) {
   const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
+  const [addVariantModal, setAddVariantModal] = useState(null);
+
   const [customerSelected, setCustomerSelected] = useState({ value: null, label: '-- Vui lòng chọn --' });
   const [customerInfo, setCustomerInfo] = useState(null);
   const [customer, setCustomer] = useState({ gender: 1 })
-  const [lineItems, setLineItems] = useState([])
   let setOrder = OrderActions.setOrder;
 
-  function addLineItem(id) {
-    let line_items = [...lineItems]
-    let index = line_items.findIndex(e => e.id == id);
+  function addVariant(product_id, variant) {
+    let product = products.find(e => e.id == product_id);
+    let line_item = {
+      id: variant.id,
+      product_id: product.id,
+      title: product.title,
+      price: variant.price,
+      variant_id: variant.id,
+      variant_title: variant.title,
+      sku: variant.sku,
+      barcode: variant.barcode
+    };
+    let index = order.line_items.findIndex(e => e.variant_id == variant.id);
     if (index != -1) {
-      line_items[index].quantity = Number(line_items[index].quantity) + 1;
-      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
+      line_item.quantity = order.line_items[index].quantity + 1;
+      order.line_items[index] = line_item;
     } else {
-      let product = products.find(e => e.id == id);
-      let line_item = {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        quantity: 1,
-      };
-      line_item.custom_total_price = line_item.quantity * line_item.price;
-      line_items.push(line_item)
+      line_item.quantity = 1;
+      order.line_items.push(line_item);
     }
-    setLineItems(line_items)
-    setOrder({ ...order, line_items })
+    setOrder({ line_items: order.line_items });
+    setAddVariantModal(null);
+    return;
+  }
+
+  function addProduct(product_id) {
+    let product = products.find(e => e.id == product_id);
+    if (product.variants.length > 1) {
+      setAddVariantModal(product.variants);
+    } else {
+      let variant = product.variants[0];
+      addVariant(product.id, variant);
+    }
+    return;
   }
 
   function decQuantity(id) {
-    let line_items = [...lineItems]
+    let line_items = order.line_items;
     let index = line_items.findIndex(e => e.id == id);
     if (index != -1 && line_items[index].quantity > 1) {
       line_items[index].quantity -= 1;
-      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items);
-    setOrder({ ...order, line_items })
+    setOrder({ line_items })
   }
 
   function incQuantity(id) {
-    let line_items = [...lineItems]
+    let line_items = order.line_items;
     let index = line_items.findIndex(e => e.id == id);
     if (index != -1) {
       line_items[index].quantity += 1;
-      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items);
-    setOrder({ ...order, line_items });
+    setOrder({ line_items });
   }
 
   function setQuantity(id, quantity) {
-    let line_items = [...lineItems]
+    let line_items = order.line_items;
     let index = line_items.findIndex(e => e.id == id);
     if (index != -1) {
       line_items[index].quantity = quantity;
-      line_items[index].custom_total_price = line_items[index].quantity * line_items[index].price;
     }
-    setLineItems(line_items);
-    setOrder({ ...order, line_items });
+    setOrder({ line_items });
   }
 
   function removeLine(id) {
-    let line_items = [...lineItems]
-    line_items = line_items.filter(e => e.id != id);
-    setLineItems(line_items);
+    let line_items = order.line_items.filter(e => e.id != id);
     setOrder({ line_items });
   }
 
@@ -173,7 +181,6 @@ function Customer(props) {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    // OrderDetailActions.createOrder(order)
     AdminServices.createOrder(order)
       .then(result => {
         console.log(result);
@@ -231,14 +238,16 @@ function Customer(props) {
                       products.map(product => {
                         return (
                           <Col span={4} key={product.id}>
-                            <Card className="cursor-pointer"
-                              cover={<div className="overflow-hidden">
-                                <img className="overflow-hidden"
-                                  style={{ width: "100%" }}
-                                  alt={product.images[0].filename} src={product.images[0].src} /></div>}
-                              onClick={() => addLineItem(product.id)}>
-                              <Meta title={product.title} />
-                            </Card>
+                            <Badge count={99}>
+                              <Card className="cursor-pointer"
+                                cover={<div className="overflow-hidden">
+                                  <img className="overflow-hidden"
+                                    style={{ width: "100%" }}
+                                    alt={product.images[0].filename} src={product.images[0].src} /></div>}
+                                onClick={() => addProduct(product.id)}>
+                                <Meta title={product.title} />
+                              </Card>
+                            </Badge>
                           </Col>
                         )
                       })
@@ -257,7 +266,7 @@ function Customer(props) {
                         avatar={<Avatar shape="square" size={60} src={item.images[0].src} />}
                         title={<p>{item.title}</p>}
                         description={item.price}
-                        onClick={() => addLineItem(item.id)}
+                        onClick={() => addProduct(item.id)}
                       />
                     </Menu.Item>
                   ))
@@ -268,7 +277,7 @@ function Customer(props) {
                 addonAfter={<Icon type="search" />} onChange={() => { }} />
             </Dropdown>
 
-            <Table rowKey='id' dataSource={lineItems} columns={columns} pagination={false} size={'small'} />
+            <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'} />
           </Col>
           <Col span={8} style={{ padding: 15 }}>
             <Layout>
@@ -304,21 +313,41 @@ function Customer(props) {
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                     <CurrencyFormat value={order.custom_total_shipping_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
-                      onValueChange={e => setOrder({ ...order, custom_total_shipping_price: e.floatValue })} />
+                      onValueChange={e => setOrder({ custom_total_shipping_price: e.floatValue })} />
                     <CurrencyFormat value={order.total_discounts} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
-                      onValueChange={e => setOrder({ ...order, total_discounts: e.floatValue })} />
+                      onValueChange={e => setOrder({ total_discounts: e.floatValue })} />
                     <CurrencyFormat value={order.total_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
                 <button className="btn-primary w-100" type="submit">Thanh toán</button>
-
               </Footer>
             </Layout>
           </Col>
         </Form>
       </Row>
+      <Modal
+        title="Chọn biến thể"
+        visible={!!addVariantModal}
+        footer={null}
+        onCancel={() => setAddVariantModal(null)}
+        width={700}
+      >
+        <Menu>
+          {
+            addVariantModal ? addVariantModal.map(item => (
+              <Menu.Item key={item.id} style={{ height: 50 }}>
+                <List.Item.Meta
+                  avatar={<Avatar shape="square" size={'large'} src={item.image ? item.image.src : null} />}
+                  title={item.title} onClick={() => addVariant(item.product_id, item)}
+                  description={<CurrencyFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
+                />
+              </Menu.Item>
+            )) : null
+          }
+        </Menu>
+      </Modal>
       <Modal
         title="Tạo khách hàng mới"
         visible={isCreateModal}
