@@ -262,19 +262,36 @@ function Customer(props) {
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
+                  <Row gutter={10} style={{ paddingTop: 10 }}>
+                    <Col span={8}>
+                      <Select>
+                        <Option value={1}>123</Option>
+                      </Select>
+                    </Col>
+                    <Col span={8}>
+                      <Select>
+                        <Option value={1}>123</Option>
+                      </Select>
+                    </Col>
+                    <Col span={8}>
+                      <Select>
+                        <Option value={1}>123</Option>
+                      </Select>
+                    </Col>
+                  </Row>
                   <Row gutter={10} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (
-                          <Col span={3} key={product.id}>
+                          <Col span={4} key={product.id}>
                             <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
-                                  <Avatar shape="square" style={{ width: "100%", height: 80 }}
+                                  <Avatar shape="square" style={{ width: "100%", height: 100 }}
                                     alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
                                 </div>}
                                 onClick={() => addProduct(product.id)}>
-                                <Meta title={product.title} />
+                                <Meta title={_.cloneDeep(product).title.slice(0, 5)} />
                               </Card>
                             </Badge>
                           </Col>
