@@ -87,9 +87,10 @@ Controller.importProducts = async function ({ file }) {
       let product = makeDataProduct(item);
       let variant = makeDataVariant(item);
       let newVariant = await VariantModel._create(variant);
-      if (newVariant) {
+      if (newVariant && newVariant.id) {
         product.variants = [newVariant];
         let newProduct = await ProductModel._create(product);
+        await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
       }
     }
   }

@@ -34,6 +34,13 @@ VariantSchema.statics._create = async function (data = {}) {
   return result;
 }
 
+VariantSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  let data = await _this.update({ ...filter, shop_id }, data_update, option);
+  return data;
+}
+
 let VariantModel = mongoose.model('Variant', VariantSchema);
 
 module.exports = { VariantModel }
