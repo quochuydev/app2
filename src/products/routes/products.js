@@ -1,4 +1,8 @@
-const { list, sync, importProducts } = require('../controllers/products')
+const path = require('path');
+
+const { list, sync, importProducts } = require('../controllers/products');
+const { UploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
+
 const multer = require('multer');
 
 const storage = multer.diskStorage({

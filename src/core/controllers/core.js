@@ -5,7 +5,7 @@ let mongoose = require('mongoose');
 let cache = require('memory-cache');
 
 let UserMD = mongoose.model('User');
-let ShopMD = mongoose.model('Shop');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
@@ -23,10 +23,10 @@ let auth = async (req, res) => {
     let { id_token } = tokens;
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
-    let user = await UserMD.findOne({ email }).lean(true);
     if (!email) {
       return res.sendStatus(401);
     }
+    let user = await UserMD.findOne({ email }).lean(true);
     if (!user) {
       return res.sendStatus(401);
     }
@@ -99,7 +99,7 @@ async function checkUser({ body }) {
   ]);
   if (group_users && group_users.length) {
     let group_user = group_users[0];
-    let shops = await ShopMD.find({ id: { $in: group_user.shops } }).lean(true);
+    let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
     let user = { email: group_user._id, shops };
     return { error: false, user };
   }
@@ -118,7 +118,7 @@ async function signup(req, res, next) {
       let shop_data = {
         name: email, code: email
       }
-      let shop = await ShopMD.create(shop_data);
+      let shop = await ShopModel.create(shop_data);
       let new_user = {
         email,
         shop_id: shop.id
