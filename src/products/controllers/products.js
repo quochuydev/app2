@@ -1,6 +1,7 @@
 const path = require('path');
 
-const { ProductModel } = require(path.resolve('./src/products/models/products.js'));
+const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
+const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
@@ -73,14 +74,23 @@ Controller.importProducts = async function ({ file }) {
       if (found_product) {
         // update
       } else {
-        // create
         let product = makeDataProduct(item);
-        let newProduct = await ProductModel._create(product);
+        let variant = makeDataVariant(item);
+        let newVariant = await VariantModel._create(variant);
+        if (newVariant) {
+          newVariant = newVariant.toJSON();
+          product.variants = [newVariant];
+          let newProduct = await ProductModel._create(product);
+        }
       }
     } else {
-      // create
-        let product = makeDataProduct(item);
+      let product = makeDataProduct(item);
+      let variant = makeDataVariant(item);
+      let newVariant = await VariantModel._create(variant);
+      if (newVariant) {
+        product.variants = [newVariant];
         let newProduct = await ProductModel._create(product);
+      }
     }
   }
   return { error: false };
@@ -103,17 +113,7 @@ function makeDataProduct(item) {
       position: 3,
       name: item.option_3
     }],
-    variants: [{
-      sku: item.sku,
-      barcode: item.barcode,
-      taxable: item.taxable,
-      requires_shipping: item.requires_shipping,
-      option1: item.option1,
-      option2: item.option2,
-      option3: item.option3,
-      price: item.price,
-      compare_at_price: item.compare_at_price,
-    }],
+    variants: [],
     created_at: new Date()
   }
 
@@ -129,7 +129,18 @@ function makeDataProduct(item) {
 }
 
 function makeDataVariant(item) {
-
+  let variant = {
+    sku: item.sku,
+    barcode: item.barcode,
+    taxable: item.taxable,
+    requires_shipping: item.requires_shipping,
+    option1: item.option1,
+    option2: item.option2,
+    option3: item.option3,
+    price: item.price,
+    compare_at_price: item.compare_at_price,
+  }
+  return variant;
 }
 
 module.exports = Controller;
