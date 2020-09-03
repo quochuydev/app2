@@ -6,11 +6,12 @@ import moment from 'moment';
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form
+  Form, message
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
+import ApiClient from './../../../utils/apiClient';
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -60,10 +61,22 @@ function Customer(props) {
       ),
     },
   ];
-  const uploads = {
+
+  const uploadSetting = {
+    multiple: false,
     action: `${apiUrl}/customers/import`,
-    previewFile(file) {
-      console.log(file)
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
     },
   };
 
@@ -174,11 +187,20 @@ function Customer(props) {
         onOk={() => importCustomer()}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload {...uploads}>
+        <Upload {...uploadSetting}>
           <Button>
             <Icon type="upload" /> Upload
-        </Button>
+          </Button>
         </Upload>
+
+        <Upload.Dragger {...uploadSetting}>
+          <div style={{ width: '100%' }}>
+            <p className="ant-upload-drag-icon">
+              <Icon type="inbox" />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          </div>
+        </Upload.Dragger>
       </Modal>
       <Modal
         title="Create Modal"

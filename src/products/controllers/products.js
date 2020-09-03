@@ -2,6 +2,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const ProductMD = mongoose.model('Product');
 const { _parse } = require(path.resolve('./src/core/lib/query'));
+const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
 
@@ -21,8 +22,17 @@ Controller.list = async (req, res) => {
   res.json({ error: false, count, products })
 }
 
-Controller.importProducts = async function ({ }) {
-  return;
+Controller.importProducts = async function ({ file }) {
+  let filePath = path.resolve(file);
+  let headers = [
+    { header: 'SKU', key: 'sku' },
+    { header: 'Tên sản phẩm', key: 'name' },
+    { header: 'Ngày tạo', key: 'created_at' },
+    { header: 'Giá', key: 'price' },
+  ]
+  let data = await ExcelLib.loadFile({ filePath, headers })
+  console.log(data)
+  return { error: false };
 }
 
 module.exports = Controller;

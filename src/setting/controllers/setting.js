@@ -1,5 +1,4 @@
 const path = require('path');
-const mongoose = require('mongoose');
 
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
