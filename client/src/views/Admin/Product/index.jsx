@@ -14,6 +14,7 @@ import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
+import AdminServices from '../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -105,6 +106,8 @@ function Products(props) {
 
   let [query, setQuery] = useState({});
   let [isImportModal, setIsImportModal] = useState(false);
+  let [isExportModal, setIsExportModal] = useState(false);
+  let [downloadLink, setDownloadLink] = useState(null);
 
   async function loadProducts() {
     await actions.loadProducts(query);
@@ -125,6 +128,15 @@ function Products(props) {
   function onChange(e) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
+  }
+
+  async function exportProducts() {
+    try {
+      const result = await AdminServices.exportProducts();
+      setDownloadLink(result.downloadLink);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   return (
@@ -158,6 +170,7 @@ function Products(props) {
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
+          <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
           <Table rowKey='number' dataSource={products} columns={columns} />
         </Col>
       </Row>
@@ -170,6 +183,17 @@ function Products(props) {
         <Upload.Dragger {...uploadSetting}>
           <Icon type="upload" /> Upload
         </Upload.Dragger>
+      </Modal>
+      <Modal
+        title="Export excel"
+        visible={isExportModal}
+        onOk={() => exportProducts()}
+        onCancel={() => setIsExportModal(false)}
+      >
+        {
+          downloadLink ? <a href={downloadLink}>{downloadLink}</a> : null
+        }
+
       </Modal>
     </div>
   )

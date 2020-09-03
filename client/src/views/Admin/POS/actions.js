@@ -103,17 +103,6 @@ export function importCustomer(customer) {
   }
 }
 
-export function exportCustomer(customer) {
-  return async (dispatch) => {
-    try {
-      const payload = await AdminServices.exportCustomer();
-      dispatch({ type: ACTIONS.EXPORT_CUSTOMER_SUCCESS, payload });
-    } catch (error) {
-      dispatch({ type: ACTIONS.EXPORT_CUSTOMER_FAILED, payload: { error: true } });
-    }
-  }
-}
-
 export function updateCustomer(customer) {
   return async (dispatch) => {
     try {
