@@ -76,7 +76,7 @@ const DiskStorage = ({ destination, filename }) => multer.diskStorage({
 
       return cb(null, destination({ shop, user }));
     }
-    return cb(null, './media/uploads');
+    return cb(null, './uploads');
   },
   filename: function (req, file, cb) {
     if (typeof filename === 'function') {
