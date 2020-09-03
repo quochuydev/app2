@@ -1,10 +1,11 @@
 // const { UploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 
 const _ = require('lodash');
-// const fileCloud = require('../libs/file-cloud.server.lib');
 const path = require('path');
 const uuid = require('uuid').v4;
 const multer = require('multer');
+
+// const fileCloud = require('../libs/file-cloud.server.lib');
 
 const FileFilters = {
   Images: (req, file, cb) => {
@@ -49,13 +50,13 @@ const CloudStorage = ({ API = 'upload', filename }) => Object({
     let file_name = uuid() + path.extname(file.originalname);
 
     if (typeof filename === 'function') {
-      let shop = { url: req.session.shop || null, id: req.session.shop_id || null };
+      let shop = { id: req.shop_id || null };
       let user = req.user || null;
 
       file_name = filename({ shop, user, file });
     }
 
-    return cb();
+    return cb({ error: true });
     // fileCloud[API]({ fileStream : file.stream, fileName : file_name })
     // .then(downloadLink => cb(null, { path : downloadLink }))
     // .catch(cb);
@@ -71,7 +72,7 @@ const DiskStorage = ({ destination, filename }) => multer.diskStorage({
       return cb(null, destination)
     }
     if (typeof destination === 'function') {
-      let shop = { url: req.session.shop || null, id: req.session.shop_id || null };
+      let shop = { id: req.shop_id || null };
       let user = req.user || null;
 
       return cb(null, destination({ shop, user }));
@@ -80,7 +81,7 @@ const DiskStorage = ({ destination, filename }) => multer.diskStorage({
   },
   filename: function (req, file, cb) {
     if (typeof filename === 'function') {
-      let shop = { url: req.session.shop || null, id: req.session.shop_id || null };
+      let shop = { id: req.shop_id || null };
       let user = req.user || null;
 
       return cb(null, filename({ shop, user, file }));
