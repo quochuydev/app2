@@ -146,23 +146,33 @@ async function signup(req, res, next) {
   }
 }
 
-let login = async (req, res) => {
-  let { email, password } = req.body;
-  let user = await UserMD.findOne({ email }).lean(true);
-  // if (!user.authenticate(password)) {
-  //   return res.sendStatus(401)
-  // }
+let login = async (req, res, next) => {
+  try {
+    let { email, password } = req.body;
 
-  if (!user) {
-    return res.sendStatus(400)
+    if (!email) {
+      throw { message: `Vui lòng nhập 'email!'` }
+    }
+
+    let user = await UserMD.findOne({ email }).lean(true);
+    // if (!user.authenticate(password)) {
+    //   return res.sendStatus(401)
+    // }
+    
+    if (!user) {
+      throw { message: `User này không tồn tại` }
+    }
+
+    let user_gen_token = {
+      email: user.email,
+      shop_id: user.shop_id,
+      exp: (Date.now() + 60 * 60 * 1000) / 1000
+    }
+    let userToken = jwt.sign(user_gen_token, hash_token);
+    res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
+  } catch (error) {
+    next(error);
   }
-  let user_gen_token = {
-    email: user.email,
-    shop_id: user.shop_id,
-    exp: (Date.now() + 60 * 60 * 1000) / 1000
-  }
-  let userToken = jwt.sign(user_gen_token, hash_token);
-  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
 }
 
 function loginGoogle(req, res) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import config from '../../../utils/config';
 import './style.css';
-import { Button, Form, Input, Checkbox } from 'antd';
+import { Button, Form, Input, Checkbox, message } from 'antd';
 import AdminServices from '../../../services/adminServices';
 
 const layout = {
@@ -15,10 +15,15 @@ const basedUrl = config.backend_url;
 function Login() {
   let [account, setAccount] = useState({ email: '', password: '' });
 
-  const onFinish = async (event) => {
+  const onFinish = (event) => {
     event.preventDefault();
-    const data = await AdminServices.login(account);
-    window.location.href = data.url;
+    AdminServices.login(account)
+      .then(result => {
+        window.location.href = result.url;
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
   };
 
   function onChange(e) {
@@ -27,10 +32,13 @@ function Login() {
 
   function showPopupLogin() {
     return fetch(`${basedUrl}/login-google`, { method: "POST" })
-      .then(function (res) {
+      .then(res => {
         res.json().then(body => {
           window.location.href = body.url;
-        });
+        })
+      })
+      .catch(error => {
+        message.error(error.message);
       });
   }
 
