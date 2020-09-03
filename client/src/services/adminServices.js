@@ -15,6 +15,7 @@ const URLS = {
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT_DETAIL: 'api/products/detail',
   SYNC_PRODUCTS: 'api/products/sync',
+  EXPORT_PRODUCTS: 'api/products/export',
 
   LIST_STAFFS: 'api/staffs',
 
@@ -124,6 +125,10 @@ async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
 
+async function exportProducts() {
+  return await ApiClient.postData(URLS.EXPORT_PRODUCTS, null, null);
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -142,6 +147,6 @@ export default {
   getOrderDetail, createOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts,
-  login, changeShop, getUser
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts,
+  login, changeShop, getUser,
 }

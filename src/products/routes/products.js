@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { list, sync, importProducts } = require('../controllers/products');
+const { list, sync, importProducts, exportExcel } = require('../controllers/products');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
@@ -15,6 +15,16 @@ const router = ({ app }) => {
         next(error);
       })
   });
+  app.post('/api/products/export', function (req, res, next) {
+    exportExcel({ body: req.body })
+      .then(result => {
+        res.json(result);
+      })
+      .catch(error => {
+        next(error);
+      })
+  });
+
 }
 
 module.exports = router;

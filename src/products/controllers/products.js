@@ -1,4 +1,5 @@
 const path = require('path');
+const moment = require('moment');
 
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
@@ -6,12 +7,13 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
+const config = require(path.resolve('./src/config/config'));
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
 
 let Controller = {};
 
-Controller.sync = async (req, res, next) => {
+Controller.sync = async (req, res, next) => { 
   try {
     await Promise.all([
       syncProductsHaravan(),
@@ -29,6 +31,35 @@ Controller.list = async (req, res) => {
   let count = await ProductModel.count(criteria);
   let products = await ProductModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
   res.json({ error: false, count, products })
+}
+
+Controller.exportExcel = async ({ body }) => {
+  let { limit, skip, criteria } = _parse(body);
+  let products = await ProductModel.find(criteria);
+
+  const excel = await ExcelLib.init({
+    host: config.app_host,
+    dir: `./download/${moment().format('YYYY')}/${moment().format('MM-DD')}`,
+    fileName: `export-{i}-${moment().utc(7).format('DD-MM-YYYY_HH-mm-ss')}.xlsx`,
+    worksheet: {
+      name: 'sheet1',
+      columns: [
+        { header: 'ProductId', key: 'id', width: 20 },
+      ]
+    },
+    limit: 1000
+  });
+
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+    await excel.write({
+      id: product.id,
+    });
+  }
+
+  const { downloadLink } = await excel.end();
+  console.log(downloadLink);
+  return { error: false, downloadLink };
 }
 
 Controller.importProducts = async function ({ file }) {
@@ -81,7 +112,6 @@ Controller.importProducts = async function ({ file }) {
       }
 
       if (item.product_id) {
-        // check
         let found_product = await ProductModel.findOne({ handle: item.product_id }).lean(true);
         if (found_product) {
           // update
@@ -150,13 +180,15 @@ function makeDataVariant(item) {
     sku: item.sku,
     barcode: item.barcode,
     taxable: item.taxable,
-    requires_shipping: item.requires_shipping,
     option1: item.option1,
     option2: item.option2,
     option3: item.option3,
     price: item.price,
     compare_at_price: item.compare_at_price,
+    created_at: new Date(),
   }
+  variant.requires_shipping = item.requires_shipping == 'No' ? false : true;
+
   return variant;
 }
 
