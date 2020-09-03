@@ -9,6 +9,14 @@ const baseHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
 };
+
+function getHeader(option = {}) {
+  let base = {
+    'AccessToken': token ? token : null,
+  };
+  return _.assign({}, base, option)
+}
+
 function getUrl(url) {
   return `${basedUrl}/${url}`;
 }
@@ -111,4 +119,4 @@ async function sendData(url, token, method = 'GET') {
   return result;
 }
 
-export default { getData, postData, putData, sendData, deleteData };
+export default { getHeader, getData, postData, putData, sendData, deleteData };

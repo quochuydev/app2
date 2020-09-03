@@ -16,33 +16,20 @@ let list = async (req, res) => {
     let { limit, skip, criteria } = _parse(req.body);
     let count = await CustomersMD._count(criteria);
     let customers = await CustomersMD.find(criteria).lean(true);
-    res.send({ error: false, count, customers })
+    res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)
-    res.send({ error: true, count: 0, customers: [] })
+    res.json({ error: true, count: 0, customers: [] })
   }
 }
 
 let sync = async (req, res) => {
   try {
-    try {
-      await syncCustomersHaravan();
-    }
-    catch (e) {
-      console.log(e)
-    }
-    try {
-      await syncCustomersWoo();
-    }
-    catch (e) {
-      console.log(e)
-    }
-    try {
-      await syncCustomersShopify();
-    }
-    catch (e) {
-      console.log(e)
-    }
+    await Promise.all([
+      syncCustomersHaravan(),
+      syncCustomersWoo(),
+      syncCustomersShopify()
+    ])
     res.json({ error: false });
   } catch (error) {
     console.log(error)
@@ -63,12 +50,12 @@ let update = async (req, res) => {
   let customer_data = req.body;
   let { _id } = req.params;
   let customer = await CustomersMD._findOneAndUpdate({ _id }, { $set: customer_data });
-  res.send({ error: false, customer });
+  res.json({ error: false, customer });
 }
 
 let importExcel = (req, res) => {
 
-  res.send({ error: false });
+  res.json({ error: false });
 }
 
 let exportExcel = async (req, res) => {
@@ -98,14 +85,7 @@ let exportExcel = async (req, res) => {
 
   const { downloadLink } = await excel.end();
   console.log(downloadLink)
-  res.send({ error: false, downloadLink });
+  res.json({ error: false, downloadLink });
 }
 
 module.exports = { list, sync, create, update, importExcel, exportExcel }
-
-let test = async () => {
-  // await syncCustomersHaravan();
-  // await syncCustomersShopify();
-  // await syncCustomersWoo();
-}
-// test();

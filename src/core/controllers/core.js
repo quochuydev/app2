@@ -6,7 +6,6 @@ let cache = require('memory-cache');
 
 let UserMD = mongoose.model('User');
 let ShopMD = mongoose.model('Shop');
-const SettingMD = mongoose.model('Setting');
 
 const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
@@ -120,7 +119,6 @@ async function signup(req, res, next) {
         name: email, code: email
       }
       let shop = await ShopMD.create(shop_data);
-      await SettingMD.create({ shop_id: shop.id });
       let new_user = {
         email,
         shop_id: shop.id

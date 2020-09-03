@@ -7,10 +7,15 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload
+  Upload, message
 } from 'antd';
 import 'antd/dist/antd.css';
+
+import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
+import ApiClient from './../../../utils/apiClient';
+
+const apiUrl = `${config.backend_url}/api`;
 
 const { Option } = Select;
 
@@ -73,6 +78,24 @@ function Products(props) {
       )
     }
   ];
+
+  const uploadSetting = {
+    multiple: false,
+    action: `${apiUrl}/products/import`,
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
   useEffect(() => {
     setIsProcessing(true);
@@ -144,7 +167,7 @@ function Products(props) {
         onOk={() => { }}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload>
+        <Upload {...uploadSetting}>
           <Button>
             <Icon type="upload" /> Upload
         </Button>

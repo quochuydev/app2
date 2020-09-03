@@ -25,5 +25,4 @@ const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { SHOPIFY } = require(path.resolve('./src/shopify/CONST'));
 
-const SettingMD = mongoose.model('Setting');
 const OrderMD = mongoose.model('Order');
