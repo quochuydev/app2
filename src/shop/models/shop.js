@@ -1,5 +1,8 @@
+// const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const cache = require('memory-cache');
 const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 
@@ -16,7 +19,7 @@ const ShopSchema = new Schema({
     status: { type: Number, default: 0 },
   },
   haravan: {
-    shop_id: { type: Number, default: null },
+    id: { type: Number, default: null },
     shop: { type: String, default: null },
     access_token: { type: String, default: null },
     is_test: { type: Boolean, default: false },
@@ -45,4 +48,35 @@ ShopSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1
 });
 
-mongoose.model('Shop', ShopSchema);
+ShopSchema.statics._create = async function (data = {}) {
+  let _this = this;
+  let id = cache.get('shop_id');
+  let result = await _this.create({ ...data, id });
+  return result;
+
+}
+
+ShopSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+  let _this = this;
+  let id = cache.get('shop_id');
+  let data = await _this.findOne({ ...filter, id }, populate, options);
+  return data;
+}
+
+ShopSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
+  let _this = this;
+  let id = cache.get('shop_id');
+  let data = await _this.findOneAndUpdate({ ...filter, id }, data_update, options);
+  return data;
+}
+
+ShopSchema.statics._update = async function (filter = {}, data_update = {}) {
+  let _this = this;
+  let id = cache.get('shop_id');
+  let data = await _this.update({ ...filter, id }, data_update);
+  return data;
+}
+
+let ShopModel = mongoose.model('Shop', ShopSchema);
+
+module.exports = { ShopModel }

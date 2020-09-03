@@ -1,9 +1,8 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const HaravanAPI = require('haravan_api');
-const cache = require('memory-cache');
 
-const SettingMD = mongoose.model('Setting');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
 const { haravan, frontend_site } = require(path.resolve('./src/config/config'));
@@ -48,14 +47,14 @@ const grandservice = async (req, res) => {
   let { access_token } = await HrvAPI.getToken(code);
   let shopAPI = await HrvAPI.call(HRV.SHOP.GET, { access_token });
   let haravanData = { shop_id: shopAPI.id, shop: shopAPI.myharavan_domain, status: 1, access_token, is_test }
-  let setting = await SettingMD._findOne();
+  let setting = await ShopModel._findOne();
   let { haravan } = setting;
   haravan = Object.assign({}, haravan, haravanData);
-  let found = await SettingMD._findOne();
+  let found = await ShopModel._findOne();
   if (!found) {
-    await SettingMD._create({ haravan });
+    await ShopModel._create({ haravan });
   } else {
-    await SettingMD._findOneAndUpdate({}, { $set: { haravan } });
+    await ShopModel._findOneAndUpdate({}, { $set: { haravan } });
   }
   res.redirect(`${frontend_site}/app`)
 }

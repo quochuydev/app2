@@ -4,8 +4,8 @@ const WoocommerceAPI = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyAPI = require('shopify_mono');
 
-const SettingMD = mongoose.model('Setting');
 const OrderMD = mongoose.model('Order');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
@@ -16,7 +16,7 @@ const { is_test } = haravan;
 
 let syncOrdersWoo = async () => {
   let start_at = new Date();
-  let setting = await SettingMD._findOne();
+  let setting = await ShopModel._findOne();
   let { woocommerce, last_sync } = setting;
   let { wp_host, consumer_key, consumer_secret, status } = woocommerce;
   if (!status) { return }
@@ -39,13 +39,13 @@ let syncOrdersWoo = async () => {
     }
   }
   let end_at = new Date();
-  await SettingMD._update({}, { $set: { 'last_sync.woo_orders_at': end_at } });
+  await ShopModel._update({}, { $set: { 'last_sync.woo_orders_at': end_at } });
   console.log(`END SYNC ORDERS WOO: ${(end_at - start_at) / 1000}s`);
 }
 
 let syncOrdersHaravan = async () => {
   let start_at = new Date();
-  let setting = await SettingMD._findOne();
+  let setting = await ShopModel._findOne();
   let { last_sync } = setting;
   let { access_token, shop, status } = setting.haravan;
   if (!status) { return }
@@ -84,14 +84,14 @@ let syncOrdersHaravan = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD._update({}, { $set: { 'last_sync.hrv_orders_at': end_at } });
+  await ShopModel._update({}, { $set: { 'last_sync.hrv_orders_at': end_at } });
   console.log(`END SYNC ORDERS HRV: ${(end_at - start_at) / 1000}s`);
 }
 
 
 let syncOrdersShopify = async () => {
   let start_at = new Date();
-  let setting = await SettingMD._findOne();
+  let setting = await ShopModel._findOne();
   let { shopify, last_sync } = setting;
   let { access_token, shopify_host, status } = shopify;
   if (!status) { return }
@@ -115,7 +115,7 @@ let syncOrdersShopify = async () => {
   }
 
   let end_at = new Date();
-  await SettingMD._update({}, { $set: { 'last_sync.shopify_orders_at': end_at } });
+  await ShopModel._update({}, { $set: { 'last_sync.shopify_orders_at': end_at } });
   console.log(`END SYNC ORDERS SHOPIFY: ${(end_at - start_at) / 1000}s`);
 }
 

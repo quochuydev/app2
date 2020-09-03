@@ -1,3 +1,5 @@
+// const { ERR } = require(path.resolve('./src/core/lib/error.js'));
+
 class ERR extends Errors {
   constructor(props) {
     super();
