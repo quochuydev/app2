@@ -1,6 +1,7 @@
 const path = require('path');
-const mongoose = require('mongoose');
-const ProductMD = mongoose.model('Product');
+
+const { ProductModel } = require(path.resolve('./src/products/models/products.js'));
+
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 
@@ -23,27 +24,28 @@ Controller.sync = async (req, res, next) => {
 
 Controller.list = async (req, res) => {
   let { limit, skip, criteria } = _parse(req.body);
-  let count = await ProductMD.count(criteria);
-  let products = await ProductMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+  let count = await ProductModel.count(criteria);
+  let products = await ProductModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
   res.json({ error: false, count, products })
 }
 
 Controller.importProducts = async function ({ file }) {
   let filePath = path.resolve(file);
   let headers = [
+    { header: 'ProductId', key: 'product_id' },
     { header: 'Tên', key: 'title' },
     { header: 'Mô tả', key: 'body_html' },
-    { header: 'Trích dẫn', key: 'handle' },
+    { header: 'Trích dẫn', key: '1000x' },
     { header: 'Hãng', key: 'title' },
     { header: 'Loại sản phẩm', key: 'product_type' },
     { header: 'Tags', key: 'tags' },
     { header: 'Hiển thị', key: 'published' }, //published_scope:'global' && published_at
-    { header: 'Thuộc tính 1', key: 'option1.name' },
-    { header: 'Giá trị thuộc tính 1', key: 'option1.value' },
-    { header: 'Thuộc tính 2', key: 'option2.name' },
-    { header: 'Giá trị thuộc tính 2', key: 'option2.value' },
-    { header: 'Thuộc tính 3', key: 'option3.name' },
-    { header: 'Giá trị thuộc tính 3', key: 'option3.value' },
+    { header: 'Thuộc tính 1', key: 'option_1' },
+    { header: 'Giá trị thuộc tính 1', key: 'option1' },
+    { header: 'Thuộc tính 2', key: 'option_2' },
+    { header: 'Giá trị thuộc tính 2', key: 'option2' },
+    { header: 'Thuộc tính 3', key: 'option_3' },
+    { header: 'Giá trị thuộc tính 3', key: 'option3' },
     { header: 'Mã phiên bản sản phẩm', key: 'sku' },
     { header: 'Khối lượng', key: 'grams' },
     { header: 'Số lượng tồn kho', key: 'inventory_advance.qty_onhand' }, // qty_onhand/qty_avaiable/qty_incoming/qty_commited
@@ -63,8 +65,71 @@ Controller.importProducts = async function ({ file }) {
     { header: 'Không áp dụng khuyến mãi', key: 'not_allow_promotion' }
   ]
   let items = await ExcelLib.loadFile({ filePath, headers });
-  console.log(items)
+  console.log(items);
+  for (const item of items) {
+    if (item.product_id) {
+      // check
+      let found_product = await ProductModel.findOne({ handle: item.product_id }).lean(true);
+      if (found_product) {
+        // update
+      } else {
+        // create
+        let product = makeDataProduct(item);
+        let newProduct = await ProductModel._create(product);
+      }
+    } else {
+      // create
+        let product = makeDataProduct(item);
+        let newProduct = await ProductModel._create(product);
+    }
+  }
   return { error: false };
+}
+
+function makeDataProduct(item) {
+  let product = {
+    title: item.title,
+    body_html: item.body_html,
+    tags: item.tags,
+    vendor: item.vendor,
+    not_allow_promotion: item.not_allow_promotion,
+    options: [{
+      position: 1,
+      name: item.option_1
+    }, {
+      position: 2,
+      name: item.option_2
+    }, {
+      position: 3,
+      name: item.option_3
+    }],
+    variants: [{
+      sku: item.sku,
+      barcode: item.barcode,
+      taxable: item.taxable,
+      requires_shipping: item.requires_shipping,
+      option1: item.option1,
+      option2: item.option2,
+      option3: item.option3,
+      price: item.price,
+      compare_at_price: item.compare_at_price,
+    }],
+    created_at: new Date()
+  }
+
+  if (item.published == 'No') {
+    product.published = false;
+  } else {
+    product.published = true;
+    product.published_at = new Date();
+    product.published_scope = 'global';
+  }
+
+  return product;
+}
+
+function makeDataVariant(item) {
+
 }
 
 module.exports = Controller;

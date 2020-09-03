@@ -108,16 +108,11 @@ OrderSchema.statics._update = function (filter = {}, data_update = {}) {
   })
 }
 
-OrderSchema.statics._create = function (data = {}) {
+OrderSchema.statics._create = async function (data = {}) {
   let _this = this;
   let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let result = await _this.create({ ...data, shop_id });
-      resolve(result)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  let result = await _this.create({ ...data, shop_id });
+  return result;
 }
+
 mongoose.model('Order', OrderSchema);
