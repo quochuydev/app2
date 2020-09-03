@@ -167,11 +167,9 @@ function Products(props) {
         onOk={() => { }}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload {...uploadSetting}>
-          <Button>
-            <Icon type="upload" /> Upload
-        </Button>
-        </Upload>
+        <Upload.Dragger {...uploadSetting}>
+          <Icon type="upload" /> Upload
+        </Upload.Dragger>
       </Modal>
     </div>
   )

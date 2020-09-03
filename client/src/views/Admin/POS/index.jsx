@@ -283,7 +283,7 @@ function Customer(props) {
                     {
                       products.map(product => {
                         return (
-                          <Col span={4} key={product.id}>
+                          <Col span={4} key={product._id}>
                             <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
@@ -291,7 +291,7 @@ function Customer(props) {
                                     alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
                                 </div>}
                                 onClick={() => addProduct(product.id)}>
-                                <Meta title={_.cloneDeep(product).title.slice(0, 5)} />
+                                <Meta title={product.title ? _.cloneDeep(product).title.slice(0, 5) : ''} />
                               </Card>
                             </Badge>
                           </Col>

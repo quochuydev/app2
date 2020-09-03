@@ -1,11 +1,12 @@
 /*
-const { ProductModel } = require(path.resolve('./src/products/models/products.js'));
+const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 */
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
+const cache = require('memory-cache');
 
 const ProductSchema = new Schema({
   number: { type: Number, default: null },
@@ -37,6 +38,14 @@ const ProductSchema = new Schema({
 })
 
 ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'number', startAt: 10000, incrementBy: 1 });
+ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'id', startAt: 10000, incrementBy: 1 });
+
+ProductSchema.statics._create = async function (data = {}) {
+  let _this = this;
+  let shop_id = cache.get('shop_id');
+  let result = await _this.create({ ...data, shop_id });
+  return result;
+}
 
 let ProductModel = mongoose.model('Product', ProductSchema);
 
