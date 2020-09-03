@@ -262,24 +262,27 @@ function Customer(props) {
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
-                  <Row gutter={10} style={{ paddingTop: 10 }}>
+                  <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
+                      <p>Loại sản phẩm</p>
                       <Select>
                         <Option value={1}>123</Option>
                       </Select>
                     </Col>
                     <Col span={8}>
+                      <p>Nhà sản xuất</p>
                       <Select>
                         <Option value={1}>123</Option>
                       </Select>
                     </Col>
                     <Col span={8}>
+                      <p>Được tag với</p>
                       <Select>
                         <Option value={1}>123</Option>
                       </Select>
                     </Col>
                   </Row>
-                  <Row gutter={10} style={{ height: 300, overflow: 'scroll', padding: 15 }}>
+                  <Row gutter={10} style={{ height: 280, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (

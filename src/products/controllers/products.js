@@ -5,6 +5,7 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
 
@@ -67,31 +68,46 @@ Controller.importProducts = async function ({ file }) {
   ]
   let items = await ExcelLib.loadFile({ filePath, headers });
   console.log(items);
-  for (const item of items) {
-    if (item.product_id) {
-      // check
-      let found_product = await ProductModel.findOne({ handle: item.product_id }).lean(true);
-      if (found_product) {
-        // update
+  for (let i = 0; i < items.length; i++) {
+    try {
+      let item = items[i];
+
+      if (!item.title) {
+        throw { message: `[${i}] No title` }
+      }
+
+      if (!item.price) {
+        throw { message: `[${i}] No price` }
+      }
+
+      if (item.product_id) {
+        // check
+        let found_product = await ProductModel.findOne({ handle: item.product_id }).lean(true);
+        if (found_product) {
+          // update
+        } else {
+          let product = makeDataProduct(item);
+          let variant = makeDataVariant(item);
+          let newVariant = await VariantModel._create(variant);
+          if (newVariant) {
+            newVariant = newVariant.toJSON();
+            product.variants = [newVariant];
+            let newProduct = await ProductModel._create(product);
+            await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
+          }
+        }
       } else {
         let product = makeDataProduct(item);
         let variant = makeDataVariant(item);
         let newVariant = await VariantModel._create(variant);
-        if (newVariant) {
-          newVariant = newVariant.toJSON();
+        if (newVariant && newVariant.id) {
           product.variants = [newVariant];
           let newProduct = await ProductModel._create(product);
+          await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
         }
       }
-    } else {
-      let product = makeDataProduct(item);
-      let variant = makeDataVariant(item);
-      let newVariant = await VariantModel._create(variant);
-      if (newVariant && newVariant.id) {
-        product.variants = [newVariant];
-        let newProduct = await ProductModel._create(product);
-        await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
-      }
+    } catch (error) {
+      logger(error);
     }
   }
   return { error: false };
