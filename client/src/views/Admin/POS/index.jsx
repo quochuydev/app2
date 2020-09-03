@@ -259,7 +259,7 @@ function Customer(props) {
       <Row>
         <Form onSubmit={handleSubmit}>
           <Col span={16} style={{ position: 'relative', height: '100vh' }}>
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
                   <Row gutter={10} style={{ margin: 10 }}>
