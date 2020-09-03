@@ -8,11 +8,17 @@ let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../
 
 let Controller = {};
 
-Controller.sync = async (req, res) => {
-  try { await syncProductsHaravan(); } catch (err) { console.log(err) }
-  try { await syncProductsShopify(); } catch (err) { console.log(err) }
-  try { await syncProductsWoo(); } catch (err) { console.log(err) }
-  res.json({ error: false })
+Controller.sync = async (req, res, next) => {
+  try {
+    await Promise.all([
+      syncProductsHaravan(),
+      syncProductsShopify(),
+      syncProductsWoo()
+    ])
+    res.json({ error: false });
+  } catch (error) {
+    next(error);
+  }
 }
 
 Controller.list = async (req, res) => {
@@ -56,8 +62,8 @@ Controller.importProducts = async function ({ file }) {
     { header: 'Ngày cập nhật', key: 'updated_at' },
     { header: 'Không áp dụng khuyến mãi', key: 'not_allow_promotion' }
   ]
-  let data = await ExcelLib.loadFile({ filePath, headers })
-  console.log(data)
+  let items = await ExcelLib.loadFile({ filePath, headers });
+  console.log(items)
   return { error: false };
 }
 
