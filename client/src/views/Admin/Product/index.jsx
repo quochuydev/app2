@@ -148,7 +148,7 @@ function Products(props) {
   async function deleteProduct(id) {
     try {
       const result = await AdminServices.deleteProduct(id);
-      message.success(JSON.stringify(result));
+      message.success(result.message);
       actions.loadProducts();
     } catch (error) {
       message.error(error.message);

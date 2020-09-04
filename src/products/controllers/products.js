@@ -275,9 +275,16 @@ Controller.deleteProduct = async function ({ product_id }) {
     throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
   }
 
+  let found_product = await ProductModel.findOne({ id: product_id }).lean(true);
+
+  if (!found_product) {
+    throw { message: 'Sản phẩm không còn tồn tại' }
+  }
+
   await ProductModel.remove({ id: product_id });
   await VariantModel.remove({ product_id });
-  return { error: false }
+
+  return { message: 'Xóa sản phẩm thành công' }
 }
 
 
@@ -287,12 +294,17 @@ Controller.deleteVariant = async function ({ variant_id }) {
     throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
   }
 
+  let found_variant = await VariantModel.findOne({ id: variant_id }).lean(true);
+  if (!found_variant) {
+    throw { message: 'Biến thể không còn tồn tại' }
+  }
+
   await VariantModel.remove({ id: variant_id });
   let found_product = await ProductModel.find({ 'variants.id': variant_id });
 
   let variants = found_product.variants.filter(e => e.id != variant_id);
   await ProductModel.update({ id: found_product.id }, { $set: { variants } });
 
-  return { error: false }
+  return { message: 'Xóa biến thể thành công' }
 }
 module.exports = Controller;
