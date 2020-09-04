@@ -24,6 +24,7 @@ const ProductSchema = new Schema({
   body_html: { type: String, default: null },
   variants: [{
     id: { type: Number, default: null },
+    product_id: { type: Number, default: null },
     price: { type: Number, default: null },
     sku: { type: String, default: null },
     barcode: { type: String, default: null },

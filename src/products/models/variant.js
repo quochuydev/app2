@@ -10,18 +10,14 @@ const cache = require('memory-cache');
 
 const VariantSchema = new Schema({
   id: { type: Number, default: null },
-
-  created_at: { type: Date, default: null },
-  updated_at: { type: Date, default: null },
   product_id: { type: Number, default: null },
   price: { type: Number, default: null },
   sku: { type: String, default: null },
   barcode: { type: String, default: null },
   title: { type: String, default: null },
   compare_at_price: { type: Number, default: null },
-
   shop_id: { type: Number, default: null },
-  created_at: { type: Date, default: null },
+  created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: null },
 })
 
@@ -29,8 +25,8 @@ VariantSchema.plugin(autoIncrement.plugin, { model: 'Variant', field: 'id', star
 
 VariantSchema.statics._create = async function (data = {}) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  let result = await _this.create({ ...data, shop_id });
+  data.shop_id = cache.get('shop_id');
+  let result = await _this.create(data);
   return result;
 }
 

@@ -13,7 +13,7 @@ let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../
 
 let Controller = {};
 
-Controller.sync = async (req, res, next) => { 
+Controller.sync = async (req, res, next) => {
   try {
     await Promise.all([
       syncProductsHaravan(),
@@ -33,6 +33,40 @@ Controller.list = async (req, res) => {
   res.json({ error: false, count, products })
 }
 
+let productHeaders = [
+  { header: 'ProductId', key: 'product_id', width: 20 },
+  { header: 'Tên', key: 'title' },
+  { header: 'Mô tả', key: 'body_html' },
+  { header: 'Trích dẫn', key: 'xxxx' },
+  { header: 'Hãng', key: 'title' },
+  { header: 'Loại sản phẩm', key: 'product_type' },
+  { header: 'Tags', key: 'tags' },
+  { header: 'Hiển thị', key: 'published' }, //published_scope:'global' && published_at
+  { header: 'Thuộc tính 1', key: 'option_1' },
+  { header: 'Giá trị thuộc tính 1', key: 'option1' },
+  { header: 'Thuộc tính 2', key: 'option_2' },
+  { header: 'Giá trị thuộc tính 2', key: 'option2' },
+  { header: 'Thuộc tính 3', key: 'option_3' },
+  { header: 'Giá trị thuộc tính 3', key: 'option3' },
+  { header: 'Mã phiên bản sản phẩm', key: 'sku' },
+  { header: 'Khối lượng', key: 'grams' },
+  { header: 'Số lượng tồn kho', key: 'qty_onhand' }, // qty_onhand/qty_avaiable/qty_incoming/qty_commited
+  { header: 'Đặt hàng khi hết hàng', key: 'inventory_policy' }, // "continue"/"deny"
+  { header: 'Giá', key: 'price' },
+  { header: 'Giá so sánh', key: 'compare_at_price' },
+  { header: 'Có giao hàng không?', key: 'requires_shipping' }, // true/false
+  { header: 'Variant Taxable', key: 'taxable' },
+  { header: 'Barcode', key: 'barcode' },
+  { header: 'Link hình', key: 'image_src' },
+  { header: 'Mô tả hình', key: 'image_alt' },
+  { header: 'Danh mục', key: 'vendor' },
+  { header: 'Danh mục EN', key: 'vendor_en' },
+  { header: 'Ảnh biến thể', key: 'image_variant_src' },
+  { header: 'Ngày tạo', key: 'created_at' },
+  { header: 'Ngày cập nhật', key: 'updated_at' },
+  { header: 'Không áp dụng khuyến mãi', key: 'not_allow_promotion' }
+]
+
 Controller.exportExcel = async ({ body }) => {
   let { limit, skip, criteria } = _parse(body);
   let products = await ProductModel.find(criteria);
@@ -43,18 +77,48 @@ Controller.exportExcel = async ({ body }) => {
     fileName: `export-{i}-${moment().utc(7).format('DD-MM-YYYY_HH-mm-ss')}.xlsx`,
     worksheet: {
       name: 'sheet1',
-      columns: [
-        { header: 'ProductId', key: 'id', width: 20 },
-      ]
+      columns: productHeaders
     },
     limit: 1000
   });
 
   for (let i = 0; i < products.length; i++) {
     const product = products[i];
-    await excel.write({
-      id: product.id,
-    });
+    for (let j = 0; j < product.variants.length; j++) {
+      const variant = product.variants[j];
+      await excel.write({
+        product_id: product.id,
+        title: product.title,
+        body_html: product.body_html,
+        xxxx: variant.xxxx,
+        product_type: variant.product_type,
+        tags: variant.tags,
+        published: product.published,
+        option_1: variant.option_1,
+        option1: variant.option1,
+        option_2: variant.option_2,
+        option2: variant.option2,
+        option_3: variant.option_3,
+        option3: variant.option3,
+        sku: variant.sku,
+        grams: variant.grams,
+        qty_onhand: variant.qty_onhand,
+        inventory_policy: variant.inventory_policy,
+        price: variant.price,
+        compare_at_price: variant.compare_at_price,
+        requires_shipping: variant.requires_shipping,
+        taxable: variant.taxable,
+        barcode: variant.barcode,
+        image_src: variant.image_src,
+        image_alt: variant.image_alt,
+        vendor: variant.vendor,
+        vendor_en: variant.vendor_en,
+        image_variant_src: variant.image_variant_src,
+        created_at: variant.created_at,
+        updated_at: variant.updated_at,
+        not_allow_promotion: variant.not_allow_promotion,
+      });
+    }
   }
 
   const { downloadLink } = await excel.end();
@@ -64,40 +128,8 @@ Controller.exportExcel = async ({ body }) => {
 
 Controller.importProducts = async function ({ file }) {
   let filePath = path.resolve(file);
-  let headers = [
-    { header: 'ProductId', key: 'product_id' },
-    { header: 'Tên', key: 'title' },
-    { header: 'Mô tả', key: 'body_html' },
-    { header: 'Trích dẫn', key: '1000x' },
-    { header: 'Hãng', key: 'title' },
-    { header: 'Loại sản phẩm', key: 'product_type' },
-    { header: 'Tags', key: 'tags' },
-    { header: 'Hiển thị', key: 'published' }, //published_scope:'global' && published_at
-    { header: 'Thuộc tính 1', key: 'option_1' },
-    { header: 'Giá trị thuộc tính 1', key: 'option1' },
-    { header: 'Thuộc tính 2', key: 'option_2' },
-    { header: 'Giá trị thuộc tính 2', key: 'option2' },
-    { header: 'Thuộc tính 3', key: 'option_3' },
-    { header: 'Giá trị thuộc tính 3', key: 'option3' },
-    { header: 'Mã phiên bản sản phẩm', key: 'sku' },
-    { header: 'Khối lượng', key: 'grams' },
-    { header: 'Số lượng tồn kho', key: 'inventory_advance.qty_onhand' }, // qty_onhand/qty_avaiable/qty_incoming/qty_commited
-    { header: 'Đặt hàng khi hết hàng', key: 'inventory_policy' }, // "continue"/"deny"
-    { header: 'Giá', key: 'price' },
-    { header: 'Giá so sánh', key: 'compare_at_price' },
-    { header: 'Có giao hàng không?', key: 'requires_shipping' }, // true/false
-    { header: 'Variant Taxable', key: 'taxable' },
-    { header: 'Barcode', key: 'barcode' },
-    { header: 'Link hình', key: 'image_src' },
-    { header: 'Mô tả hình', key: 'image_alt' },
-    { header: 'Danh mục', key: 'vendor' },
-    { header: 'Danh mục EN', key: 'vendor_en' },
-    { header: 'Ảnh biến thể', key: 'variant.image_id' },
-    { header: 'Ngày tạo', key: 'created_at' },
-    { header: 'Ngày cập nhật', key: 'updated_at' },
-    { header: 'Không áp dụng khuyến mãi', key: 'not_allow_promotion' }
-  ]
-  let items = await ExcelLib.loadFile({ filePath, headers });
+
+  let items = await ExcelLib.loadFile({ filePath, headers: productHeaders });
   console.log(items);
   for (let i = 0; i < items.length; i++) {
     try {
@@ -117,23 +149,24 @@ Controller.importProducts = async function ({ file }) {
           // update
         } else {
           let product = makeDataProduct(item);
-          let variant = makeDataVariant(item);
-          let newVariant = await VariantModel._create(variant);
-          if (newVariant) {
+          let newProduct = await ProductModel._create(product);
+          if (newProduct && newProduct.id) {
+            let variant = makeDataVariant(item);
+            variant.product_id = newProduct.id;
+            let newVariant = await VariantModel._create(variant);
             newVariant = newVariant.toJSON();
-            product.variants = [newVariant];
-            let newProduct = await ProductModel._create(product);
-            await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
+            await ProductModel.update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
           }
         }
       } else {
         let product = makeDataProduct(item);
-        let variant = makeDataVariant(item);
-        let newVariant = await VariantModel._create(variant);
-        if (newVariant && newVariant.id) {
-          product.variants = [newVariant];
-          let newProduct = await ProductModel._create(product);
-          await VariantModel.update({ id: { $in: [newVariant.id] } }, { $set: { product_id: newProduct.id } }, { multi: true });
+        let newProduct = await ProductModel._create(product);
+        if (newProduct && newProduct.id) {
+          let variant = makeDataVariant(item);
+          variant.product_id = newProduct.id;
+          let newVariant = await VariantModel._create(variant);
+          newVariant = newVariant.toJSON();
+          await ProductModel.update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
         }
       }
     } catch (error) {

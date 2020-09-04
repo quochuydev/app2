@@ -69,43 +69,25 @@ OrderSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1
 });
 
-OrderSchema.statics._findOne = function (filter = {}, populate = {}, options = { lean: true }) {
+OrderSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let data = await _this.findOne({ ...filter, shop_id }, populate, options);
-      resolve(data)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.findOne(filter, populate, options);
+  return data;
 }
 
-OrderSchema.statics._findOneAndUpdate = function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
+OrderSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let data = await _this.findOneAndUpdate({ ...filter, shop_id }, data_update, options);
-      resolve(data)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.findOneAndUpdate(filter, data_update, options);
+  return data;
 }
 
-OrderSchema.statics._update = function (filter = {}, data_update = {}) {
+OrderSchema.statics._update = async function (filter = {}, data_update = {}) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let data = await _this.update({ ...filter, shop_id }, data_update);
-      resolve(data)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.update(filter, data_update);
+  return data;
 }
 
 OrderSchema.statics._create = async function (data = {}) {
