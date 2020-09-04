@@ -32,9 +32,11 @@ const detail = async (req, res) => {
 
 const sync = async (req, res) => {
   try {
-    await syncOrdersHaravan();
-    await syncOrdersWoo();
-    await syncOrdersShopify();
+    await Promise.all([
+      syncOrdersHaravan(),
+      syncOrdersWoo(),
+      syncOrdersShopify()
+    ])
     res.json({ error: false });
   } catch (error) {
     logger(error);

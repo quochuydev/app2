@@ -17,9 +17,10 @@ const { Content } = Layout;
 
 function Home(props) {
   let { actions, orders } = props;
+
   useEffect(() => {
     setIsProcessing(true);
-    actions.loadOrders();
+    actions.loadOrders({ limit: 1000 });
     setIsProcessing(false);
   }, []);
 
@@ -61,7 +62,7 @@ function Home(props) {
       text: 'My chart'
     },
     series: [{
-      data: orders.map(e => e.total_price)
+      data: orders.map(e => e.total_price).filter(e => !(e.total_price))
     }]
   }
 

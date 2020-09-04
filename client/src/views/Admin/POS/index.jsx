@@ -110,6 +110,8 @@ function Customer(props) {
 
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
+    if (!(product && variant)) { return message.error(JSON.stringify({ product, variant })) }
+
     let line_item = {
       id: variant.id,
       product_id: product.id,
@@ -135,11 +137,13 @@ function Customer(props) {
 
   function addProduct(product_id) {
     let product = products.find(e => e.id == product_id);
-    if (product.variants.length > 1) {
-      setAddVariantModal(product.variants);
-    } else {
-      let variant = product.variants[0];
-      addVariant(product.id, variant);
+    if (product) {
+      if (product.variants.length > 1) {
+        setAddVariantModal(product.variants);
+      } else {
+        let variant = product.variants[0];
+        addVariant(product.id, variant);
+      }
     }
     return;
   }
@@ -294,7 +298,8 @@ function Customer(props) {
                                     alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
                                 </div>}
                                 onClick={() => addProduct(product.id)}>
-                                <Meta title={product.title ? _.cloneDeep(product).title.slice(0, 5) : ''} />
+                                <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
+                                  description={product.id} />
                               </Card>
                             </Badge>
                           </Col>

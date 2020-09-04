@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload, message
+  Upload, message, Pagination
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -21,7 +21,7 @@ const apiUrl = `${config.backend_url}/api`;
 const { Option } = Select;
 
 function Products(props) {
-  const { actions, products } = props;
+  const { actions, products, count } = props;
   const cssProductType = (type) => {
     switch (type) {
       case 'woocommerce':
@@ -105,11 +105,11 @@ function Products(props) {
     },
   };
 
-  let [query, setQuery] = useState({});
+  let [query, setQuery] = useState({ limit: 20, page: 1 });
 
   useEffect(() => {
     actions.loadProducts(query);
-  }, query);
+  }, [query]);
 
   let [isImportModal, setIsImportModal] = useState(false);
   let [isExportModal, setIsExportModal] = useState(false);
@@ -155,6 +155,9 @@ function Products(props) {
     }
   }
 
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
 
   return (
     <div className="">
@@ -182,15 +185,17 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          {/* <Link to={`product/detail`}>
-            <Button>Tạo sản phẩm</Button>
-          </Link> */}
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='number' dataSource={products} columns={columns} />
+          <Table rowKey='id' dataSource={products} columns={columns} pagination={false}/>
         </Col>
+
+        <Col span={24}>
+          <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage} />
+        </Col>
+
       </Row>
       <Modal
         title="Import excel"
@@ -221,6 +226,7 @@ const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   products: state.products.get('products'),
   product: state.products.get('product'),
+  count: state.products.get('count'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
