@@ -1,3 +1,7 @@
+/*
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
+*/
+
 const mongoose = require('mongoose');
 const cache = require('memory-cache');
 const autoIncrement = require('mongoose-auto-increment');
@@ -97,4 +101,6 @@ OrderSchema.statics._create = async function (data = {}) {
   return result;
 }
 
-mongoose.model('Order', OrderSchema);
+let OrderModel = mongoose.model('Order', OrderSchema);
+
+module.exports = { OrderModel }

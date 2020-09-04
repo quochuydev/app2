@@ -3,6 +3,7 @@ const moment = require('moment');
 
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
@@ -127,8 +128,12 @@ Controller.exportExcel = async ({ body }) => {
 }
 
 Controller.importProducts = async function ({ file }) {
-  let filePath = path.resolve(file);
+  let result = {
+    success: 0, failed: 0, product_created: 0, product_updated: 0,
+    variant_created: 0, variant_updated: 0
+  }
 
+  let filePath = path.resolve(file);
   let items = await ExcelLib.loadFile({ filePath, headers: productHeaders });
   console.log(items);
   for (let i = 0; i < items.length; i++) {
@@ -144,36 +149,77 @@ Controller.importProducts = async function ({ file }) {
       }
 
       if (item.product_id) {
-        let found_product = await ProductModel.findOne({ handle: item.product_id }).lean(true);
-        if (found_product) {
-          // update
-        } else {
+        let found_product = await ProductModel.findOne({ id: item.product_id }).lean(true);
+        if (!found_product) {
           let product = makeDataProduct(item);
-          let newProduct = await ProductModel._create(product);
-          if (newProduct && newProduct.id) {
+          found_product = await ProductModel._create(product);
+          result.product_created++;
+        }
+
+        let criteria = {};
+
+        if (item.sku) {
+          criteria.sku = item.sku;
+        }
+
+        if (item.barcode) {
+          criteria.barcode = item.barcode;
+        }
+
+        if (criteria.sku || criteria.barcode) {
+          let found_variant = await VariantModel.findOne({ ...criteria, product_id: item.product_id }).lean(true);
+          if (found_variant) {
             let variant = makeDataVariant(item);
-            variant.product_id = newProduct.id;
+            variant.product_id = found_product.id;
+            await VariantModel._update({ id: found_variant.id }, { $set: variant });
+            result.variant_updated++;
+
+            let variants = await VariantModel.find({ product_id: item.product_id }).lean(true);
+            await ProductModel._update({ id: found_product.id }, { $set: { variants } });
+            result.product_updated++;
+          } else {
+            let variant = makeDataVariant(item);
+            variant.product_id = found_product.id;
             let newVariant = await VariantModel._create(variant);
-            newVariant = newVariant.toJSON();
-            await ProductModel.update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
+            result.variant_created++;
+
+            await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant } });
+            result.product_updated++;
           }
+        } else {
+          let variant = makeDataVariant(item);
+          variant.product_id = found_product.id;
+          let newVariant = await VariantModel._create(variant);
+          result.variant_created++;
+
+          await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant } });
+          result.product_updated++;
         }
       } else {
         let product = makeDataProduct(item);
         let newProduct = await ProductModel._create(product);
+        result.product_created++;
+
         if (newProduct && newProduct.id) {
           let variant = makeDataVariant(item);
           variant.product_id = newProduct.id;
           let newVariant = await VariantModel._create(variant);
           newVariant = newVariant.toJSON();
-          await ProductModel.update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
+          result.variant_created++;
+
+          await ProductModel._update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
+          result.product_updated++;
         }
       }
+      result.success++;
     } catch (error) {
+      result.failed++;
       logger(error);
     }
   }
-  return { error: false };
+
+  console.log(result);
+  return { error: false, result };
 }
 
 function makeDataProduct(item) {
@@ -193,8 +239,7 @@ function makeDataProduct(item) {
       position: 3,
       name: item.option_3
     }],
-    variants: [],
-    created_at: new Date()
+    variants: []
   }
 
   if (item.published == 'No') {
@@ -225,4 +270,30 @@ function makeDataVariant(item) {
   return variant;
 }
 
+Controller.deleteProduct = async function ({ product_id }) {
+  let count_order = await OrderModel.count({ 'line_items.product_id': product_id });
+  if (count_order) {
+    throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
+  }
+
+  await ProductModel.remove({ id: product_id });
+  await VariantModel.remove({ product_id });
+  return { error: false }
+}
+
+
+Controller.deleteVariant = async function ({ variant_id }) {
+  let count_order = await OrderModel.count({ 'line_items.variant_id': variant_id });
+  if (count_order) {
+    throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
+  }
+
+  await VariantModel.remove({ id: variant_id });
+  let found_product = await ProductModel.find({ 'variants.id': variant_id });
+
+  let variants = found_product.variants.filter(e => e.id != variant_id);
+  await ProductModel.update({ id: found_product.id }, { $set: { variants } });
+
+  return { error: false }
+}
 module.exports = Controller;

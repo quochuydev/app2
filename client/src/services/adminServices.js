@@ -16,6 +16,7 @@ const URLS = {
   GET_PRODUCT_DETAIL: 'api/products/detail',
   SYNC_PRODUCTS: 'api/products/sync',
   EXPORT_PRODUCTS: 'api/products/export',
+  DELETE_PRODUCT: 'api/products/delete',
 
   LIST_STAFFS: 'api/staffs',
 
@@ -129,6 +130,10 @@ async function exportProducts() {
   return await ApiClient.postData(URLS.EXPORT_PRODUCTS, null, null);
 }
 
+async function deleteProduct(id) {
+  return await ApiClient.deleteData(`${URLS.DELETE_PRODUCT}/${id}`, null, null);
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -147,6 +152,6 @@ export default {
   getOrderDetail, createOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts,
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct,
   login, changeShop, getUser,
 }

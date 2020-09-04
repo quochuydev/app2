@@ -31,7 +31,7 @@ function Products(props) {
       case 'shopify':
         return 'green';
       default:
-        return 'blue';
+        return 'red';
     }
   }
   const cssStatus = (status) => {
@@ -77,6 +77,13 @@ function Products(props) {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
+    },
+    {
+      title: 'Option', key: 'option', render: edit => (
+        <div>
+          <Button onClick={() => deleteProduct(edit.id)}>Xóa</Button>
+        </div>
+      )
     }
   ];
 
@@ -97,14 +104,15 @@ function Products(props) {
       }
     },
   };
+  
+  let [query, setQuery] = useState({});
 
   useEffect(() => {
     setIsProcessing(true);
     actions.loadProducts(query);
     setIsProcessing(false);
-  }, []);
+  }, query);
 
-  let [query, setQuery] = useState({});
   let [isImportModal, setIsImportModal] = useState(false);
   let [isExportModal, setIsExportModal] = useState(false);
   let [downloadLink, setDownloadLink] = useState(null);
@@ -139,6 +147,17 @@ function Products(props) {
     }
   }
 
+  async function deleteProduct(id) {
+    try {
+      const result = await AdminServices.deleteProduct(id);
+      message.success(JSON.stringify(result));
+      setQuery();
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
+
+
   return (
     <div className="">
       <Row key='1'>
@@ -158,6 +177,7 @@ function Products(props) {
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
+                <Option value='app'>App</Option>
               </Select>
             </Form.Item>
           </Col>
