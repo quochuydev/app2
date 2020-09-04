@@ -104,13 +104,11 @@ function Products(props) {
       }
     },
   };
-  
+
   let [query, setQuery] = useState({});
 
   useEffect(() => {
-    setIsProcessing(true);
     actions.loadProducts(query);
-    setIsProcessing(false);
   }, query);
 
   let [isImportModal, setIsImportModal] = useState(false);
@@ -151,7 +149,7 @@ function Products(props) {
     try {
       const result = await AdminServices.deleteProduct(id);
       message.success(JSON.stringify(result));
-      setQuery();
+      actions.loadProducts();
     } catch (error) {
       message.error(error.message);
     }

@@ -135,7 +135,6 @@ Controller.importProducts = async function ({ file }) {
 
   let filePath = path.resolve(file);
   let items = await ExcelLib.loadFile({ filePath, headers: productHeaders });
-  console.log(items);
   for (let i = 0; i < items.length; i++) {
     try {
       let item = items[i];
