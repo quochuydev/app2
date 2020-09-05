@@ -41,7 +41,7 @@ function Customer(props) {
     //     <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
     //   )
     // },
-    
+
     { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
     { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
@@ -189,12 +189,6 @@ function Customer(props) {
         onOk={() => importCustomer()}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload {...uploadSetting}>
-          <Button>
-            <Icon type="upload" /> Upload
-          </Button>
-        </Upload>
-
         <Upload.Dragger {...uploadSetting}>
           <div style={{ width: '100%' }}>
             <p className="ant-upload-drag-icon">

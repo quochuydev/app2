@@ -185,7 +185,7 @@ let logout = (req, res) => {
 }
 
 let logout_redirect = (req, res) => {
-  res.redirect(`${frontend_site}/logout`)
+  res.redirect(`${frontend_site}/logout`);
 }
 
 module.exports = {

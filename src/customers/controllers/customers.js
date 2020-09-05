@@ -61,9 +61,25 @@ let update = async ({ body, customer_id }) => {
   res.json({ error: false, customer });
 }
 
-let importExcel = (req, res) => {
+let headers = [
+  { header: 'ProductId', key: 'product_id', width: 20 },
+  { header: 'Tên', key: 'title' },
+  { header: 'Mô tả', key: 'body_html' },
+]
 
-  res.json({ error: false });
+let importExcel = async ({ file }) => {
+  let filePath = path.resolve(file);
+  let items = await ExcelLib.loadFile({ filePath, headers });
+  console.log(items)
+
+  for (let i = 0; i < items.length; i++) {
+    try {
+      let item = items[i];
+    } catch (error) {
+
+    }
+  }
+  return { items }
 }
 
 let exportExcel = async (req, res) => {

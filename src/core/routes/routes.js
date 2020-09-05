@@ -1,8 +1,13 @@
 const path = require('path');
 const { auth, login, loginGoogle, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
+const config = require(path.resolve('./src/config/config'));
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
+  app.get('/site', (req, res, next) => {
+    res.redirect(`${config.frontend_site}/`);
+  });
+
   app.get('/auth', auth);
   app.post('/login', login);
   app.post('/login-google', loginGoogle);

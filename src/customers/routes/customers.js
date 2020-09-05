@@ -16,7 +16,9 @@ const router = ({ app }) => {
       .catch(error => { next(error); })
   });
   app.post('/api/customers/import', uploadToDisk.single('file'), function (req, res, next) {
-    res.json({ file: req.file.path });
+    importExcel({ file: req.file.path })
+      .then(result => { res.json(result); })
+      .catch(error => { next(error); })
   });
   app.post('/api/customers/export', exportExcel);
   app.post('/api/customers/sync', sync)
