@@ -14,7 +14,7 @@ function Middleware(props) {
     return searchParams.get(field)
   }
   let path = window.location.pathname;
-
+  console.log(path)
   if (path.includes('loading')) {
     let token = getQuery('token');
     localStorage.setItem('AccessToken', token);
@@ -34,8 +34,13 @@ function Middleware(props) {
     if (!token && !path.includes(LOGIN_ROUTE)) {
       window.location.href = LOGIN_ROUTE;
     }
-    if (token && path.includes(LOGIN_ROUTE)) {
-      window.location.href = `${redirect_route}/`;
+    if (token) {
+      if(path.includes(LOGIN_ROUTE)){
+        window.location.href = `${redirect_route}/`;
+      }
+      if(path == '/'){
+        window.location.href = `${redirect_route}/`;
+      }
     }
   }
   return props.children;

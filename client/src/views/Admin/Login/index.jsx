@@ -13,7 +13,7 @@ const layout = {
 const basedUrl = config.backend_url;
 
 function Login() {
-  let [account, setAccount] = useState({ email: '', password: '' });
+  let [account, setAccount] = useState({ email: 'quochuydev1@gmail.com', password: 'quochuydev1@gmail.com' });
 
   const onFinish = (event) => {
     event.preventDefault();
@@ -55,7 +55,7 @@ function Login() {
           name="email"
           rules={[{ required: true, message: 'Please input your email!' }]}
         >
-          <Input name="email" onChange={onChange} />
+          <Input name="email" onChange={onChange} value={account.email} />
         </Form.Item>
 
         <Form.Item
@@ -64,7 +64,7 @@ function Login() {
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
-          <Input.Password name="password" onChange={onChange} />
+          <Input.Password name="password" onChange={onChange} value={account.password} />
         </Form.Item>
 
         <Form.Item name="remember" value="checked">

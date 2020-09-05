@@ -74,7 +74,7 @@ function LayoutContainer() {
 
       <Layout style={{ background: '#fff' }}>
         {
-          token && <Sider collapsible width={200} style={{ background: '#fff' }} defaultCollapsed={false}>
+          token && <Sider collapsible width={180} style={{ background: '#fff' }} defaultCollapsed={false}>
             <Popover placement="right" content={<div>
               <List
                 size="small"

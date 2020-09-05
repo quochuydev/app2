@@ -175,10 +175,10 @@ function Products(props) {
                 placeholder="-- Chọn --"
                 onChange={onChangeType}
               >
+                <Option value='app'>App</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
-                <Option value='app'>App</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -186,12 +186,11 @@ function Products(props) {
 
         <Col span={24}>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
+          <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='id' dataSource={products} columns={columns} pagination={false}/>
+          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} />
         </Col>
-
         <Col span={24}>
           <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage} />
         </Col>

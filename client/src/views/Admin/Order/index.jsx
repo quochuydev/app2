@@ -167,7 +167,7 @@ function Orders(props) {
                 placeholder="-- Chọn --"
                 onChange={onChangeType}
               >
-                <Option value='app'>app</Option>
+                <Option value='app'>App</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
@@ -178,11 +178,11 @@ function Orders(props) {
 
         <Col span={24}>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
+          <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
           <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'} />
         </Col>
         <Col span={24}>
-          <Pagination defaultCurrent={1} total={count} name="page" onChange={onChangePage} />
+          <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <ModalInfo

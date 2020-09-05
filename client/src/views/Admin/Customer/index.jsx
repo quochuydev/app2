@@ -157,6 +157,7 @@ function Customer(props) {
               placeholder="-- Chọn --"
               onChange={onChangeType}
             >
+              <Option value='app'>App</Option>
               <Option value='haravan'>Haravan</Option>
               <Option value='woocommerce'>Woocommerce</Option>
               <Option value='shopify'>Shopify</Option>
@@ -165,10 +166,10 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          {/* <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button> */}
+          <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
+          <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
           <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
         </Col>

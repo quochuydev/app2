@@ -14,8 +14,7 @@ const list = async (req, res) => {
     let orders = await OrderMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
-    logger({ error })
-    res.status(400).send({ error: true });
+    next(error);
   }
 }
 
@@ -25,8 +24,7 @@ const detail = async (req, res) => {
     let order = await OrderMD.findOne({ number }).lean(true);
     res.json({ error: false, order })
   } catch (error) {
-    logger({ error })
-    res.status(400).send({ error: true });
+    next(error);
   }
 }
 
@@ -39,8 +37,7 @@ const sync = async (req, res) => {
     ])
     res.json({ error: false });
   } catch (error) {
-    logger(error);
-    res.status(400).send({ error: true });
+    next(error);
   }
 }
 
@@ -71,7 +68,6 @@ const create = async (req, res, next) => {
     let order = await OrderMD._create(order_data);
     res.json({ error: false, order });
   } catch (error) {
-    logger(error);
     next(error);
   }
 }
@@ -97,8 +93,7 @@ const update = async (req, res) => {
     let order = await OrderMD._create(order_data);
     res.json({ error: false, order });
   } catch (error) {
-    logger({ error });
-    res.status(400).send({ error: true });
+    next(error);
   }
 }
 

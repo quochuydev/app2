@@ -154,13 +154,14 @@ let login = async (req, res, next) => {
       throw { message: `Vui lòng nhập 'email!'` }
     }
 
-    let user = await UserMD.findOne({ email }).lean(true);
-    // if (!user.authenticate(password)) {
-    //   return res.sendStatus(401)
-    // }
-    
+    let user = await UserMD.findOne({ email, salt: { $ne: null } }).lean(true);
+
     if (!user) {
       throw { message: `User này không tồn tại` }
+    }
+
+    if (!UserMD.authenticate(user, password)) {
+      throw { statusCode: 401, message: `Mật khẩu không đúng` }
     }
 
     let user_gen_token = {

@@ -37,18 +37,18 @@ const MENU_DATA = [
     icon: 'home'
   },
   {
-    path: CUSTOMER_ROUTE,
-    key: 'customer',
-    name: 'Khách hàng',
-    is_open: true,
-    icon: 'user'
-  },
-  {
     path: POS_ROUTE,
     key: 'POS',
     name: 'POS',
     is_open: true,
     icon: 'shopping-cart'
+  },
+  {
+    path: CUSTOMER_ROUTE,
+    key: 'customer',
+    name: 'Khách hàng',
+    is_open: true,
+    icon: 'user'
   },
   {
     path: MESSENGER_ROUTE,
