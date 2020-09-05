@@ -62,7 +62,7 @@ function Home(props) {
       text: 'My chart'
     },
     series: [{
-      data: orders.map(e => e.total_price).filter(e => !(e.total_price))
+      data: []
     }]
   }
 
