@@ -268,7 +268,7 @@ function Customer(props) {
     <div>
       <Row>
         <Form onSubmit={handleSubmit}>
-          <Col span={16} style={{ position: 'relative', height: '100vh' }}>
+          <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
@@ -296,7 +296,7 @@ function Customer(props) {
                     {
                       products.map(product => {
                         return (
-                          <Col span={4} key={product._id}>
+                          <Col  xs={8} lg={4} key={product._id}>
                             <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
@@ -320,7 +320,7 @@ function Customer(props) {
             <Dropdown overlay={(
               <Menu>
                 {
-                  _.cloneDeep(products).splice(0, 8).map(item => (
+                  _.cloneDeep(products).splice(0, 6).map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
                         avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].src', null)} />}
@@ -339,7 +339,7 @@ function Customer(props) {
 
             <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'} />
           </Col>
-          <Col span={8} style={{ padding: 15 }}>
+          <Col xs={24} lg={8} style={{ padding: 15 }}>
             <Layout>
               <Content style={{ height: '65vh' }}>
                 <Card title="Thông tin khách hàng">

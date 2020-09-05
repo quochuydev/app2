@@ -57,18 +57,18 @@ const MENU_DATA = [
     is_open: false
   },
   {
-    path: ORDER_ROUTE,
-    key: 'order',
-    name: 'Đơn hàng',
-    is_open: true,
-    icon: 'snippets'
-  },
-  {
     path: PRODUCT_ROUTE,
     key: 'product',
     name: 'Sản phẩm',
     is_open: true,
     icon: 'inbox'
+  },
+  {
+    path: ORDER_ROUTE,
+    key: 'order',
+    name: 'Đơn hàng',
+    is_open: true,
+    icon: 'snippets'
   },
   {
     path: STAFFS_ROUTE,
