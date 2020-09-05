@@ -37,19 +37,27 @@ let sync = async (req, res) => {
   }
 }
 
-let create = async (req, res) => {
-  let { email, first_name, last_name, birthday, gender, phone } = req.body;
-  if (!(email && first_name && last_name && birthday && gender && phone)) { return res.json({ message: 'Chưa nhập đủ thông tin!' }) }
-  let found = await CustomersMD._findOne({ email });
-  if (found) { return res.json({ message: 'Địa chỉ mail đã tồn tại!' }) }
+let create = async ({ body }) => {
+  let { email, first_name, last_name, birthday, gender, phone } = body;
+  if (!(email && first_name && last_name && birthday && gender && phone)) {
+    throw { message: 'Chưa nhập đủ thông tin!' }
+  }
+  let found_by_mail = await CustomersMD._findOne({ email });
+  if (found_by_mail) {
+    throw { message: 'Địa chỉ email đã tồn tại!' }
+  }
+  let found_by_phone = await CustomersMD._findOne({ phone });
+  if (found_by_phone) {
+    throw { message: 'Số điện thoại đã tồn tại!' }
+  }
+
   let customer = await CustomersMD._create({ email, first_name, last_name, birthday, gender, phone })
-  res.json({ error: false, customer });
+  return { error: false, message: 'Thêm mới khách hàng thành công', customer };
 }
 
-let update = async (req, res) => {
-  let customer_data = req.body;
-  let { _id } = req.params;
-  let customer = await CustomersMD._findOneAndUpdate({ _id }, { $set: customer_data });
+let update = async ({ body, customer_id }) => {
+  let customer_data = body;
+  let customer = await CustomersMD._findOneAndUpdate({ _id: customer_id }, { $set: customer_data });
   res.json({ error: false, customer });
 }
 

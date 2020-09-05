@@ -36,22 +36,23 @@ function Customer(props) {
         <span>{edit.number}</span>
       )
     },
-    {
-      title: 'Ngày tạo', key: 'created_at', render: edit => (
-        <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
-      )
-    },
-    {
-      title: 'Type', key: 'type', render: edit => (
-        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
-    },
+    // {
+    //   title: 'Ngày tạo', key: 'created_at', render: edit => (
+    //     <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
+    //   )
+    // },
+    
     { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
     { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
-    { title: 'Shop', dataIndex: 'shop', key: 'shop', },
+    // { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
+    // { title: 'Shop', dataIndex: 'shop', key: 'shop', },
+    {
+      title: 'Type', key: 'type', render: edit => (
+        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+    },
     {
       title: 'Edit', key: 'edit',
       render: edit => (

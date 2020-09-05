@@ -5,8 +5,16 @@ const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
   app.post('/api/customers/list', list);
-  app.post('/api/customers/create', create);
-  app.put('/api/customers/:_id', update);
+  app.post('/api/customers/create', function (req, res, next) {
+    create({ body: req.body })
+      .then(result => { res.json(result); })
+      .catch(error => { next(error); })
+  });
+  app.put('/api/customers/:_id', function (req, res, next) {
+    update({ body: req.body, customer_id: req.params._id })
+      .then(result => { res.json(result); })
+      .catch(error => { next(error); })
+  });
   app.post('/api/customers/import', uploadToDisk.single('file'), function (req, res, next) {
     res.json({ file: req.file.path });
   });

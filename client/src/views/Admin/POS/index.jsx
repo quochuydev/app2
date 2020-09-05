@@ -180,10 +180,16 @@ function Customer(props) {
     setOrder({ line_items });
   }
 
-  function addCustomer(e) {
+  async function addCustomer(e) {
     e.preventDefault();
     console.log(customer);
-    setIsCreateModal(false)
+    try {
+      const result = await AdminServices.addCustomer(customer);
+      message.success(result.message);
+      setIsCreateModal(false);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
   function onCustomerChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
