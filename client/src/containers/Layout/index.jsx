@@ -76,13 +76,18 @@ function LayoutContainer() {
         {
           token && <Sider collapsible width={180} style={{ background: '#fff' }} defaultCollapsed={false}>
             <Popover placement="right" content={<div>
-              <List
-                size="small"
-                bordered={false}
-                dataSource={user.shops}
-                renderItem={e => <List.Item>
-                  <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
-                </List.Item>}></List>
+              <List size="small" bordered={false}>
+                {
+                  user.shops.map(e => (
+                    <List.Item key={e.id}>
+                      <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
+                    </List.Item>
+                  ))
+                }
+                <List.Item key={'logout'}>
+                  <a onClick={() => logout()}>Đăng xuất</a>
+                </List.Item>
+              </List>
             </div>} trigger="click"
             >
               <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
@@ -90,9 +95,9 @@ function LayoutContainer() {
 
             <Menu theme="light" mode="inline">
               {menuItems}
-              <Menu.Item key={'sub_logout'}>
+              {/* <Menu.Item key={'sub_logout'}>
                 <a onClick={() => logout()}><Icon type="logout" /><span>Đăng xuất</span></a>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </Sider>
         }

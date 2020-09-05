@@ -170,7 +170,7 @@ let login = async (req, res, next) => {
       exp: (Date.now() + 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
+    res.json({ error: false, token: userToken, url: `${frontend_site}/loading?token=${userToken}` });
   } catch (error) {
     next(error);
   }

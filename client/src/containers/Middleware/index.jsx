@@ -16,13 +16,13 @@ function Middleware(props) {
   let path = window.location.pathname;
   console.log(path)
   if (path.includes('loading')) {
-    let token = getQuery('token');
-    localStorage.setItem('AccessToken', token);
-    setTimeout(async function () {
-      let result = await AdminServices.getUser({ token })
-      localStorage.setItem('user', JSON.stringify(result.user));
-      window.location.href = `${redirect_route}/`;
-    }, 200)
+    // let token = getQuery('token');
+    // localStorage.setItem('AccessToken', token);
+    // setTimeout(async function () {
+    //   let result = await AdminServices.getUser({ token })
+    //   localStorage.setItem('user', JSON.stringify(result.user));
+    //   window.location.href = `${redirect_route}/`;
+    // }, 200)
   }
   else if (path.includes('logout')) {
     localStorage.clear();
