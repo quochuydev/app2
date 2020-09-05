@@ -30,8 +30,9 @@ function Login() {
                 setRedirect(true);
               }, 200)
             })
+        } else {
+          throw { message: 'Đã có lỗi xảy ra' }
         }
-        // window.location.href = result.url;
       })
       .catch(error => {
         message.error(error.message);
