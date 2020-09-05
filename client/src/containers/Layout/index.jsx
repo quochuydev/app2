@@ -12,7 +12,7 @@ import {
 import styled from "styled-components"
 import {
   Layout, Menu, Icon, Breadcrumb, Button, Popover,
-  message, List
+  message, List, Drawer
 } from 'antd';
 
 import RouteList from '../../views/Admin/routes';
@@ -27,13 +27,16 @@ import assetProvider from '../../utils/assetProvider';
 
 const basedUrl = config.backend_url;
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer, Sider, } = Layout;
 
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 function LayoutContainer() {
-  const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false, });
+  const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
+  const [isShowDrawer, setIsShowDrawer] = useState(false);
+
   let { messageFailed, messageSuccess, isError, showAlert } = alert;
 
   const token = localStorage.getItem('AccessToken');
@@ -68,13 +71,12 @@ function LayoutContainer() {
     })
   }
 
-  return (
-    <BrowserRouter>
-      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
-
-      <Layout style={{ background: '#fff' }}>
+  function LeftMenu(props) {
+    return (
+      <div style={{ display: props.display }}>
         {
-          token && <Sider collapsible width={180} style={{ background: '#fff' }} defaultCollapsed={false}>
+          token && <Sider collapsible width={180} defaultCollapsed={false}
+            style={{ background: '#fff' }}>
             <Popover placement="right" content={<div>
               <List size="small" bordered={false}>
                 {
@@ -95,13 +97,30 @@ function LayoutContainer() {
 
             <Menu theme="light" mode="inline">
               {menuItems}
-              {/* <Menu.Item key={'sub_logout'}>
-                <a onClick={() => logout()}><Icon type="logout" /><span>Đăng xuất</span></a>
-              </Menu.Item> */}
             </Menu>
           </Sider>
         }
+      </div>
+    )
+  }
+
+  return (
+    <BrowserRouter>
+      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
+      <Drawer
+        placement={'left'}
+        closable={false}
+        onClose={() => { setIsShowDrawer(false) }}
+        visible={isShowDrawer && isMobile}
+      >
+        <LeftMenu display={isMobile ? 'block' : 'none'} />
+      </Drawer>
+
+      <Layout style={{ background: '#fff' }}>
+        <LeftMenu display={!isMobile ? 'block' : 'none'} />
         <Content style={{ padding: '0 16px' }}>
+          <a onClick={() => setIsShowDrawer(true)} style={{ display: isMobile ? 'block' : 'none' }}>
+            Drawer {isMobile ? 'mobile' : 'desktop'}</a>
           <Switch>
             <Middleware setAlert={setAlert}>
               {RouteList.map((props, index) => (< Route key={index} {...props} />))}
@@ -109,6 +128,7 @@ function LayoutContainer() {
           </Switch>
         </Content>
       </Layout>
+
     </BrowserRouter >
   );
 }
