@@ -328,7 +328,7 @@ function Customer(props) {
             <Dropdown overlay={(
               <Menu>
                 {
-                  _.cloneDeep(products).splice(0, 6).map(item => (
+                  _.cloneDeep(products).splice(0, 5).map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
                         avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].src', null)} />}
@@ -346,7 +346,7 @@ function Customer(props) {
             </Dropdown>
 
             <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'}
-              scroll={{ x: 900, y: 400 }} />
+              scroll={{ x: 900 }} />
           </Col>
           <Col xs={24} lg={8} style={{}}>
             <Layout>
