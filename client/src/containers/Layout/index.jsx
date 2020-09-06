@@ -36,6 +36,7 @@ let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.
 function LayoutContainer() {
   const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
   const [isShowDrawer, setIsShowDrawer] = useState(false);
+  let menuName = 'Menu'
 
   let { messageFailed, messageSuccess, isError, showAlert } = alert;
 
@@ -52,6 +53,10 @@ function LayoutContainer() {
   let menuItems = [];
   for (let i = 0; i < MENU_DATA.length; i++) {
     const menu = MENU_DATA[i];
+    if (menu.path == window.location.pathname) {
+      menuName = menu.name;
+    }
+
     if (menu.is_open) {
       menuItems.push(
         <Menu.Item key={'sub_' + menu.key} style={{ paddingLeft: 0 }}>
@@ -124,12 +129,12 @@ function LayoutContainer() {
         <Content style={{ padding: '10px 10px' }}>
           <PageHeader
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
-              style={{ border: 'none', padding: 0, }}
+              style={{ border: 'none', padding: 0 }}
             >
               <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} />
             </Button>}
-            style={{ padding: 0, display: _display(isMobile) }}
-            subTitle="Menu"
+            style={{ padding: 0, display: _display(isMobile && !!token) }}
+            subTitle={menuName}
           >
           </PageHeader>
 

@@ -2,6 +2,7 @@ import AdminServices from '../../../services/adminServices';
 
 export const ACTIONS = {
   LOAD_CUSTOMER_SUCCESS: 'LOAD_CUSTOMER_SUCCESS',
+  GET_CUSTOMER_SUCCESS: 'GET_CUSTOMER_SUCCESS',
   LOAD_CUSTOMER_FAILED: 'LOAD_CUSTOMER_FAILED',
   ADD_CUSTOMER_SUCCESS: 'ADD_CUSTOMER_SUCCESS',
   ADD_CUSTOMER_FAILED: 'ADD_CUSTOMER_FAILED',
@@ -14,28 +15,6 @@ export const ACTIONS = {
   EXPORT_CUSTOMER_SUCCESS: 'EXPORT_CUSTOMER_SUCCESS',
   EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
 };
-
-export function listCustomers(query) {
-  return async (dispatch) => {
-    try {
-      const data = await AdminServices.listCustomers(query);
-      dispatch({
-        type: ACTIONS.LOAD_CUSTOMER_SUCCESS, payload: {
-          error: false,
-          message: 'createAccountAdmin.message',
-          ...data
-        }
-      });
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.LOAD_CUSTOMER_FAILED, payload: {
-          error: true,
-          message: 'createAccountAdmin.message'
-        }
-      });
-    }
-  }
-}
 
 export function addCustomer(customer) {
   return async (dispatch) => {

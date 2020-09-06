@@ -58,7 +58,7 @@ function Customer(props) {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => onShowUpdate(edit)} />
+          <Icon type="edit" onClick={() => onShowCreate(edit)} />
         </span>
       ),
     },
@@ -95,10 +95,8 @@ function Customer(props) {
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
-  const [isCreateModal, setIsCreateModal] = useState(false);
-  const [isUpdateModal, setIsUpdateModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
-  
+
   let [customer, setCustomer] = useState({})
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -124,21 +122,13 @@ function Customer(props) {
     setCustomer({ ...customer, [field]: e });
   }
 
-  function onShowUpdate(customer) {
-    setIsUpdateModal(true);
-    setIsShowModal(true)
-    setCustomer(customer)
-  }
-
-  function onShowCreate() {
-    setIsShowModal(true)
-    setCustomer({})
-  }
-
-  function updateCustomer() {
-    actions.updateCustomer(customer);
-    setIsUpdateModal(false);
-    onLoadCustomer()
+  function onShowCreate(customerUpdate) {
+    setIsShowModal(true);
+    if (customerUpdate) {
+      setCustomer(customerUpdate);
+    } else {
+      setCustomer({});
+    }
   }
 
   async function syncCustomers() {
@@ -181,8 +171,7 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
-          <Button onClick={() => onShowCreate(true)}>Thêm khách hàng modal chung</Button>
+          <Button onClick={() => onShowCreate()}>Thêm khách hàng</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
@@ -214,46 +203,7 @@ function Customer(props) {
           </div>
         </Upload.Dragger>
       </Modal>
-      <Modal
-        title="Create Modal"
-        visible={isCreateModal}
-        onOk={addCustomer}
-        onCancel={() => setIsCreateModal(false)}
-        width={1400}
-      >
-        <Row key='1'>
-          <Col span={12}>
-            <Input name="first_name" onChange={onChange} />
-            <Input name="last_name" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <DatePicker name="birthday" onChange={(e) => onChangeField(e, 'birthday')} />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Input name="phone" onChange={onChange} />
-            <Input name="email" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <Select name="gender" onChange={(e) => onChangeField(e, 'gender')} defaultValue={1} style={{ width: 120 }}>
-              <Option value={'1'}>Nam</Option>
-              <Option value={'0'}>Nữ</Option>
-            </Select>
-          </Col>
-        </Row>
-      </Modal>
-      <Modal
-        title="Update Modal"
-        visible={false}
-        onOk={() => updateCustomer()}
-        onCancel={() => setIsUpdateModal(false)}
-      >
-        <Input value={customer.first_name} name='first_name' onChange={onChange} />
-        <p>{JSON.stringify(customer)}</p>
-      </Modal>
-      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)}
-        id={customer.id} />
+      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} />
     </div >
   );
 }

@@ -179,7 +179,8 @@ function Orders(props) {
         <Col span={24}>
           <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'} />
+          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
+            scroll={{ x: 900 }} />
         </Col>
         <Col span={24}>
           <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage} />

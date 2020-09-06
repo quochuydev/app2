@@ -17,25 +17,16 @@ import AdminServices from '../../../services/adminServices';
 import * as customerActions from './actions';
 
 function CustomerDetail(props) {
-  const { actions, id, visible, customer, onCloseModal } = props;
-
+  const { actions, visible, customer, onCloseModal } = props;
   const [customerUpdate, setCustomerUpdate] = useState({})
 
   useEffect(() => {
-    console.log(id)
-    if (id) {
-      actions.getCustomer(id);
+    if (customer.id) {
+      setCustomerUpdate(customer)
     } else {
       setCustomerUpdate({})
-      actions.reset();
     }
-  }, [id])
-
-  useEffect(() => {
-    if (customer && customer.id) {
-      setCustomerUpdate(customer);
-    }
-  }, [customer])
+  }, [customer.id])
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -49,7 +40,7 @@ function CustomerDetail(props) {
     e.preventDefault();
     try {
       let result = null;
-      if (id) {
+      if (customer.id) {
         result = await AdminServices.updateCustomer(customerUpdate);
       } else {
         result = await AdminServices.addCustomer(customerUpdate);
@@ -120,7 +111,7 @@ function CustomerDetail(props) {
 const mapStateToProps = state => ({
   products: state.products.get('products'),
   product: state.products.get('product'),
-  customer: state.customers.get('customer'),
+  // customer: state.customers.get('customer'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

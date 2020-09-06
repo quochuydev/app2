@@ -205,6 +205,7 @@ function Products(props) {
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
           <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false}
+            scroll={{ x: 1000 }}
             expandedRowRender={record => <Table rowKey='id' columns={subColumns}
               dataSource={record.variants} pagination={false} showHeader={false} />} />
         </Col>

@@ -104,6 +104,7 @@ function Customer(props) {
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
   const [orderCreated, setOrderCreated] = useState(null);
+  const [isCustomerModal, setIsCustomerModal] = useState(false);
 
   const [customer, setCustomer] = useState({ gender: 1 })
   let setOrder = OrderActions.setOrder;
@@ -180,18 +181,34 @@ function Customer(props) {
     setOrder({ line_items });
   }
 
+  function onShowCustomerModal(customerUpdate) {
+    setIsCustomerModal(true);
+    if (customerUpdate) {
+      setCustomer(customerUpdate);
+    } else {
+      setCustomer({});
+    }
+  }
+
   async function addCustomer(e) {
     e.preventDefault();
-    console.log(customer);
     try {
-      const result = await AdminServices.addCustomer(customer);
-      message.success(result.message);
+      let result = null;
+      console.log(customer);
+      if (customer.id) {
+        result = await AdminServices.updateCustomer(customer);
+      } else {
+        result = await AdminServices.addCustomer(customer);
+      }
       setOrder({ customer: result.customer });
-      setIsCreateModal(false);
+      CustomerActions.listCustomers(query);
+      setIsCustomerModal(false);
+      message.success(result.message);
     } catch (error) {
       message.error(error.message);
     }
   }
+
   function onCustomerChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
@@ -315,7 +332,7 @@ function Customer(props) {
                     }
                   </Row>
                 </Collapse.Panel>
-              </Collapse>,
+              </Collapse>
             </div>
 
             <Dropdown overlay={(
@@ -339,14 +356,19 @@ function Customer(props) {
             </Dropdown>
 
             <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'}
-              scroll={{ x: 900 }} />
+              scroll={{ x: 900, y: 400 }} />
           </Col>
           <Col xs={24} lg={8} style={{}}>
             <Layout>
               <Content style={{ height: '65vh', marginTop: 10 }}>
                 <Card title="Thông tin khách hàng">
-                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }}
-                    theme="filled" type="plus-circle" /></p>
+                  <p>Khách hàng:
+                    <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
+                      theme="filled" type="plus-circle" />
+                    <Icon onClick={() => onShowCustomerModal(order.customer)}
+                      style={{ color: '#f00', display: !!order.customer ? 'inline-block' : 'none' }}
+                      theme="filled" type="plus-circle" />
+                  </p>
                   <AsyncSelect
                     defaultOptions={formatOptionCustomers(customers)}
                     value={formatOptionCustomer(order.customer)}
@@ -359,6 +381,7 @@ function Customer(props) {
                       <p>id: {order.customer.id}</p>
                       <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
                       <p>Email: {order.customer.email}</p>
+                      <p>Ngáy sinh: {order.customer.birthday}</p>
                     </div> : null
                   }
                 </Card>
@@ -431,9 +454,9 @@ function Customer(props) {
       </Modal>
       <Modal
         title="Tạo khách hàng mới"
-        visible={isCreateModal}
+        visible={isCustomerModal}
         footer={null}
-        onCancel={() => setIsCreateModal(false)}
+        onCancel={() => setIsCustomerModal(false)}
         width={700}
       >
         <Tabs defaultActiveKey="1">
@@ -448,21 +471,22 @@ function Customer(props) {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Email" onChange={onCustomerChange}>
-                    <Input name="email" placeholder="example@gmail.com" />
+                    <Input name="email" placeholder="example@gmail.com" value={customer.email} />
                   </Form.Item>
                   <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
-                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')} />
+                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')}
+                      defaultValue={moment(customer.birthday, 'YYYY-MM-DD')} />
                   </Form.Item>
                   <Form.Item label="Số điện thoại" required>
-                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} />
+                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customer.phone} />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Họ" required onChange={onCustomerChange}>
-                    <Input name="last_name" placeholder="input placeholder" />
+                    <Input name="last_name" placeholder="input placeholder" value={customer.last_name} />
                   </Form.Item>
                   <Form.Item label="Tên" required onChange={onCustomerChange}>
-                    <Input name="first_name" placeholder="input placeholder" />
+                    <Input name="first_name" placeholder="input placeholder" value={customer.first_name} />
                   </Form.Item>
                   <Form.Item label="Field A" required>
                     <Input placeholder="input placeholder" />
