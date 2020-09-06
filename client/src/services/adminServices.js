@@ -13,7 +13,9 @@ const URLS = {
   SYNC_ORDERS: 'api/order/sync',
 
   LIST_PRODUCTS: 'api/products/list',
-  GET_PRODUCT_DETAIL: 'api/products/detail',
+  GET_PRODUCT: 'api/products',
+  CREATE_PRODUCT: 'api/products/create',
+  UPDATE_PRODUCT: 'api/products',
   SYNC_PRODUCTS: 'api/products/sync',
   EXPORT_PRODUCTS: 'api/products/export',
   DELETE_PRODUCT: 'api/products/delete',
@@ -122,6 +124,11 @@ async function buildLinkMomoOrder(data) {
 async function loadProducts(query) {
   return await ApiClient.postData(URLS.LIST_PRODUCTS, null, query);
 }
+
+async function getProduct(id) {
+  return await ApiClient.getData(`${URLS.GET_PRODUCT}/${id}`);
+}
+
 async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
@@ -152,6 +159,6 @@ export default {
   getOrderDetail, createOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct,
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct,
   login, changeShop, getUser,
 }

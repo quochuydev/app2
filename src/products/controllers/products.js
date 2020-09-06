@@ -34,6 +34,15 @@ Controller.list = async (req, res) => {
   res.json({ error: false, count, products })
 }
 
+Controller.getProduct = async function ({ product_id }) {
+  let result = {}
+  result.product = await ProductModel.findOne({ id: product_id }).lean(true);
+  if (!result.product) {
+    throw { message: 'Sản phẩm không tồn tại' }
+  }
+  return result;
+}
+
 let productHeaders = [
   { header: 'ProductId', key: 'product_id', width: 20 },
   { header: 'Tên', key: 'title' },

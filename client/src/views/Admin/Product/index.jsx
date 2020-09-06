@@ -56,16 +56,16 @@ function Products(props) {
   }
 
   const columns = [
-    {
-      title: 'Number', key: 'edit',
-      render: edit => (
-        <Link to={`product/detail/${edit.number}`}>{edit.number}</Link>
-      ),
-    },
+    // {
+    //   title: 'Number', key: 'edit',
+    //   render: edit => (
+    //     <Link to={`product/detail/${edit.number}`}>{edit.number}</Link>
+    //   ),
+    // },
     {
       title: 'Tên sản phẩm', key: 'title',
       render: edit => (
-        <Link to={`product/detail/${edit.number}`}>{edit.title}</Link>
+        <Link to={`product/detail/${edit.id}`}>{edit.title}</Link>
       ),
     },
     {
@@ -86,6 +86,21 @@ function Products(props) {
       )
     }
   ];
+
+  const subColumns = [
+    { title: 'Title', dataIndex: 'title', key: 'title' },
+    { title: 'Sku', dataIndex: 'sku', key: 'sku' },
+    { title: 'Barcode', dataIndex: 'barcode', key: 'barcode' },
+    {
+      title: 'Giá', key: 'price', render: edit => (
+        <div>
+          {edit.price} đ
+        </div>
+      )
+    },
+    { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at' },
+    { title: 'Ngày cập nhật', dataIndex: 'update_at', key: 'update_at' },
+  ]
 
   const uploadSetting = {
     multiple: false,
@@ -190,7 +205,8 @@ function Products(props) {
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
           <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false}
-            expandedRowRender={record => <p style={{ margin: 0 }}>{record.body_html}</p>} />
+            expandedRowRender={record => <Table rowKey='id' columns={subColumns}
+              dataSource={record.variants} pagination={false} showHeader={false} />} />
         </Col>
         <Col span={24}>
           <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage} />

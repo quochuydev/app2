@@ -1,13 +1,28 @@
 const path = require('path');
 
 const {
-  list, sync, importProducts, exportExcel, deleteProduct, deleteVariant
+  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, deleteVariant
 } = require('../controllers/products');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
   app.post('/api/products/sync', sync);
   app.post('/api/products/list', list);
+
+  app.post('/api/products/create', function (req, res, next) {
+
+  });
+
+  app.get('/api/products/:id', function (req, res, next) {
+    getProduct({ product_id: req.params.id })
+      .then(result => { res.json(result); })
+      .catch(error => { next(error); })
+  });
+
+  app.put('/api/products/:id', function (req, res, next) {
+
+  });
+
   app.post('/api/products/import', uploadToDisk.single('file'), function (req, res, next) {
     importProducts({ file: req.file.path })
       .then(result => {

@@ -47,15 +47,27 @@ export function loadProducts(query) {
   }
 }
 
+
+export function getProduct(id) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.getProduct(id);
+      dispatch({ type: ACTIONS.LOAD_PRODUCTS_SUCCESS, payload: { ...data } });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.LOAD_PRODUCTS_FAILED, payload: { error: true, message: 'LOAD_PRODUCTS_FAILED.message' }
+      });
+    }
+  }
+}
+
 export function syncProducts() {
   return async (dispatch) => {
     try {
       const data = await AdminServices.syncProducts();
       dispatch({
         type: ACTIONS.SYNC_PRODUCTS_SUCCESS, payload: {
-          error: false,
-          message: 'SYNC_PRODUCTS_SUCCESS.message',
-          ...data
+          error: false, message: 'SYNC_PRODUCTS_SUCCESS.message', ...data
         }
       });
     } catch (error) {

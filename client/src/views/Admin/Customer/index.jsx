@@ -63,6 +63,12 @@ function Customer(props) {
     },
   ];
 
+  const expended = edit => (
+    <div>
+      <p style={{ margin: 0 }}>{edit.type}</p>
+    </div>
+  );
+
   const uploadSetting = {
     multiple: false,
     action: `${apiUrl}/customers/import`,
@@ -81,15 +87,15 @@ function Customer(props) {
     },
   };
 
+  let [query, setQuery] = useState({ limit: 10, page: 1 });
   useEffect(() => {
     actions.listCustomers(query);
-  }, []);
+  }, [query]);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
-  let [query, setQuery] = useState({});
 
   let [customer, setCustomer] = useState({})
 
@@ -171,7 +177,8 @@ function Customer(props) {
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
+          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
+            expandedRowRender={expended} scroll={{ x: 1000 }} />
           <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
         </Col>
       </Row>

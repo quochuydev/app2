@@ -15,7 +15,7 @@ let list = async (req, res) => {
   try {
     let { limit, skip, criteria } = _parse(req.body);
     let count = await CustomersMD._count(criteria);
-    let customers = await CustomersMD.find(criteria).lean(true);
+    let customers = await CustomersMD.find(criteria).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)
