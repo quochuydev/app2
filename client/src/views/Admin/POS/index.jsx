@@ -186,6 +186,7 @@ function Customer(props) {
     try {
       const result = await AdminServices.addCustomer(customer);
       message.success(result.message);
+      setOrder({ customer: result.customer });
       setIsCreateModal(false);
     } catch (error) {
       message.error(error.message);
@@ -449,7 +450,7 @@ function Customer(props) {
                   <Form.Item label="Email" onChange={onCustomerChange}>
                     <Input name="email" placeholder="example@gmail.com" />
                   </Form.Item>
-                  <Form.Item label="Ngày sinh" required>
+                  <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
                     <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')} />
                   </Form.Item>
                   <Form.Item label="Số điện thoại" required>
@@ -457,11 +458,11 @@ function Customer(props) {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label="Họ" required onChange={onCustomerChange}>
+                    <Input name="last_name" placeholder="input placeholder" />
                   </Form.Item>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label="Tên" required onChange={onCustomerChange}>
+                    <Input name="first_name" placeholder="input placeholder" />
                   </Form.Item>
                   <Form.Item label="Field A" required>
                     <Input placeholder="input placeholder" />

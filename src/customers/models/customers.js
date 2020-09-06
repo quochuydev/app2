@@ -43,6 +43,12 @@ CustomersSchema.plugin(autoIncrement.plugin, {
   startAt: 10000,
   incrementBy: 1
 });
+CustomersSchema.plugin(autoIncrement.plugin, {
+  model: 'Customer',
+  field: 'id',
+  startAt: 10000,
+  incrementBy: 1
+});
 
 CustomersSchema.statics._count = async function (filter = {}) {
   let _this = this;

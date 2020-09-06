@@ -123,13 +123,13 @@ function LayoutContainer() {
         <LeftMenu display={_display(!isMobile)} />
         <Content style={{ padding: '10px 10px' }}>
           <PageHeader
-            title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)} style={{ display: _display(isMobile) }}
+            title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 0, }}
             >
               <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} />
             </Button>}
-            style={{ border: '1px solid rgb(235, 237, 240)' }}
-            subTitle="This is a subtitle"
+            style={{ padding: 0, display: _display(isMobile) }}
+            subTitle="Menu"
           >
           </PageHeader>
 
