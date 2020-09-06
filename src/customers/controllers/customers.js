@@ -48,7 +48,7 @@ let sync = async (req, res) => {
 
 let create = async ({ body }) => {
   let { email, first_name, last_name, birthday, gender, phone } = body;
-  if (!(email && first_name && last_name && birthday && gender && phone)) {
+  if (!(email && first_name && last_name && birthday && phone)) {
     throw { message: 'Chưa nhập đủ thông tin!' }
   }
   let found_by_mail = await CustomersMD._findOne({ email });
@@ -60,17 +60,21 @@ let create = async ({ body }) => {
     throw { message: 'Số điện thoại đã tồn tại!' }
   }
 
-  let customer = await CustomersMD._create({ email, first_name, last_name, birthday, gender, phone })
+  let create_data = {
+    email, first_name, last_name, birthday, gender, phone
+  }
+
+  let customer = await CustomersMD._create(create_data)
   return { error: false, message: 'Thêm mới khách hàng thành công', customer };
 }
 
 let update = async ({ body, customer_id }) => {
-  let { email, first_name, last_name, birthday, gender, phone } = body;
-  if (!(email && first_name && last_name && birthday && gender && phone)) {
+  let { email, first_name, last_name, birthday, phone } = body;
+  if (!(email && first_name && last_name && birthday && phone)) {
     throw { message: 'Chưa nhập đủ thông tin!' }
   }
 
-  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id }, { $set: body });
+  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id }, { $set: body }, { lean: true, new: true, });
   return { error: false, customer, message: 'cập nhật khách hàng thành công' };
 }
 

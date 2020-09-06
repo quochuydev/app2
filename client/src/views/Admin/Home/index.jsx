@@ -20,7 +20,7 @@ function Home(props) {
 
   useEffect(() => {
     setIsProcessing(true);
-    actions.loadOrders({ limit: 1000 });
+    actions.loadOrders({ limit: 9999 });
     setIsProcessing(false);
   }, []);
 
@@ -40,7 +40,7 @@ function Home(props) {
       text: 'My chart'
     },
     series: [{
-      data: []
+      data: orders.map(e => e.total_price)
     }]
   }
 

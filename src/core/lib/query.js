@@ -10,6 +10,11 @@ function _parse(body) {
   let skip = (page - 1) * limit;
   delete body.limit;
   delete body.page;
+  if (limit == 9999) {
+    limit = undefined;
+    skip = undefined;
+    page = undefined;
+  }
   let query = body;
   let criteria = { shop_id }
   for (field in query) {

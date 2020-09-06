@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import moment from 'moment';
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -17,7 +18,7 @@ import AdminServices from '../../../services/adminServices';
 import * as customerActions from './actions';
 
 function CustomerDetail(props) {
-  const { actions, visible, customer, onCloseModal } = props;
+  const { actions, visible, customer, onCloseModal, setDone } = props;
   const [customerUpdate, setCustomerUpdate] = useState({})
 
   useEffect(() => {
@@ -45,6 +46,7 @@ function CustomerDetail(props) {
       } else {
         result = await AdminServices.addCustomer(customerUpdate);
       }
+      setDone(result);
       message.success(result.message);
       onCloseModal();
     } catch (error) {
@@ -76,7 +78,8 @@ function CustomerDetail(props) {
                     <Input name="email" placeholder="example@gmail.com" value={customerUpdate.email} />
                   </Form.Item>
                   <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
-                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')} />
+                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')}
+                      defaultValue={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
                   </Form.Item>
                   <Form.Item label="Số điện thoại" required>
                     <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />

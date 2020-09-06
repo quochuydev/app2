@@ -27,6 +27,7 @@ import config from './../../../utils/config';
 import './style.css'
 import data from './data.json';
 import PrintOrder from './print.jsx';
+import CustomerDetail from './../Customer/detail'
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -100,13 +101,21 @@ function Customer(props) {
   }, [queryProducts])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
-  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
   const [orderCreated, setOrderCreated] = useState(null);
   const [isCustomerModal, setIsCustomerModal] = useState(false);
-
   const [customer, setCustomer] = useState({ gender: 1 })
+  const [done, setDone] = useState(null)
+
+  useEffect(() => {
+    if (done && done.customer) {
+      setOrder({ customer: done.customer });
+      CustomerActions.listCustomers(query);
+      setIsCustomerModal(false);
+    }
+  }, [done])
+
   let setOrder = OrderActions.setOrder;
 
   function addVariant(product_id, variant) {
@@ -187,25 +196,6 @@ function Customer(props) {
       setCustomer(customerUpdate);
     } else {
       setCustomer({});
-    }
-  }
-
-  async function addCustomer(e) {
-    e.preventDefault();
-    try {
-      let result = null;
-      console.log(customer);
-      if (customer.id) {
-        result = await AdminServices.updateCustomer(customer);
-      } else {
-        result = await AdminServices.addCustomer(customer);
-      }
-      setOrder({ customer: result.customer });
-      CustomerActions.listCustomers(query);
-      setIsCustomerModal(false);
-      message.success(result.message);
-    } catch (error) {
-      message.error(error.message);
     }
   }
 
@@ -366,7 +356,10 @@ function Customer(props) {
                     <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
                       theme="filled" type="plus-circle" />
                     <Icon onClick={() => onShowCustomerModal(order.customer)}
-                      style={{ color: '#f00', display: !!order.customer ? 'inline-block' : 'none' }}
+                      style={{ color: 'green', display: !!order.customer ? 'inline-block' : 'none' }}
+                      theme="filled" type="plus-circle" />
+                    <Icon onClick={() => { }}
+                      style={{ color: 'red', display: !!order.customer ? 'inline-block' : 'none' }}
                       theme="filled" type="plus-circle" />
                   </p>
                   <AsyncSelect
@@ -378,10 +371,16 @@ function Customer(props) {
                   />
                   {
                     !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
-                      <p>id: {order.customer.id}</p>
+                      <p>Thông Tin Người Mua</p>
+                      <p className="hide">id: {order.customer.id}</p>
                       <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
                       <p>Email: {order.customer.email}</p>
                       <p>Ngáy sinh: {order.customer.birthday}</p>
+                      <p>Thông Tin Giao Hàng</p>
+                      <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                      <p>Sđt: {order.customer.phone}</p>
+                      <p>Địa Chỉ Giao Hàng</p>
+                      <p>{order.shipping ? order.shipping.address : null}</p>
                     </div> : null
                   }
                 </Card>
@@ -452,57 +451,9 @@ function Customer(props) {
           }
         </Menu>
       </Modal>
-      <Modal
-        title="Tạo khách hàng mới"
-        visible={isCustomerModal}
-        footer={null}
-        onCancel={() => setIsCustomerModal(false)}
-        width={700}
-      >
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Thông tin" key="1">
-            <Row>
-              <Form onSubmit={addCustomer}>
-                <Col span={24}>
-                  <Radio.Group onChange={onCustomerChange} name="gender" value={customer.gender}>
-                    <Radio value={1}>Anh</Radio>
-                    <Radio value={0}>Chị</Radio>
-                  </Radio.Group>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Email" onChange={onCustomerChange}>
-                    <Input name="email" placeholder="example@gmail.com" value={customer.email} />
-                  </Form.Item>
-                  <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
-                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')}
-                      defaultValue={moment(customer.birthday, 'YYYY-MM-DD')} />
-                  </Form.Item>
-                  <Form.Item label="Số điện thoại" required>
-                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customer.phone} />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Họ" required onChange={onCustomerChange}>
-                    <Input name="last_name" placeholder="input placeholder" value={customer.last_name} />
-                  </Form.Item>
-                  <Form.Item label="Tên" required onChange={onCustomerChange}>
-                    <Input name="first_name" placeholder="input placeholder" value={customer.first_name} />
-                  </Form.Item>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item label="Địa chỉ">
-                    <Input placeholder="Nhập địa chỉ khách hàng" />
-                  </Form.Item>
-                  <button className="btn-primary w-100" type="submit">Thêm mới</button>
-                </Col>
-              </Form>
-            </Row>
-          </TabPane>
-        </Tabs>
-      </Modal>
+      <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)} customer={customer}
+        setDone={setDone} />
+
       <Modal
         visible={isCreateSuccess}
         width={600}
