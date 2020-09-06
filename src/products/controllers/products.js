@@ -43,6 +43,21 @@ Controller.getProduct = async function ({ product_id }) {
   return result;
 }
 
+Controller.update = async function ({ product_id, data }) {
+  let result = {};
+
+  let found_product = await ProductModel.findOne({ id: product_id }).lean(true);
+  if (!found_product) {
+    throw { message: 'Sản phẩm không tồn tại' }
+  }
+
+  let found_variants = await VariantModel.find({ product_id }).lean(true);
+
+  result.product = await ProductModel.findOneAndUpdate({ id: product_id }, { $set: data }, { lean: true, new: true });
+
+  return result;
+}
+
 let productHeaders = [
   { header: 'ProductId', key: 'product_id', width: 20 },
   { header: 'Tên', key: 'title' },
@@ -281,7 +296,7 @@ function makeDataVariant(item) {
 Controller.deleteProduct = async function ({ product_id }) {
   let count_order = await OrderModel.count({ 'line_items.product_id': product_id });
   if (count_order) {
-    throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
+    throw { message: 'Không thể xóa sản phẩm đã phát sinh đơn hàng' }
   }
 
   let found_product = await ProductModel.findOne({ id: product_id }).lean(true);
@@ -300,7 +315,7 @@ Controller.deleteProduct = async function ({ product_id }) {
 Controller.deleteVariant = async function ({ variant_id }) {
   let count_order = await OrderModel.count({ 'line_items.variant_id': variant_id });
   if (count_order) {
-    throw { message: 'Không thể xóa sản phẩm, đã phát sinh đơn hàng' }
+    throw { message: 'Không thể xóa sản phẩm đã phát sinh đơn hàng' }
   }
 
   let found_variant = await VariantModel.findOne({ id: variant_id }).lean(true);
@@ -316,4 +331,5 @@ Controller.deleteVariant = async function ({ variant_id }) {
 
   return { message: 'Xóa biến thể thành công' }
 }
+
 module.exports = Controller;

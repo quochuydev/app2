@@ -2,6 +2,7 @@ import ApiClient from '../utils/apiClient';
 
 const URLS = {
   LIST_CUSTOMER: 'api/customers/list',
+  GET_CUSTOMER: 'api/customers',
   ADD_CUSTOMER: 'api/customers/create',
   UPDATE_CUSTOMER: 'api/customers',
   SYNC_CUSTOMER: 'api/customers/sync',
@@ -44,12 +45,16 @@ async function listCustomers(query) {
   return await ApiClient.postData(URLS.LIST_CUSTOMER, null, query);
 }
 
+async function getCustomer(id) {
+  return await ApiClient.getData(`${URLS.GET_CUSTOMER}/${id}`);
+}
+
 async function addCustomer(customer) {
   return await ApiClient.postData(URLS.ADD_CUSTOMER, null, customer);
 }
 
 async function updateCustomer(customer) {
-  return await ApiClient.putData(`${URLS.UPDATE_CUSTOMER}/${customer._id}`, null, customer);
+  return await ApiClient.putData(`${URLS.UPDATE_CUSTOMER}/${customer.id}`, null, customer);
 }
 
 async function syncCustomers(customer) {
@@ -154,7 +159,7 @@ async function getUser(data) {
 }
 
 export default {
-  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
+  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
   getOrderDetail, createOrder,
   loadStaffs, createStaffs, installWoocommerceApp,

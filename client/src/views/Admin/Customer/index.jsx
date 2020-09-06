@@ -12,6 +12,7 @@ import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
+import CustomerDetail from './detail'
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -96,7 +97,8 @@ function Customer(props) {
   const [isImportModal, setIsImportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
   const [isUpdateModal, setIsUpdateModal] = useState(false);
-
+  const [isShowModal, setIsShowModal] = useState(false);
+  
   let [customer, setCustomer] = useState({})
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -124,7 +126,13 @@ function Customer(props) {
 
   function onShowUpdate(customer) {
     setIsUpdateModal(true);
+    setIsShowModal(true)
     setCustomer(customer)
+  }
+
+  function onShowCreate() {
+    setIsShowModal(true)
+    setCustomer({})
   }
 
   function updateCustomer() {
@@ -174,6 +182,7 @@ function Customer(props) {
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
           <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button>
+          <Button onClick={() => onShowCreate(true)}>Thêm khách hàng modal chung</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
@@ -236,13 +245,15 @@ function Customer(props) {
       </Modal>
       <Modal
         title="Update Modal"
-        visible={isUpdateModal}
+        visible={false}
         onOk={() => updateCustomer()}
         onCancel={() => setIsUpdateModal(false)}
       >
         <Input value={customer.first_name} name='first_name' onChange={onChange} />
         <p>{JSON.stringify(customer)}</p>
       </Modal>
+      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)}
+        id={customer.id} />
     </div >
   );
 }

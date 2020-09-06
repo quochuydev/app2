@@ -23,6 +23,15 @@ let list = async (req, res) => {
   }
 }
 
+async function getCustomer({ customer_id }) {
+  let result = {}
+  result.customer = await CustomersMD.findOne({ id: customer_id }).lean(true);
+  if (!result.customer) {
+    throw { message: 'Khách hàng không tồn tại' }
+  }
+  return result;
+}
+
 let sync = async (req, res) => {
   try {
     await Promise.all([
@@ -56,9 +65,13 @@ let create = async ({ body }) => {
 }
 
 let update = async ({ body, customer_id }) => {
-  let customer_data = body;
-  let customer = await CustomersMD._findOneAndUpdate({ _id: customer_id }, { $set: customer_data });
-  res.json({ error: false, customer });
+  let { email, first_name, last_name, birthday, gender, phone } = body;
+  if (!(email && first_name && last_name && birthday && gender && phone)) {
+    throw { message: 'Chưa nhập đủ thông tin!' }
+  }
+
+  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id }, { $set: body });
+  return { error: false, customer, message: 'cập nhật khách hàng thành công' };
 }
 
 let headers = [
@@ -112,4 +125,4 @@ let exportExcel = async (req, res) => {
   res.json({ error: false, downloadLink });
 }
 
-module.exports = { list, sync, create, update, importExcel, exportExcel }
+module.exports = { list, getCustomer, sync, create, update, importExcel, exportExcel }

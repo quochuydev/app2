@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { list, sync, create, update, importExcel, exportExcel } = require('../controllers/customers');
+const { list, getCustomer, sync, create, update, importExcel, exportExcel } = require('../controllers/customers');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
@@ -10,8 +10,13 @@ const router = ({ app }) => {
       .then(result => { res.json(result); })
       .catch(error => { next(error); })
   });
-  app.put('/api/customers/:_id', function (req, res, next) {
-    update({ body: req.body, customer_id: req.params._id })
+  app.get('/api/customers/:id', function (req, res, next) {
+    getCustomer({ customer_id: req.params.id })
+      .then(result => { res.json(result); })
+      .catch(error => { next(error); })
+  });
+  app.put('/api/customers/:id', function (req, res, next) {
+    update({ body: req.body, customer_id: req.params.id })
       .then(result => { res.json(result); })
       .catch(error => { next(error); })
   });

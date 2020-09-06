@@ -4,7 +4,7 @@ import { Map } from 'immutable';
 const initialState = Map({
   count: 0,
   customers: [],
-  customer: null,
+  customer: {},
   downloadLink: null
 });
 
@@ -16,6 +16,8 @@ function CustomerReducer(state = initialState, { type, payload }) {
     case 'EXPORT_CUSTOMER_SUCCESS':
     case 'ADD_CUSTOMER_SUCCESS':
       return state.merge({ ...payload });
+    case 'RESET':
+      return state.merge({ customer: {} });
     default:
       return state;
   }
