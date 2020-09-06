@@ -1,14 +1,14 @@
 (function () {
 
   const Module = {
-    name         : '_is',
-    version      : '1.0',
-    dependencies : {
-      _ : { name : 'lodash' },
-      _regex : {},
+    name: '_is',
+    version: '1.0',
+    dependencies: {
+      _: { name: 'lodash' },
+      _regex: {},
       _CONST: {},
     },
-    factory      : function factory(di) {
+    factory: function factory(di) {
       const _ = di._;
 
       const _is = {
@@ -28,13 +28,13 @@
          * @return {boolean}
          * 
          */
-        email : function (val) {
+        email: function (val) {
           const _regex = di._regex;
 
           if (!(typeof val === 'string' && val.length >= 3)) {
             return false;
           }
-    
+
           if (!_regex.email.test(val)) {
             return false;
           }
@@ -45,13 +45,13 @@
 
           return true;
         },
-        phone : function (val) {
+        phone: function (val) {
           const _regex = di._regex;
 
           if (!_is.filledString(val)) {
             return false;
           }
-    
+
           return _regex.phone.test(val);
         },
         integer(val) {
@@ -91,7 +91,7 @@
          * @param {*} val 
          * 
          */
-        checkablePassword : function (val) {
+        checkablePassword: function (val) {
           return (typeof val === 'string' && val.length >= 1 && val.length <= 50);
         },
         /**
@@ -108,7 +108,7 @@
          * @param {string} val 
          * 
          */
-        strongPassword : function (val) {
+        strongPassword: function (val) {
           if (!(typeof val === 'string' && val.length >= 8 && val.length <= 50)) {
             return false;
           }
@@ -129,7 +129,7 @@
           }
           return true;
         },
-        retry (error) {
+        retry(error) {
           if (!error) {
             return true;
           }
@@ -151,19 +151,14 @@
          * _is.filledArray([]) => false
          * _is.filledArray(1) => false
          */
-        filledArray (value) {
+        filledArray(value) {
           return (Array.isArray(value) && value.length > 0);
         },
-        filledObject (value) {
+        filledObject(value) {
           return (typeof value === 'object' && Object.keys(value).length > 0);
         },
         ISODateString(val) {
           return di._regex.isoDateTime.test(val);
-        },
-        retryableLog({ log }) {
-          const _CONST = di._CONST;
-
-          return log && log.status === _CONST.PROCESS.STATUS.FAILED && _is.retry(log.error);
         },
         matchPattern(patterns, val) {
           if (typeof patterns === 'string') {
@@ -174,16 +169,9 @@
           }
           return false;
         },
-        order : {
-          cod (order) {
+        order: {
+          cod(order) {
             return order && order.gateway_code && ['cod'].includes(order.gateway_code.toLowerCase());
-          },
-          codWithGatewayMethod (order, gatewayMethods){
-            if(gatewayMethods && gatewayMethods.length){
-              return gatewayMethods.find(elm => elm.name == order.gateway && elm.method == di._CONST.GATEWAY_METHOD.AFTER) ? true : false;
-            }else {
-              return order && order.gateway_code && ['cod'].includes(order.gateway_code.toLowerCase());
-            }
           },
           paid(order) {
             return order && order.financial_status === 'paid';
@@ -196,38 +184,6 @@
               return shipping_line.code && String(shipping_line.code).toLowerCase() === 'nhận tại cửa hàng';
             });
           },
-          parentNotDivide(order) {
-            return order && !order.divide_from && order.divide_status !== 1;
-          },
-          notDivide(order) {
-            return order && order.divide_status === 0;
-          },
-          parentDivide(order) {
-            return order && order.divide_status === 1;
-          },
-          child(order) {
-            return order.status_children === 1;
-          }
-        },
-        user : {
-          admin (user) {
-            return _is.user.adapter(user) || user.userType === "user_admin";
-          },
-          normal (user) {
-            return user.userType === "user_normal";
-          },
-          location (user) {
-            return user.userType === "user_location";
-          },
-          store (user) {
-            return user.userType === "user_store";
-          },
-          adapter (user) {
-            return user.isAdapter || user.userType === "user_adapter";
-          },
-          autoTool (user) {
-            return user.userType === "user_auto_tool";
-          }
         },
         filledString(val, minLength = 1, maxLength = null) {
           if (!(typeof val === 'string' || val instanceof String)) {
@@ -247,30 +203,8 @@
         mongoDuplicateKeyError(error) {
           return error.code === 11000 || error.codeName === "DuplicateKey";
         },
-        discountShipping(discount) {
-          return discount && discount.type === 'shipping';
-        },
-        hasReaction({ error, reaction }) {
-          return error && (error.reaction === reaction || (Array.isArray(error.reactions) && error.reactions.includes(reaction)));
-        },
-        discountFreeShip(discount) {
-          return discount && discount.type === 'shipping';
-        },
-        publishedProduct(product) {
-          if (product) {
-            if (product.published_at) {
-              if (new Date(product.published_at) <= new Date()) {
-                return true;
-              }
-            }
-          }
-          return false;
-        },
-        managedInventoryVariant(variant) {
-          return variant && variant.inventory_management === 'haravan';
-        }
       };
-  
+
       return _is;
     }
   };
