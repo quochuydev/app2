@@ -22,6 +22,7 @@
     "highcharts": "^8.2.0",
     "highcharts-react-official": "^3.0.0",
     "http": "0.0.0",
+    "intl": "^1.2.5",
     "jsonwebtoken": "^8.5.1",
     "memory-cache": "^0.2.0",
     "mime": "^2.4.6",

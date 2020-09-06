@@ -126,7 +126,7 @@ function LayoutContainer() {
 
       <Layout style={{ background: '#fff' }}>
         <LeftMenu display={_display(!isMobile)} />
-        <Content style={{ padding: '10px 10px' }}>
+        <Layout.Content>
           <PageHeader
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 0 }}
@@ -143,7 +143,7 @@ function LayoutContainer() {
               {RouteList.map((props, index) => (< Route key={index} {...props} />))}
             </Middleware>
           </Switch>
-        </Content>
+        </Layout.Content>
       </Layout>
 
     </BrowserRouter >
