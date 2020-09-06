@@ -53,7 +53,7 @@ function Customer(props) {
             onClick={() => addProduct(item.id)}
           />
         </div>
-      )
+      ), width: 300
     },
     {
       title: 'Đơn giá', key: 'price', render: edit => (
@@ -266,7 +266,7 @@ function Customer(props) {
 
   return (
     <div>
-      <Row>
+      <Row gutter={10}>
         <Form onSubmit={handleSubmit}>
           <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
@@ -292,11 +292,11 @@ function Customer(props) {
                       </Select>
                     </Col>
                   </Row>
-                  <Row gutter={10} style={{ height: 280, overflow: 'scroll', padding: 15 }}>
+                  <Row style={{ height: 280, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (
-                          <Col  xs={8} lg={4} key={product._id}>
+                          <Col xs={8} lg={4} key={product._id}>
                             <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
@@ -333,15 +333,16 @@ function Customer(props) {
                 }
               </Menu>
             )} trigger={['click']}>
-              <Input size="large" className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"
+              <Input size="large" className="m-y-10" placeholder="Nhập sản phẩm để tìm kiếm"
                 addonAfter={<Icon type="search" />} onChange={e => { onSearchProduct(e) }} />
             </Dropdown>
 
-            <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'} />
+            <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'}
+              scroll={{ x: 900 }} />
           </Col>
-          <Col xs={24} lg={8} style={{ padding: 15 }}>
+          <Col xs={24} lg={8} style={{}}>
             <Layout>
-              <Content style={{ height: '65vh' }}>
+              <Content style={{ height: '65vh', marginTop: 10 }}>
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }}
                     theme="filled" type="plus-circle" /></p>
@@ -361,7 +362,7 @@ function Customer(props) {
                   }
                 </Card>
               </Content>
-              <Footer style={{ bottom: 0, padding: 15, color: '#000' }}>
+              <Footer style={{ bottom: 0, padding: 5, color: '#000' }}>
                 <Row>
                   <Col span={9}>
                     <p>Tạm tính</p>

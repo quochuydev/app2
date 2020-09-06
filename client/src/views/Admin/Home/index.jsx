@@ -35,28 +35,6 @@ function Home(props) {
     return <LoadingPage isProcessing={isProcessing} />;
   }
 
-  function showMessage(error, message) {
-    if (error) {
-      setAlert({
-        messageSuccess: '',
-        messageFailed: message,
-        showAlert: true,
-        isError: true,
-      });
-    } else {
-      setAlert({
-        messageSuccess: message,
-        messageFailed: '',
-        showAlert: true,
-        isError: false,
-      });
-    }
-    setTimeout(() => {
-      setAlert({ showAlert: false });
-    }, 3000);
-    clearTimeout();
-  }
-
   const options = {
     title: {
       text: 'My chart'

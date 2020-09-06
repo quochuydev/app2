@@ -189,7 +189,8 @@ function Products(props) {
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} />
+          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false}
+            expandedRowRender={record => <p style={{ margin: 0 }}>{record.body_html}</p>} />
         </Col>
         <Col span={24}>
           <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage} />

@@ -2,6 +2,10 @@ p {
   margin: 5px;
 }
 
+.m-y-10 {
+  margin: 10px 0;
+}
+
 .m-y-15 {
   margin: 15px 0;
 }

@@ -9,11 +9,11 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import styled from "styled-components"
 import {
   Layout, Menu, Icon, Breadcrumb, Button, Popover,
-  message, List, Drawer
+  message, List, Drawer, PageHeader, Tag, Dropdown
 } from 'antd';
+import './style.css';
 
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
@@ -54,7 +54,7 @@ function LayoutContainer() {
     const menu = MENU_DATA[i];
     if (menu.is_open) {
       menuItems.push(
-        <Menu.Item key={'sub_' + menu.key}>
+        <Menu.Item key={'sub_' + menu.key} style={{ paddingLeft: 0 }}>
           <Link to={menu.path}><Icon type={menu.icon} /><span>{menu.name}</span></Link>
         </Menu.Item>
       );
@@ -75,7 +75,7 @@ function LayoutContainer() {
     return (
       <div style={{ display: props.display }}>
         {
-          token && <Sider collapsible width={180} defaultCollapsed={false}
+          token && <Sider collapsible={!isMobile} width={180} defaultCollapsed={false}
             style={{ background: '#fff' }}>
             <Popover placement="right" content={<div>
               <List size="small" bordered={false}>
@@ -104,6 +104,8 @@ function LayoutContainer() {
     )
   }
 
+  let _display = (boolean) => boolean ? 'block' : 'none';
+
   return (
     <BrowserRouter>
       <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
@@ -112,15 +114,25 @@ function LayoutContainer() {
         closable={false}
         onClose={() => { setIsShowDrawer(false) }}
         visible={isShowDrawer && isMobile}
+        bodyStyle={{ padding: 15 }}
       >
-        <LeftMenu display={isMobile ? 'block' : 'none'} />
+        <LeftMenu display={_display(isMobile)} />
       </Drawer>
 
       <Layout style={{ background: '#fff' }}>
-        <LeftMenu display={!isMobile ? 'block' : 'none'} />
-        <Content style={{ padding: '0 16px' }}>
-          <a onClick={() => setIsShowDrawer(true)} style={{ display: isMobile ? 'block' : 'none' }}>
-            Drawer {isMobile ? 'mobile' : 'desktop'}</a>
+        <LeftMenu display={_display(!isMobile)} />
+        <Content style={{ padding: '10px 10px' }}>
+          <PageHeader
+            title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)} style={{ display: _display(isMobile) }}
+              style={{ border: 'none', padding: 0, }}
+            >
+              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} />
+            </Button>}
+            style={{ border: '1px solid rgb(235, 237, 240)' }}
+            subTitle="This is a subtitle"
+          >
+          </PageHeader>
+
           <Switch>
             <Middleware setAlert={setAlert}>
               {RouteList.map((props, index) => (< Route key={index} {...props} />))}
