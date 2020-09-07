@@ -13,14 +13,16 @@ function OrderDetailComponent(props) {
   console.log(orderId)
 
   useEffect(() => {
-    if (orderId) { actions.getOrderDetail(orderId); }
+    if (orderId) {
+      actions.getOrderDetail(orderId);
+    }
   }, [orderId])
 
   const detailColumns = [
     {
-      title: 'Sản phẩm', key: 'name',
+      title: 'Sản phẩm', key: 'title',
       render: edit => (
-        <a onClick={() => { }}>{edit.name}</a>
+        <a onClick={() => { }}>{edit.title}</a>
       ),
     },
     { title: 'Chi phí', dataIndex: 'price', key: 'price', },

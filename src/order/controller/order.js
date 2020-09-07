@@ -2,6 +2,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const OrderMD = mongoose.model('Order');
+const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { _parse } = require(path.resolve('./src/core/lib/query'));
@@ -50,13 +51,26 @@ const create = async (req, res, next) => {
       throw { message: 'Chọn sản phẩm' }
     }
 
-    if (!(data.customer)) {
+    if (!(data.customer && data.customer.id)) {
       throw { message: 'Chọn khách hàng' }
     }
 
+    let line_items = Array.isArray(data.line_items) ? data.line_items.map(e => {
+      return e;
+    }) : [];
+    let product_ids = line_items.map(e => e.product_id);
+    let products = await ProductModel.find({ id: { $in: product_ids } }).lean(true);
+    let order_products = products.map(e => Object({
+      id: e.id,
+      title: e.title,
+      options: e.options,
+      variants: e.variants,
+    }))
+
     let order_data = {
       type: data.type,
-      line_items: data.line_items,
+      line_items,
+      products: order_products,
       total_line_items_price: data.total_line_items_price,
       custom_total_shipping_price: data.custom_total_shipping_price,
       total_discounts: data.total_discounts,

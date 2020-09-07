@@ -107,6 +107,7 @@ function Customer(props) {
   const [isCustomerModal, setIsCustomerModal] = useState(false);
   const [customer, setCustomer] = useState({ gender: 1 })
   const [done, setDone] = useState(null)
+  let setOrder = OrderActions.setOrder;
 
   useEffect(() => {
     if (done && done.customer) {
@@ -115,8 +116,6 @@ function Customer(props) {
       setIsCustomerModal(false);
     }
   }, [done])
-
-  let setOrder = OrderActions.setOrder;
 
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
@@ -198,12 +197,9 @@ function Customer(props) {
       setCustomer({});
     }
   }
-
-  function onCustomerChange(e) {
-    setCustomer({ ...customer, [e.target.name]: e.target.value });
-  }
-  function onCustomerChangeField(e, field) {
-    setCustomer({ ...customer, [field]: e });
+  function removeCustomer() {
+    setCustomer({});
+    setOrder({ customer: null })
   }
 
   function onChange(e, data, setData) {
@@ -218,7 +214,6 @@ function Customer(props) {
         setIsCreateSuccess(true);
       })
       .catch(error => {
-        console.log(error);
         message.error(error.message);
       })
   }
@@ -231,7 +226,7 @@ function Customer(props) {
   }
 
   function formatOptionCustomer(customer) {
-    if (!customer) {
+    if (!(customer && customer.id)) {
       return { value: null, label: '-- Vui lòng chọn --' };
     }
     return { value: customer.id, label: `${customer.first_name} ${customer.last_name}` }
@@ -305,7 +300,8 @@ function Customer(props) {
                       products.map(product => {
                         return (
                           <Col xs={8} lg={4} key={product._id}>
-                            <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
+                            <Badge count={product.variants.length > 1 ? '--' : 99}
+                              style={{ backgroundColor: '#52c41a',  }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
                                   <Avatar shape="square" style={{ width: "100%", height: 100 }}
@@ -326,7 +322,7 @@ function Customer(props) {
             </div>
 
             <Dropdown overlay={(
-              <Menu>
+              <Menu style={{height: 150, overflow: 'scroll'}}>
                 {
                   _.cloneDeep(products).splice(0, 5).map(item => (
                     <Menu.Item key={item.id}>
@@ -348,18 +344,12 @@ function Customer(props) {
             <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'}
               scroll={{ x: 900 }} />
           </Col>
-          <Col xs={24} lg={8} style={{}}>
+          <Col xs={24} lg={8}>
             <Layout>
               <Content style={{ height: '65vh', marginTop: 10 }}>
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng:
                     <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
-                      theme="filled" type="plus-circle" />
-                    <Icon onClick={() => onShowCustomerModal(order.customer)}
-                      style={{ color: 'green', display: !!order.customer ? 'inline-block' : 'none' }}
-                      theme="filled" type="plus-circle" />
-                    <Icon onClick={() => { }}
-                      style={{ color: 'red', display: !!order.customer ? 'inline-block' : 'none' }}
                       theme="filled" type="plus-circle" />
                   </p>
                   <AsyncSelect
@@ -371,16 +361,24 @@ function Customer(props) {
                   />
                   {
                     !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
-                      <p>Thông Tin Người Mua</p>
-                      <p className="hide">id: {order.customer.id}</p>
-                      <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
-                      <p>Email: {order.customer.email}</p>
-                      <p>Ngáy sinh: {order.customer.birthday}</p>
-                      <p>Thông Tin Giao Hàng</p>
-                      <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
-                      <p>Sđt: {order.customer.phone}</p>
-                      <p>Địa Chỉ Giao Hàng</p>
-                      <p>{order.shipping ? order.shipping.address : null}</p>
+                      <Card title={<p className="ui-title-page">Thông Tin Người Mua </p>} style={{ width: '100%' }}
+                        extra={<Icon onClick={() => removeCustomer()}
+                          style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
+                          type="close" />
+                        }>
+                        <p className="hide">id: {order.customer.id}</p>
+                        <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                        <p>Email: {order.customer.email}</p>
+                        <p>Ngáy sinh: {order.customer.birthday}</p>
+                        <p className="ui-title-page">Thông Tin Giao Hàng: <Icon onClick={() => onShowCustomerModal(order.customer)}
+                          style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
+                          theme="filled" type="edit" /></p>
+                        <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                        <p>Sđt: {order.customer.phone}</p>
+                        <p>Địa Chỉ Giao Hàng</p>
+                        <p>{order.customer.default_address ? order.customer.default_address.address : null}</p>
+                      </Card>
+
                     </div> : null
                   }
                 </Card>

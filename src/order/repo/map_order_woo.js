@@ -31,6 +31,7 @@ const MapOrderWoocommerce = {
         product_id: line_item.product_id,
         sku: line_item.sku,
         name: line_item.name,
+        title: line_item.name,
         variant_id: line_item.variation_id,
         quantity: line_item.quantity,
         price: Number(line_item.price),

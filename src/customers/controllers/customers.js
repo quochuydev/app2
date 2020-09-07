@@ -69,12 +69,21 @@ let create = async ({ body }) => {
 }
 
 let update = async ({ body, customer_id }) => {
-  let { email, first_name, last_name, birthday, phone } = body;
+  let { email, first_name, last_name, birthday, phone, gender, address } = body;
   if (!(email && first_name && last_name && birthday && phone)) {
     throw { message: 'Chưa nhập đủ thông tin!' }
   }
 
-  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id }, { $set: body }, { lean: true, new: true, });
+  let data = {
+    email, first_name, last_name, birthday, gender, phone
+  }
+  data.default_address = {
+    phone,
+    address: body.address
+  }
+  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id },
+    { $set: data },
+    { lean: true, new: true, });
   return { error: false, customer, message: 'cập nhật khách hàng thành công' };
 }
 

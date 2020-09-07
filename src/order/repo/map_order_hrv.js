@@ -34,6 +34,7 @@ const MapOrderHaravan = {
         product_id: line_item.product_id,
         sku: line_item.sku,
         name: line_item.title,
+        title: line_item.title,
         variant_id: line_item.variant_id,
         quantity: line_item.quantity,
         price: line_item.price,

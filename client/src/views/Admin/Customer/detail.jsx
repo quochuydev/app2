@@ -30,6 +30,7 @@ function CustomerDetail(props) {
   }, [customer.id])
 
   function onCustomerChange(e) {
+    customerUpdate[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
   }
 
@@ -74,31 +75,30 @@ function CustomerDetail(props) {
                   </Radio.Group>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label='Email' onChange={onCustomerChange}>
-                    <Input name="email" placeholder="example@gmail.com" value={customerUpdate.email} />
+                  <Form.Item label="Họ" required onChange={onCustomerChange}>
+                    <Input name="last_name" placeholder="input placeholder" value={customerUpdate.last_name} />
+                  </Form.Item>
+                  <Form.Item label="Số điện thoại" required>
+                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />
                   </Form.Item>
                   <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
                     <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')}
                       defaultValue={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
                   </Form.Item>
-                  <Form.Item label="Số điện thoại" required>
-                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />
-                  </Form.Item>
                 </Col>
+
                 <Col span={12}>
-                  <Form.Item label="Họ" required onChange={onCustomerChange}>
-                    <Input name="last_name" placeholder="input placeholder" value={customerUpdate.last_name} />
-                  </Form.Item>
                   <Form.Item label="Tên" required onChange={onCustomerChange}>
                     <Input name="first_name" placeholder="input placeholder" value={customerUpdate.first_name} />
                   </Form.Item>
-                  <Form.Item label="Field A" required>
-                    <Input placeholder="input placeholder" />
+                  <Form.Item label='Email' onChange={onCustomerChange}>
+                    <Input name="email" placeholder="example@gmail.com" value={customerUpdate.email} />
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Form.Item label="Địa chỉ">
-                    <Input placeholder="Nhập địa chỉ khách hàng" />
+                  <Form.Item label="Địa chỉ" onChange={onCustomerChange}>
+                    <Input name="default_address.address" placeholder="Nhập địa chỉ khách hàng"
+                      value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
                   </Form.Item>
                   <button className="btn-primary w-100" type="submit">Thêm mới</button>
                 </Col>
