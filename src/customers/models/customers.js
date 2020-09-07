@@ -1,3 +1,7 @@
+/*
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+*/
+
 const mongoose = require('mongoose');
 const cache = require('memory-cache');
 const { Schema } = mongoose;
@@ -13,8 +17,8 @@ const CustomersSchema = new Schema({
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],
   default_address: {},
-  billing: {},
-  shipping: {},
+  billing_address: {},
+  shipping_address: {},
   created_at: { type: Date, default: null },
   phone: { type: String, default: null },
   email: { type: String, default: null },
@@ -78,4 +82,6 @@ CustomersSchema.statics._create = async function (data = {}) {
   return result;
 }
 
-mongoose.model('Customer', CustomersSchema);
+let CustomerModel = mongoose.model('Customer', CustomersSchema);
+
+module.exports = { CustomerModel }

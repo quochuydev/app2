@@ -13,6 +13,7 @@ import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
 import CustomerDetail from './detail'
+import AdminServices from './../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -93,6 +94,28 @@ function Customer(props) {
     actions.listCustomers(query);
   }, [query]);
 
+  let [done, setDone] = useState(null);
+  useEffect(() => {
+    if (done && done.customer) {
+      try {
+        let result = null;
+        if (done.customer.id) {
+          AdminServices.updateCustomer(done.customer)
+            .then(result => {
+              message.success(result.message);
+            })
+        } else {
+          AdminServices.addCustomer(done.customer)
+            .then(result => {
+              message.success(result.message);
+            })
+        }
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+  }, [done]);
+  
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
@@ -105,9 +128,7 @@ function Customer(props) {
   function onLoadCustomer() {
     actions.listCustomers(query);
   }
-  function addCustomer() {
-    actions.addCustomer(customer);
-  }
+
   function importCustomer() {
     actions.importCustomer();
   }
@@ -203,7 +224,7 @@ function Customer(props) {
           </div>
         </Upload.Dragger>
       </Modal>
-      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} />
+      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} setDone={setDone} />
     </div >
   );
 }

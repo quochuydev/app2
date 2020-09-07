@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const OrderMD = mongoose.model('Order');
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { _parse } = require(path.resolve('./src/core/lib/query'));
@@ -42,48 +43,49 @@ const sync = async (req, res) => {
   }
 }
 
+async function create({ body }) {
+  let data = body;
 
-const create = async (req, res, next) => {
-  try {
-    let data = req.body;
-
-    if (!(data.line_items && data.line_items.length)) {
-      throw { message: 'Chọn sản phẩm' }
-    }
-
-    if (!(data.customer && data.customer.id)) {
-      throw { message: 'Chọn khách hàng' }
-    }
-
-    let line_items = Array.isArray(data.line_items) ? data.line_items.map(e => {
-      return e;
-    }) : [];
-    let product_ids = line_items.map(e => e.product_id);
-    let products = await ProductModel.find({ id: { $in: product_ids } }).lean(true);
-    let order_products = products.map(e => Object({
-      id: e.id,
-      title: e.title,
-      options: e.options,
-      variants: e.variants,
-    }))
-
-    let order_data = {
-      type: data.type,
-      line_items,
-      products: order_products,
-      total_line_items_price: data.total_line_items_price,
-      custom_total_shipping_price: data.custom_total_shipping_price,
-      total_discounts: data.total_discounts,
-      total_price: data.total_price,
-      customer: data.customer,
-      shipping_address: null,
-      created_at: new Date(),
-    };
-    let order = await OrderMD._create(order_data);
-    res.json({ error: false, order });
-  } catch (error) {
-    next(error);
+  if (!(data.line_items && data.line_items.length)) {
+    throw { message: 'Chọn sản phẩm' }
   }
+
+  if (!(data.customer && data.customer.id)) {
+    throw { message: 'Chọn khách hàng' }
+  }
+
+  if (!(data.shipping_address && data.shipping_address.address)) {
+    throw { message: 'Chưa đủ thông tin giao hàng' }
+  }
+
+  let line_items = Array.isArray(data.line_items) ? data.line_items.map(e => e) : [];
+
+  let product_ids = line_items.map(e => e.product_id);
+  let products = await ProductModel.find({ id: { $in: product_ids } }).lean(true);
+  let order_products = products.map(e => Object({
+    id: e.id,
+    title: e.title,
+    options: e.options,
+    variants: e.variants,
+  }))
+
+  let order_data = {
+    type: data.type,
+    line_items,
+    products: order_products,
+    total_line_items_price: data.total_line_items_price,
+    custom_total_shipping_price: data.custom_total_shipping_price,
+    total_discounts: data.total_discounts,
+    total_price: data.total_price,
+    customer: data.customer,
+    customer_id: data.customer.id,
+    billing_address: data.shipping_address,
+    shipping_address: data.shipping_address,
+    created_at: new Date(),
+  };
+  let order = await OrderMD._create(order_data);
+  return { error: false, order, message: `Tạo đơn hàng thành công [${order.id}]` };
+
 }
 
 const update = async (req, res) => {

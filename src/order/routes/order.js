@@ -4,7 +4,11 @@ const router = ({ app }) => {
   app.get('/api/order/detail/:id', detail);
   app.post('/api/order/list', list);
   app.post('/api/order/sync', sync);
-  app.post('/api/order/create', create);
+  app.post('/api/order/create', function (req, res, next) {
+    create({ body: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  });
 }
 
 module.exports = router;

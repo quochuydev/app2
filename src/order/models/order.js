@@ -40,6 +40,8 @@ const OrderSchema = new Schema({
     email: { type: String, default: null },
     phone: { type: String, default: null },
   },
+  billing_address: {},
+  shipping_address: {},
   line_items: [{
     product_id: { type: Number, default: null },
     sku: { type: String, default: null },

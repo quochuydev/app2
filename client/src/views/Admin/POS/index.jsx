@@ -111,7 +111,8 @@ function Customer(props) {
 
   useEffect(() => {
     if (done && done.customer) {
-      setOrder({ customer: done.customer });
+      console.log('done', done)
+      setOrder({ shipping_address: done.customer });
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);
     }
@@ -248,6 +249,7 @@ function Customer(props) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
       setOrder({ customer });
+      setOrder({ shipping_address: customer });
     }
   };
 
@@ -301,7 +303,7 @@ function Customer(props) {
                         return (
                           <Col xs={8} lg={4} key={product._id}>
                             <Badge count={product.variants.length > 1 ? '--' : 99}
-                              style={{ backgroundColor: '#52c41a',  }}>
+                              style={{ backgroundColor: '#52c41a' }}>
                               <Card className="cursor-pointer"
                                 cover={<div>
                                   <Avatar shape="square" style={{ width: "100%", height: 100 }}
@@ -322,7 +324,7 @@ function Customer(props) {
             </div>
 
             <Dropdown overlay={(
-              <Menu style={{height: 150, overflow: 'scroll'}}>
+              <Menu style={{ height: 150, overflow: 'scroll' }}>
                 {
                   _.cloneDeep(products).splice(0, 5).map(item => (
                     <Menu.Item key={item.id}>
@@ -360,7 +362,7 @@ function Customer(props) {
                     onChange={onSearchChange}
                   />
                   {
-                    !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
+                    !!(order.shipping_address && order.shipping_address.id) ? <div style={{ marginTop: 15 }}>
                       <Card title={<p className="ui-title-page">Thông Tin Người Mua </p>} style={{ width: '100%' }}
                         extra={<Icon onClick={() => removeCustomer()}
                           style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
@@ -369,14 +371,14 @@ function Customer(props) {
                         <p className="hide">id: {order.customer.id}</p>
                         <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
                         <p>Email: {order.customer.email}</p>
-                        <p>Ngáy sinh: {order.customer.birthday}</p>
-                        <p className="ui-title-page">Thông Tin Giao Hàng: <Icon onClick={() => onShowCustomerModal(order.customer)}
-                          style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
+                        <p>Ngày sinh: {order.customer.birthday}</p>
+                        <p className="ui-title-page">Thông Tin Giao Hàng: <Icon onClick={() => onShowCustomerModal(order.shipping_address)}
+                          style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
                           theme="filled" type="edit" /></p>
-                        <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
-                        <p>Sđt: {order.customer.phone}</p>
+                        <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
+                        <p>Sđt: {order.shipping_address.phone}</p>
                         <p>Địa Chỉ Giao Hàng</p>
-                        <p>{order.customer.default_address ? order.customer.default_address.address : null}</p>
+                        <p>{order.shipping_address.address}</p>
                       </Card>
 
                     </div> : null
@@ -449,8 +451,8 @@ function Customer(props) {
           }
         </Menu>
       </Modal>
-      <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)} customer={customer}
-        setDone={setDone} />
+      <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
+        customer={customer} setDone={setDone} />
 
       <Modal
         visible={isCreateSuccess}

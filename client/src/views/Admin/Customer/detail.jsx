@@ -30,7 +30,6 @@ function CustomerDetail(props) {
   }, [customer.id])
 
   function onCustomerChange(e) {
-    customerUpdate[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
   }
 
@@ -40,19 +39,11 @@ function CustomerDetail(props) {
 
   async function addCustomer(e) {
     e.preventDefault();
-    try {
-      let result = null;
-      if (customer.id) {
-        result = await AdminServices.updateCustomer(customerUpdate);
-      } else {
-        result = await AdminServices.addCustomer(customerUpdate);
-      }
-      setDone(result);
-      message.success(result.message);
-      onCloseModal();
-    } catch (error) {
-      message.error(error.message);
+    if (customer.id) {
+      customerUpdate.id = customer.id;
     }
+    setDone({ customer: customerUpdate });
+    onCloseModal();
   }
 
   return (
@@ -97,8 +88,8 @@ function CustomerDetail(props) {
                 </Col>
                 <Col span={24}>
                   <Form.Item label="Địa chỉ" onChange={onCustomerChange}>
-                    <Input name="default_address.address" placeholder="Nhập địa chỉ khách hàng"
-                      value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                    <Input name="address" placeholder="Nhập địa chỉ khách hàng"
+                      value={customerUpdate.address ? customerUpdate.address : null} />
                   </Form.Item>
                   <button className="btn-primary w-100" type="submit">Thêm mới</button>
                 </Col>
