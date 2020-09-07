@@ -8,7 +8,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
-  Select, Form, Modal, Radio, Pagination, Tabs
+  Select, Form, Modal, Radio, Pagination, Tabs,
+  Popover, message,
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -135,6 +136,7 @@ function Orders(props) {
   }
   function onChange(e) {
     let { name, value } = e.target;
+    console.log({ name, value });
     setQuery({ ...query, [name]: value })
   }
   function onChangePage(e) {
@@ -144,19 +146,61 @@ function Orders(props) {
 
   return (
     <div>
-      {/* <Tabs tabPosition={'left'}>
-        <TabPane tab="Tab 1" key="1">
-          Content of Tab 1
-      </TabPane>
-        <TabPane tab="Tab 2" key="2">
-          Content of Tab 2
-      </TabPane>
-      </Tabs> */}
-
-      <Row key='1'>
-        <Form>
+      <Form>
+        <Row type="flex">
+          <Col span={4}>
+            <Popover placement="bottomLeft" content={
+              <div>
+                <p>Content</p>
+                <Select size="large" value={1} className="block">
+                  <Option value={1}>Trạng thái đơn hàng</Option>
+                </Select>
+                <p>Content</p>
+                <Select size="large" value={1} className="block">
+                  <Option value={1}>Mới</Option>
+                </Select>
+                <br />
+                <Button size="large">Hủy</Button>
+                <Button size="large" type="primary">Thêm điều kiện lọc</Button>
+              </div>
+            } trigger="click">
+              <Button icon="search" size="large" >
+                Áp dụng bộ lọc
+            </Button>
+            </Popover>
+          </Col>
+          <Col span={15}>
+            <Input className="hidden-xs" size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
+              addonBefore={<Icon type="search" />} />
+          </Col>
+          <Col span={4}>
+            <Link to={`POS`}>
+              <Button size="large" onClick={() => loadOrders()}>
+                <Icon type="search"  /> Tạo đơn hàng
+            </Button>
+            </Link>
+          </Col>
+          <Col span={1}>
+            <Popover placement="topLeft" content={
+              <div>
+                <Button className="block" onClick={() => loadOrders()}>
+                  Tạo đơn hàng
+            </Button>
+                <Button className="block" onClick={() => loadOrders()}>
+                  Tạo đơn hàng
+            </Button>
+              </div>
+            } trigger="click">
+              <Button icon="search" size="large" >
+                Áp dụng bộ lọc
+            </Button>
+            </Popover>
+          </Col>
+        </Row>
+        <Row key='1'>
           <Col span={8}>
-            <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
+            <Form.Item label="Mã đơn hàng">
+              <Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Commerce">
@@ -174,35 +218,35 @@ function Orders(props) {
               </Select>
             </Form.Item>
           </Col>
-        </Form>
 
-        <Col span={24}>
-          <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
-          <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
-            scroll={{ x: 900 }} />
-        </Col>
-        <Col span={24}>
-          <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage} />
-        </Col>
-      </Row>
-      <ModalInfo
-        order={order}
-        isShowInfoModal={isShowInfoModal}
-        setIsShowInfoModal={setIsShowInfoModal}
-      ></ModalInfo>
-      <ModalMail
-        order={order}
-        isShowSendMailModal={isShowSendMailModal}
-        setIsShowSendMailModal={setIsShowSendMailModal}
-      ></ModalMail>
+          <Col span={24}>
+            <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
+            <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
+            <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
+              scroll={{ x: 900 }} />
+          </Col>
+          <Col span={24}>
+            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage} />
+          </Col>
+        </Row>
+        <ModalInfo
+          order={order}
+          isShowInfoModal={isShowInfoModal}
+          setIsShowInfoModal={setIsShowInfoModal}
+        ></ModalInfo>
+        <ModalMail
+          order={order}
+          isShowSendMailModal={isShowSendMailModal}
+          setIsShowSendMailModal={setIsShowSendMailModal}
+        ></ModalMail>
 
-      <div style={{ display: isShowPrint ? 'block' : 'none' }}>
-        <div ref={componentRef}>
-          123123
+        <div style={{ display: isShowPrint ? 'block' : 'none' }}>
+          <div ref={componentRef}>
+            123123
           <p>{JSON.stringify(order.type)}</p>
+          </div>
         </div>
-      </div>
+      </Form>
     </div >
   );
 }

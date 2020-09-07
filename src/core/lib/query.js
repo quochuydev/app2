@@ -30,6 +30,12 @@ function formatCriteria(field, value) {
   if (typeof value == 'string') {
     value = value.replace(/  +/g, '');
   }
+  if (['', null, undefined].includes(value)) {
+    return {}
+  }
+  if (Array.isArray(value) && value.length === 0) {
+    return {}
+  }
   if (_.endsWith(field, '_gte')) {
     return { [field.slice(0, -4)]: { $gte: value } };
   }

@@ -79,12 +79,12 @@ let update = async ({ body, customer_id }) => {
   }
   data.default_address = {
     phone,
-    address: body.address
+    address
   }
   let customer = await CustomersMD.findOneAndUpdate({ id: customer_id },
     { $set: data },
     { lean: true, new: true, });
-  return { error: false, customer, message: 'cập nhật khách hàng thành công' };
+  return { error: false, customer, message: 'Cập nhật khách hàng thành công' };
 }
 
 let headers = [

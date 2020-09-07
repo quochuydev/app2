@@ -249,7 +249,7 @@ function Customer(props) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
       setOrder({ customer });
-      setOrder({ shipping_address: customer });
+      setOrder({ shipping_address: customer.default_address });
     }
   };
 
@@ -362,7 +362,7 @@ function Customer(props) {
                     onChange={onSearchChange}
                   />
                   {
-                    !!(order.shipping_address && order.shipping_address.id) ? <div style={{ marginTop: 15 }}>
+                    !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
                       <Card title={<p className="ui-title-page">Thông Tin Người Mua </p>} style={{ width: '100%' }}
                         extra={<Icon onClick={() => removeCustomer()}
                           style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
@@ -371,14 +371,22 @@ function Customer(props) {
                         <p className="hide">id: {order.customer.id}</p>
                         <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
                         <p>Email: {order.customer.email}</p>
+                        <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
-                        <p className="ui-title-page">Thông Tin Giao Hàng: <Icon onClick={() => onShowCustomerModal(order.shipping_address)}
-                          style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
-                          theme="filled" type="edit" /></p>
-                        <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
-                        <p>Sđt: {order.shipping_address.phone}</p>
-                        <p>Địa Chỉ Giao Hàng</p>
-                        <p>{order.shipping_address.address}</p>
+                        {
+                          !!(order.shipping_address) ?
+                            <div>
+                              <p className="ui-title-page">Thông Tin Giao Hàng:
+                              <Icon onClick={() => onShowCustomerModal(order.shipping_address)}
+                                  style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                                  theme="filled" type="edit" /></p>
+                              <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
+                              <p>Sđt: {order.shipping_address.phone}</p>
+                              <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
+                            </div>
+                            : null
+                        }
+
                       </Card>
 
                     </div> : null

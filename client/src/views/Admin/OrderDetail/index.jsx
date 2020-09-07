@@ -30,30 +30,27 @@ function OrderDetailComponent(props) {
     { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
   ];
 
-  let orderDetailTable = (<Row></Row>);
-  if (order) {
-    orderDetailTable = (
-      < Row >
-        <Col span={16} style={{ padding: 15 }}>
-          <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
-        </Col>
-        <Col span={8} style={{ padding: 15 }}>
-          <Card title="Thông tin khách hàng">
-            <p>Tên: {_.get(order, 'billing.first_name')}</p>
-          </Card>
-          <Card title="Thông tin Giao hàng">
-            <p>Tên: {_.get(order, 'shipping.first_name')}</p>
-          </Card>
-          <Card title="Tình trạng đơn hàng">
-            <p>Trạng thái: {_.get(order, 'status')}</p>
-          </Card>
-        </Col>
-      </Row >
-    )
-  }
   return (
     <div>
-      {orderDetailTable}
+      {
+        !!(order && order.id) ? <Row gutter={15} >
+          <Col xs={24} lg={16}>
+            <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
+          </Col>
+          <Col xs={24} lg={8} >
+            <Card title="Thông tin khách hàng">
+              <p>Tên: {_.get(order, 'billing.first_name')}</p>
+            </Card>
+            <Card title="Thông tin Giao hàng">
+              <p>Tên: {_.get(order, 'shipping.first_name')}</p>
+            </Card>
+            <Card title="Tình trạng đơn hàng">
+              <p>Trạng thái: {_.get(order, 'status')}</p>
+            </Card>
+          </Col>
+        </Row >
+          : null
+      }
     </div>
   );
 }
