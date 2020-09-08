@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Table, Row, Col, Modal, Card } from 'antd';
+import {
+  Table, Row, Col, Modal, Card, Button
+} from 'antd';
 import 'antd/dist/antd.css';
 
 import * as orderDetailActions from './actions';
@@ -36,7 +38,20 @@ function OrderDetailComponent(props) {
         !!(order && order.id) ? <Row gutter={15} >
           <Col xs={24} lg={16}>
             <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
+            <Row>
+              <Col xs={24} lg={12}>
+                <Button type="primary" onClick={() => { }}>
+                  Cập nhật ghi chú
+            </Button>
+              </Col>
+              <Col xs={24} lg={12}>
+                <Button type="primary" onClick={() => { }}>
+                  Xác nhận thanh toán
+            </Button>
+              </Col>
+            </Row>
           </Col>
+          
           <Col xs={24} lg={8} >
             <Card title="Thông tin khách hàng">
               <p>Tên: {_.get(order, 'billing.first_name')}</p>

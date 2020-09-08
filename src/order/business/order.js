@@ -30,7 +30,7 @@ let syncOrdersWoo = async () => {
       let { type } = order;
       let found = await OrderMD._findOne({ id, type });
       if (found) {
-        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, { $set: order });
+        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, order);
         console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
         let newOrder = await OrderMD.create(order);

@@ -190,7 +190,6 @@ function Orders(props) {
               </div>
             } trigger="click">
               <Button icon="swap" size="large" >
-                <span className="hidden-xs"></span>
               </Button>
             </Popover>
           </Col>

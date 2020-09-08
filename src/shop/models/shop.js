@@ -71,9 +71,8 @@ ShopSchema.statics._findOneAndUpdate = async function (filter = {}, data_update 
 }
 
 ShopSchema.statics._update = async function (filter = {}, data_update = {}) {
-  let _this = this;
-  let id = cache.get('shop_id');
-  let data = await _this.update({ ...filter, id }, data_update);
+  filter.id = cache.get('shop_id');
+  let data = await this.update(filter, data_update);
   return data;
 }
 

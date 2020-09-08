@@ -53,12 +53,19 @@ const OrderSchema = new Schema({
     total: { type: Number, default: null },
   }],
   products: [],
+
+  total_price: { type: Number, default: 0 },
+  total_discounts: { type: Number, default: 0 },
+  custom_total_shipping_price: { type: Number, default: 0 },
+  total_pay: { type: Number, default: 0 },
+  total_refund: { type: Number, default: 0 },
+
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   currency: { type: String, default: null },
+  attributes: [],
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
-  total_price: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
@@ -78,30 +85,30 @@ OrderSchema.plugin(autoIncrement.plugin, {
 });
 
 OrderSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
-  let _this = this;
   filter.shop_id = cache.get('shop_id');
-  let data = await _this.findOne(filter, populate, options);
+  let data = await this.findOne(filter, populate, options);
+  if (!data) {
+    throw { message: 'Đơn hàng không còn tồn tại' }
+  }
   return data;
 }
 
 OrderSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
-  let _this = this;
   filter.shop_id = cache.get('shop_id');
-  let data = await _this.findOneAndUpdate(filter, data_update, options);
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;
 }
 
 OrderSchema.statics._update = async function (filter = {}, data_update = {}) {
-  let _this = this;
   filter.shop_id = cache.get('shop_id');
-  let data = await _this.update(filter, data_update);
+  let data = await this.update(filter, data_update);
   return data;
 }
 
 OrderSchema.statics._create = async function (data = {}) {
-  let _this = this;
-  let shop_id = cache.get('shop_id');
-  let result = await _this.create({ ...data, shop_id });
+  data.shop_id = cache.get('shop_id');
+  let result = await this.create(data);
   return result;
 }
 

@@ -1,4 +1,8 @@
+import _ from 'lodash';
 import ApiClient from '../utils/apiClient';
+import common from '../utils/common';
+
+const compile = common.compile;
 
 const URLS = {
   LIST_CUSTOMER: 'api/customers/list',
@@ -10,8 +14,11 @@ const URLS = {
 
   LIST_ORDERS: 'api/order/list',
   GET_ORDER_DETAIL: 'api/order/detail',
-  CREATE_ORDER: 'api/order/create',
   SYNC_ORDERS: 'api/order/sync',
+  CREATE_ORDER: 'api/order/create',
+  UPDATE_ORDER: 'api/orders',
+  PAY_ORDER: 'api/orders/{id}/pay',
+  UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
 
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT: 'api/products',
@@ -73,13 +80,28 @@ async function getOrderDetail(id) {
   let url = `${URLS.GET_ORDER_DETAIL}/${id}`;
   return await ApiClient.getData(url);
 }
-async function createOrder(data) {
-  let url = `${URLS.CREATE_ORDER}`;
-  return await ApiClient.postData(url, null, data);
-}
 
 async function syncOrders() {
   return await ApiClient.postData(URLS.SYNC_ORDERS);
+}
+
+async function createOrder(data) {
+  return await ApiClient.postData(URLS.CREATE_ORDER, null, data);
+}
+
+async function updateOrder(data) {
+  let url = compile(URLS.UPDATE_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
+async function updateNoteOrder(data) {
+  let url = compile(URLS.UPDATE_NOTE_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
+async function payOrder(data) {
+  let url = compile(URLS.PAY_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
 }
 
 async function loadStaffs() {
@@ -161,7 +183,7 @@ async function getUser(data) {
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
-  getOrderDetail, createOrder,
+  getOrderDetail, createOrder, updateOrder, updateNoteOrder, payOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct,
