@@ -164,36 +164,34 @@ function Orders(props) {
                 <Button size="large" type="primary">Thêm điều kiện lọc</Button>
               </div>
             } trigger="click">
-              <Button icon="search" size="large" >
-                Áp dụng bộ lọc
-            </Button>
+              <Button icon="filter" size="large">
+                <span className="hidden-xs">Áp dụng bộ lọc</span>
+              </Button>
             </Popover>
           </Col>
-          <Col span={15}>
-            <Input className="hidden-xs" size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
-              addonBefore={<Icon type="search" />} />
+          <Col span={14}>
+            <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
+              prefix={<Icon type="search" />} style={{ marginBottom: 1 }}/>
           </Col>
-          <Col span={4}>
+          <Col span={6}>
             <Link to={`POS`}>
-              <Button size="large" onClick={() => loadOrders()}>
-                <Icon type="search"  /> Tạo đơn hàng
-            </Button>
+              <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
+                <span className="hidden-xs">Tạo đơn hàng</span>
+              </Button>
             </Link>
-          </Col>
-          <Col span={1}>
             <Popover placement="topLeft" content={
               <div>
                 <Button className="block" onClick={() => loadOrders()}>
                   Tạo đơn hàng
-            </Button>
+                </Button>
                 <Button className="block" onClick={() => loadOrders()}>
                   Tạo đơn hàng
-            </Button>
+                </Button>
               </div>
             } trigger="click">
-              <Button icon="search" size="large" >
-                Áp dụng bộ lọc
-            </Button>
+              <Button icon="swap" size="large" >
+                <span className="hidden-xs"></span>
+              </Button>
             </Popover>
           </Col>
         </Row>

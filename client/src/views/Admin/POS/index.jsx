@@ -249,7 +249,7 @@ function Customer(props) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
       setOrder({ customer });
-      setOrder({ shipping_address: customer.default_address });
+      setOrder({ shipping_address: customer.default_address || {} });
     }
   };
 
@@ -373,22 +373,14 @@ function Customer(props) {
                         <p>Email: {order.customer.email}</p>
                         <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
-                        {
-                          !!(order.shipping_address) ?
-                            <div>
-                              <p className="ui-title-page">Thông Tin Giao Hàng:
+                        <p className="ui-title-page">Thông Tin Giao Hàng:
                               <Icon onClick={() => onShowCustomerModal(order.shipping_address)}
-                                  style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
-                                  theme="filled" type="edit" /></p>
-                              <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
-                              <p>Sđt: {order.shipping_address.phone}</p>
-                              <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
-                            </div>
-                            : null
-                        }
-
+                            style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                            theme="filled" type="edit" /></p>
+                        <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
+                        <p>Sđt: {order.shipping_address.phone}</p>
+                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
                       </Card>
-
                     </div> : null
                   }
                 </Card>
