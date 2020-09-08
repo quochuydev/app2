@@ -18,7 +18,6 @@ import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 function Orders(props) {
   const { count, actions, orders } = props;
@@ -66,7 +65,6 @@ function Orders(props) {
       title: 'Type', key: 'type', render: edit => (
         <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
       )
-
     },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
@@ -74,10 +72,31 @@ function Orders(props) {
       )
     },
     {
+      title: 'Thanh toán', key: 'financial_status', render: edit => (
+        <div>{edit.financial_status}</div>
+      )
+    },
+    {
+      title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
+        <div>{edit.fulfillment_status}</div>
+      )
+    },
+    {
+      title: 'COD', key: 'gateway_code', render: edit => (
+        <div>{edit.gateway_code}</div>
+      )
+    },
+    {
+      title: 'Tổng tiền', key: 'total_price', render: edit => (
+        <div>{edit.total_price}</div>
+      )
+    },
+    {
       title: 'Trạng thái', key: 'status', render: edit => (
         <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
       )
     },
+    // Thanh toán	Giao hàng	COD Tổng tiền
     {
       title: 'In', key: 'print', render: edit => (
         <ReactToPrint

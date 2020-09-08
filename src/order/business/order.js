@@ -4,8 +4,8 @@ const WoocommerceAPI = require('wooapi');
 const HaravanAPI = require('haravan_api');
 const ShopifyAPI = require('shopify_mono');
 
-const OrderMD = mongoose.model('Order');
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const { WOO } = require(path.resolve('./src/woocommerce/CONST'));
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
@@ -28,12 +28,12 @@ let syncOrdersWoo = async () => {
       let { id } = order_woo;
       let order = MapOrder.gen('woocommerce', order_woo, wp_host);
       let { type } = order;
-      let found = await OrderMD._findOne({ id, type });
+      let found = await OrderModel._findOne({ id, type });
       if (found) {
-        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, order);
+        let updateOrder = await OrderModel._findOneAndUpdate({ id, type }, order);
         console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
-        let newOrder = await OrderMD.create(order);
+        let newOrder = await OrderModel.create(order);
         console.log(`[WOOCOMMERCE] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
       }
     }
@@ -71,12 +71,12 @@ let syncOrdersHaravan = async () => {
         let { id } = order_hrv;
         let order = MapOrder.gen('haravan', order_hrv, shop);
         let { type } = order;
-        let found = await OrderMD._findOne({ id, type });
+        let found = await OrderModel._findOne({ id, type });
         if (found) {
-          let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+          let updateOrder = await OrderModel._findOneAndUpdate({ id, type }, order);
           // console.log(`[HARAVAN] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
         } else {
-          let newOrder = await OrderMD.create(order);
+          let newOrder = await OrderModel.create(order);
           // console.log(`[HARAVAN] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
         }
       }
@@ -103,12 +103,12 @@ let syncOrdersShopify = async () => {
       let { id } = order_shopify;
       let order = MapOrder.gen('shopify', order_shopify, shopify_host);
       let { type } = order;
-      let found = await OrderMD._findOne({ id, type });
+      let found = await OrderModel._findOne({ id, type });
       if (found) {
-        let updateOrder = await OrderMD._findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+        let updateOrder = await OrderModel._findOneAndUpdate({ id, type }, order);
         console.log(`[SHOPIFY] [SYNC] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
       } else {
-        let newOrder = await OrderMD.create(order);
+        let newOrder = await OrderModel.create(order);
         console.log(`[SHOPIFY] [SYNC] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
       }
     }

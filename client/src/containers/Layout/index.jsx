@@ -80,7 +80,7 @@ function LayoutContainer() {
     return (
       <div style={{ display: props.display }}>
         {
-          token && <Sider collapsible={!isMobile} width={180} defaultCollapsed={false}
+          token && <Sider collapsible={!isMobile} style={{ width: '100%' }} defaultCollapsed={false}
             style={{ background: '#fff' }}>
             <Popover placement="right" content={<div>
               <List size="small" bordered={false}>
@@ -119,7 +119,7 @@ function LayoutContainer() {
         closable={false}
         onClose={() => { setIsShowDrawer(false) }}
         visible={isShowDrawer && isMobile}
-        bodyStyle={{ padding: 15 }}
+        bodyStyle={{ padding: 0 }}
       >
         <LeftMenu display={_display(isMobile)} />
       </Drawer>

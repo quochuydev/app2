@@ -60,6 +60,12 @@ const OrderSchema = new Schema({
   total_pay: { type: Number, default: 0 },
   total_refund: { type: Number, default: 0 },
 
+  financial_status: { type: String, default: null },
+  fulfillment_status: { type: String, default: null },
+  gateway_code: { type: String, default: null },
+  fulfillments: [],
+  transactions: [],
+
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   currency: { type: String, default: null },
@@ -85,7 +91,7 @@ OrderSchema.plugin(autoIncrement.plugin, {
 });
 
 OrderSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
-  filter.shop_id = cache.get('shop_id');
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.findOne(filter, populate, options);
   if (!data) {
     throw { message: 'Đơn hàng không còn tồn tại' }
@@ -94,7 +100,7 @@ OrderSchema.statics._findOne = async function (filter = {}, populate = {}, optio
 }
 
 OrderSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
-  filter.shop_id = cache.get('shop_id');
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
   data_update.updated_at = new Date();
   let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;
