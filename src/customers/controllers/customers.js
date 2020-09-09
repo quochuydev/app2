@@ -13,9 +13,9 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 let list = async (req, res) => {
   try {
-    let { limit, skip, criteria } = _parse(req.body);
+    let { limit, skip, criteria, sort } = _parse(req.body);
     let count = await CustomerModel._count(criteria);
-    let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).lean(true);
+    let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
     res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)
@@ -65,6 +65,8 @@ let create = async ({ body }) => {
     birthday: birthday ? new Date(birthday) : null,
     gender: gender ? 1 : 0,
     default_address: {
+      first_name: default_address.first_name,
+      last_name: default_address.last_name,
       phone: default_address.phone,
       zip: default_address.zip,
       address: default_address.address,
@@ -88,16 +90,19 @@ let update = async ({ body, customer_id }) => {
     email, first_name, last_name,
     birthday: birthday ? new Date(birthday) : null,
     gender: gender ? 1 : 0,
-    phone
+    phone,
+    default_address: {
+      first_name: default_address.first_name,
+      last_name: default_address.last_name,
+      phone: default_address.phone,
+      zip: default_address.zip,
+      address: default_address.address,
+      district_code: default_address.address,
+      province_code: default_address.address,
+      ward_code: default_address.address,
+    }
   }
-  data.default_address = {
-    phone: default_address.phone,
-    zip: default_address.zip,
-    address: default_address.address,
-    district_code: default_address.address,
-    province_code: default_address.address,
-    ward_code: default_address.address,
-  }
+  
   let customer = await CustomerModel.findOneAndUpdate({ id: customer_id },
     { $set: data },
     { lean: true, new: true, });

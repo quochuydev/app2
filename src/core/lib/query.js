@@ -20,8 +20,9 @@ function _parse(body) {
   for (field in query) {
     Object.assign(criteria, formatCriteria(field, query[field]))
   }
-  console.log(JSON.stringify({ limit, page, skip, criteria }))
-  return { limit, page, skip, criteria };
+  let sort = { created_at: -1 };
+  console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
+  return { limit, page, skip, criteria, sort };
 }
 
 module.exports = { _parse }

@@ -123,7 +123,7 @@ function Customer(props) {
       }
     }
   }, [done]);
-  
+
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
@@ -175,6 +175,10 @@ function Customer(props) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
+  
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
 
   return (
     <div>
@@ -206,7 +210,7 @@ function Customer(props) {
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Pagination defaultCurrent={1} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <Modal
