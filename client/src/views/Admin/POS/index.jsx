@@ -11,6 +11,9 @@ import _ from 'lodash';
 import ReactToPrint from "react-to-print";
 import AsyncSelect from 'react-select/async';
 import CurrencyFormat from 'react-currency-format';
+import {
+  Link
+} from "react-router-dom";
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -368,7 +371,10 @@ function Customer(props) {
                           type="close" />
                         }>
                         <p className="hide">id: {order.customer.id}</p>
-                        <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                        <p>Họ tên:
+                          <Link to={`customers/${order.customer.id}`} target="_blank">
+                            {order.customer.last_name} {order.customer.first_name}</Link>
+                        </p>
                         <p>Email: {order.customer.email}</p>
                         <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
