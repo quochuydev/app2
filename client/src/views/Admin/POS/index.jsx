@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as customerActions from '../Customer/actions';
 import * as productActions from '../Product/actions';
 import * as orderActions from '../Order/actions';
-import * as orderDetailActions from '../OrderDetail/actions';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -32,7 +31,7 @@ import CustomerDetail from './../Customer/detail'
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
-  const { count, products, order, OrderActions, OrderDetailActions, ProductActions, CustomerActions, customers } = props;
+  const { count, products, order, OrderActions, ProductActions, CustomerActions, customers } = props;
   // let products = data.products;
 
   const { Option } = Select;
@@ -112,7 +111,7 @@ function Customer(props) {
   useEffect(() => {
     if (done && done.customer) {
       console.log('done', done)
-      setOrder({ shipping_address: done.customer });
+      setOrder({ shipping_address: done.customer.default_address });
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);
     }
@@ -501,7 +500,6 @@ const mapDispatchToProps = (dispatch) => ({
   CustomerActions: bindActionCreators(customerActions, dispatch),
   ProductActions: bindActionCreators(productActions, dispatch),
   OrderActions: bindActionCreators(orderActions, dispatch),
-  OrderDetailActions: bindActionCreators(orderDetailActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customer);

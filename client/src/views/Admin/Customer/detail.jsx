@@ -33,6 +33,15 @@ function CustomerDetail(props) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
   }
 
+  function onAddressChange(e) {
+    if (!customerUpdate.default_address) {
+      customerUpdate.default_address = {};
+    }
+    customerUpdate.default_address[e.target.name] = e.target.value;
+    setCustomerUpdate({ ...customerUpdate });
+  }
+
+
   function onCustomerChangeField(e, field) {
     setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
@@ -55,13 +64,12 @@ function CustomerDetail(props) {
         onCancel={() => { onCloseModal() }}
         width={1000}
       >
-        <Row>
-          <Col xs={24} lg={12}>
-
-            <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="Thông tin" key="1">
-                <Row>
-                  <Form onSubmit={addCustomer}>
+        <Form onSubmit={addCustomer}>
+          <Row>
+            <Col xs={24} lg={12}>
+              <Tabs defaultActiveKey="1">
+                <Tabs.TabPane tab="Thông tin" key="1">
+                  <Row>
                     <Col span={12}>
                       <Form.Item label="Họ" required onChange={onCustomerChange}>
                         <Input name="last_name" placeholder="input placeholder" value={customerUpdate.last_name} />
@@ -74,7 +82,6 @@ function CustomerDetail(props) {
                           defaultValue={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
                       </Form.Item>
                     </Col>
-
                     <Col span={12}>
                       <Form.Item label="Tên" required onChange={onCustomerChange}>
                         <Input name="first_name" placeholder="input placeholder" value={customerUpdate.first_name} />
@@ -87,33 +94,53 @@ function CustomerDetail(props) {
                         <Radio value={0}>Chị</Radio>
                       </Radio.Group>
                     </Col>
-                    
-                    <Col>
-                      <button className="btn-primary w-100" type="submit">Thêm mới</button>
+                  </Row>
+                </Tabs.TabPane>
+              </Tabs>
+            </Col>
+
+            <Col xs={24} lg={12}>
+              <Tabs defaultActiveKey="1">
+                <Tabs.TabPane tab="Địa chỉ" key="1">
+                  <Row gutter={10}>
+                    <Col span={24}>
+                      <p>Địa chỉ</p>
+                      <Input name="address" placeholder="Nhập địa chỉ khách hàng" onChange={onAddressChange}
+                        value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
                     </Col>
-                  </Form>
-                </Row>
-              </Tabs.TabPane>
-            </Tabs>
+                    <Col span={12}>
+                      <p>Mã zip</p>
+                      <Input name="zip" placeholder="Nhập địa chỉ khách hàng"
+                        value={customerUpdate.default_address ? customerUpdate.default_address.zip : null} />
+                    </Col>
+                    <Col span={12}>
+                      <p>Tỉnh</p>
+                      <Select value={1} className="block">
+                        <Select.Option value={1}>Mới</Select.Option>
+                      </Select>
+                    </Col>
+                    <Col span={12}>
+                      <p>Huyện</p>
+                      <Select value={1} className="block">
+                        <Select.Option value={1}>Mới</Select.Option>
+                      </Select>
+                    </Col>
+                    <Col span={12}>
+                      <p>Xã</p>
+                      <Select value={1} className="block">
+                        <Select.Option value={1}>Mới</Select.Option>
+                      </Select>
+                    </Col>
+                  </Row>
+                </Tabs.TabPane>
+              </Tabs>
+            </Col>
 
-          </Col>
-          <Col xs={24} lg={12}>
-
-            <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="Địa chỉ" key="1">
-                <Row>
-                  <Col span={24}>
-                    <Form.Item label="Địa chỉ" onChange={onCustomerChange}>
-                      <Input name="address" placeholder="Nhập địa chỉ khách hàng"
-                        value={customerUpdate.address ? customerUpdate.address : null} />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Tabs.TabPane>
-            </Tabs>
-
-          </Col>
-        </Row>
+            <Col span={24}>
+              <button className="btn-primary w-100" type="submit">Accept</button>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     </div>
   )

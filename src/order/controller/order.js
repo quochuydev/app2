@@ -79,6 +79,8 @@ async function create({ body }) {
     total_price: data.total_price,
     customer: data.customer,
     customer_id: data.customer.id,
+    billing: data.shipping_address,
+    shipping: data.shipping_address,
     billing_address: data.shipping_address,
     shipping_address: data.shipping_address,
     created_at: new Date(),
@@ -107,9 +109,9 @@ Controller.updateNote = async function ({ order_id, data }) {
     note: data.note,
   }
 
-  let order = await OrderModel._findOneAndUpdate({ id: order_id }, { $set: order_data });
+  let order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
 
-  return { error: false, order };
+  return { error: false, order, message: 'Cập nhật ghi chú thành công!' };
 }
 
 Controller.pay = async function ({ order_id }) {
@@ -121,7 +123,7 @@ Controller.pay = async function ({ order_id }) {
 
   let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
 
-  return { error: false, order: updated_order };
+  return { error: false, order: updated_order, message: 'Cập nhật thanh toán thành công!' };
 }
 
 module.exports = Controller;

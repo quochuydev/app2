@@ -167,7 +167,7 @@ function Orders(props) {
     <div>
       <Form>
         <Row type="flex">
-          <Col span={4}>
+          <Col lg={4}>
             <Popover placement="bottomLeft" content={
               <div>
                 <p>Content</p>
@@ -188,11 +188,11 @@ function Orders(props) {
               </Button>
             </Popover>
           </Col>
-          <Col span={14}>
+          <Col xs={14} lg={16}>
             <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
-              prefix={<Icon type="search" />} style={{ marginBottom: 1 }}/>
+              prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
           </Col>
-          <Col span={6}>
+          <Col xs={6} lg={4}>
             <Link to={`POS`}>
               <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
                 <span className="hidden-xs">Tạo đơn hàng</span>
@@ -201,10 +201,10 @@ function Orders(props) {
             <Popover placement="topLeft" content={
               <div>
                 <Button className="block" onClick={() => loadOrders()}>
-                  Tạo đơn hàng
+                  Cập nhật ghi chú
                 </Button>
                 <Button className="block" onClick={() => loadOrders()}>
-                  Tạo đơn hàng
+                  Xác nhận thanh toán
                 </Button>
               </div>
             } trigger="click">

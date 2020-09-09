@@ -2,7 +2,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const moment = require('moment');
 
-const CustomersMD = mongoose.model('Customer');
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
@@ -14,8 +14,8 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 let list = async (req, res) => {
   try {
     let { limit, skip, criteria } = _parse(req.body);
-    let count = await CustomersMD._count(criteria);
-    let customers = await CustomersMD.find(criteria).skip(skip).limit(limit).lean(true);
+    let count = await CustomerModel._count(criteria);
+    let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)
@@ -25,7 +25,7 @@ let list = async (req, res) => {
 
 async function getCustomer({ customer_id }) {
   let result = {}
-  result.customer = await CustomersMD.findOne({ id: customer_id }).lean(true);
+  result.customer = await CustomerModel.findOne({ id: customer_id }).lean(true);
   if (!result.customer) {
     throw { message: 'Khách hàng không tồn tại' }
   }
@@ -47,41 +47,58 @@ let sync = async (req, res) => {
 }
 
 let create = async ({ body }) => {
-  let { email, first_name, last_name, birthday, gender, phone } = body;
-  if (!(email && first_name && last_name && birthday && phone)) {
+  let { email, first_name, last_name, birthday, gender, phone, default_address } = body;
+  if (!(email && first_name && last_name && phone)) {
     throw { message: 'Chưa nhập đủ thông tin!' }
   }
-  let found_by_mail = await CustomersMD._findOne({ email });
+  let found_by_mail = await CustomerModel._findOne({ email });
   if (found_by_mail) {
     throw { message: 'Địa chỉ email đã tồn tại!' }
   }
-  let found_by_phone = await CustomersMD._findOne({ phone });
+  let found_by_phone = await CustomerModel._findOne({ phone });
   if (found_by_phone) {
     throw { message: 'Số điện thoại đã tồn tại!' }
   }
 
   let create_data = {
-    email, first_name, last_name, birthday, gender, phone
+    email, first_name, last_name, phone,
+    birthday: birthday ? new Date(birthday) : null,
+    gender: gender ? 1 : 0,
+    default_address: {
+      phone: default_address.phone,
+      zip: default_address.zip,
+      address: default_address.address,
+      district_code: default_address.address,
+      province_code: default_address.address,
+      ward_code: default_address.address,
+    }
   }
 
-  let customer = await CustomersMD._create(create_data)
+  let customer = await CustomerModel._create(create_data)
   return { error: false, message: 'Thêm mới khách hàng thành công', customer };
 }
 
 let update = async ({ body, customer_id }) => {
-  let { email, first_name, last_name, birthday, phone, gender, address } = body;
-  if (!(email && first_name && last_name && birthday && phone)) {
+  let { email, first_name, last_name, birthday, phone, gender, default_address } = body;
+  if (!(email && first_name && last_name && phone)) {
     throw { message: 'Chưa nhập đủ thông tin!' }
   }
 
   let data = {
-    email, first_name, last_name, birthday, gender, phone
+    email, first_name, last_name,
+    birthday: birthday ? new Date(birthday) : null,
+    gender: gender ? 1 : 0,
+    phone
   }
   data.default_address = {
-    phone,
-    address
+    phone: default_address.phone,
+    zip: default_address.zip,
+    address: default_address.address,
+    district_code: default_address.address,
+    province_code: default_address.address,
+    ward_code: default_address.address,
   }
-  let customer = await CustomersMD.findOneAndUpdate({ id: customer_id },
+  let customer = await CustomerModel.findOneAndUpdate({ id: customer_id },
     { $set: data },
     { lean: true, new: true, });
   return { error: false, customer, message: 'Cập nhật khách hàng thành công' };
@@ -110,7 +127,7 @@ let importExcel = async ({ file }) => {
 
 let exportExcel = async (req, res) => {
   let { limit, skip, criteria } = _parse(req.body);
-  let customers = await CustomersMD.find(criteria);
+  let customers = await CustomerModel.find(criteria);
 
   const excel = await ExcelLib.init({
     host: config.app_host,

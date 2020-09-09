@@ -13,6 +13,7 @@ const initialState = Map({
     custom_total_shipping_price: 0,
     total_discounts: 0,
     total_price: 0,
+    total_pay: 0,
 
     customer: null,
     shipping_address: null
@@ -26,6 +27,12 @@ function OrdersReducer(state = initialState, { type, payload }) {
     case 'GET_ORDER_DETAIL_SUCCESS':
     case 'CREATE_ORDER_SUCCESS':
       return state.merge({ ...payload });
+    case 'MERGE':
+      {
+        let order = state.get('order')
+        order = _.assign({}, order, payload.order);
+        return state.merge({ order: order });
+      }
     case 'CLEAR_ORDER_CREATE':
       {
         let order = initialState.get('orderCreate');

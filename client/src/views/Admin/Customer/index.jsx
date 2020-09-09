@@ -96,6 +96,7 @@ function Customer(props) {
 
   let [done, setDone] = useState(null);
   useEffect(() => {
+    console.log(done)
     if (done && done.customer) {
       try {
         let result = null;
@@ -104,10 +105,17 @@ function Customer(props) {
             .then(result => {
               message.success(result.message);
             })
+            .catch(error => {
+              message.error(error.message);
+            })
         } else {
           AdminServices.addCustomer(done.customer)
             .then(result => {
               message.success(result.message);
+            })
+            .catch(error => {
+              console.log(error)
+              message.error(error.message);
             })
         }
       } catch (error) {
