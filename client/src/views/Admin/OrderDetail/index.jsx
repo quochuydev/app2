@@ -9,9 +9,6 @@ import 'antd/dist/antd.css';
 
 import * as orderActions from './../Order/actions';
 import AdminServices from '../../../services/adminServices';
-import adminServices from '../../../services/adminServices';
-import { setOrder } from '../Order/actions';
-import { merge } from '../Customer/actions';
 
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
@@ -39,11 +36,11 @@ function OrderDetailComponent(props) {
 
   async function payOrder(order) {
     console.log(order.note, order.attributes, order.id)
-    let result = await adminServices.updateNoteOrder(order);
+    let result = await AdminServices.updateNoteOrder(order);
     message.success(result.message);
   }
   async function updateNoteOrder(order) {
-    let result = await adminServices.updateNoteOrder(order);
+    let result = await AdminServices.updateNoteOrder(order);
     message.success(result.message);
   }
 
