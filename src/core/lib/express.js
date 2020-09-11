@@ -21,10 +21,6 @@ module.exports = (app, db) => {
   if (process.env.NODE_ENV == 'production') {
     console.log(path.resolve('client/build', 'index.html'))
     app.use('/', express.static(path.resolve('client', 'build')));
-    app.get('/', (req, res) => {
-      res.send('embed here');
-      // res.redirect(`${config.frontend_site}/`);
-    });
     app.get('/site/*', (req, res) => {
       res.sendFile(path.resolve('client/build', 'index.html'));
     });
