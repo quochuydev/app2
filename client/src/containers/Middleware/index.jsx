@@ -38,9 +38,9 @@ function Middleware(props) {
       if (path.includes(LOGIN_ROUTE)) {
         window.location.href = `${redirect_route}/`;
       }
-      // if (path == '/') {
-      //   window.location.href = `${redirect_route}/`;
-      // }
+      if (path == '/') {
+        window.location.href = `${redirect_route}/`;
+      }
     }
   }
   return props.children;
