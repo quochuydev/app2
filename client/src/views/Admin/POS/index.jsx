@@ -77,8 +77,8 @@ function Customer(props) {
       )
     },
     {
-      title: 'Thành tiền', key: 'custom_total_price', render: edit => (
-        <CurrencyFormat value={edit.custom_total_price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+      title: 'Thành tiền', key: 'total', render: edit => (
+        <CurrencyFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {

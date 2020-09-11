@@ -49,8 +49,8 @@ function OrdersReducer(state = initialState, { type, payload }) {
 
       for (let i = 0; i < order.line_items.length; i++) {
         const line_item = order.line_items[i];
-        line_item.custom_total_price = line_item.quantity * line_item.price;
-        order.total_line_items_price += Number(line_item.custom_total_price);
+        line_item.total = line_item.quantity * line_item.price;
+        order.total_line_items_price += Number(line_item.total);
         order.total_items += line_item.quantity;
       }
 

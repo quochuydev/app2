@@ -11,12 +11,13 @@ Mongoose.connect()
       //   console.log(item.line_items)
       //   for (let i = 0; i < item.line_items.length; i++) {
       //     const line_item = item.line_items[i];
-      //     item.line_items[i].title = item.line_items[i].name
+      //     // item.line_items[i].title = item.line_items[i].name
+      //     item.line_items[i].total = item.line_items[i].price * item.line_items[i].quantity 
       //   }
-      //   // await OrderModel.update({ _id: item._id }, { $set: { line_items: item.line_items } })
+      //   await OrderModel.update({ _id: item._id }, { $set: { line_items: item.line_items } })
       // }
-      let new_order = new OrderModel(item)
-      await OrderModel.update({ _id: item._id }, { $set: new_order })
+      // let new_order = new OrderModel(item)
+      // await OrderModel.update({ _id: item._id }, { $set: new_order })
     })
     console.log('done')
   })

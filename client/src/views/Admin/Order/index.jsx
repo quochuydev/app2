@@ -6,6 +6,8 @@ import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
+import CurrencyFormat from 'react-currency-format';
+
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
   Select, Form, Modal, Radio, Pagination, Tabs,
@@ -53,7 +55,7 @@ function Orders(props) {
         return 'blue';
     }
   }
-  
+
   function textFinancial(code) {
     switch (code) {
       case 'paid':
@@ -115,7 +117,8 @@ function Orders(props) {
     },
     {
       title: 'Tổng tiền', key: 'total_price', render: edit => (
-        <div>{edit.total_price}</div>
+        <CurrencyFormat value={edit.total_price} suffix={'đ'}
+          thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
     {

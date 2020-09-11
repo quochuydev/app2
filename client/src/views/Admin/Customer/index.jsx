@@ -66,6 +66,11 @@ function Customer(props) {
   const expended = edit => (
     <div>
       <p style={{ margin: 0 }}>{edit.type}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.first_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address : null}</p>
     </div>
   );
 
@@ -173,7 +178,7 @@ function Customer(props) {
     let { name, value } = e.target;
     setQuery({ ...query, [name]: value })
   }
-  
+
   function onChangePage(e) {
     setQuery({ ...query, page: e })
   }

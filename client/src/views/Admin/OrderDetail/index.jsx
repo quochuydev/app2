@@ -34,9 +34,20 @@ function OrderDetailComponent(props) {
         <a onClick={() => { }}>{edit.title}</a>
       ),
     },
-    { title: 'Chi phí', dataIndex: 'price', key: 'price', },
+    {
+      title: 'Chi phí', key: 'price', render: edit => (
+        <CurrencyFormat value={edit.price} suffix={'đ'}
+          thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
+      )
+    },
     { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
-    { title: 'Tổng tiền', dataIndex: 'total', key: 'total', },
+    {
+      title: 'Tổng tiền', key: 'total', render: edit => (
+        <CurrencyFormat value={edit.total} suffix={'đ'}
+          thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
+      )
+    },
+
   ];
 
 
