@@ -102,7 +102,7 @@ function Customer(props) {
     ProductActions.loadProducts(queryProducts);
   }, [queryProducts])
 
-  
+
   useEffect(() => {
     setOrder({ gateway_code: 'cod' });
 
@@ -199,6 +199,7 @@ function Customer(props) {
   }
 
   function onShowCustomerModal(customerUpdate) {
+    console.log(customerUpdate)
     setIsCustomerModal(true);
     if (customerUpdate) {
       setCustomer(customerUpdate);
@@ -242,6 +243,8 @@ function Customer(props) {
   }
 
   function formatOptionCustomers(customers) {
+    if (!customers) { return []; }
+    customers = customers.filter(e => !!e.id)
     let option_customers = customers.map(e => formatOptionCustomer(e))
     option_customers.unshift({ value: null, label: '-- Vui lòng chọn --' });
     return option_customers;
@@ -385,7 +388,7 @@ function Customer(props) {
                         <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
                         <p className="ui-title-page">Thông Tin Giao Hàng:
-                              <Icon onClick={() => onShowCustomerModal(order.shipping_address)}
+                              <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
                             style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
                             theme="filled" type="edit" /></p>
                         <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>

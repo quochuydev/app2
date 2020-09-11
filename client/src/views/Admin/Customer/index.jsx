@@ -49,8 +49,6 @@ function Customer(props) {
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    // { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
-    // { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
       title: 'Type', key: 'type', render: edit => (
         <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)

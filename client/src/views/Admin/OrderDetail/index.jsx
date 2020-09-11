@@ -104,13 +104,23 @@ function OrderDetailComponent(props) {
 
           <Col xs={24} lg={8} >
             <Card title="Thông tin khách hàng">
-              <p>Tên: {_.get(order, 'billing.first_name')}</p>
+              <p> {_.get(order, 'customer.first_name')}</p>
+              <p> {_.get(order, 'customer.last_name')}</p>
+              <p> {_.get(order, 'customer.email')}</p>
+              <p> {_.get(order, 'customer.phone')}</p>
+              <p> {_.get(order, 'customer.address')}</p>
             </Card>
             <Card title="Thông tin Giao hàng">
-              <p>Tên: {_.get(order, 'shipping.first_name')}</p>
+              <p> {_.get(order, 'shipping_address.first_name')}</p>
+              <p> {_.get(order, 'shipping_address.last_name')}</p>
+              <p> {_.get(order, 'shipping_address.email')}</p>
+              <p> {_.get(order, 'shipping_address.phone')}</p>
+              <p>{_.get(order, 'shipping_address.address')}</p>
             </Card>
             <Card title="Tình trạng đơn hàng">
-              <p>Trạng thái: {_.get(order, 'status')}</p>
+              <p> {_.get(order, 'financial_status')}</p>
+              <p> {_.get(order, 'fulfillment_status')}</p>
+              <p> {_.get(order, 'gateway_code')}</p>
             </Card>
           </Col>
         </Row >
