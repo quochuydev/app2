@@ -102,6 +102,12 @@ function Customer(props) {
     ProductActions.loadProducts(queryProducts);
   }, [queryProducts])
 
+  
+  useEffect(() => {
+    setOrder({ gateway_code: 'cod' });
+
+  }, [])
+
   const [isShowPrint, setIsShowPrint] = useState(false)
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
@@ -113,7 +119,6 @@ function Customer(props) {
 
   useEffect(() => {
     if (done && done.customer) {
-      console.log('done', done)
       setOrder({ shipping_address: done.customer.default_address });
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);

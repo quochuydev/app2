@@ -79,6 +79,10 @@ async function create({ body }) {
     total_price: data.total_price,
     customer: data.customer,
     customer_id: data.customer.id,
+
+    gateway_code: data.gateway_code,
+    financial_status: data.financial_status,
+
     billing: data.shipping_address,
     shipping: data.shipping_address,
     billing_address: data.shipping_address,
@@ -117,12 +121,16 @@ Controller.updateNote = async function ({ order_id, data }) {
 Controller.pay = async function ({ order_id }) {
   let found_order = await OrderModel._findOne({ id: order_id });
 
-  if ((found_order.total_price - found_order.total_pay) == 0) {
+  if (found_order.financial_status == 'paid') {
     throw { message: 'Đơn hàng đã thanh toán xong' }
   }
 
   let order_data = {
     total_pay: found_order.total_price
+  }
+
+  if (order_data.total_pay == found_order.total_price) {
+    order_data.financial_status = 'paid';
   }
 
   let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);

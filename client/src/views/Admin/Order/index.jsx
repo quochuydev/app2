@@ -53,6 +53,33 @@ function Orders(props) {
         return 'blue';
     }
   }
+  
+  function textFinancial(code) {
+    switch (code) {
+      case 'paid':
+        return 'Đã thanh toán';
+      default:
+        return 'Chưa thanh toán'
+    }
+  }
+
+  function textGateway(code) {
+    switch (code) {
+      case 'cod':
+        return 'Thanh toán khi giao hàng';
+      default:
+        return ''
+    }
+  }
+
+  function cssGateway(code) {
+    switch (code) {
+      case 'paid':
+        return 'Đã thanh toán';
+      default:
+        return 'Chưa thanh toán'
+    }
+  }
 
   const columns = [
     {
@@ -73,7 +100,7 @@ function Orders(props) {
     },
     {
       title: 'Thanh toán', key: 'financial_status', render: edit => (
-        <div>{edit.financial_status}</div>
+        <div>{textFinancial(edit.financial_status)}</div>
       )
     },
     {
@@ -83,7 +110,7 @@ function Orders(props) {
     },
     {
       title: 'COD', key: 'gateway_code', render: edit => (
-        <div>{edit.gateway_code}</div>
+        <div>{textGateway(edit.gateway_code)}</div>
       )
     },
     {
