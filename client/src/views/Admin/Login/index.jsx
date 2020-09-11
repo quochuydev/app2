@@ -26,6 +26,7 @@ function Login() {
           AdminServices.getUser({ token: result.token })
             .then(data => {
               localStorage.setItem('user', JSON.stringify(data.user));
+              localStorage.setItem('shop', JSON.stringify(data.shop));
               setTimeout(async function () {
                 setRedirect(true);
               }, 200)

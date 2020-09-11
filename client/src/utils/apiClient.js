@@ -55,12 +55,10 @@ async function responseHandler(response) {
 function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
-      localStorage.removeItem('AccessToken');
-      localStorage.removeItem('user');
+      localStorage.clear();
       window.location.href = '/site/logout';
     } else if (e.data === 403) {
-      localStorage.removeItem('AccessToken');
-      localStorage.removeItem('user');
+      localStorage.clear();
       window.location.href = '/site/permission';
     }
   }
