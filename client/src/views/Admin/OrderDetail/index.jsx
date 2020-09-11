@@ -51,7 +51,7 @@ function OrderDetailComponent(props) {
   }
   async function updateNoteOrder(order) {
     try {
-      let result = await AdminServices.updateNoteOrder({ id: order.id, data: { note: order.note } });
+      let result = await AdminServices.updateNoteOrder({ id: order.id, note: order.note });
       refreshOrder();
       message.success(result.message);
     } catch (error) {
