@@ -35,7 +35,6 @@ const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
   const { count, products, order, OrderActions, ProductActions, CustomerActions, customers } = props;
-  // let products = data.products;
 
   const { Option } = Select;
   const { Meta } = Card;
@@ -337,7 +336,7 @@ function Customer(props) {
             <Dropdown overlay={(
               <Menu style={{ height: 150, overflow: 'scroll' }}>
                 {
-                  _.cloneDeep(products).splice(0, 5).map(item => (
+                  _.cloneDeep(products).map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
                         avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].src', null)} />}

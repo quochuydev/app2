@@ -16,6 +16,7 @@ import {
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
 
+import PrintOrder from './../POS/print.jsx';
 import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
@@ -201,16 +202,16 @@ function Orders(props) {
             <Popover placement="bottomLeft" content={
               <div>
                 <p>Content</p>
-                <Select size="large" value={1} className="block">
+                <Select value={1} className="block">
                   <Option value={1}>Trạng thái đơn hàng</Option>
                 </Select>
                 <p>Content</p>
-                <Select size="large" value={1} className="block">
+                <Select value={1} className="block">
                   <Option value={1}>Mới</Option>
                 </Select>
                 <br />
-                <Button size="large">Hủy</Button>
-                <Button size="large" type="primary">Thêm điều kiện lọc</Button>
+                <Button>Hủy</Button>
+                <Button type="primary">Thêm điều kiện lọc</Button>
               </div>
             } trigger="click">
               <Button icon="filter" size="large">
@@ -288,8 +289,9 @@ function Orders(props) {
 
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>
           <div ref={componentRef}>
-            123123
-          <p>{JSON.stringify(order.type)}</p>
+            {
+              order ? <PrintOrder order={order} /> : null
+            }
           </div>
         </div>
       </Form>
