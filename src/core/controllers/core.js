@@ -81,6 +81,7 @@ async function changeShop({ user, shop_id }) {
 
   cache.put('shop_id', shop_id);
   let user_gen_token = {
+    id: found_user,
     email: found_user.email,
     shop_id: found_user.shop_id,
     exp: (Date.now() + 60 * 60 * 1000) / 1000
@@ -93,17 +94,21 @@ async function changeShop({ user, shop_id }) {
 
 async function checkUser({ body }) {
   let verify_user = jwt.verify(body.token, hash_token);
+  if (!verify_user.email) {
+    throw { message: 'check user failed' }
+  }
   let group_users = await UserMD.aggregate([
     { $match: { email: verify_user.email, is_deleted: false } },
     { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
   ]);
-  if (group_users && group_users.length) {
-    let group_user = group_users[0];
-    let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
-    let user = { email: group_user._id, shops };
-    return { error: false, user };
+  if (!(group_users && group_users.length)) {
+    throw { message: 'check user failed' }
   }
-  throw { message: 'check user failed' }
+  let group_user = group_users[0];
+  let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
+  let shop = await ShopModel.findOne({ shop_id: verify_user.shop_id }).lean(true);
+  let user = { id: verify_user.id, email: group_user._id, shops, shop };
+  return { error: false, user };
 }
 
 
@@ -165,6 +170,7 @@ let login = async (req, res, next) => {
     }
 
     let user_gen_token = {
+      id: user.id,
       email: user.email,
       shop_id: user.shop_id,
       exp: (Date.now() + 60 * 60 * 1000) / 1000
