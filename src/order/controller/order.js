@@ -117,6 +117,10 @@ Controller.updateNote = async function ({ order_id, data }) {
 Controller.pay = async function ({ order_id }) {
   let found_order = await OrderModel._findOne({ id: order_id });
 
+  if ((found_order.total_price - found_order.total_pay) == 0) {
+    throw { message: 'Đơn hàng đã thanh toán xong' }
+  }
+
   let order_data = {
     total_pay: found_order.total_price
   }

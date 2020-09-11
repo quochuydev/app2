@@ -21,7 +21,7 @@ function Middleware(props) {
     setTimeout(async function () {
       let result = await AdminServices.getUser({ token })
       localStorage.setItem('user', JSON.stringify(result.user));
-      localStorage.setItem('shop', JSON.stringify(data.shop));
+      localStorage.setItem('shop', JSON.stringify(result.shop));
       window.location.href = `${redirect_route}/`;
     }, 200)
   }

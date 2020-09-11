@@ -201,7 +201,7 @@ function Orders(props) {
             <Popover placement="topLeft" content={
               <div>
                 <Button className="block" onClick={() => loadOrders()}>
-                  Cập nhật ghi chú
+                  Xuất excel
                 </Button>
                 <Button className="block" onClick={() => loadOrders()}>
                   Xác nhận thanh toán

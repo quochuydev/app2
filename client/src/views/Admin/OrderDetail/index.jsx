@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import CurrencyFormat from 'react-currency-format';
+
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
 } from 'antd';
@@ -13,13 +15,17 @@ import AdminServices from '../../../services/adminServices';
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
   let { orderId } = params
-  console.log(orderId)
+  console.log(orderId);
 
   useEffect(() => {
     if (orderId) {
-      actions.getOrderDetail(orderId);
+      refreshOrder()
     }
-  }, [orderId])
+  }, [])
+
+  function refreshOrder() {
+    actions.getOrderDetail(orderId);
+  }
 
   const detailColumns = [
     {
@@ -35,13 +41,22 @@ function OrderDetailComponent(props) {
 
 
   async function payOrder(order) {
-    console.log(order.note, order.attributes, order.id)
-    let result = await AdminServices.updateNoteOrder(order);
-    message.success(result.message);
+    try {
+      let result = await AdminServices.payOrder({ id: order.id });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
   async function updateNoteOrder(order) {
-    let result = await AdminServices.updateNoteOrder(order);
-    message.success(result.message);
+    try {
+      let result = await AdminServices.updateNoteOrder({ id: order.id, data: { note: order.note } });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   return (
@@ -54,7 +69,7 @@ function OrderDetailComponent(props) {
               <Col xs={24} lg={12}>
                 <p>Thuộc tính</p>
                 {
-                  order.attributes.map((e, i) => 
+                  order.attributes ? order.attributes.map((e, i) =>
                     <Row key={i}>
                       <Col lg={12}>
                         <Input type="text" onChange={(e) => { }} />
@@ -63,7 +78,7 @@ function OrderDetailComponent(props) {
                         <Input type="text" onChange={(e) => { }} />
                       </Col>
                     </Row>
-                  )
+                  ) : null
                 }
 
                 <p>Ghi chú</p>
@@ -74,9 +89,12 @@ function OrderDetailComponent(props) {
                 </Button>
               </Col>
               <Col xs={24} lg={12}>
-                <p>Tổng tiền: {order.total_price}</p>
-                <p>Đã thanh toán: {order.total_pay}</p>
-                <p>Còn lại: {order.total_price - order.total_pay}</p>
+                <p>Tổng tiền: <CurrencyFormat value={order.total_price} suffix={'đ'}
+                  thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
+                <p>Đã thanh toán: <CurrencyFormat value={order.total_pay} suffix={'đ'}
+                  thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
+                <p>Còn lại: <CurrencyFormat value={order.total_price - order.total_pay} suffix={'đ'}
+                  thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
                 <Button type="primary" onClick={() => { payOrder(order) }}>
                   Xác nhận thanh toán
                 </Button>
