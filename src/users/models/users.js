@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const autoIncrement = require('mongoose-auto-increment');
-
+const cache = require('memory-cache');
 const { Schema } = mongoose;
 autoIncrement.initialize(mongoose.connection);
 
@@ -51,7 +51,15 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
+UserSchema.statics.authenticate = function (user, password) {
+  return user.password == hashPassword(user.salt, password);
+}
 
+UserSchema.statics.user_system = {
+  id: 1,
+  first_name: 'Hệ thống',
+  shop_id: cache.get('shop_id')
+}
 UserSchema.statics.authenticate = function (user, password) {
   return user.password == hashPassword(user.salt, password);
 }

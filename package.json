@@ -54,8 +54,7 @@
     "test": "cd server/src/core/lib && node event",
     "start": "npm run server",
     "dev": "concurrently \"npm run server\" \"npm run client-test\"",
-    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
-    "heroku-postbuild-1": ""
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
   },
   "repository": {
     "type": "git",

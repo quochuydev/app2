@@ -16,6 +16,13 @@ const VariantSchema = new Schema({
   barcode: { type: String, default: null },
   title: { type: String, default: null },
   compare_at_price: { type: Number, default: null },
+  image: {
+    id: { type: Number, default: null },
+    src: { type: String, default: null },
+    filename: { type: String, default: null },
+    created_at: { type: Date, default: null },
+    updated_at: { type: Date, default: null },
+  },
   shop_id: { type: Number, default: null },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: null },

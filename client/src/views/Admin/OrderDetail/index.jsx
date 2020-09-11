@@ -54,7 +54,7 @@ function OrderDetailComponent(props) {
               <Col xs={24} lg={12}>
                 <p>Thuộc tính</p>
                 {
-                  order.attributes.map((e, i) => {
+                  order.attributes.map((e, i) => 
                     <Row key={i}>
                       <Col lg={12}>
                         <Input type="text" onChange={(e) => { }} />
@@ -63,12 +63,12 @@ function OrderDetailComponent(props) {
                         <Input type="text" onChange={(e) => { }} />
                       </Col>
                     </Row>
-                  })
+                  )
                 }
 
                 <p>Ghi chú</p>
                 <Input type="text" value={order.note} name="note"
-                  onChange={(e) => { console.log(e.target.value), actions.merge({ note: e.target.value }) }} />
+                  onChange={e => actions.merge({ note: e.target.value })} />
                 <Button type="primary" onClick={() => { updateNoteOrder(order) }}>
                   Cập nhật ghi chú
                 </Button>

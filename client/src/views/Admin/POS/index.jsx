@@ -50,7 +50,7 @@ function Customer(props) {
       title: (<span>Sản phẩm <Badge count={order.total_items} style={{ backgroundColor: '#52c41a' }} /></span>), key: 'title', render: item => (
         <div>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={45} src={_.get(item, 'images[0].src', null)} />}
+            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image .src', null)} />}
             title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
             description={[item.sku, item.barcode, item.price].join(' - ')}
             onClick={() => addProduct(item.id)}
@@ -132,7 +132,8 @@ function Customer(props) {
       variant_id: variant.id,
       variant_title: variant.title,
       sku: variant.sku,
-      barcode: variant.barcode
+      barcode: variant.barcode,
+      image: variant.image
     };
     let index = order.line_items.findIndex(e => e.variant_id == variant.id);
     if (index != -1) {
@@ -350,7 +351,7 @@ function Customer(props) {
           </Col>
           <Col xs={24} lg={8}>
             <Layout>
-              <Content style={{ height: '65vh', marginTop: 10 }}>
+              <Content style={{ height: '70vh', marginTop: 10 }}>
                 <Card title="Thông tin khách hàng">
                   <p>Khách hàng:
                     <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
