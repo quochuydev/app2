@@ -4,6 +4,7 @@ const config = require(path.resolve('./src/config/config'));
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
+  
   app.get('/site', (req, res, next) => {
     res.redirect(`${config.frontend_site}/`);
   });
