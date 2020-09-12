@@ -3,8 +3,8 @@ const request = require('request');
 const crypto = require('crypto');
 
 let partnerCode = "MOMO"
-let accessKey = "F8BBA842ECF85"
-let serectkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
+let accessKey = ""
+let serectkey = ""
 
 let orderInfo = "pay with MoMo"
 let ngrokUrl = 'https://8e150d71.ngrok.io';
@@ -34,22 +34,14 @@ let options = {
 };
 
 
-let buildLinkMomoOrder = (order) => {
+let buildLinkMomoOrder = () => {
   return new Promise(resolve => {
     request(options, (err, res, body) => {
       if (err) { console.log(err) }
-      order.momo_pay = JSON.parse(body).payUrl;
-      resolve(order);
+      let result = JSON.parse(body).payUrl;
+      resolve(result);
     });
   })
-}
-
-let buildLinkMomoOrders = async (orders) => {
-  for (let i = 0; i < orders.length; i++) {
-    const order = orders[i];
-    await buildLinkMomoOrder(order);
-  }
-  return orders;
 }
 
 module.exports = { buildLinkMomoOrder, buildLinkMomoOrders }
