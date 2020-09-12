@@ -62,11 +62,6 @@ function Products(props) {
         <Link to={`product/${edit.id}`}>{edit.title}</Link>
       ),
     },
-    // {
-    //   title: 'Type', key: 'type', render: edit => (
-    //     <p><Tag color={cssProductType(edit.type)}>{edit.type}</Tag></p>
-    //   )
-    // },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
