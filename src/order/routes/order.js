@@ -1,10 +1,38 @@
 const { list, sync, detail, create } = require('./../controller/order');
+let Controller = require('./../controller/order');
 
 const router = ({ app }) => {
+  app.use('/api/order/*', function (req, res, next) {
+    console.log(JSON.stringify(req.body))
+    next();
+  })
+  app.use('/api/orders/*', function (req, res, next) {
+    console.log(JSON.stringify(req.body))
+    next();
+  })
   app.get('/api/order/detail/:id', detail);
   app.post('/api/order/list', list);
   app.post('/api/order/sync', sync);
-  app.post('/api/order/create', create);
+  app.post('/api/order/create', function (req, res, next) {
+    create({ body: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  });
+  app.put('/api/orders/:id', function (req, res, next) {
+    Controller.update({ order_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  })
+  app.put('/api/orders/:id/update-note', function (req, res, next) {
+    Controller.updateNote({ order_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  })
+  app.put('/api/orders/:id/pay', function (req, res, next) {
+    Controller.pay({ order_id: req.params.id })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  })
 }
 
 module.exports = router;

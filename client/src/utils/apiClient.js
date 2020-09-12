@@ -9,12 +9,20 @@ const baseHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
 };
+
+function getHeader(option = {}) {
+  let base = {
+    'AccessToken': token ? token : null,
+  };
+  return _.assign({}, base, option)
+}
+
 function getUrl(url) {
-  return `${ basedUrl }/${ url }`;
+  return `${basedUrl}/${url}`;
 }
 function createRequest(method, url, requestHeaders = {}, data) {
   const headers = Object.assign({}, baseHeaders, requestHeaders);
-  const options = {headers, method};
+  const options = { headers, method };
   if (data) {
     options.body = JSON.stringify(data);
   }
@@ -32,9 +40,14 @@ async function responseHandler(response) {
     }
     return jsonData;
   } else {
+    try {
+      response = await response.json();
+    } catch (error) {
+      console.log(error);
+    }
     const error = {};
     error.code = response.status;
-    error.message = response.statusText;
+    error.message = response.message;
     error.isError = true;
     throw error;
   }
@@ -42,15 +55,15 @@ async function responseHandler(response) {
 function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
-      localStorage.removeItem('AccessToken');
-      window.location.href = '/site/log-out';
+      localStorage.clear();
+      window.location.href = '/site/logout';
     } else if (e.data === 403) {
-      localStorage.removeItem('AccessToken');
+      localStorage.clear();
       window.location.href = '/site/permission';
     }
   }
 }
-async function getData (url, headers) {
+async function getData(url, headers) {
   const request = createRequest('GET', url, headers);
   return await fetch(request)
     .then(responseHandler)
@@ -86,14 +99,14 @@ async function deleteData(url, headers, data) {
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
 }
-async function sendData(url, token, method = 'GET' ) {
+async function sendData(url, token, method = 'GET') {
   const headerData = {
     'AccessToken': token,
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   };
   const apiUrl = getUrl(url);
-  const options = {headers: headerData, method};
+  const options = { headers: headerData, method };
   const request = new Request(apiUrl, options);
   const result = await fetch(request)
     .then(responseHandler)
@@ -104,4 +117,4 @@ async function sendData(url, token, method = 'GET' ) {
   return result;
 }
 
-export default { getData, postData, putData, sendData, deleteData };
+export default { getHeader, getData, postData, putData, sendData, deleteData };

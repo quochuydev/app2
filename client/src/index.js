@@ -8,6 +8,7 @@ import {
 } from 'redux';
 import { createLogger } from 'redux-logger';
 import './index.css';
+import './responsive.css';
 import App from './containers/App';
 import Layout from './containers/Layout';
 import * as serviceWorker from './serviceWorker';
