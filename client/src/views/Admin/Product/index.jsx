@@ -56,16 +56,10 @@ function Products(props) {
   }
 
   const columns = [
-    // {
-    //   title: 'Number', key: 'edit',
-    //   render: edit => (
-    //     <Link to={`product/detail/${edit.number}`}>{edit.number}</Link>
-    //   ),
-    // },
     {
       title: 'Tên sản phẩm', key: 'title',
       render: edit => (
-        <Link to={`product/detail/${edit.id}`}>{edit.title}</Link>
+        <Link to={`product/${edit.id}`}>{edit.title}</Link>
       ),
     },
     {
@@ -200,6 +194,7 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
+          <Button href="product/create">Thêm sản phẩm</Button>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>

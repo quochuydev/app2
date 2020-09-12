@@ -56,13 +56,8 @@ function CustomerDetail(props) {
 
   return (
     <div>
-      <Modal
-        title="Tạo khách hàng mới"
-        visible={visible}
-        footer={null}
-        onCancel={() => { onCloseModal() }}
-        width={1000}
-      >
+      <Modal title="Tạo khách hàng mới" visible={visible} footer={null}
+        onCancel={() => { onCloseModal() }} width={1000}      >
         <Form onSubmit={addCustomer}>
           <Row>
             <Col xs={24} lg={12}>

@@ -140,7 +140,7 @@ function LayoutContainer() {
 
           <Switch>
             <Middleware setAlert={setAlert}>
-              {RouteList.map((props, index) => (< Route key={index} {...props} />))}
+              {RouteList.map((props, index) => (<Route key={index} {...props} />))}
             </Middleware>
           </Switch>
         </Layout.Content>

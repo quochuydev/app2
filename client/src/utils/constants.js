@@ -7,7 +7,8 @@ const ORDER_ROUTE = `${SITE_ROUTE}/order`;
 const ORDER_CREATE_ROUTE = `${SITE_ROUTE}/order/detail`;
 const ORDER_DETAIL_ROUTE = `${SITE_ROUTE}/order/detail/:orderId`;
 const PRODUCT_ROUTE = `${SITE_ROUTE}/products`;
-const PRODUCT_DETAIL_ROUTE = `${SITE_ROUTE}/product/detail/:id`;
+const PRODUCT_CREATE_ROUTE = `${SITE_ROUTE}/product/create`;
+const PRODUCT_DETAIL_ROUTE = `${SITE_ROUTE}/product/:id`;
 const STAFFS_ROUTE = `${SITE_ROUTE}/staffs`;
 const APP_ROUTE = `${SITE_ROUTE}/app`;
 const LOGIN_ROUTE = `${SITE_ROUTE}/login`;
@@ -24,6 +25,7 @@ const PATHS = {
   ORDER_DETAIL_ROUTE,
   STAFFS_ROUTE,
   PRODUCT_ROUTE,
+  PRODUCT_CREATE_ROUTE,
   PRODUCT_DETAIL_ROUTE,
   APP_ROUTE,
   LOGIN_ROUTE,
