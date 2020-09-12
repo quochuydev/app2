@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import Constants from '../../utils/constants';
+import AdminServices from '../../services/adminServices';
+
 const { PATHS, MENU_DATA } = Constants;
 const { SITE_ROUTE, LOGIN_ROUTE } = PATHS;
-const redirect_route = MENU_DATA.find(e => e.is_open).path || SITE_ROUTE;
+const redirect_route = MENU_DATA.find(e => e.is_open) ? MENU_DATA.find(e => e.is_open).path : SITE_ROUTE;
 
 function Middleware(props) {
   function getQuery(field) {
@@ -12,11 +14,16 @@ function Middleware(props) {
     return searchParams.get(field)
   }
   let path = window.location.pathname;
-
+  console.log(path)
   if (path.includes('loading')) {
     let token = getQuery('token');
     localStorage.setItem('AccessToken', token);
-    window.location.href = `${redirect_route}/`;
+    setTimeout(async function () {
+      let result = await AdminServices.getUser({ token })
+      localStorage.setItem('user', JSON.stringify(result.user));
+      localStorage.setItem('shop', JSON.stringify(result.shop));
+      window.location.href = `${redirect_route}/`;
+    }, 200)
   }
   else if (path.includes('logout')) {
     localStorage.clear();
@@ -28,8 +35,13 @@ function Middleware(props) {
     if (!token && !path.includes(LOGIN_ROUTE)) {
       window.location.href = LOGIN_ROUTE;
     }
-    if (token && path.includes(LOGIN_ROUTE)) {
-      window.location.href = `${redirect_route}/`;
+    if (token) {
+      if (path.includes(LOGIN_ROUTE)) {
+        window.location.href = `${redirect_route}/`;
+      }
+      if (path == '/') {
+        window.location.href = `${redirect_route}/`;
+      }
     }
   }
   return props.children;

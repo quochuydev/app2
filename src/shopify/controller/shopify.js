@@ -1,9 +1,7 @@
 const path = require('path');
-const mongoose = require('mongoose');
 const ShopifyApi = require('shopify_mono');
-const cache = require('memory-cache');
 
-const SettingMD = mongoose.model('Setting');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { SHOPIFY, listWebhooks } = require('./../CONST');
 const config = require(path.resolve('./src/config/config'));
@@ -22,11 +20,11 @@ const callback = async (req, res) => {
   let shopify_host = `https://${shop}`
   let API = new ShopifyApi({ shopify_host });
   let { access_token } = await API.getToken({ client_id, client_secret, code });
-  let found = await SettingMD._findOne();
+  let found = await ShopModel._findOne();
   if (!found) {
-    await SettingMD._create({ shopify: { shopify_host, status: 1, access_token } });
+    await ShopModel._create({ shopify: { shopify_host, status: 1, access_token } });
   } else {
-    await SettingMD._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
+    await ShopModel._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
   }
   res.redirect(`${frontend_site}/app`)
 

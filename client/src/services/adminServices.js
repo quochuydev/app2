@@ -1,7 +1,12 @@
+import _ from 'lodash';
 import ApiClient from '../utils/apiClient';
+import common from '../utils/common';
+
+const compile = common.compile;
 
 const URLS = {
   LIST_CUSTOMER: 'api/customers/list',
+  GET_CUSTOMER: 'api/customers',
   ADD_CUSTOMER: 'api/customers/create',
   UPDATE_CUSTOMER: 'api/customers',
   SYNC_CUSTOMER: 'api/customers/sync',
@@ -9,12 +14,19 @@ const URLS = {
 
   LIST_ORDERS: 'api/order/list',
   GET_ORDER_DETAIL: 'api/order/detail',
-  CREATE_ORDER: 'api/order/create',
   SYNC_ORDERS: 'api/order/sync',
+  CREATE_ORDER: 'api/order/create',
+  UPDATE_ORDER: 'api/orders',
+  PAY_ORDER: 'api/orders/{id}/pay',
+  UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
 
   LIST_PRODUCTS: 'api/products/list',
-  GET_PRODUCT_DETAIL: 'api/products/detail',
+  GET_PRODUCT: 'api/products',
+  CREATE_PRODUCT: 'api/products/create',
+  UPDATE_PRODUCT: 'api/products',
   SYNC_PRODUCTS: 'api/products/sync',
+  EXPORT_PRODUCTS: 'api/products/export',
+  DELETE_PRODUCT: 'api/products/delete',
 
   LIST_STAFFS: 'api/staffs',
 
@@ -28,11 +40,20 @@ const URLS = {
   GET_SETTING: 'api/setting/get',
   UPDATE_STATUS_APP: 'api/setting/update-status',
 
-  BUILD_LINK_MOMO: 'api/momo/buildlink'
+  BUILD_LINK_MOMO: 'api/momo/buildlink',
+
+  LOGIN: 'login',
+  CHANGE_SHOP: 'change-shop',
+
+  GET_USER: 'check-user',
 }
 
 async function listCustomers(query) {
   return await ApiClient.postData(URLS.LIST_CUSTOMER, null, query);
+}
+
+async function getCustomer(id) {
+  return await ApiClient.getData(`${URLS.GET_CUSTOMER}/${id}`);
 }
 
 async function addCustomer(customer) {
@@ -40,7 +61,7 @@ async function addCustomer(customer) {
 }
 
 async function updateCustomer(customer) {
-  return await ApiClient.putData(`${URLS.UPDATE_CUSTOMER}/${customer._id}`, null, customer);
+  return await ApiClient.putData(`${URLS.UPDATE_CUSTOMER}/${customer.id}`, null, customer);
 }
 
 async function syncCustomers(customer) {
@@ -59,13 +80,28 @@ async function getOrderDetail(id) {
   let url = `${URLS.GET_ORDER_DETAIL}/${id}`;
   return await ApiClient.getData(url);
 }
-async function createOrder(data) {
-  let url = `${URLS.CREATE_ORDER}`;
-  return await ApiClient.postData(url, null, data);
-}
 
 async function syncOrders() {
   return await ApiClient.postData(URLS.SYNC_ORDERS);
+}
+
+async function createOrder(data) {
+  return await ApiClient.postData(URLS.CREATE_ORDER, null, data);
+}
+
+async function updateOrder(data) {
+  let url = compile(URLS.UPDATE_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
+async function updateNoteOrder(data) {
+  let url = compile(URLS.UPDATE_NOTE_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
+async function payOrder(data) {
+  let url = compile(URLS.PAY_ORDER, { id: data.id });
+  return await ApiClient.putData(url, null, data);
 }
 
 async function loadStaffs() {
@@ -115,15 +151,41 @@ async function buildLinkMomoOrder(data) {
 async function loadProducts(query) {
   return await ApiClient.postData(URLS.LIST_PRODUCTS, null, query);
 }
+
+async function getProduct(id) {
+  return await ApiClient.getData(`${URLS.GET_PRODUCT}/${id}`);
+}
+
 async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
 
+async function exportProducts() {
+  return await ApiClient.postData(URLS.EXPORT_PRODUCTS, null, null);
+}
+
+async function deleteProduct(id) {
+  return await ApiClient.deleteData(`${URLS.DELETE_PRODUCT}/${id}`, null, null);
+}
+
+async function login(data) {
+  return await ApiClient.postData(URLS.LOGIN, null, data);
+}
+
+async function changeShop(data) {
+  return await ApiClient.postData(URLS.CHANGE_SHOP, null, data);
+}
+
+async function getUser(data) {
+  return await ApiClient.postData(URLS.GET_USER, null, data);
+}
+
 export default {
-  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer,
+  listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
-  getOrderDetail, createOrder,
+  getOrderDetail, createOrder, updateOrder, updateNoteOrder, payOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct,
+  login, changeShop, getUser,
 }

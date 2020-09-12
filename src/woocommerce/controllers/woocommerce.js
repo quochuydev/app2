@@ -1,8 +1,7 @@
 const path = require('path');
-const mongoose = require('mongoose');
 const APIBus = require('wooapi');
 
-const SettingMD = mongoose.model('Setting');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const config = require(path.resolve('./src/config/config'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
@@ -13,7 +12,7 @@ const { delivery_url } = woocommerce;
 const install = async (req, res) => {
   try {
     let { wp_host } = req.body;
-    await SettingMD._findOneAndUpdate({}, { $set: { 'woocommerce.wp_host': wp_host } });
+    await ShopModel._findOneAndUpdate({}, { $set: { 'woocommerce.wp_host': wp_host } });
     let return_url = `${app_host}/api/woocommerce/return_url`;
     let callback_url = `${app_host}/api/woocommerce/callback_url`;
     let API = new APIBus({ app: { wp_host, app_host, app_name: `MYAPP`, return_url, callback_url } });
@@ -38,12 +37,12 @@ const callback_url = async (req, res) => {
     res.json({ error: false });
     let { consumer_key, consumer_secret } = req.body;
     let dataUpdate = { 'woocommerce.consumer_key': consumer_key, 'woocommerce.consumer_secret': consumer_secret, 'woocommerce.status': 1 };
-    let found = await SettingMD._findOne();
+    let found = await ShopModel._findOne();
     let setting = null;
     if (!found) {
-      setting = await SettingMD._create(dataUpdate);
+      setting = await ShopModel._create(dataUpdate);
     } else {
-      setting = await SettingMD._findOneAndUpdate({}, { $set: dataUpdate });
+      setting = await ShopModel._findOneAndUpdate({}, { $set: dataUpdate });
     }
     let { woocommerce: { wp_host } } = setting;
     let API = new APIBus({ app: { wp_host, app_host }, key: { consumer_key, consumer_secret } });

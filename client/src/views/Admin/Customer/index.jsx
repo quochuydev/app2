@@ -6,11 +6,14 @@ import moment from 'moment';
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form
+  Form, message
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
+import ApiClient from './../../../utils/apiClient';
+import CustomerDetail from './detail'
+import AdminServices from './../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -35,53 +38,98 @@ function Customer(props) {
         <span>{edit.number}</span>
       )
     },
-    {
-      title: 'Ngày tạo', key: 'created_at', render: edit => (
-        <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
-      )
-    },
-    {
-      title: 'Type', key: 'type', render: edit => (
-        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
-    },
+    // {
+    //   title: 'Ngày tạo', key: 'created_at', render: edit => (
+    //     <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
+    //   )
+    // },
+
     { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
     { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
-    { title: 'Shop', dataIndex: 'shop', key: 'shop', },
+    {
+      title: 'Type', key: 'type', render: edit => (
+        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+    },
     {
       title: 'Edit', key: 'edit',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => onShowUpdate(edit)} />
+          <Icon type="edit" onClick={() => onShowCreate(edit)} />
         </span>
       ),
     },
   ];
-  const uploads = {
+
+  const expended = edit => (
+    <div>
+      <p style={{ margin: 0 }}>{edit.type}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.first_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address : null}</p>
+    </div>
+  );
+
+  const uploadSetting = {
+    multiple: false,
     action: `${apiUrl}/customers/import`,
-    listType: 'picture',
-    previewFile(file) {
-      return fetch(`${apiUrl}/customers/import`, {
-        method: 'POST',
-        body: file,
-      })
-        .then(res => res.json())
-        .then(({ thumbnail }) => thumbnail);
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
     },
   };
 
+  let [query, setQuery] = useState({ limit: 10, page: 1 });
   useEffect(() => {
     actions.listCustomers(query);
-  }, []);
+  }, [query]);
+
+  let [done, setDone] = useState(null);
+  useEffect(() => {
+    console.log(done)
+    if (done && done.customer) {
+      try {
+        let result = null;
+        if (done.customer.id) {
+          AdminServices.updateCustomer(done.customer)
+            .then(result => {
+              message.success(result.message);
+            })
+            .catch(error => {
+              message.error(error.message);
+            })
+        } else {
+          AdminServices.addCustomer(done.customer)
+            .then(result => {
+              message.success(result.message);
+            })
+            .catch(error => {
+              console.log(error)
+              message.error(error.message);
+            })
+        }
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+  }, [done]);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
-  const [isCreateModal, setIsCreateModal] = useState(false);
-  const [isUpdateModal, setIsUpdateModal] = useState(false);
-  let [query, setQuery] = useState({});
+  const [isShowModal, setIsShowModal] = useState(false);
 
   let [customer, setCustomer] = useState({})
 
@@ -91,9 +139,7 @@ function Customer(props) {
   function onLoadCustomer() {
     actions.listCustomers(query);
   }
-  function addCustomer() {
-    actions.addCustomer(customer);
-  }
+
   function importCustomer() {
     actions.importCustomer();
   }
@@ -108,15 +154,13 @@ function Customer(props) {
     setCustomer({ ...customer, [field]: e });
   }
 
-  function onShowUpdate(customer) {
-    setIsUpdateModal(true);
-    setCustomer(customer)
-  }
-
-  function updateCustomer() {
-    actions.updateCustomer(customer);
-    setIsUpdateModal(false);
-    onLoadCustomer()
+  function onShowCreate(customerUpdate) {
+    setIsShowModal(true);
+    if (customerUpdate) {
+      setCustomer(customerUpdate);
+    } else {
+      setCustomer({});
+    }
   }
 
   async function syncCustomers() {
@@ -135,6 +179,10 @@ function Customer(props) {
     setQuery({ ...query, [name]: value })
   }
 
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
+
   return (
     <div>
       <Row key='1'>
@@ -150,6 +198,7 @@ function Customer(props) {
               placeholder="-- Chọn --"
               onChange={onChangeType}
             >
+              <Option value='app'>App</Option>
               <Option value='haravan'>Haravan</Option>
               <Option value='woocommerce'>Woocommerce</Option>
               <Option value='shopify'>Shopify</Option>
@@ -158,12 +207,13 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          {/* <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button> */}
+          <Button onClick={() => onShowCreate()}>Thêm khách hàng</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
+          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
+            expandedRowRender={expended} scroll={{ x: 1000 }} />
+          <Pagination defaultCurrent={1} total={count} size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <Modal
@@ -180,50 +230,16 @@ function Customer(props) {
         onOk={() => importCustomer()}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload {...uploads}>
-          <Button>
-            <Icon type="upload" /> Upload
-        </Button>
-        </Upload>
+        <Upload.Dragger {...uploadSetting}>
+          <div style={{ width: '100%' }}>
+            <p className="ant-upload-drag-icon">
+              <Icon type="inbox" />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          </div>
+        </Upload.Dragger>
       </Modal>
-      <Modal
-        title="Create Modal"
-        visible={isCreateModal}
-        onOk={addCustomer}
-        onCancel={() => setIsCreateModal(false)}
-        width={1400}
-      >
-        <Row key='1'>
-          <Col span={12}>
-            <Input name="first_name" onChange={onChange} />
-            <Input name="last_name" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <DatePicker name="birthday" onChange={(e) => onChangeField(e, 'birthday')} />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Input name="phone" onChange={onChange} />
-            <Input name="email" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <Select name="gender" onChange={(e) => onChangeField(e, 'gender')} defaultValue={1} style={{ width: 120 }}>
-              <Option value={'1'}>Nam</Option>
-              <Option value={'0'}>Nữ</Option>
-            </Select>
-          </Col>
-        </Row>
-      </Modal>
-      <Modal
-        title="Update Modal"
-        visible={isUpdateModal}
-        onOk={() => updateCustomer()}
-        onCancel={() => setIsUpdateModal(false)}
-      >
-        <Input value={customer.first_name} name='first_name' onChange={onChange} />
-        <p>{JSON.stringify(customer)}</p>
-      </Modal>
+      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} setDone={setDone} />
     </div >
   );
 }

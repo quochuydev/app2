@@ -5,8 +5,7 @@ let mongoose = require('mongoose');
 let cache = require('memory-cache');
 
 let UserMD = mongoose.model('User');
-let ShopMD = mongoose.model('Shop');
-const SettingMD = mongoose.model('Setting');
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
@@ -24,21 +23,18 @@ let auth = async (req, res) => {
     let { id_token } = tokens;
     let userAuth = jwt.decode(id_token)
     let { email } = userAuth;
-    let user = await UserMD.findOne({ email }).lean(true);
-    if (!email) { return res.sendStatus(401) }
-    if (!user) {
-      let shop_data = { name: email, code: email }
-      let shop = await ShopMD.create(shop_data);
-      await SettingMD.create({ shop_id: shop.id });
-      let user_data = { email, shop_id: shop.id }
-      user = (await UserMD.create(user_data)).toJSON();
+    if (!email) {
+      return res.sendStatus(401);
     }
-    // if (!user) { return res.sendStatus(401) }
-    let exp = (Date.now() + 60 * 60 * 1000) / 1000;
+    let user = await UserMD.findOne({ email }).lean(true);
+    if (!user) {
+      return res.sendStatus(401);
+    }
+
     let user_gen_token = {
       email: user.email,
       shop_id: user.shop_id,
-      exp
+      exp: (Date.now() + 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
     res.redirect(`${frontend_site}/loading?token=${userToken}`)
@@ -59,9 +55,13 @@ let middleware = (req, res, next) => {
     ]
     if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
     let accesstoken = req.headers['accesstoken'];
-    if (!accesstoken || accesstoken == 'null') { return res.sendStatus(401) }
+    if (!accesstoken || accesstoken == 'null') {
+      return res.sendStatus(401);
+    }
     let user = jwt.verify(accesstoken, hash_token);
-    if (!(user && user.email)) { return res.sendStatus(401) }
+    if (!(user && user.email)) {
+      return res.sendStatus(401);
+    }
     req.user = user;
     req.shop_id = user.shop_id;
     cache.put('shop_id', user.shop_id);
@@ -72,7 +72,117 @@ let middleware = (req, res, next) => {
   }
 }
 
-let login = (req, res) => {
+async function changeShop({ user, shop_id }) {
+  let result = {};
+  let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
+  if (!found_user) {
+    throw { message: 'Không thể chuyển cửa hàng' }
+  }
+
+  cache.put('shop_id', shop_id);
+  let user_gen_token = {
+    id: found_user,
+    email: found_user.email,
+    shop_id: found_user.shop_id,
+    exp: (Date.now() + 60 * 60 * 1000) / 1000
+  }
+
+  let userToken = jwt.sign(user_gen_token, hash_token);
+  result.url = `${frontend_site}/loading?token=${userToken}`
+  return result;
+}
+
+async function checkUser({ body }) {
+  let verify_user = jwt.verify(body.token, hash_token);
+  if (!verify_user.email) {
+    throw { message: 'check user failed' }
+  }
+  let group_users = await UserMD.aggregate([
+    { $match: { email: verify_user.email, is_deleted: false } },
+    { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
+  ]);
+  if (!(group_users && group_users.length)) {
+    throw { message: 'check user failed' }
+  }
+  let group_user = group_users[0];
+  let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
+  let shop = await ShopModel.findOne({ shop_id: verify_user.shop_id }).lean(true);
+  let user = { id: verify_user.id, email: group_user._id, shops, shop };
+  return { error: false, user };
+}
+
+
+async function signup(req, res, next) {
+  try {
+    let { email, password, is_create_shop, shop_id } = req.body;
+    if (!(email)) {
+      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'email_required' });
+    }
+
+    if (is_create_shop) {
+      let shop_data = {
+        name: email, code: email
+      }
+      let shop = await ShopModel.create(shop_data);
+      let new_user = {
+        email,
+        shop_id: shop.id
+      }
+      let user = await UserMD.create(new_user);
+      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_SHOP_SUCCESS' });
+    } else {
+      if (!shop_id) {
+        return res.json({ message: 'Thiếu shop_id' });
+      }
+      let found_user = await UserMD.findOne({ email, shop_id }).lean(true);
+      if (found_user) {
+        return res.json({ message: 'Email này đã tồn tại' })
+      }
+      let new_user = {
+        email,
+        shop_id
+      }
+      let user = await UserMD.create(new_user);
+      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_USER_SUCCESS' });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+}
+
+let login = async (req, res, next) => {
+  try {
+    let { email, password } = req.body;
+
+    if (!email) {
+      throw { message: `Vui lòng nhập 'email!'` }
+    }
+
+    let user = await UserMD.findOne({ email, salt: { $ne: null } }).lean(true);
+
+    if (!user) {
+      throw { message: `User này không tồn tại` }
+    }
+
+    if (!UserMD.authenticate(user, password)) {
+      throw { statusCode: 401, message: `Mật khẩu không đúng` }
+    }
+
+    let user_gen_token = {
+      id: user.id,
+      email: user.email,
+      shop_id: user.shop_id,
+      exp: (Date.now() + 60 * 60 * 1000) / 1000
+    }
+    let userToken = jwt.sign(user_gen_token, hash_token);
+    res.json({ error: false, token: userToken, url: `${frontend_site}/loading?token=${userToken}` });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function loginGoogle(req, res) {
   res.json({ error: false, url });
 }
 
@@ -81,7 +191,10 @@ let logout = (req, res) => {
 }
 
 let logout_redirect = (req, res) => {
-  res.redirect(`${frontend_site}/logout`)
+  res.redirect(`${frontend_site}/logout`);
 }
 
-module.exports = { auth, login, logout, middleware, logout_redirect }
+module.exports = {
+  auth, login, loginGoogle,
+  logout, middleware, logout_redirect, signup, changeShop, checkUser
+}

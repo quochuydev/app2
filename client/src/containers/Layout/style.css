@@ -1,0 +1,11 @@
+.ant-menu-item{
+  padding-left: 10px !important;
+}
+
+.ant-menu-inline {
+   border: 0 !important;
+}
+
+.ant-page-header-heading-sub-title {
+  line-height: 30px !important;
+}

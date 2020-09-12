@@ -5,8 +5,7 @@ import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio, Card
 } from 'antd';
 import _ from 'lodash';
-import * as orderDetailActions from './actions';
-import * as orderActions from '../Order/actions';
+import * as orderActions from './../Order/actions';
 import * as productActions from '../Product/actions';
 import * as customerActions from '../Customer/actions';
 import 'antd/dist/antd.css';
@@ -98,7 +97,7 @@ function OrderCreateComponent(props) {
   }
 
   return (
-    < Row >
+    < Row key="1">
       <Form onSubmit={handleSubmit}>
         <Col span={6}>
           <Card title="Thông tin khách hàng">
@@ -166,7 +165,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(orderDetailActions, dispatch),
+  actions: bindActionCreators(orderActions, dispatch),
   orderActions: bindActionCreators(orderActions, dispatch),
   productActions: bindActionCreators(productActions, dispatch),
   customerActions: bindActionCreators(customerActions, dispatch),

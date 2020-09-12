@@ -95,10 +95,6 @@ function App(props) {
     await actions.buildLinkHaravanApp(dataHaravan);
   }
 
-  async function installHaravanApp() {
-    await actions.installHaravanApp(dataHaravan);
-  }
-
   async function resetTimeSync() {
     await actions.resetTimeSync();
     Toast.success('Cập nhật thành công!');
@@ -113,23 +109,6 @@ function App(props) {
     Toast.success('Cập nhật thành công!');
   }
 
-  let ListHaravanShop;
-  if (setting && setting.haravan.shop) {
-    ListHaravanShop = (
-      <div>
-        {
-          <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
-            <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
-          </p>
-        }
-      </div>
-    )
-  } else {
-    ListHaravanShop = (
-      <div>Không có shop haravan</div>
-    )
-  }
-
   return (
     <div>
       <Row key='1'>
@@ -138,7 +117,17 @@ function App(props) {
             <Item>
               Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-              {ListHaravanShop}
+              {
+                (setting && setting.haravan && setting.haravan.shop) ?
+                  <div>
+                    {
+                      <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
+                        <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
+                      </p>
+                    }
+                  </div>
+                  : <div>Không có shop haravan</div>
+              }
             </Item>
             <Item>
               Woocommerce App
@@ -159,7 +148,8 @@ function App(props) {
                 ?
                 <p>
                   {_.get(setting, 'shopify.shopify_host')}
-                  <Button onClick={() => updateStatusApp({ type: 'shopify' })}><Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
+                  <Button onClick={() => updateStatusApp({ type: 'shopify' })}>
+                    <Icon style={{ color: cssStatus(setting.shopify.status) }} type="check-circle" /></Button>
                 </p>
                 : null
               }

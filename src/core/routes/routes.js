@@ -1,11 +1,31 @@
 const path = require('path');
-const { auth, login, logout, middleware } = require('../controllers/core');
+const { auth, login, loginGoogle, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
+const config = require(path.resolve('./src/config/config'));
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
+  
+  app.get('/site', (req, res, next) => {
+    res.redirect(`${config.frontend_site}/`);
+  });
+
   app.get('/auth', auth);
   app.post('/login', login);
+  app.post('/login-google', loginGoogle);
   app.post('/logout', logout);
+  app.post('/signup', signup);
+  app.post('/change-shop', function (req, res, next) {
+    changeShop({ user: req.body.user, shop_id: req.body.shop_id })
+      .then(result => res.json({ error: false, url: result.url }))
+      .catch(error => next(error))
+  });
+
+  app.post('/check-user', function (req, res, next) {
+    checkUser({ body: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  });
+
   app.use('/api/*', middleware);
 
   require(path.resolve('./src/download/routes/download'))({ app });
@@ -19,6 +39,7 @@ const routes = (app) => {
   require(path.resolve('./src/setting/routes/setting'))({ app });
   require(path.resolve('./src/momo/routes/momo'))({ app });
   require(path.resolve('./src/products/routes/products'))({ app });
+  require(path.resolve('./src/users/routes/users'))({ app });
   require(path.resolve('./src/shop/routes/shop'))({ app });
 }
 
