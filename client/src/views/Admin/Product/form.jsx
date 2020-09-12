@@ -41,19 +41,39 @@ function ProductForm(props) {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Tên biến thể',
+      key: 'title',
+      render: edit => <div>
+        <Input name="title" />
+      </div>
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Sku',
+      key: 'sku',
+      render: edit => <div>
+        <Input name="sku" />
+      </div>
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Barcode',
+      key: 'barcode',
+      render: edit => <div>
+        <Input name="barcode" />
+      </div>
+    },
+    {
+      title: 'Giá bán',
+      key: 'price',
+      render: edit => <div>
+        <Input name="price" />
+      </div>
+    },
+    {
+      title: '',
+      key: 'option',
+      render: edit => <div>
+        <Button>X</Button>
+      </div>
     },
   ];
 
@@ -82,12 +102,14 @@ function ProductForm(props) {
           </Form.Item>
         </Col>
         <Col xs={24} lg={12}>
-          <Form.Item label="Số điện thoại" required>
-            <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />
+          <Form.Item label={'Nhà sản xuất'} onChange={onAddressChange}>
+            <Select value={1} >
+              <Select.Option value={1}>Mới</Select.Option>
+            </Select>
           </Form.Item>
         </Col>
         <Col xs={24} lg={12}>
-          <Form.Item label="Tỉnh" onChange={onAddressChange}>
+          <Form.Item label={'Nhóm sản phẩm'} onChange={onAddressChange}>
             <Select value={1} >
               <Select.Option value={1}>Mới</Select.Option>
             </Select>
@@ -102,10 +124,8 @@ function ProductForm(props) {
                   <Button onClick={() => handleAdd()} type="primary"
                     style={{ marginBottom: 16 }}>Add a row</Button>
                   <Table
-                    rowClassName={() => 'editable-row'}
-                    bordered
-                    dataSource={dataSource}
-                    columns={columns}
+                    rowClassName={() => 'editable-row'} bordered dataSource={dataSource}
+                    columns={columns} pagination={false} size="small"
                   />
                 </Col>
 

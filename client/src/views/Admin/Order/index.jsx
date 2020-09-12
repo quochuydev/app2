@@ -91,11 +91,11 @@ function Orders(props) {
         <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
       ),
     },
-    {
-      title: 'Type', key: 'type', render: edit => (
-        <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
-      )
-    },
+    // {
+    //   title: 'Type', key: 'type', render: edit => (
+    //     <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
+    //   )
+    // },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
@@ -122,11 +122,11 @@ function Orders(props) {
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
-    {
-      title: 'Trạng thái', key: 'status', render: edit => (
-        <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
-      )
-    },
+    // {
+    //   title: 'Trạng thái', key: 'status', render: edit => (
+    //     <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
+    //   )
+    // },
     // Thanh toán	Giao hàng	COD Tổng tiền
     {
       title: 'In', key: 'print', render: edit => (
