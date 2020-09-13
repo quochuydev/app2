@@ -9,7 +9,7 @@ const { ProvinceModel } = require(path.resolve('./src/core/models/province.js'))
 Mongoose.connect()
   .then(async db => {
     console.log('connect mongo success');
-   
+
     await Promise.all([
       importCountry(),
       importProvince(),
@@ -35,11 +35,15 @@ async function importDistrict() {
 }
 
 async function importWard() {
-  let { wards } = require('./../../core/data/wards.json')
+  let { wards } = require('./../../core/data/wards.json');
+
+  let tasks = [];
   for (const ward of wards) {
     let options = { new: true, lean: true, upsert: true, setDefaultsOnInsert: true };
-    await WardModel.findOneAndUpdate({ id: ward.id }, { $set: ward }, options);
+    let task = WardModel.findOneAndUpdate({ id: ward.id }, { $set: ward }, options);
+    tasks.push(task);
   }
+  await Promise.all(tasks)
   console.log('done ward');
 }
 async function importProvince() {
