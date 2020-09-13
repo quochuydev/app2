@@ -31,6 +31,11 @@ Controller.list = async (req, res) => {
   let { limit, skip, criteria } = _parse(req.body);
   let count = await ProductModel.count(criteria);
   let products = await ProductModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+
+  for (const product of products) {
+    product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
+  }
+  
   res.json({ error: false, count, products })
 }
 
@@ -40,6 +45,51 @@ Controller.getProduct = async function ({ product_id }) {
   if (!result.product) {
     throw { message: 'Sản phẩm không tồn tại' }
   }
+  return result;
+}
+
+Controller.create = async function ({ data }) {
+  let result = {};
+
+  if (!data.variants) {
+    throw { message: 'Chưa đủ thông tin sản phẩm' }
+  } else {
+    if (!data.variants.length) {
+      throw { message: 'Chưa đủ thông tin sản phẩm' }
+    }
+    for (const variant of data.variants) {
+      if (!variant.title) {
+        throw { message: 'Chưa nhập tiêu đề biến thể' }
+      }
+    }
+  }
+
+  if (!data.title) {
+    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
+  }
+
+  if (!data.title) {
+    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
+  }
+
+  let product = makeDataProduct(data);
+  let newProduct = await ProductModel._create(product);
+
+  if (newProduct && newProduct.id) {
+    let newVariants = []
+    let variants = makeDataVariants(data.variants);
+    for (const variant of variants) {
+      variant.product_id = newProduct.id;
+      let newVariant = await VariantModel._create(variant);
+      newVariant = newVariant.toJSON();
+      newVariants.push(newVariant);
+    }
+    await ProductModel._update({ id: newProduct.id }, { $set: { variants: newVariants } });
+  }
+
+  result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
+  result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
+
   return result;
 }
 
@@ -274,6 +324,14 @@ function makeDataProduct(item) {
   }
 
   return product;
+}
+
+function makeDataVariants(items) {
+  let variants = [];
+  for (const item of items) {
+    variants.push(makeDataVariant(item));
+  }
+  return variants;
 }
 
 function makeDataVariant(item) {

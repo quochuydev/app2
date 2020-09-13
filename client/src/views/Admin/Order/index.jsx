@@ -273,7 +273,8 @@ function Orders(props) {
               scroll={{ x: 900 }} />
           </Col>
           <Col span={24}>
-            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage} />
+            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage}
+              showTotal={total => <span>{total}</span>} />
           </Col>
         </Row>
         <ModalInfo
