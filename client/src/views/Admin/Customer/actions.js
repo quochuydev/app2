@@ -142,7 +142,7 @@ export function importCustomer(customer) {
   }
 }
 
-export function exportCustomer(customer) {
+export function exportCustomer() {
   return async (dispatch) => {
     try {
       const payload = await AdminServices.exportCustomer();

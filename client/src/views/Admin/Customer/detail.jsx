@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { useParams } from "react-router-dom";
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -27,7 +24,7 @@ function CustomerDetail(props) {
     } else {
       setCustomerUpdate({})
     }
-  }, [customer.id])
+  }, [customer])
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -52,18 +49,12 @@ function CustomerDetail(props) {
       customerUpdate.id = customer.id;
     }
     setDone({ customer: customerUpdate });
-    onCloseModal();
   }
 
   return (
     <div>
-      <Modal
-        title="Tạo khách hàng mới"
-        visible={visible}
-        footer={null}
-        onCancel={() => { onCloseModal() }}
-        width={1000}
-      >
+      <Modal title="Tạo khách hàng mới" visible={visible} footer={null}
+        onCancel={() => { onCloseModal() }} width={1000}>
         <Form onSubmit={addCustomer}>
           <Row>
             <Col xs={24} lg={12}>
@@ -89,10 +80,12 @@ function CustomerDetail(props) {
                       <Form.Item label='Email' onChange={onCustomerChange}>
                         <Input name="email" placeholder="example@gmail.com" value={customerUpdate.email} />
                       </Form.Item>
-                      <Radio.Group label='Giới tính' onChange={onCustomerChange} name="gender" value={customerUpdate.gender}>
-                        <Radio value={1}>Anh</Radio>
-                        <Radio value={0}>Chị</Radio>
-                      </Radio.Group>
+                      <Form.Item label="Giới tính" >
+                        <Radio.Group onChange={onCustomerChange} name="gender" value={customerUpdate.gender}>
+                          <Radio value={1}>Anh</Radio>
+                          <Radio value={0}>Chị</Radio>
+                        </Radio.Group>
+                      </Form.Item>
                     </Col>
                   </Row>
                 </Tabs.TabPane>
@@ -104,32 +97,36 @@ function CustomerDetail(props) {
                 <Tabs.TabPane tab="Địa chỉ" key="1">
                   <Row gutter={10}>
                     <Col span={24}>
-                      <p>Địa chỉ</p>
-                      <Input name="address" placeholder="Nhập địa chỉ khách hàng" onChange={onAddressChange}
-                        value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                      <Form.Item label="Địa chỉ" onChange={onAddressChange}>
+                        <Input name="address" placeholder="Nhập địa chỉ khách hàng"
+                          value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                      </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <p>Mã zip</p>
-                      <Input name="zip" placeholder="Nhập địa chỉ khách hàng"
-                        value={customerUpdate.default_address ? customerUpdate.default_address.zip : null} />
+                      <Form.Item label="Mã zip" onChange={onAddressChange}>
+                        <Input name="zip" value={customerUpdate.default_address ? customerUpdate.default_address.zip : null} />
+                      </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <p>Tỉnh</p>
-                      <Select value={1} className="block">
-                        <Select.Option value={1}>Mới</Select.Option>
-                      </Select>
+                      <Form.Item label="Tỉnh" onChange={onAddressChange}>
+                        <Select value={1} >
+                          <Select.Option value={1}>Mới</Select.Option>
+                        </Select>
+                      </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <p>Huyện</p>
-                      <Select value={1} className="block">
-                        <Select.Option value={1}>Mới</Select.Option>
-                      </Select>
+                      <Form.Item label="Huyện" onChange={onAddressChange}>
+                        <Select value={1}>
+                          <Select.Option value={1}>Mới</Select.Option>
+                        </Select>
+                      </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <p>Xã</p>
-                      <Select value={1} className="block">
-                        <Select.Option value={1}>Mới</Select.Option>
-                      </Select>
+                      <Form.Item label="Xã" onChange={onAddressChange}>
+                        <Select value={1} >
+                          <Select.Option value={1}>Mới</Select.Option>
+                        </Select>
+                      </Form.Item>
                     </Col>
                   </Row>
                 </Tabs.TabPane>
@@ -146,14 +143,5 @@ function CustomerDetail(props) {
   )
 }
 
-const mapStateToProps = state => ({
-  products: state.products.get('products'),
-  product: state.products.get('product'),
-  // customer: state.customers.get('customer'),
-});
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(customerActions, dispatch)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerDetail);
+export default CustomerDetail;

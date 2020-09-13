@@ -27,7 +27,6 @@ import 'antd/dist/antd.css';
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import './style.css'
-import data from './data.json';
 import PrintOrder from './print.jsx';
 import CustomerDetail from './../Customer/detail'
 
