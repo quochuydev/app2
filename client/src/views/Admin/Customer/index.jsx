@@ -35,26 +35,27 @@ function Customer(props) {
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <span>{edit.number}</span>
+        <span><a href={`customer/${edit.id}`}>{edit.number}</a></span>
       )
     },
-    // {
-    //   title: 'Ngày tạo', key: 'created_at', render: edit => (
-    //     <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
-    //   )
-    // },
-
-    { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
-    { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
-    { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
-    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
-    { title: 'Email', dataIndex: 'email', key: 'email', },
     {
-      title: 'Type', key: 'type', render: edit => (
-        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+      title: 'Tên khách hàng', key: 'name', render: edit => (
+        <span>{[edit.last_name, edit.first_name].join(' ')}</span>
+      )
     },
     {
-      title: 'Edit', key: 'edit',
+      title: 'Số điện thoại', key: 'phone', render: edit => (
+        <span>{edit.phone}</span>
+      )
+    },
+    {
+      title: 'Ngày sinh', key: 'birthday', render: edit => (
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a') : null}</span>
+      )
+    },
+    { title: 'Email', dataIndex: 'email', key: 'email', },
+    {
+      title: '', key: 'option',
       render: edit => (
         <span>
           <Icon type="edit" onClick={() => onShowCreate(edit)} />
@@ -144,14 +145,11 @@ function Customer(props) {
     actions.importCustomer();
   }
   function exportCustomer() {
-    actions.exportCustomer(customer);
+    actions.exportCustomer();
   }
 
   function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
-  }
-  function onChangeField(e, field) {
-    setCustomer({ ...customer, [field]: e });
   }
 
   function onShowCreate(customerUpdate) {
@@ -208,12 +206,14 @@ function Customer(props) {
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
           <Button onClick={() => onShowCreate()}>Thêm khách hàng</Button>
+          <Button href={'customer/create'}>Thêm khách hàng detail</Button>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} />
-          <Pagination defaultCurrent={1} total={count} size="small" name="page" onChange={onChangePage} />
+          <Pagination showTotal={total => <span>{total}</span>} defaultCurrent={1} total={count}
+            size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <Modal

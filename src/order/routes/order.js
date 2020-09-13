@@ -2,14 +2,6 @@ const { list, sync, detail, create } = require('./../controller/order');
 let Controller = require('./../controller/order');
 
 const router = ({ app }) => {
-  app.use('/api/order/*', function (req, res, next) {
-    console.log(JSON.stringify(req.body))
-    next();
-  })
-  app.use('/api/orders/*', function (req, res, next) {
-    console.log(JSON.stringify(req.body))
-    next();
-  })
   app.get('/api/order/detail/:id', detail);
   app.post('/api/order/list', list);
   app.post('/api/order/sync', sync);

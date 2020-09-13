@@ -19,31 +19,11 @@ import ProductForm from './form'
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 
-function ProductDetail(props) {
+function ProductCreate(props) {
   const { product, actions } = props;
-  const { id } = useParams();
-  console.log(123, id);
-
-  let [productUpdate, setProductUpdate] = useState({});
-
-  useEffect(() => {
-    if (id && id != 'create') {
-      actions.getProduct(id);
-    }
-  }, [])
-
-
-  useEffect(() => {
-    if (product && product.id) {
-      setProductUpdate(product)
-    }
-  }, [product])
 
   return (
     <div>
-      <div>
-        {productUpdate.id} {productUpdate.title}
-      </div>
       <ProductForm />
     </div>
   )
@@ -58,4 +38,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(productActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductCreate);

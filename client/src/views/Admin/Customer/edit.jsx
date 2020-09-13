@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as productActions from './actions';
+import * as customerActions from './actions';
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -15,47 +15,44 @@ import {
 import 'antd/dist/antd.css';
 import './style.css'
 
-import ProductForm from './form'
+import CustomerForm from './form'
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 
-function ProductDetail(props) {
-  const { product, actions } = props;
+function CustomerEdit(props) {
+  const { customer, actions } = props;
   const { id } = useParams();
   console.log(123, id);
 
-  let [productUpdate, setProductUpdate] = useState({});
+  let [customerUpdate, setCustomerUpdate] = useState({});
 
   useEffect(() => {
     if (id && id != 'create') {
-      actions.getProduct(id);
+      actions.getCustomer(id);
     }
   }, [])
 
 
   useEffect(() => {
-    if (product && product.id) {
-      setProductUpdate(product)
+    if (customer && customer.id) {
+      setCustomerUpdate(customer);
     }
-  }, [product])
+  }, [customer])
 
   return (
     <div>
-      <div>
-        {productUpdate.id} {productUpdate.title}
-      </div>
-      <ProductForm />
+      <CustomerForm customer={customerUpdate} />
     </div>
   )
 }
 
 const mapStateToProps = state => ({
-  products: state.products.get('products'),
-  product: state.products.get('product'),
+  customers: state.customers.get('customers'),
+  customer: state.customers.get('customer'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(productActions, dispatch)
+  actions: bindActionCreators(customerActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerEdit);

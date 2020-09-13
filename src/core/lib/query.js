@@ -69,7 +69,8 @@ function formatCriteria(field, value) {
 
 
 let test = () => {
-  _parse({ "_id": "asvdsa213", "id_in": "123,234,456", "code_in": "123, 234, 456", "created_at_gte": "Sat Mar 28 2020 17:46:16 GMT 0700 (Giờ Đông Dương)", "updated_at_lte": "22-12-2020", "number_ne": "22-12-2020" })
+  _parse({ "_id": "asvdsa213", "id_in": "123,234,456", "code_in": "123, 234, 456",
+   "created_at_gte": "Sat Mar 28 2020 17:46:16 GMT 0700 (Giờ Đông Dương)", "updated_at_lte": "22-12-2020", "number_ne": "22-12-2020" })
   let body = { shop_id: 123123, number: 12312312, type_in: ['woocommerce'] };
   _parse(body);
 }
