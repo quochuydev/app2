@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { useParams } from "react-router-dom";
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -27,7 +24,7 @@ function CustomerDetail(props) {
     } else {
       setCustomerUpdate({})
     }
-  }, [customer.id])
+  }, [customer])
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -146,15 +143,5 @@ function CustomerDetail(props) {
   )
 }
 
-const mapStateToProps = state => ({
-  products: state.products.get('products'),
-  product: state.products.get('product'),
-  customers: state.customers.get('customers'),
-  customer: state.customers.get('customer'),
-});
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(customerActions, dispatch)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerDetail);
+export default CustomerDetail;

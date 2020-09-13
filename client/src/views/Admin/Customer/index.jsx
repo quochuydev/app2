@@ -50,7 +50,7 @@ function Customer(props) {
     },
     {
       title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a')}</span>
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a') : null}</span>
       )
     },
     { title: 'Email', dataIndex: 'email', key: 'email', },
@@ -145,14 +145,11 @@ function Customer(props) {
     actions.importCustomer();
   }
   function exportCustomer() {
-    actions.exportCustomer(customer);
+    actions.exportCustomer();
   }
 
   function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
-  }
-  function onChangeField(e, field) {
-    setCustomer({ ...customer, [field]: e });
   }
 
   function onShowCreate(customerUpdate) {

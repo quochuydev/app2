@@ -35,7 +35,7 @@ function CustomerEdit(props) {
 
   useEffect(() => {
     if (customer && customer.id) {
-      setCustomerUpdate(customer)
+      setCustomerUpdate(customer);
     }
   }, [customer])
 
