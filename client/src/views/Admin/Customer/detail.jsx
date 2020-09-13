@@ -57,7 +57,7 @@ function CustomerDetail(props) {
   return (
     <div>
       <Modal title="Tạo khách hàng mới" visible={visible} footer={null}
-        onCancel={() => { onCloseModal() }} width={1000}      >
+        onCancel={() => { onCloseModal() }} width={1000}>
         <Form onSubmit={addCustomer}>
           <Row>
             <Col xs={24} lg={12}>
@@ -149,7 +149,8 @@ function CustomerDetail(props) {
 const mapStateToProps = state => ({
   products: state.products.get('products'),
   product: state.products.get('product'),
-  // customer: state.customers.get('customer'),
+  customers: state.customers.get('customers'),
+  customer: state.customers.get('customer'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

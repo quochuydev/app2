@@ -12,13 +12,6 @@ const routes = [
     breadcrumbText: 'Tạo sản phẩm',
     exact: true
   },
-  // {
-  //   path: PRODUCT_CREATE_ROUTE,
-  //   component: ProductCreatePage,
-  //   permission: [],
-  //   breadcrumbText: 'Sản phẩm',
-  //   exact: true
-  // },
   {
     path: PRODUCT_DETAIL_ROUTE,
     component: ProductDetailPage,

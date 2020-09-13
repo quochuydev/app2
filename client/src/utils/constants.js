@@ -1,6 +1,9 @@
 const HOME_ROUTE = ``;
 const SITE_ROUTE = `${HOME_ROUTE}/site`;
 const CUSTOMER_ROUTE = `${SITE_ROUTE}/customers`;
+const CUSTOMER_CREATE_ROUTE = `${SITE_ROUTE}/customer/create`;
+const CUSTOMER_DETAIL_ROUTE = `${SITE_ROUTE}/customer/:id`;
+
 const POS_ROUTE = `${SITE_ROUTE}/POS`;
 const MESSENGER_ROUTE = `${SITE_ROUTE}/messenger`;
 const ORDER_ROUTE = `${SITE_ROUTE}/order`;
@@ -18,6 +21,8 @@ const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 const PATHS = {
   SITE_ROUTE,
   CUSTOMER_ROUTE,
+  CUSTOMER_CREATE_ROUTE,
+  CUSTOMER_DETAIL_ROUTE,
   POS_ROUTE,
   MESSENGER_ROUTE,
   ORDER_ROUTE,
