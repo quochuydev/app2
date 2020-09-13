@@ -68,6 +68,11 @@ function Products(props) {
       )
     },
     {
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="magenta">{edit.total_orders}</Tag>
+      )
+    },
+    {
       title: 'Option', key: 'option', render: edit => (
         <div>
           <Button onClick={() => deleteProduct(edit.id)}>Xóa</Button>
