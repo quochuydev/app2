@@ -19,76 +19,40 @@ import './style.css'
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 
-function ProductForm(props) {
-  const { product, actions } = props;
+function CustomerForm(props) {
+  const { customer, actions } = props;
 
   let [customerUpdate, setCustomerUpdate] = useState({});
-  let [addressChange, setAddressChange] = useState({});
 
-  function onCustomerChange() {
+  useEffect(() => {
+    setCustomerUpdate(customer);
+  }, [customer])
 
+  function onCustomerChange(e) {
+    setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value })
   }
-  function onAddressChange() {
-
+  function onAddressChange(e) {
+    if (!customerUpdate.default_address) {
+      customerUpdate.default_address = {};
+    }
+    customerUpdate.default_address[e.target.name] = e.target.value;
+    setCustomerUpdate({ ...customerUpdate });
   }
-  function addCustomer() {
-
+  async function addCustomer(e) {
+    e.preventDefault();
+    try {
+      console.log(customerUpdate);
+      let action = customerUpdate.id ? 'updateCustomer' : 'addCustomer'
+      let result = await AdminServices[action](customerUpdate)
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
-  function onCustomerChangeField() {
-
+  function onCustomerChangeField(e, field) {
+    setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
-
-  const columns = [
-    {
-      title: 'Tên biến thể',
-      key: 'title',
-      render: edit => <div>
-        <Input name="title" />
-      </div>
-    },
-    {
-      title: 'Sku',
-      key: 'sku',
-      render: edit => <div>
-        <Input name="sku" />
-      </div>
-    },
-    {
-      title: 'Barcode',
-      key: 'barcode',
-      render: edit => <div>
-        <Input name="barcode" />
-      </div>
-    },
-    {
-      title: 'Giá bán',
-      key: 'price',
-      render: edit => <div>
-        <Input name="price" />
-      </div>
-    },
-    {
-      title: '',
-      key: 'option',
-      render: edit => <div>
-        <Button>X</Button>
-      </div>
-    },
-  ];
-
-  let [dataSource, setDataSource] = useState([])
-  let [count, setCount] = useState(0)
-  function handleAdd() {
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`,
-    };
-    setDataSource([...dataSource, newData])
-    setCount(count + 1)
-  };
 
   return (
     <Form onSubmit={addCustomer}>
@@ -178,12 +142,10 @@ function ProductForm(props) {
 }
 
 const mapStateToProps = state => ({
-  products: state.products.get('products'),
-  product: state.products.get('product'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(productActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerForm);

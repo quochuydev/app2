@@ -68,6 +68,11 @@ function Products(props) {
       )
     },
     {
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="magenta">{edit.total_orders}</Tag>
+      )
+    },
+    {
       title: 'Option', key: 'option', render: edit => (
         <div>
           <Button onClick={() => deleteProduct(edit.id)}>Xóa</Button>
@@ -200,7 +205,8 @@ function Products(props) {
               dataSource={record.variants} pagination={false} showHeader={false} />} />
         </Col>
         <Col span={24}>
-          <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage} />
+          <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage}
+            showTotal={total => <span>{total}</span>} />
         </Col>
 
       </Row>

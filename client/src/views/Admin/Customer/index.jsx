@@ -102,29 +102,16 @@ function Customer(props) {
   useEffect(() => {
     console.log(done)
     if (done && done.customer) {
-      try {
-        let result = null;
-        if (done.customer.id) {
-          AdminServices.updateCustomer(done.customer)
-            .then(result => {
-              message.success(result.message);
-            })
-            .catch(error => {
-              message.error(error.message);
-            })
-        } else {
-          AdminServices.addCustomer(done.customer)
-            .then(result => {
-              message.success(result.message);
-            })
-            .catch(error => {
-              console.log(error)
-              message.error(error.message);
-            })
-        }
-      } catch (error) {
-        message.error(error.message);
-      }
+      let action = done.customer.id ? 'updateCustomer' : 'addCustomer'
+      AdminServices[action](done.customer)
+        .then(result => {
+          actions.listCustomers(query);
+          setIsShowModal(false);
+          message.success(result.message);
+        })
+        .catch(error => {
+          message.error(error.message);
+        })
     }
   }, [done]);
 
