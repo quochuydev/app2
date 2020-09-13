@@ -21,6 +21,7 @@ const ShopSchema = new Schema({
   haravan: {
     id: { type: Number, default: null },
     shop: { type: String, default: null },
+    shop_id: { type: String, default: null },
     access_token: { type: String, default: null },
     is_test: { type: Boolean, default: false },
     status: { type: Number, default: 0 },

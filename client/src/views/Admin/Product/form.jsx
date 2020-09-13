@@ -22,20 +22,19 @@ import config from './../../../utils/config';
 function ProductForm(props) {
   const { product, actions } = props;
 
-  let [customerUpdate, setCustomerUpdate] = useState({});
-  let [addressChange, setAddressChange] = useState({});
+  let [productUpdate, setProductUpdate] = useState({});
 
-  function onCustomerChange() {
+  function onProductChange() {
 
   }
   function onAddressChange() {
 
   }
-  function addCustomer() {
+  function addProduct() {
 
   }
 
-  function onCustomerChangeField() {
+  function onProductChangeField() {
 
   }
 
@@ -91,7 +90,7 @@ function ProductForm(props) {
   };
 
   return (
-    <Form onSubmit={addCustomer}>
+    <Form onSubmit={addProduct}>
       <Row>
         <Col span={5}>
           <button className="btn-primary w-100" type="submit">Accept</button>

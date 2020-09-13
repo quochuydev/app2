@@ -23,20 +23,24 @@ function ProductForm(props) {
   const { product, actions } = props;
 
   let [customerUpdate, setCustomerUpdate] = useState({});
-  let [addressChange, setAddressChange] = useState({});
 
-  function onCustomerChange() {
-
+  function onCustomerChange(e) {
+    setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value })
   }
-  function onAddressChange() {
-
+  function onAddressChange(e) {
+    if (!customerUpdate.default_address) {
+      customerUpdate.default_address = {};
+    }
+    customerUpdate.default_address[e.target.name] = e.target.value;
+    setCustomerUpdate({ ...customerUpdate });
   }
-  function addCustomer() {
-
+  function addCustomer(e) {
+    e.preventDefault();
+    console.log(customerUpdate)
   }
 
-  function onCustomerChangeField() {
-
+  function onCustomerChangeField(e, field) {
+    setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
 
   const columns = [

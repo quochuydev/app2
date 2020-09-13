@@ -107,6 +107,8 @@ function Customer(props) {
         if (done.customer.id) {
           AdminServices.updateCustomer(done.customer)
             .then(result => {
+              actions.listCustomers(query);
+              setIsShowModal(false);
               message.success(result.message);
             })
             .catch(error => {
@@ -115,6 +117,8 @@ function Customer(props) {
         } else {
           AdminServices.addCustomer(done.customer)
             .then(result => {
+              actions.listCustomers(query);
+              setIsShowModal(false);
               message.success(result.message);
             })
             .catch(error => {
