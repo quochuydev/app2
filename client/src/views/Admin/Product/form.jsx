@@ -30,8 +30,9 @@ function ProductForm(props) {
   function onAddressChange() {
 
   }
-  function addProduct() {
-
+  function addProduct(e) {
+    e.preventDefault();
+    console.log(productUpdate);
   }
 
   function onProductChangeField() {

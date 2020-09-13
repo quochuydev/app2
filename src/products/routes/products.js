@@ -9,18 +9,22 @@ const router = ({ app }) => {
   app.post('/api/products/sync', sync);
   app.post('/api/products/list', list);
 
-  app.post('/api/products/create', function (req, res, next) {
-
-  });
-
   app.get('/api/products/:id', function (req, res, next) {
     getProduct({ product_id: req.params.id })
       .then(result => { res.json(result); })
       .catch(error => { next(error); })
   });
 
-  app.put('/api/products/:id', function (req, res, next) {
+  app.post('/api/products/create', function (req, res, next) {
+    create({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
 
+  app.put('/api/products/:id', function (req, res, next) {
+    update({ product_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
   });
 
   app.post('/api/products/import', uploadToDisk.single('file'), function (req, res, next) {
