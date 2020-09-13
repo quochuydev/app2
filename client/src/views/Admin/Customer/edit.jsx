@@ -22,7 +22,6 @@ import config from './../../../utils/config';
 function CustomerEdit(props) {
   const { customer, actions } = props;
   const { id } = useParams();
-  console.log(123, id);
 
   let [customerUpdate, setCustomerUpdate] = useState({});
 
@@ -31,7 +30,6 @@ function CustomerEdit(props) {
       actions.getCustomer(id);
     }
   }, [])
-
 
   useEffect(() => {
     if (customer && customer.id) {
