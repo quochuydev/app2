@@ -57,7 +57,6 @@ export function loadProducts(query) {
   }
 }
 
-
 export function getProduct(id) {
   return async (dispatch) => {
     try {

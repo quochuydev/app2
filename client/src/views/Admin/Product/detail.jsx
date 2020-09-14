@@ -41,9 +41,6 @@ function ProductDetail(props) {
 
   return (
     <div>
-      <div>
-        {productUpdate.id} {productUpdate.title}
-      </div>
       <ProductForm product={productUpdate} />
     </div>
   )

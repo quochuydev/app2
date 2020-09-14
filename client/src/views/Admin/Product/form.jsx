@@ -175,7 +175,6 @@ function ProductForm(props) {
                   <Table rowKey="id" bordered dataSource={dataSource} columns={columns}
                     pagination={false} size="small" />
                 </Col>
-
               </Row>
             </Tabs.TabPane>
           </Tabs>
