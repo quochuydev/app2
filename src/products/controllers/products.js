@@ -9,6 +9,7 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const config = require(path.resolve('./src/config/config'));
+const { ERR } = require(path.resolve('./src/core/lib/error.js'));
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
 
@@ -35,7 +36,7 @@ Controller.list = async (req, res) => {
   for (const product of products) {
     product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
   }
-  
+
   res.json({ error: false, count, products })
 }
 
@@ -51,8 +52,12 @@ Controller.getProduct = async function ({ product_id }) {
 Controller.create = async function ({ data }) {
   let result = {};
 
+  if (!data.title) {
+    throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
+  }
+
   if (!data.variants) {
-    throw { message: 'Chưa đủ thông tin sản phẩm' }
+    throw new ERR({ message: 'Chưa đủ thông tin sản phẩm' });
   } else {
     if (!data.variants.length) {
       throw { message: 'Chưa đủ thông tin sản phẩm' }
@@ -62,14 +67,6 @@ Controller.create = async function ({ data }) {
         throw { message: 'Chưa nhập tiêu đề biến thể' }
       }
     }
-  }
-
-  if (!data.title) {
-    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
-  }
-
-  if (!data.title) {
-    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
   }
 
   let product = makeDataProduct(data);
@@ -96,14 +93,11 @@ Controller.create = async function ({ data }) {
 Controller.update = async function ({ product_id, data }) {
   let result = {};
 
-  let found_product = await ProductModel.findOne({ id: product_id }).lean(true);
-  if (!found_product) {
-    throw { message: 'Sản phẩm không tồn tại' }
-  }
-
+  let found_product = await ProductModel._findOne({ id: product_id });
   let found_variants = await VariantModel.find({ product_id }).lean(true);
 
   result.product = await ProductModel.findOneAndUpdate({ id: product_id }, { $set: data }, { lean: true, new: true });
+  result.message = 'Cập nhật sản phẩm thành công!';
 
   return result;
 }
@@ -339,6 +333,7 @@ function makeDataVariant(item) {
     sku: item.sku,
     barcode: item.barcode,
     taxable: item.taxable,
+    title: [item.option1, item.option2, item.option3].join(' / '),
     option1: item.option1,
     option2: item.option2,
     option3: item.option3,

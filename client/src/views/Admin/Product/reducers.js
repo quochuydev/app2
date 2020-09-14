@@ -4,13 +4,16 @@ const initialState = Map({
   total: 0,
   products: [],
   product: {},
-  searchProducts: []
+  searchProducts: [],
+  productUpdate: {}
 });
 
 function ProductsReducer(state = initialState, { type, payload }) {
   switch (type) {
     case 'MERGE':
     case 'LOAD_PRODUCTS_SUCCESS':
+      return state.merge({ ...payload });
+    case 'REFRESH_PRODUCT':
       return state.merge({ ...payload });
     case 'SEARCH':
       return state.merge({ searchProducts: payload.products });

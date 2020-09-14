@@ -44,7 +44,7 @@ function ProductDetail(props) {
       <div>
         {productUpdate.id} {productUpdate.title}
       </div>
-      <ProductForm />
+      <ProductForm product={productUpdate} />
     </div>
   )
 }

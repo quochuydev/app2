@@ -160,6 +160,14 @@ async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
 
+async function createProduct(data) {
+  return await ApiClient.postData(`${URLS.CREATE_PRODUCT}`, null, data);
+}
+
+async function updateProduct(data) {
+  return await ApiClient.putData(`${URLS.UPDATE_PRODUCT}/${data.id}`, null, data);
+}
+
 async function exportProducts() {
   return await ApiClient.postData(URLS.EXPORT_PRODUCTS, null, null);
 }
@@ -186,6 +194,6 @@ export default {
   getOrderDetail, createOrder, updateOrder, updateNoteOrder, payOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct,
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   login, changeShop, getUser,
 }

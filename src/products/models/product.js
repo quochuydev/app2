@@ -40,6 +40,15 @@ const ProductSchema = new Schema({
 ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'number', startAt: 10000, incrementBy: 1 });
 ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'id', startAt: 10000, incrementBy: 1 });
 
+ProductSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  let data = await this.findOne(filter, populate, options);
+  if (!data) {
+    throw { message: 'Sản phẩm không còn tồn tại' }
+  }
+  return data;
+}
+
 ProductSchema.statics._create = async function (data = {}) {
   let _this = this;
   data.shop_id = cache.get('shop_id');

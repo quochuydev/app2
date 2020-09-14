@@ -103,7 +103,6 @@ function Customer(props) {
 
   useEffect(() => {
     setOrder({ gateway_code: 'cod' });
-
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -215,6 +214,7 @@ function Customer(props) {
   }
   function handleSubmit(e) {
     e.preventDefault();
+    setOrder({ carrier_cod_status_code: 'codreceipt' });
     AdminServices.createOrder(order)
       .then(result => {
         console.log(result);

@@ -80,7 +80,8 @@ const OrderSchema = new Schema({
   custom_total_shipping_price: { type: Number, default: 0 },
   total_pay: { type: Number, default: 0 },
   total_refund: { type: Number, default: 0 },
-
+  
+  carrier_cod_status_code: { type: String, default: null },
   financial_status: { type: String, default: null },
   fulfillment_status: { type: String, default: null },
   gateway_code: { type: String, default: null },
