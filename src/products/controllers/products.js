@@ -140,8 +140,10 @@ Controller.update = async function ({ product_id, data }) {
     newVariant = newVariant.toJSON();
     newVariants.push(newVariant);
   }
-  
-  result.product = await ProductModel._update({ id: product_id }, { $set: { variants: [...newVariants, ...updateVariants] } });
+
+  let product = makeDataProduct(data);
+  product.variants = [...newVariants, ...updateVariants];
+  result.product = await ProductModel._update({ id: product_id }, { $set: product });
   result.message = 'Cập nhật sản phẩm thành công!';
 
   return result;

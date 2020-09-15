@@ -16,6 +16,7 @@ const ProductSchema = new Schema({
   updated_at: { type: Date, default: null },
   handle: { type: String, default: null },
   images: [],
+  options: [],
   product_type: { type: String, default: null },
   tags: { type: String, default: null },
   title: { type: String, default: null },

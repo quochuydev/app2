@@ -66,7 +66,7 @@ function ProductForm(props) {
   const columns = [
     {
       title: (
-        <Select value={'Chất liệu'} name="option_1">
+        <Select value={'Chất liệu'} name="option_1" onChange={e => onProductChange(e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>
@@ -77,7 +77,7 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={'Kích thước'} name="option_2">
+        <Select value={'Kích thước'} name="option_2" onChange={e => onProductChange(e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>
@@ -88,7 +88,7 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={'Màu sắc'} name="option_3">
+        <Select value={'Màu sắc'} name="option_3" onChange={e => onProductChange(e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>
@@ -117,12 +117,6 @@ function ProductForm(props) {
       title: 'Giá so sánh', key: 'compare_at_price', render: edit =>
         <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.compare_at_price}
           onValueChange={e => { }} />
-    },
-    {
-      title: 'is_deleted', key: 'is_deleted', visible: false, render: edit => <div>
-        is_deleted: {edit.is_deleted ? 'abc' : 'xyz'} +
-        variant_id: {edit.id}
-      </div>
     },
     {
       title: '', key: 'option', render: edit => <div>
