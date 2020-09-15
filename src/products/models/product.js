@@ -30,6 +30,9 @@ const ProductSchema = new Schema({
     barcode: { type: String, default: null },
     title: { type: String, default: null },
     compare_at_price: { type: Number, default: null },
+    option1: { type: String, default: null },
+    option2: { type: String, default: null },
+    option3: { type: String, default: null },
     created_at: { type: Date, default: null },
     updated_at: { type: Date, default: null }
   }],

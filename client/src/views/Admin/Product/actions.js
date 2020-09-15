@@ -9,11 +9,11 @@ export const ACTIONS = {
   BUILD_LINK_MOMO_FAILED: 'BUILD_LINK_MOMO_FAILED'
 };
 
-export function setProduct(data) {
+export function setProduct(product) {
   return function (dispatch) {
     dispatch({
       type: 'REFRESH_PRODUCT', payload: {
-        error: false, message: 'Merge success', ...data
+        error: false, message: 'Merge success', product
       }
     });
   }

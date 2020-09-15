@@ -42,10 +42,7 @@ Controller.list = async (req, res) => {
 
 Controller.getProduct = async function ({ product_id }) {
   let result = {}
-  result.product = await ProductModel.findOne({ id: product_id }).lean(true);
-  if (!result.product) {
-    throw { message: 'Sản phẩm không tồn tại' }
-  }
+  result.product = await ProductModel._findOne({ id: product_id });
   return result;
 }
 
@@ -55,16 +52,21 @@ Controller.create = async function ({ data }) {
   if (!data.title) {
     throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
   }
-
   if (!data.variants) {
-    throw new ERR({ message: 'Chưa đủ thông tin sản phẩm' });
+    throw new ERR({ message: 'Chưa đủ thông tin biến thể' });
   } else {
     if (!data.variants.length) {
-      throw { message: 'Chưa đủ thông tin sản phẩm' }
+      throw { message: 'Chưa đủ thông tin biến thể' }
     }
     for (const variant of data.variants) {
-      if (!variant.title) {
-        throw { message: 'Chưa nhập tiêu đề biến thể' }
+      if (!variant.option1) {
+        throw { message: 'Chưa nhập cấu hình 1 biến thể' }
+      }
+      if (!variant.option2) {
+        throw { message: 'Chưa nhập cấu hình 2 biến thể' }
+      }
+      if (!variant.option3) {
+        throw { message: 'Chưa nhập cấu hình 3 biến thể' }
       }
     }
   }
@@ -92,6 +94,31 @@ Controller.create = async function ({ data }) {
 
 Controller.update = async function ({ product_id, data }) {
   let result = {};
+
+
+  if (!data.title) {
+    throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
+  }
+  if (!data.variants) {
+    throw new ERR({ message: 'Chưa đủ thông tin biến thể' });
+  } else {
+    if (!data.variants.length) {
+      throw { message: 'Chưa đủ thông tin biến thể' }
+    }
+    for (const variant of data.variants) {
+      if (!variant.option1) {
+        throw { message: 'Chưa nhập cấu hình 1 biến thể' }
+      }
+      if (!variant.option2) {
+        throw { message: 'Chưa nhập cấu hình 2 biến thể' }
+      }
+      if (!variant.option3) {
+        throw { message: 'Chưa nhập cấu hình 3 biến thể' }
+      }
+    }
+  }
+
+  let update_variants = {}
 
   let found_product = await ProductModel._findOne({ id: product_id });
   let found_variants = await VariantModel.find({ product_id }).lean(true);

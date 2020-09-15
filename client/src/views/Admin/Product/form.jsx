@@ -24,28 +24,22 @@ import config from './../../../utils/config';
 let { Option } = Select;
 
 function ProductForm(props) {
-  const { product, actions } = props;
-
-  let [productUpdate, setProductUpdate] = useState({});
-  let [dataSource, setDataSource] = useState([])
+  const { product, productUpdate, actions } = props;
+  let setProduct = actions.setProduct;
 
   useEffect(() => {
-    console.log(product)
+    console.log(product);
     if (product) {
-      setProductUpdate(product);
       if (product && product.variants) {
-        setDataSource(product.variants)
+        setProduct({ variants: product.variants })
       }
     }
-  }, [product])
+  }, [product]);
 
   function onProductChange(e) {
-    setProductUpdate({ ...productUpdate, [e.target.name]: e.target.value });
+    setProduct({ [e.target.name]: e.target.value });
   }
 
-  function onVariantChange() {
-
-  }
   async function addProduct(e) {
     e.preventDefault();
     console.log(productUpdate);
@@ -58,50 +52,57 @@ function ProductForm(props) {
     }
   }
 
-  function onProductChangeField() {
-
-  }
-
-  function onVariantChange(e) {
-    console.log(e.target.name, e.target.value)
+  function onVariantChange(e, id) {
+    let index = productUpdate.variants.findIndex(e => e.id == id)
+    if (index != -1) {
+      productUpdate.variants[index][e.target.name] = e.target.value;
+    }
+    setProduct({ variants: productUpdate.variants });
+    return;
   }
 
   const columns = [
     {
       title: (
-        <Select value={'Chất liệu'}>
+        <Select value={'Chất liệu'} name="option_1">
           <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
         </Select>
-      ), key: 'option_1', render: edit => <div>
-        <Input name="title" value={edit.title} onChange={onVariantChange} />
+      ), key: 'option1', render: (edit, index) => <div>
+        <Input name="option1" value={edit.option1} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
       title: (
-        <Select value={'Chất liệu'}>
+        <Select value={'Kích thước'} name="option_2">
           <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
         </Select>
       ), key: 'option2', render: edit => <div>
-        <Input name="title" value={edit.title} onChange={onVariantChange} />
+        <Input name="option2" value={edit.option2} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
       title: (
-        <Select value={'Chất liệu'}>
+        <Select value={'Màu sắc'} name="option_3">
           <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
         </Select>
       ), key: 'option3', render: edit => <div>
-        <Input name="title" value={edit.title} onChange={onVariantChange} />
+        <Input name="option3" value={edit.option3} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
       title: 'Sku', key: 'sku', render: edit => <div>
-        <Input name="sku" value={edit.sku} onChange={onVariantChange} />
+        <Input name="sku" value={edit.sku} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
       title: 'Barcode', key: 'barcode', render: edit => <div>
-        <Input name="barcode" value={edit.barcode} onChange={onVariantChange} />
+        <Input name="barcode" value={edit.barcode} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
@@ -135,8 +136,8 @@ function ProductForm(props) {
       price: 0,
       compare_at_price: 0,
     };
-    setDataSource([...dataSource, newVariant])
-    setCount(count + 1)
+    setProduct({ variants: [...productUpdate.variants, newVariant] });
+    setCount(count + 1);
   };
 
   return (
@@ -146,7 +147,7 @@ function ProductForm(props) {
           <button className="btn-primary w-100" type="submit">Accept</button>
         </Col>
         <Col xs={24} lg={24}>
-          <Form.Item label="Tên sản phẩm" onChange={onProductChange}>
+          <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
             <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
           </Form.Item>
         </Col>
@@ -172,7 +173,7 @@ function ProductForm(props) {
                 <Col span={24}>
                   <Button onClick={() => handleAdd()} type="primary"
                     style={{ marginBottom: 16 }}>Add a row</Button>
-                  <Table rowKey="id" bordered dataSource={dataSource} columns={columns}
+                  <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
                     pagination={false} size="small" />
                 </Col>
               </Row>
@@ -185,7 +186,7 @@ function ProductForm(props) {
 }
 
 const mapStateToProps = state => ({
-
+  productUpdate: state.products.get('productUpdate'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
