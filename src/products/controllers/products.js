@@ -125,7 +125,23 @@ Controller.update = async function ({ product_id, data }) {
 
   let found_product = await ProductModel._findOne({ id: product_id });
 
-  result.product = await ProductModel.findOneAndUpdate({ id: product_id }, { $set: data }, { lean: true, new: true });
+  let updateVariants = [];
+  update_variants = makeDataVariants(update_variants);
+  for (const variant of update_variants) {
+    let updateVariant = await VariantModel._findOneAndUpdate({ product_id }, variant);
+    updateVariants.push(updateVariant);
+  }
+
+  let newVariants = [];
+  let variants = makeDataVariants(create_variants);
+  for (const variant of variants) {
+    variant.product_id = product_id;
+    let newVariant = await VariantModel._create(variant);
+    newVariant = newVariant.toJSON();
+    newVariants.push(newVariant);
+  }
+  
+  result.product = await ProductModel._update({ id: product_id }, { $set: { variants: [...newVariants, ...updateVariants] } });
   result.message = 'Cập nhật sản phẩm thành công!';
 
   return result;

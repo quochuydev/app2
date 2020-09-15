@@ -16,6 +16,9 @@ const VariantSchema = new Schema({
   barcode: { type: String, default: null },
   title: { type: String, default: null },
   compare_at_price: { type: Number, default: null },
+  option1: { type: String, default: null },
+  option2: { type: String, default: null },
+  option3: { type: String, default: null },
   image: {
     id: { type: Number, default: null },
     src: { type: String, default: null },
@@ -40,8 +43,15 @@ VariantSchema.statics._create = async function (data = {}) {
 
 VariantSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  let data = await _this.update({ ...filter, shop_id }, data_update, option);
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.update(filter, data_update, option);
+  return data;
+}
+
+VariantSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;
 }
 

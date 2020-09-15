@@ -30,7 +30,7 @@ function ProductForm(props) {
   useEffect(() => {
     console.log(product);
     if (product) {
-      setProduct(product);
+      setProduct(product)
     }
   }, [product]);
 
@@ -60,7 +60,7 @@ function ProductForm(props) {
   }
 
   function removeVariant(id) {
-    setProduct({ variants: productUpdate.variants.filter(e => e.id != id) });
+    setProduct({ variants: productUpdate.variants.filter(e =>e.id != id) });
   }
 
   const columns = [
@@ -120,7 +120,7 @@ function ProductForm(props) {
     },
     {
       title: 'is_deleted', key: 'is_deleted', visible: false, render: edit => <div>
-        is_deleted: {edit.is_deleted ? 'abc' : 'xyz'} +
+        is_deleted: {edit.is_deleted ? 'abc' : 'xyz'} ---
         variant_id: {edit.id}
       </div>
     },
