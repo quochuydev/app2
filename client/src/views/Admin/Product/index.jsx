@@ -194,7 +194,9 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          <Button href="product/create">Thêm sản phẩm</Button>
+          <Link to={`product/create`}>
+            <Button>Thêm khách hàng</Button>
+          </Link>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
