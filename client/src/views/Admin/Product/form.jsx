@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 import CurrencyFormat from 'react-currency-format';
 import NumberFormat from 'react-number-format';
 
@@ -35,7 +36,12 @@ function ProductForm(props) {
   }, [product]);
 
   function onProductChange(e) {
+    console.log(e)
     setProduct({ [e.target.name]: e.target.value });
+  }
+
+  function onChangeField(name, value) {
+    setProduct({ [name]: value });
   }
 
   async function addProduct(e) {
@@ -66,7 +72,7 @@ function ProductForm(props) {
   const columns = [
     {
       title: (
-        <Select value={'Chất liệu'} name="option_1" onChange={e => onProductChange(e)}>
+        <Select value={_.get(productUpdate, 'option_1')} name="option_1" onChange={e => onChangeField('option_1', e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>
@@ -77,7 +83,7 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={'Kích thước'} name="option_2" onChange={e => onProductChange(e)}>
+        <Select value={_.get(productUpdate, 'option_2')} name="option_2" onChange={e => onChangeField('option_2', e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>
@@ -88,7 +94,7 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={'Màu sắc'} name="option_3" onChange={e => onProductChange(e)}>
+        <Select value={_.get(productUpdate, 'option_3')} name="option_3" onChange={e => onChangeField('option_3', e)}>
           <Option value={'Chất liệu'}>Chất liệu</Option>
           <Option value={'Kích thước'}>Kích thước</Option>
           <Option value={'Màu sắc'}>Màu sắc</Option>

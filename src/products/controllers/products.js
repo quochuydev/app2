@@ -343,6 +343,9 @@ function makeDataProduct(item) {
     tags: item.tags,
     vendor: item.vendor,
     not_allow_promotion: item.not_allow_promotion,
+    option_1: item.option_1,
+    option_2: item.option_2,
+    option_3: item.option_3,
     options: [{
       position: 1,
       name: item.option_1
