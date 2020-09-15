@@ -3,6 +3,7 @@ const path = require('path');
 const {
   list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, deleteVariant
 } = require('../controllers/products');
+const VariantController = require('../controllers/variant');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
@@ -56,6 +57,18 @@ const router = ({ app }) => {
       .then(result => res.json(result))
       .catch(error => next(error));
   });
+
+  app.post('/api/products/:id/variants', function (req, res, next) {
+    VariantController.create({ product_id: req.params.id })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
+
+  app.put('/api/products/:id/variants/:variant_id', function (req, res, next) {
+    VariantController.update({ product_id: req.params.id, variant_id: req.params.variant_id })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
 
 
 }

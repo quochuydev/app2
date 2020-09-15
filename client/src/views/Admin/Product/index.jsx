@@ -195,7 +195,7 @@ function Products(props) {
 
         <Col span={24}>
           <Link to={`product/create`}>
-            <Button>Thêm khách hàng</Button>
+            <Button>Thêm sản phẩm</Button>
           </Link>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>

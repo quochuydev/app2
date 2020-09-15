@@ -21,6 +21,7 @@ import './style.css'
 
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
+import VariantDetail from './Variant/detail'
 
 let { Option } = Select;
 
@@ -29,7 +30,6 @@ function ProductForm(props) {
   let setProduct = actions.setProduct;
 
   useEffect(() => {
-    console.log(product);
     if (product) {
       setProduct(product);
     }
@@ -126,70 +126,67 @@ function ProductForm(props) {
     },
     {
       title: '', key: 'option', render: edit => <div>
-        <Button onClick={e => removeVariant(edit.id)}>X [{edit.id} {edit.isNew ? 'new' : 'old'}]</Button>
+        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit })}>update [{edit.id}</Button>
+        <Button onClick={e => removeVariant(edit.id)}>X {edit.isNew ? 'new' : 'old'}]</Button>
       </div>
     },
   ];
 
-  let [count, setCount] = useState(0)
-  function handleAdd() {
-    const newVariant = {
-      id: count,
-      isNew: true,
-      option1: ``,
-      option2: ``,
-      option3: ``,
-      sku: '',
-      barcode: ``,
-      price: 0,
-      compare_at_price: 0,
-    };
-    setProduct({ variants: [...productUpdate.variants, newVariant] });
-    setCount(count + 1);
-  };
+  const [showVariantModel, setShowVariantModel] = useState(false);
+  const [variantModel, setVariantModel] = useState(null);
+
+  function onShowVariant({ product, variant = {} }) {
+    variant.product_id = product.id;
+    setVariantModel(variant);
+    setShowVariantModel(true);
+  }
 
   return (
-    <Form onSubmit={addProduct}>
-      <Row>
-        <Col span={5}>
-          <button className="btn-primary w-100" type="submit">Accept</button>
-        </Col>
-        <Col xs={24} lg={24}>
-          <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
-            <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
-            <Select value={1} >
-              <Select.Option value={1}>Mới</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
-            <Select value={1} >
-              <Select.Option value={1}>Mới</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
+    <div>
+      <Form onSubmit={addProduct}>
+        <Row>
+          <Col span={5}>
+            <button className="btn-primary w-100" type="submit">Accept</button>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
+              <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
 
-        <Col xs={24} lg={24}>
-          <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="Địa chỉ" key="1">
-              <Row gutter={10}>
-                <Col span={24}>
-                  <Button onClick={() => handleAdd()} type="primary"
-                    style={{ marginBottom: 16 }}>Add a row</Button>
-                  <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
-                    pagination={false} size="small" />
-                </Col>
-              </Row>
-            </Tabs.TabPane>
-          </Tabs>
-        </Col>
-      </Row>
-    </Form>
+          <Col xs={24} lg={24}>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Địa chỉ" key="1">
+                <Row gutter={10}>
+                  <Col span={24}>
+                    <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button>
+                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                      pagination={false} size="small" />
+                  </Col>
+                </Row>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+        </Row>
+      </Form>
+      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdatel={variantModel}
+        showVariantModel={showVariantModel} />
+    </div>
   )
 }
 

@@ -28,6 +28,9 @@ const URLS = {
   EXPORT_PRODUCTS: 'api/products/export',
   DELETE_PRODUCT: 'api/products/delete',
 
+  CREATE_VARIANT: 'api/products/{id}/variants',
+  UPDATE_VARIANT: 'api/products/{id}/variants/{variant_id}',
+
   LIST_STAFFS: 'api/staffs',
 
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
@@ -176,6 +179,16 @@ async function deleteProduct(id) {
   return await ApiClient.deleteData(`${URLS.DELETE_PRODUCT}/${id}`, null, null);
 }
 
+async function createVariant(data) {
+  let url = compile(URLS.CREATE_VARIANT, { id: data.product_id });
+  return await ApiClient.postData(url, null, data);
+}
+
+async function updateVariant(data) {
+  let url = compile(URLS.UPDATE_VARIANT, { id: data.product_id, variant_id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -195,5 +208,6 @@ export default {
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
+  createVariant, updateVariant,
   login, changeShop, getUser,
 }
