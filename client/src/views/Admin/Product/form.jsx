@@ -61,6 +61,10 @@ function ProductForm(props) {
     return;
   }
 
+  function removeVariant(id) {
+    setProduct({ variants: productUpdate.variants.filter(e =>e.id != id) });
+  }
+
   const columns = [
     {
       title: (
@@ -117,8 +121,14 @@ function ProductForm(props) {
           onValueChange={e => { }} />
     },
     {
+      title: 'is_deleted', key: 'is_deleted', visible: false, render: edit => <div>
+        is_deleted: {edit.is_deleted ? 'abc' : 'xyz'} ---
+        variant_id: {edit.id}
+      </div>
+    },
+    {
       title: '', key: 'option', render: edit => <div>
-        <Button>X [{edit.id} {edit.isNew ? 'new' : 'old'}]</Button>
+        <Button onClick={e => removeVariant(edit.id)}>X [{edit.id} {edit.isNew ? 'new' : 'old'}]</Button>
       </div>
     },
   ];

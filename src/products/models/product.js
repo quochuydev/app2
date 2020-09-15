@@ -10,7 +10,6 @@ const cache = require('memory-cache');
 
 const ProductSchema = new Schema({
   number: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
   type: { type: String, default: 'app' },
   id: { type: String, default: null },
   created_at: { type: Date, default: Date.now },
@@ -36,6 +35,8 @@ const ProductSchema = new Schema({
     created_at: { type: Date, default: null },
     updated_at: { type: Date, default: null }
   }],
+  is_deleted: { type: Boolean, default: false },
+  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })

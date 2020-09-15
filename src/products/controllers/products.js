@@ -88,6 +88,7 @@ Controller.create = async function ({ data }) {
 
   result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
   result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
+  result.message = 'Thêm sản phẩm thành công!';
 
   return result;
 }
@@ -118,10 +119,11 @@ Controller.update = async function ({ product_id, data }) {
     }
   }
 
-  let update_variants = {}
+  let found_variants = await VariantModel.find({ product_id }).lean(true);
+  let update_variants = data.variants.filter(e => !(e.isNew));
+  let create_variants = data.variants.filter(e => !!(e.isNew));
 
   let found_product = await ProductModel._findOne({ id: product_id });
-  let found_variants = await VariantModel.find({ product_id }).lean(true);
 
   result.product = await ProductModel.findOneAndUpdate({ id: product_id }, { $set: data }, { lean: true, new: true });
   result.message = 'Cập nhật sản phẩm thành công!';

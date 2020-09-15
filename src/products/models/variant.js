@@ -23,6 +23,7 @@ const VariantSchema = new Schema({
     created_at: { type: Date, default: null },
     updated_at: { type: Date, default: null },
   },
+  is_deleted: { type: Boolean, default: false },
   shop_id: { type: Number, default: null },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: null },

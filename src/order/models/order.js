@@ -10,8 +10,7 @@ autoIncrement.initialize(mongoose.connection);
 
 const OrderSchema = new Schema({
   number: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
-
+  order_number: { type: String, default: null },
   type: { type: String, default: null },
   id: { type: String, default: null },
   code: { type: String, default: null },
@@ -94,6 +93,8 @@ const OrderSchema = new Schema({
   attributes: [],
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
+  shop_id: { type: Number, default: null },
+  is_deleted: { type: Boolean, default: false },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
