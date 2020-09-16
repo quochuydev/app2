@@ -3,6 +3,8 @@ import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Link } from "react-router-dom";
+
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
@@ -35,7 +37,9 @@ function Customer(props) {
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <span><a href={`customer/${edit.id}`}>{edit.number}</a></span>
+        <Link to={`customer/${edit.id}`}>
+          {edit.number}
+        </Link>
       )
     },
     {
@@ -192,8 +196,9 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => onShowCreate()}>Thêm khách hàng</Button>
-          <Button href={'customer/create'}>Thêm khách hàng detail</Button>
+          <Link to={`customer/create`}>
+            <Button>Thêm khách hàng</Button>
+          </Link>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>

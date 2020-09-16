@@ -9,6 +9,16 @@ export const ACTIONS = {
   BUILD_LINK_MOMO_FAILED: 'BUILD_LINK_MOMO_FAILED'
 };
 
+export function setProduct(product) {
+  return function (dispatch) {
+    dispatch({
+      type: 'REFRESH_PRODUCT', payload: {
+        error: false, message: 'Merge success', product
+      }
+    });
+  }
+}
+
 export function merge(data) {
   return function (dispatch) {
     dispatch({
@@ -46,7 +56,6 @@ export function loadProducts(query) {
     }
   }
 }
-
 
 export function getProduct(id) {
   return async (dispatch) => {

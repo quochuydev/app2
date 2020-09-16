@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
+import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 
 import * as productActions from './actions';
 
@@ -18,129 +21,176 @@ import './style.css'
 
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
+import VariantDetail from './Variant/detail'
+
+let { Option } = Select;
 
 function ProductForm(props) {
-  const { product, actions } = props;
+  const { product, productUpdate, actions } = props;
+  let setProduct = actions.setProduct;
 
-  let [productUpdate, setProductUpdate] = useState({});
+  useEffect(() => {
+    if (product) {
+      setProduct(product);
+    }
+  }, [product]);
 
-  function onProductChange() {
-
+  function onProductChange(e) {
+    console.log(e)
+    setProduct({ [e.target.name]: e.target.value });
   }
-  function onAddressChange() {
 
+  function onChangeField(name, value) {
+    setProduct({ [name]: value });
   }
-  function addProduct(e) {
+
+  async function addProduct(e) {
     e.preventDefault();
     console.log(productUpdate);
+    try {
+      let action = productUpdate.id ? 'updateProduct' : 'createProduct'
+      let result = await AdminServices[action](productUpdate)
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
-  function onProductChangeField() {
+  function onVariantChange(e, id) {
+    let index = productUpdate.variants.findIndex(e => e.id == id)
+    if (index != -1) {
+      productUpdate.variants[index][e.target.name] = e.target.value;
+    }
+    setProduct({ variants: productUpdate.variants });
+    return;
+  }
 
+  function removeVariant(id) {
+    setProduct({ variants: productUpdate.variants.filter(e => e.id != id) });
   }
 
   const columns = [
     {
-      title: 'Tên biến thể',
-      key: 'title',
-      render: edit => <div>
-        <Input name="title" />
+      title: (
+        <Select value={_.get(productUpdate, 'option_1')} name="option_1" onChange={e => onChangeField('option_1', e)}>
+          <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
+        </Select>
+      ), key: 'option1', render: (edit, index) => <div>
+        <Input name="option1" value={edit.option1} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
-      title: 'Sku',
-      key: 'sku',
-      render: edit => <div>
-        <Input name="sku" />
+      title: (
+        <Select value={_.get(productUpdate, 'option_2')} name="option_2" onChange={e => onChangeField('option_2', e)}>
+          <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
+        </Select>
+      ), key: 'option2', render: edit => <div>
+        <Input name="option2" value={edit.option2} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
-      title: 'Barcode',
-      key: 'barcode',
-      render: edit => <div>
-        <Input name="barcode" />
+      title: (
+        <Select value={_.get(productUpdate, 'option_3')} name="option_3" onChange={e => onChangeField('option_3', e)}>
+          <Option value={'Chất liệu'}>Chất liệu</Option>
+          <Option value={'Kích thước'}>Kích thước</Option>
+          <Option value={'Màu sắc'}>Màu sắc</Option>
+        </Select>
+      ), key: 'option3', render: edit => <div>
+        <Input name="option3" value={edit.option3} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
-      title: 'Giá bán',
-      key: 'price',
-      render: edit => <div>
-        <Input name="price" />
+      title: 'Sku', key: 'sku', render: edit => <div>
+        <Input name="sku" value={edit.sku} onChange={e => onVariantChange(e, edit.id)} />
       </div>
     },
     {
-      title: '',
-      key: 'option',
-      render: edit => <div>
-        <Button>X</Button>
+      title: 'Barcode', key: 'barcode', render: edit => <div>
+        <Input name="barcode" value={edit.barcode} onChange={e => onVariantChange(e, edit.id)} />
+      </div>
+    },
+    {
+      title: 'Giá bán', key: 'price', render: edit =>
+        <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.price}
+          onValueChange={e => { }} style={{ textAlign: 'right' }} />
+    },
+    {
+      title: 'Giá so sánh', key: 'compare_at_price', render: edit =>
+        <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.compare_at_price}
+          onValueChange={e => { }} style={{ textAlign: 'right' }} />
+    },
+    {
+      title: '', key: 'option', render: edit => <div>
+        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit })}>update [{edit.id}</Button>
+        <Button onClick={e => removeVariant(edit.id)}>X {edit.isNew ? 'new' : 'old'}]</Button>
       </div>
     },
   ];
 
-  let [dataSource, setDataSource] = useState([])
-  let [count, setCount] = useState(0)
-  function handleAdd() {
-    const newData = {
-      key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`,
-    };
-    setDataSource([...dataSource, newData])
-    setCount(count + 1)
-  };
+  const [showVariantModel, setShowVariantModel] = useState(false);
+  const [variantModel, setVariantModel] = useState(null);
+
+  function onShowVariant({ product, variant = {} }) {
+    variant.product_id = product.id;
+    setVariantModel(variant);
+    setShowVariantModel(true);
+  }
 
   return (
-    <Form onSubmit={addProduct}>
-      <Row>
-        <Col span={5}>
-          <button className="btn-primary w-100" type="submit">Accept</button>
-        </Col>
-        <Col xs={24} lg={24}>
-          <Form.Item label="Tên sản phẩm">
-            <Input name="title" placeholder="input placeholder" value={product.title} />
-          </Form.Item>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Form.Item label={'Nhà sản xuất'} onChange={onAddressChange}>
-            <Select value={1} >
-              <Select.Option value={1}>Mới</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Form.Item label={'Nhóm sản phẩm'} onChange={onAddressChange}>
-            <Select value={1} >
-              <Select.Option value={1}>Mới</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
+    <div>
+      <Form onSubmit={addProduct}>
+        <Row>
+          <Col span={5}>
+            <button className="btn-primary w-100" type="submit">Accept</button>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
+              <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
 
-        <Col xs={24} lg={24}>
-          <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="Địa chỉ" key="1">
-              <Row gutter={10}>
-                <Col span={24}>
-                  <Button onClick={() => handleAdd()} type="primary"
-                    style={{ marginBottom: 16 }}>Add a row</Button>
-                  <Table
-                    rowClassName={() => 'editable-row'} bordered dataSource={dataSource}
-                    columns={columns} pagination={false} size="small"
-                  />
-                </Col>
-
-              </Row>
-            </Tabs.TabPane>
-          </Tabs>
-        </Col>
-      </Row>
-    </Form>
+          <Col xs={24} lg={24}>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Địa chỉ" key="1">
+                <Row gutter={10}>
+                  <Col span={24}>
+                    <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button>
+                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                      pagination={false} size="small" />
+                  </Col>
+                </Row>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+        </Row>
+      </Form>
+      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdatel={variantModel}
+        showVariantModel={showVariantModel} />
+    </div>
   )
 }
 
 const mapStateToProps = state => ({
-  products: state.products.get('products'),
-  product: state.products.get('product'),
+  productUpdate: state.products.get('productUpdate'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

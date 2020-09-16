@@ -74,6 +74,15 @@ function Orders(props) {
         return ''
     }
   }
+  
+  function textCarrierCod(code) {
+    switch (code) {
+      case 'codreceipt':
+        return 'Đã nhận';
+      default:
+        return ''
+    }
+  }
 
   function cssGateway(code) {
     switch (code) {
@@ -103,17 +112,17 @@ function Orders(props) {
     },
     {
       title: 'Thanh toán', key: 'financial_status', render: edit => (
-        <div>{textFinancial(edit.financial_status)}</div>
+        <Tag color={"blue"}>{textFinancial(edit.financial_status)}</Tag>
       )
     },
     {
       title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
-        <div>{edit.fulfillment_status}</div>
+        <Tag color={"blue"}>{edit.fulfillment_status}</Tag>
       )
     },
     {
-      title: 'COD', key: 'gateway_code', render: edit => (
-        <div>{textGateway(edit.gateway_code)}</div>
+      title: 'COD', key: 'carrier_cod_status_code', render: edit => (
+        <Tag color={"blue"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {
@@ -203,11 +212,11 @@ function Orders(props) {
               <div>
                 <p>Content</p>
                 <Select value={1} className="block">
-                  <Option value={1}>Trạng thái đơn hàng</Option>
+                  <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
                 </Select>
                 <p>Content</p>
                 <Select value={1} className="block">
-                  <Option value={1}>Mới</Option>
+                  <Select.Option value={1}>Mới</Select.Option>
                 </Select>
                 <br />
                 <Button>Hủy</Button>

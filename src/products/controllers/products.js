@@ -9,6 +9,11 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const config = require(path.resolve('./src/config/config'));
+const { ERR } = require(path.resolve('./src/core/lib/error.js'));
+
+const {
+  makeDataProduct, makeDataVariant, makeDataVariants
+} = require('../business/make-data');
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
 
@@ -35,41 +40,39 @@ Controller.list = async (req, res) => {
   for (const product of products) {
     product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
   }
-  
+
   res.json({ error: false, count, products })
 }
 
 Controller.getProduct = async function ({ product_id }) {
   let result = {}
-  result.product = await ProductModel.findOne({ id: product_id }).lean(true);
-  if (!result.product) {
-    throw { message: 'Sản phẩm không tồn tại' }
-  }
+  result.product = await ProductModel._findOne({ id: product_id });
   return result;
 }
 
 Controller.create = async function ({ data }) {
   let result = {};
 
+  if (!data.title) {
+    throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
+  }
   if (!data.variants) {
-    throw { message: 'Chưa đủ thông tin sản phẩm' }
+    throw new ERR({ message: 'Chưa đủ thông tin biến thể' });
   } else {
     if (!data.variants.length) {
-      throw { message: 'Chưa đủ thông tin sản phẩm' }
+      throw { message: 'Chưa đủ thông tin biến thể' }
     }
     for (const variant of data.variants) {
-      if (!variant.title) {
-        throw { message: 'Chưa nhập tiêu đề biến thể' }
+      if (!variant.option1) {
+        throw { message: 'Chưa nhập cấu hình 1 biến thể' }
+      }
+      if (!variant.option2) {
+        throw { message: 'Chưa nhập cấu hình 2 biến thể' }
+      }
+      if (!variant.option3) {
+        throw { message: 'Chưa nhập cấu hình 3 biến thể' }
       }
     }
-  }
-
-  if (!data.title) {
-    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
-  }
-
-  if (!data.title) {
-    throw { message: 'Chưa nhập tiêu đề sản phẩm' }
   }
 
   let product = makeDataProduct(data);
@@ -89,6 +92,7 @@ Controller.create = async function ({ data }) {
 
   result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
   result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
+  result.message = 'Thêm sản phẩm thành công!';
 
   return result;
 }
@@ -96,14 +100,55 @@ Controller.create = async function ({ data }) {
 Controller.update = async function ({ product_id, data }) {
   let result = {};
 
-  let found_product = await ProductModel.findOne({ id: product_id }).lean(true);
-  if (!found_product) {
-    throw { message: 'Sản phẩm không tồn tại' }
+
+  if (!data.title) {
+    throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
+  }
+  if (!data.variants) {
+    throw new ERR({ message: 'Chưa đủ thông tin biến thể' });
+  } else {
+    if (!data.variants.length) {
+      throw { message: 'Chưa đủ thông tin biến thể' }
+    }
+    for (const variant of data.variants) {
+      if (!variant.option1) {
+        throw { message: 'Chưa nhập cấu hình 1 biến thể' }
+      }
+      if (!variant.option2) {
+        throw { message: 'Chưa nhập cấu hình 2 biến thể' }
+      }
+      if (!variant.option3) {
+        throw { message: 'Chưa nhập cấu hình 3 biến thể' }
+      }
+    }
   }
 
   let found_variants = await VariantModel.find({ product_id }).lean(true);
+  let update_variants = data.variants.filter(e => !(e.isNew));
+  let create_variants = data.variants.filter(e => !!(e.isNew));
 
-  result.product = await ProductModel.findOneAndUpdate({ id: product_id }, { $set: data }, { lean: true, new: true });
+  let found_product = await ProductModel._findOne({ id: product_id });
+
+  let updateVariants = [];
+  update_variants = makeDataVariants(update_variants);
+  for (const variant of update_variants) {
+    let updateVariant = await VariantModel._findOneAndUpdate({ product_id }, variant);
+    updateVariants.push(updateVariant);
+  }
+
+  let newVariants = [];
+  let variants = makeDataVariants(create_variants);
+  for (const variant of variants) {
+    variant.product_id = product_id;
+    let newVariant = await VariantModel._create(variant);
+    newVariant = newVariant.toJSON();
+    newVariants.push(newVariant);
+  }
+
+  let product = makeDataProduct(data);
+  product.variants = [...newVariants, ...updateVariants];
+  result.product = await ProductModel._update({ id: product_id }, { $set: product });
+  result.message = 'Cập nhật sản phẩm thành công!';
 
   return result;
 }
@@ -295,61 +340,6 @@ Controller.importProducts = async function ({ file }) {
   return { error: false, result };
 }
 
-function makeDataProduct(item) {
-  let product = {
-    title: item.title,
-    body_html: item.body_html,
-    tags: item.tags,
-    vendor: item.vendor,
-    not_allow_promotion: item.not_allow_promotion,
-    options: [{
-      position: 1,
-      name: item.option_1
-    }, {
-      position: 2,
-      name: item.option_2
-    }, {
-      position: 3,
-      name: item.option_3
-    }],
-    variants: []
-  }
-
-  if (item.published == 'No') {
-    product.published = false;
-  } else {
-    product.published = true;
-    product.published_at = new Date();
-    product.published_scope = 'global';
-  }
-
-  return product;
-}
-
-function makeDataVariants(items) {
-  let variants = [];
-  for (const item of items) {
-    variants.push(makeDataVariant(item));
-  }
-  return variants;
-}
-
-function makeDataVariant(item) {
-  let variant = {
-    sku: item.sku,
-    barcode: item.barcode,
-    taxable: item.taxable,
-    option1: item.option1,
-    option2: item.option2,
-    option3: item.option3,
-    price: item.price,
-    compare_at_price: item.compare_at_price,
-    created_at: new Date(),
-  }
-  variant.requires_shipping = item.requires_shipping == 'No' ? false : true;
-
-  return variant;
-}
 
 Controller.deleteProduct = async function ({ product_id }) {
   let count_order = await OrderModel.count({ 'line_items.product_id': product_id });
