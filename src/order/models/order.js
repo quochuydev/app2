@@ -64,10 +64,11 @@ const OrderSchema = new Schema({
   },
   line_items: [{
     product_id: { type: Number, default: null },
+    title: { type: String, default: null },
     sku: { type: String, default: null },
     name: { type: String, default: null },
-    title: { type: String, default: null },
     variant_id: { type: Number, default: null },
+    variant_title: { type: String, default: null },
     quantity: { type: Number, default: null },
     price: { type: Number, default: null },
     total: { type: Number, default: null },
