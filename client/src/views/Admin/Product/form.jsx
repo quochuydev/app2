@@ -65,8 +65,13 @@ function ProductForm(props) {
     return;
   }
 
-  function removeVariant(id) {
-    setProduct({ variants: productUpdate.variants.filter(e => e.id != id) });
+  async function removeVariant(variant) {
+    try {
+      let result = await AdminServices.removeVariant(variant)
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   const columns = [
@@ -126,7 +131,7 @@ function ProductForm(props) {
     {
       title: '', key: 'option', render: edit => <div>
         <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit })}>update [{edit.id}</Button>
-        <Button onClick={e => removeVariant(edit.id)}>X {edit.isNew ? 'new' : 'old'}]</Button>
+        <Button onClick={e => removeVariant(edit)}>X {edit.isNew ? 'new' : 'old'}]</Button>
       </div>
     },
   ];

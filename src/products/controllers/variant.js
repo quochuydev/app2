@@ -42,7 +42,7 @@ Controller.remove = async function ({ variant_id }) {
   let found_variant = await VariantModel._findOne({ id: variant_id });
   let found_product = await ProductModel._findOne({ id: found_variant.product_id });
   await VariantModel._update({ id: variant_id }, { $set: { is_deleted: true } });
-  let variants = await VariantModel.find({ product_id: found_variant.product_id }).lean(true);
+  let variants = await VariantModel.find({ product_id: found_variant.product_id, is_deleted: false }).lean(true);
   await ProductModel._update({ id: found_product.id }, { $set: { variants } });
   return { message: 'Xóa biến thể thành công' };
 }
