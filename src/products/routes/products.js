@@ -59,13 +59,13 @@ const router = ({ app }) => {
   });
 
   app.post('/api/products/:id/variants', function (req, res, next) {
-    VariantController.create({ product_id: req.params.id })
+    VariantController.create({ product_id: req.params.id, data: req.body })
       .then(result => res.json(result))
       .catch(error => next(error));
   })
 
   app.put('/api/products/:id/variants/:variant_id', function (req, res, next) {
-    VariantController.update({ product_id: req.params.id, variant_id: req.params.variant_id })
+    VariantController.update({ product_id: req.params.id, variant_id: req.params.variant_id, data: req.body })
       .then(result => res.json(result))
       .catch(error => next(error));
   })

@@ -37,7 +37,9 @@ function Customer(props) {
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <span><a href={`customer/${edit.id}`}>{edit.number}</a></span>
+        <Link to={`customer/${edit.id}`}>
+          {edit.number}
+        </Link>
       )
     },
     {

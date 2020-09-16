@@ -115,14 +115,13 @@ function ProductForm(props) {
     },
     {
       title: 'Giá bán', key: 'price', render: edit =>
-        <CurrencyFormat className="ant-input" value={edit.price} suffix={'đ'}
-          thousandSeparator={true} style={{ textAlign: 'right' }}
-          onValueChange={e => { }} />
+        <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.price}
+          onValueChange={e => { }} style={{ textAlign: 'right' }} />
     },
     {
       title: 'Giá so sánh', key: 'compare_at_price', render: edit =>
         <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.compare_at_price}
-          onValueChange={e => { }} />
+          onValueChange={e => { }} style={{ textAlign: 'right' }} />
     },
     {
       title: '', key: 'option', render: edit => <div>

@@ -25,21 +25,19 @@ let { Option } = Select;
 
 function ProductForm(props) {
   const { actions, product, count, variantUpdatel } = props;
+  let [variant, setVariant] = useState({});
 
   useEffect(() => {
-    console.log(product)
-    console.log(variantUpdatel)
     if (variantUpdatel) {
       setVariant(variantUpdatel);
     }
-  })
+  }, [variantUpdatel])
 
   function onVariantChange(e, id) {
-    console.log(e, id)
+    setVariant({ ...variant, [e.target.name]: e.target.value });
   }
-  let [variant, setVariant] = useState({});
 
-  async function assertVariant(e) {
+  async function assertVariant() {
     console.log(variant);
     try {
       let action = variant.id ? 'updateVariant' : 'createVariant'
@@ -57,43 +55,46 @@ function ProductForm(props) {
         onOk={() => assertVariant()}
         onCancel={() => props.setShowVariantModel(false)}
       >
-        <Row>
-          <Col xs={24} lg={8}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={8}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={8}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label="Tên sản phẩm" onChange={e => { }}>
-              <Input name="title" placeholder="input placeholder" value={0} />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form>
+          <Row>
+            <Col xs={24} lg={8}>
+              <Form.Item label="option1" onChange={e => onVariantChange(e)}>
+                <Input name="option1" value={variant.option1} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={8}>
+              <Form.Item label="option2" onChange={e => onVariantChange(e)}>
+                <Input name="option2" value={variant.option2} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={8}>
+              <Form.Item label="option3" onChange={e => onVariantChange(e)}>
+                <Input name="option3" value={variant.option3} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Form.Item label="Giá" onChange={e => onVariantChange(e)}>
+                <Input name="price" value={variant.price} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Form.Item label="Giá so sánh" onChange={e => onVariantChange(e)}>
+                <Input name="compare_at_price" value={variant.compare_at_price} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Form.Item label="Sku" onChange={e => onVariantChange(e)}>
+                <Input name="sku" value={variant.sku} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Form.Item label="Barcode" onChange={e => onVariantChange(e)}>
+                <Input name="barcode" value={variant.barcode} />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+
       </Modal>
     </div>
   )
