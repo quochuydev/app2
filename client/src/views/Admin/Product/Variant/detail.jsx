@@ -33,7 +33,7 @@ function ProductForm(props) {
     }
   }, [variantUpdatel])
 
-  function onVariantChange(e, id) {
+  function onVariantChange(e) {
     setVariant({ ...variant, [e.target.name]: e.target.value });
   }
 
@@ -79,7 +79,8 @@ function ProductForm(props) {
             </Col>
             <Col xs={24} lg={12}>
               <Form.Item label="Giá so sánh" onChange={e => onVariantChange(e)}>
-                <Input name="compare_at_price" value={variant.compare_at_price} />
+                <NumberFormat className="ant-input" name="compare_at_price" thousandSeparator={true} suffix={'đ'}
+                  value={variant.compare_at_price} onValueChange={e => { }} style={{ textAlign: 'right' }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
@@ -94,7 +95,6 @@ function ProductForm(props) {
             </Col>
           </Row>
         </Form>
-
       </Modal>
     </div>
   )
