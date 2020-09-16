@@ -6,31 +6,15 @@ import common from '../../../utils/common';
 let formatMoney = common.formatMoney;
 let formatFinancialStatus = common.formatFinancialStatus;
 
-const mapStateToProps = state => ({
-
-});
-
-const mapDispatchToProps = (dispatch) => ({
-
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PrintOrder);
+export default PrintOrder;
 
 function PrintOrder(props) {
   let { order } = props;
+
   return (
     <div id="print-default" className="page-break">
       <div className="printorder">
         <div className="table-brand">
-          {/* <div className="col-flex" style={{ textAlign: 'left' }}>
-            <img className="barcode_container_$index + 1" src="https://topdev.vn/blog/wp-content/uploads/2020/08/logo-new-retina.png" />
-          </div>
-          <div className="col-flex" style={{ textAlign: 'center' }}>
-            <img className="icon_logo" width="160px" height="70px" src="https://topdev.vn/blog/wp-content/uploads/2020/08/logo-new-retina.png" />
-          </div>
-          <div className="col-flex" style={{ textAlign: 'right' }}>
-            <img className="etp_barcode_container_$index + 1" src="https://topdev.vn/blog/wp-content/uploads/2020/08/logo-new-retina.png" />
-          </div> */}
         </div>
         <div className="printtable" style={{ borderBottom: '1px solid #B7B7B7' }}>
           <div className="printrow">

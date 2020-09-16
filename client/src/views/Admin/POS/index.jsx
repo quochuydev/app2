@@ -100,9 +100,8 @@ function Customer(props) {
     ProductActions.loadProducts(queryProducts);
   }, [queryProducts])
 
-
   useEffect(() => {
-    setOrder({ gateway_code: 'cod' });
+    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt' });
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -214,7 +213,6 @@ function Customer(props) {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    setOrder({ carrier_cod_status_code: 'codreceipt' });
     AdminServices.createOrder(order)
       .then(result => {
         console.log(result);
@@ -495,7 +493,7 @@ function Customer(props) {
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
           {
-            orderCreated ? <PrintOrder order={orderCreated} /> : null
+            (orderCreated && orderCreated.id) ? <PrintOrder order={orderCreated} /> : null
           }
         </div>
       </div>

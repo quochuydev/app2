@@ -74,7 +74,7 @@ function Orders(props) {
         return ''
     }
   }
-  
+
   function textCarrierCod(code) {
     switch (code) {
       case 'codreceipt':
@@ -131,12 +131,6 @@ function Orders(props) {
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
-    // {
-    //   title: 'Trạng thái', key: 'status', render: edit => (
-    //     <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
-    //   )
-    // },
-    // Thanh toán	Giao hàng	COD Tổng tiền
     {
       title: 'In', key: 'print', render: edit => (
         <ReactToPrint
@@ -300,7 +294,7 @@ function Orders(props) {
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>
           <div ref={componentRef}>
             {
-              order ? <PrintOrder order={order} /> : null
+              (order && order.id) ? <PrintOrder order={order} /> : null
             }
           </div>
         </div>
