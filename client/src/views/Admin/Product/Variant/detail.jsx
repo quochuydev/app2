@@ -53,6 +53,7 @@ function ProductForm(props) {
           let result = await AdminServices[action](variant);
           message.success(result.message);
         } else {
+          variant.isNew = true;
           actions.setProduct({ variants: [...product.variants, variant] });
         }
       }

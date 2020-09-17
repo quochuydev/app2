@@ -152,23 +152,7 @@ function ProductForm(props) {
     setVariantModel(variant);
     setShowVariantModel(true);
   }
-  let [count, setCount] = useState(0)
-  function handleAdd() {
-    const newVariant = {
-      id: count,
-      isNew: true,
-      option1: ``,
-      option2: ``,
-      option3: ``,
-      sku: '',
-      barcode: ``,
-      price: 0,
-      compare_at_price: 0,
-    };
-    setProduct({ variants: [...productUpdate.variants, newVariant] });
-    setCount(count + 1);
-  };
-
+  
   return (
     <div>
       <Form onSubmit={addProduct}>
@@ -202,8 +186,6 @@ function ProductForm(props) {
                 <Row gutter={10}>
                   <Col span={24}>
                     <Button onClick={() => onShowVariant({})} type="primary"
-                      style={{ marginBottom: 16 }}>Thêm variant</Button>
-                    <Button onClick={() => handleAdd()} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
                     <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" />
