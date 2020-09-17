@@ -166,6 +166,7 @@ function ProductForm(props) {
         message.success(result.message);
       }
     } else {
+      variant.key = Date.now();
       actions.setProduct({ variants: [...product.variants, variant] });
     }
     setShowVariantModel(false);
@@ -205,7 +206,7 @@ function ProductForm(props) {
                   <Col span={24}>
                     <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
-                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                    <Table rowKey="key" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" />
                   </Col>
                 </Row>
