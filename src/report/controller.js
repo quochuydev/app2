@@ -16,7 +16,7 @@ Controller.OrdersGrowth = async function ({ }) {
   let result = { items: [], total: 0, total_price: 0 }
   let items = await OrderModel.aggregate([
     { $match: { shop_id: cache.get('shop_id') } },
-    { $group: { _id: { $day: '$created_at' }, total_price: { $sum: "$total_price" }, total: { $sum: 1 } } },
+    { $group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, total: { $sum: 1 } } },
     { $sort: { _id: 1 } }
   ]);
   result.items = items;

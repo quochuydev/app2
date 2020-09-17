@@ -36,70 +36,35 @@ function Home(props) {
     ],
   }
 
-  function callback(key) {
-    console.log(key);
-  }
-
   return (
     <div>
       <Row gutter={[15, 15]}>
-        <Col lg={24}>
-          <Tabs onChange={callback} type="card">
-            <TabPane tab="Tab 1" key="1">
-              Content of Tab Pane 1
-    </TabPane>
-            <TabPane tab="Tab 2" key="2">
-              Content of Tab Pane 2
-    </TabPane>
-            <TabPane tab="Tab 3" key="3">
-              Content of Tab Pane 3
-    </TabPane>
-          </Tabs>
-        </Col>
-      </Row>
-
-      <Row gutter={[15, 15]}>
-        <Col span={12}>
+        <Col lg={8}>
           <Card>
-            <Statistic title="Feedback" value={reportOrdersGrowth.total_price} prefix={<Icon type="like" />} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card>
-            <Statistic title="Unmerged" value={reportOrdersGrowth.total} suffix="/ 100" />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={15}>
-        <Col span={12}>
-          <Card>
-            <Statistic
-              title="Active"
-              value={11.28}
-              precision={2}
-              valueStyle={{ color: '#3f8600' }}
-              prefix={<Icon type="arrow-up" />}
-              suffix="%"
+            <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} valueStyle={{ color: '#3f8600' }}
+              prefix={<Icon type="arrow-up" />} suffix="đ"
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col lg={8}>
           <Card>
-            <Statistic
-              title="Idle"
-              value={9.3}
-              precision={2}
-              valueStyle={{ color: '#cf1322' }}
-              prefix={<Icon type="arrow-down" />}
-              suffix="%"
+            <Statistic title="Hôm nay" value={reportOrdersGrowth.total} valueStyle={{ color: '#cf1322' }}
+              prefix={<Icon type="arrow-down" />} suffix="đơn hàng"
             />
           </Card>
         </Col>
+        <Col lg={8}>
+          <Card>
+            <Statistic title="Tháng trước" value={reportOrdersGrowth.total_price} suffix="đ" />
+          </Card>
+        </Col>
       </Row>
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={options}
-      />
+      <Row>
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={options}
+        />
+      </Row>
     </div >
   );
 }

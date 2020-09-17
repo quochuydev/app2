@@ -213,6 +213,9 @@ const Report = {
   OrdersGrowthDay: async function (data) {
     return await ApiClient.postData('api/report/orders-growth-day', null, data);
   },
+  search: async function (data) {
+    return await ApiClient.postData('api/report/search', null, data);
+  },
 };
 
 export default {

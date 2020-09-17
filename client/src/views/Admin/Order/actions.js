@@ -158,3 +158,12 @@ export function reportOrdersGrowthDay(order) {
     });
   }
 }
+
+export function report(aggre) {
+  return async (dispatch) => {
+    const data = await AdminServices.Report.search(aggre);
+    dispatch({
+      type: 'REPORT_SEARCH', payload: data
+    });
+  }
+}
