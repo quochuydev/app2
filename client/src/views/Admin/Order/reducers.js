@@ -17,7 +17,13 @@ const initialState = Map({
 
     customer: null,
     shipping_address: null
-  }
+  },
+  reportOrdersGrowth: {
+    total: 0, total_price: 0, items: []
+  },
+  reportOrdersGrowthDay: {
+    total: 0, total_price: 0, items: []
+  },
 });
 
 function OrdersReducer(state = initialState, { type, payload }) {

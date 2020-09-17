@@ -17,20 +17,23 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 function Home(props) {
-  let { actions, orders } = props;
+  let { actions, orders, reportOrdersGrowth, reportOrdersGrowthDay } = props;
 
   useEffect(() => {
     actions.loadOrders({ limit: 9999 });
-    actions.reportOrdersTotalMonth();
+    actions.reportOrdersGrowth();
+    actions.reportOrdersGrowthDay();
   }, []);
 
   const options = {
     title: {
       text: 'My chart'
     },
-    series: [{
-      data: orders.map(e => e.total_price)
-    }]
+    series: [
+      {
+        data: reportOrdersGrowth.items.map(e => e.total_price)
+      }
+    ],
   }
 
   function callback(key) {
@@ -58,12 +61,12 @@ function Home(props) {
       <Row gutter={[15, 15]}>
         <Col span={12}>
           <Card>
-            <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
+            <Statistic title="Feedback" value={reportOrdersGrowth.total_price} prefix={<Icon type="like" />} />
           </Card>
         </Col>
         <Col span={12}>
           <Card>
-            <Statistic title="Unmerged" value={93} suffix="/ 100" />
+            <Statistic title="Unmerged" value={reportOrdersGrowth.total} suffix="/ 100" />
           </Card>
         </Col>
       </Row>
@@ -103,6 +106,8 @@ function Home(props) {
 
 const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
+  reportOrdersGrowth: state.orders.get('reportOrdersGrowth'),
+  reportOrdersGrowthDay: state.orders.get('reportOrdersGrowthDay'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

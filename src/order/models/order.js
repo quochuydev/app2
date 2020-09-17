@@ -76,6 +76,7 @@ const OrderSchema = new Schema({
   products: [],
 
   total_price: { type: Number, default: 0 },
+  total_items: { type: Number, default: 0 },
   total_discounts: { type: Number, default: 0 },
   custom_total_shipping_price: { type: Number, default: 0 },
   total_pay: { type: Number, default: 0 },

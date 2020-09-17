@@ -207,9 +207,12 @@ async function getUser(data) {
 }
 
 const Report = {
-  OrdersTotalMonth: async function (data) {
-    return await ApiClient.postData('api/report/orders-total-month', null, data);
-  }
+  OrdersGrowth: async function (data) {
+    return await ApiClient.postData('api/report/orders-growth', null, data);
+  },
+  OrdersGrowthDay: async function (data) {
+    return await ApiClient.postData('api/report/orders-growth-day', null, data);
+  },
 };
 
 export default {
