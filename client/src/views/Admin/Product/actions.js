@@ -19,6 +19,16 @@ export function setProduct(product) {
   }
 }
 
+export function resetProduct() {
+  return function (dispatch) {
+    dispatch({
+      type: 'RESET_PRODUCT', payload: {
+        error: false, message: 'Merge success'
+      }
+    });
+  }
+}
+
 export function merge(data) {
   return function (dispatch) {
     dispatch({
@@ -85,21 +95,6 @@ export function syncProducts() {
           error: true,
           message: 'SYNC_PRODUCTS_FAILED.message'
         }
-      });
-    }
-  }
-}
-
-export function buildLinkMomoProduct(product) {
-  return async (dispatch) => {
-    try {
-      const data = await AdminServices.buildLinkMomoProduct(product);
-      dispatch({
-        type: ACTIONS.BUILD_LINK_MOMO_SUCCESS, payload: data
-      });
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.BUILD_LINK_MOMO_FAILED, payload: {}
       });
     }
   }

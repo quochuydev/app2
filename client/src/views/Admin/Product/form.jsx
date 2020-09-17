@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -31,10 +31,10 @@ function ProductForm(props) {
   let setProduct = actions.setProduct;
   useEffect(() => {
     console.log(product)
-    if (product && product.id) {
+    if (product && product.id && product.id != 'create') {
       setProduct(product);
     } else {
-      setProduct({ option_1: options[0], option_2: options[1], option_3: options[2] });
+      actions.resetProduct();
     }
   }, [product]);
 
@@ -103,8 +103,8 @@ function ProductForm(props) {
     },
     {
       title: '', key: 'option', render: edit => <div>
-        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>update [{edit.id}</Button>
-        <Button onClick={e => removeVariant(edit, productUpdate)}>X {edit.isNew ? 'new' : 'old'}]</Button>
+        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>update</Button>
+        <Button onClick={e => removeVariant(edit, productUpdate)}>X]</Button>
       </div>
     },
   ];
@@ -162,9 +162,6 @@ function ProductForm(props) {
   }
 
   async function assertVariant({ product, variant }) {
-    console.log(active);
-    console.log(product);
-    console.log(variant);
     if (product.id) {
       if (active == 'add') {
         let result = await AdminServices.createVariant(variant);
@@ -175,7 +172,7 @@ function ProductForm(props) {
         message.success(result.message);
       }
     } else {
-      variant.key = Date.now();
+      variant.id = Date.now();
       actions.setProduct({ variants: [...product.variants, variant] });
     }
     setShowVariantModel(false);
@@ -215,7 +212,7 @@ function ProductForm(props) {
                   <Col span={24}>
                     <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
-                    <Table rowKey="key" bordered dataSource={productUpdate.variants} columns={columns}
+                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" />
                   </Col>
                 </Row>
