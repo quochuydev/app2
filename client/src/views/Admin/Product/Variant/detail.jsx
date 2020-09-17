@@ -48,7 +48,7 @@ function ProductForm(props) {
         let result = await AdminServices[action](variant);
         message.success(result.message);
       } else {
-        if (product.id) {
+        if (product && product.id) {
           action = 'createVariant';
           let result = await AdminServices[action](variant);
           message.success(result.message);

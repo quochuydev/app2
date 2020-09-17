@@ -215,7 +215,7 @@ function ProductForm(props) {
         </Row>
       </Form>
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel}
-        showVariantModel={showVariantModel} />
+        showVariantModel={showVariantModel} product={productUpdate} />
     </div>
   )
 }
