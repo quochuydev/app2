@@ -30,6 +30,7 @@ const URLS = {
 
   CREATE_VARIANT: 'api/products/{id}/variants',
   UPDATE_VARIANT: 'api/products/{id}/variants/{variant_id}',
+  REMOVE_VARIANT: 'api/products/{id}/variants/{variant_id}',
 
   LIST_STAFFS: 'api/staffs',
 
@@ -188,6 +189,10 @@ async function updateVariant(data) {
   let url = compile(URLS.UPDATE_VARIANT, { id: data.product_id, variant_id: data.id });
   return await ApiClient.putData(url, null, data);
 }
+async function removeVariant(data) {
+  let url = compile(URLS.REMOVE_VARIANT, { id: data.product_id, variant_id: data.id });
+  return await ApiClient.deleteData(url, null, data);
+}
 
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
@@ -201,6 +206,18 @@ async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
 }
 
+const Report = {
+  OrdersGrowth: async function (data) {
+    return await ApiClient.postData('api/report/orders-growth', null, data);
+  },
+  OrdersGrowthDay: async function (data) {
+    return await ApiClient.postData('api/report/orders-growth-day', null, data);
+  },
+  search: async function (data) {
+    return await ApiClient.postData('api/report/search', null, data);
+  },
+};
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
@@ -208,6 +225,7 @@ export default {
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
-  createVariant, updateVariant,
+  createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
+  Report
 }

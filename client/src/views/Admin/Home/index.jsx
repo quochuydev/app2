@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-  Layout, message, Statistic, Icon, Row, Col, Card
+  Layout, message, Statistic, Icon, Row, Col, Card, Tabs
 } from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -14,86 +14,65 @@ import LoadingPage from '../../Components/Loading/index';
 import AdminServices from '../../../services/adminServices';
 
 const { Content } = Layout;
+const { TabPane } = Tabs;
 
 function Home(props) {
-  let { actions, orders } = props;
+  let { actions, orders, reportOrdersGrowth, reportOrdersGrowthDay } = props;
 
   useEffect(() => {
-    setIsProcessing(true);
     actions.loadOrders({ limit: 9999 });
-    setIsProcessing(false);
+    actions.reportOrdersGrowth();
+    actions.reportOrdersGrowthDay();
   }, []);
-
-  const [alert, setAlert] = useState({
-    messageSuccess: '',
-    messageFailed: '',
-    showAlert: false,
-    isError: false,
-  });
-  const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) {
-    return <LoadingPage isProcessing={isProcessing} />;
-  }
 
   const options = {
     title: {
       text: 'My chart'
     },
-    series: [{
-      data: orders.map(e => e.total_price)
-    }]
+    series: [
+      {
+        data: reportOrdersGrowth.items.map(e => e.total_price)
+      }
+    ],
   }
 
   return (
     <div>
       <Row gutter={[15, 15]}>
-        <Col span={12}>
+        <Col lg={8}>
           <Card>
-            <Statistic title="Feedback" value={1128} prefix={<Icon type="like" />} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card>
-            <Statistic title="Unmerged" value={93} suffix="/ 100" />
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={15}>
-        <Col span={12}>
-          <Card>
-            <Statistic
-              title="Active"
-              value={11.28}
-              precision={2}
-              valueStyle={{ color: '#3f8600' }}
-              prefix={<Icon type="arrow-up" />}
-              suffix="%"
+            <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} valueStyle={{ color: '#3f8600' }}
+              prefix={<Icon type="arrow-up" />} suffix="đ"
             />
           </Card>
         </Col>
-        <Col span={12}>
+        <Col lg={8}>
           <Card>
-            <Statistic
-              title="Idle"
-              value={9.3}
-              precision={2}
-              valueStyle={{ color: '#cf1322' }}
-              prefix={<Icon type="arrow-down" />}
-              suffix="%"
+            <Statistic title="Hôm nay" value={reportOrdersGrowth.count} valueStyle={{ color: '#cf1322' }}
+              prefix={<Icon type="arrow-down" />} suffix="đơn hàng"
             />
           </Card>
         </Col>
+        <Col lg={8}>
+          <Card>
+            <Statistic title="Tháng trước" value={reportOrdersGrowth.total_price} suffix="đ" />
+          </Card>
+        </Col>
       </Row>
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={options}
-      />
+      <Row>
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={options}
+        />
+      </Row>
     </div >
   );
 }
 
 const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
+  reportOrdersGrowth: state.orders.get('reportOrdersGrowth'),
+  reportOrdersGrowthDay: state.orders.get('reportOrdersGrowthDay'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

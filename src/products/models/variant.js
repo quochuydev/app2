@@ -48,6 +48,15 @@ VariantSchema.statics._update = async function (filter = {}, data_update = {}, o
   return data;
 }
 
+VariantSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  let data = await this.findOne(filter, populate, options);
+  if (!data) {
+    throw { message: 'Biến thể không còn tồn tại' }
+  }
+  return data;
+}
+
 VariantSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
   filter.shop_id = filter.shop_id || cache.get('shop_id');
   data_update.updated_at = new Date();

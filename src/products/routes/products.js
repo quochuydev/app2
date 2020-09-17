@@ -70,6 +70,12 @@ const router = ({ app }) => {
       .catch(error => next(error));
   })
 
+  app.delete('/api/products/:id/variants/:variant_id', function (req, res, next) {
+    VariantController.remove({ product_id: req.params.id, variant_id: req.params.variant_id })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
+
 
 }
 

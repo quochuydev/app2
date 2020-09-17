@@ -30,44 +30,13 @@ function ProductForm(props) {
   let setProduct = actions.setProduct;
 
   useEffect(() => {
-    if (product) {
+    console.log(product)
+    if (product && product.id) {
       setProduct(product);
+    } else {
+      setProduct({});
     }
   }, [product]);
-
-  function onProductChange(e) {
-    console.log(e)
-    setProduct({ [e.target.name]: e.target.value });
-  }
-
-  function onChangeField(name, value) {
-    setProduct({ [name]: value });
-  }
-
-  async function addProduct(e) {
-    e.preventDefault();
-    console.log(productUpdate);
-    try {
-      let action = productUpdate.id ? 'updateProduct' : 'createProduct'
-      let result = await AdminServices[action](productUpdate)
-      message.success(result.message);
-    } catch (error) {
-      message.error(error.message);
-    }
-  }
-
-  function onVariantChange(e, id) {
-    let index = productUpdate.variants.findIndex(e => e.id == id)
-    if (index != -1) {
-      productUpdate.variants[index][e.target.name] = e.target.value;
-    }
-    setProduct({ variants: productUpdate.variants });
-    return;
-  }
-
-  function removeVariant(id) {
-    setProduct({ variants: productUpdate.variants.filter(e => e.id != id) });
-  }
 
   const columns = [
     {
@@ -125,19 +94,82 @@ function ProductForm(props) {
     },
     {
       title: '', key: 'option', render: edit => <div>
-        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit })}>update [{edit.id}</Button>
-        <Button onClick={e => removeVariant(edit.id)}>X {edit.isNew ? 'new' : 'old'}]</Button>
+        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>update [{edit.id}</Button>
+        <Button onClick={e => removeVariant(edit, productUpdate)}>X {edit.isNew ? 'new' : 'old'}]</Button>
       </div>
     },
   ];
 
+  function onProductChange(e) {
+    setProduct({ [e.target.name]: e.target.value });
+  }
+
+  function onChangeField(name, value) {
+    setProduct({ [name]: value });
+  }
+
+  async function addProduct(e) {
+    e.preventDefault();
+    console.log(productUpdate);
+    try {
+      let action = productUpdate.id ? 'updateProduct' : 'createProduct'
+      let result = await AdminServices[action](productUpdate)
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
+
+  function onVariantChange(e, id) {
+    let index = productUpdate.variants.findIndex(e => e.id == id)
+    if (index != -1) {
+      productUpdate.variants[index][e.target.name] = e.target.value;
+    }
+    setProduct({ variants: productUpdate.variants });
+    return;
+  }
+
   const [showVariantModel, setShowVariantModel] = useState(false);
   const [variantModel, setVariantModel] = useState(null);
+  const [active, setActive] = useState(null);
 
-  function onShowVariant({ product, variant = {} }) {
-    variant.product_id = product.id;
+  function onShowVariant({ product, variant = {}, active }) {
+    console.log(product)
+    if (product && product.id) {
+      variant.product_id = product.id;
+    }
+    setActive(active)
     setVariantModel(variant);
     setShowVariantModel(true);
+  }
+
+  async function removeVariant(variant, product) {
+    if (product.id) {
+      let result = await AdminServices.removeVariant(variant)
+      message.success(result.message);
+    } else {
+      setProduct({ variants: productUpdate.variants.filter(e => e.id != variant.id) });
+    }
+  }
+
+  async function assertVariant({ product, variant }) {
+    console.log(active);
+    console.log(product);
+    console.log(variant);
+    if (product.id) {
+      if (active == 'add') {
+        let result = await AdminServices.createVariant(variant);
+        message.success(result.message);
+      }
+      if (active == 'update') {
+        let result = await AdminServices.updateVariant(variant);
+        message.success(result.message);
+      }
+    } else {
+      variant.key = Date.now();
+      actions.setProduct({ variants: [...product.variants, variant] });
+    }
+    setShowVariantModel(false);
   }
 
   return (
@@ -172,9 +204,9 @@ function ProductForm(props) {
               <Tabs.TabPane tab="Địa chỉ" key="1">
                 <Row gutter={10}>
                   <Col span={24}>
-                    <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
+                    <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
-                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                    <Table rowKey="key" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" />
                   </Col>
                 </Row>
@@ -183,8 +215,8 @@ function ProductForm(props) {
           </Col>
         </Row>
       </Form>
-      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdatel={variantModel}
-        showVariantModel={showVariantModel} />
+      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
+        showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
     </div>
   )
 }

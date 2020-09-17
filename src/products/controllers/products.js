@@ -100,7 +100,6 @@ Controller.create = async function ({ data }) {
 Controller.update = async function ({ product_id, data }) {
   let result = {};
 
-
   if (!data.title) {
     throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
   }
@@ -124,32 +123,11 @@ Controller.update = async function ({ product_id, data }) {
   }
 
   let found_variants = await VariantModel.find({ product_id }).lean(true);
-  let update_variants = data.variants.filter(e => !(e.isNew));
-  let create_variants = data.variants.filter(e => !!(e.isNew));
-
   let found_product = await ProductModel._findOne({ id: product_id });
-
-  let updateVariants = [];
-  update_variants = makeDataVariants(update_variants);
-  for (const variant of update_variants) {
-    let updateVariant = await VariantModel._findOneAndUpdate({ product_id }, variant);
-    updateVariants.push(updateVariant);
-  }
-
-  let newVariants = [];
-  let variants = makeDataVariants(create_variants);
-  for (const variant of variants) {
-    variant.product_id = product_id;
-    let newVariant = await VariantModel._create(variant);
-    newVariant = newVariant.toJSON();
-    newVariants.push(newVariant);
-  }
-
   let product = makeDataProduct(data);
-  product.variants = [...newVariants, ...updateVariants];
+  product.variants = found_variants;
   result.product = await ProductModel._update({ id: product_id }, { $set: product });
   result.message = 'Cập nhật sản phẩm thành công!';
-
   return result;
 }
 

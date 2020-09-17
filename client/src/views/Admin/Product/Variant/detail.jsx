@@ -24,28 +24,21 @@ import config from './../../../../utils/config';
 let { Option } = Select;
 
 function ProductForm(props) {
-  const { actions, product, count, variantUpdatel } = props;
+  const { actions, product, count, variantUpdate, productUpdate } = props;
   let [variant, setVariant] = useState({});
 
   useEffect(() => {
-    if (variantUpdatel) {
-      setVariant(variantUpdatel);
+    if (variantUpdate) {
+      setVariant(variantUpdate);
     }
-  }, [variantUpdatel])
+  }, [variantUpdate])
 
-  function onVariantChange(e, id) {
+  function onVariantChange(e) {
     setVariant({ ...variant, [e.target.name]: e.target.value });
   }
 
   async function assertVariant() {
-    console.log(variant);
-    try {
-      let action = variant.id ? 'updateVariant' : 'createVariant'
-      let result = await AdminServices[action](variant)
-      message.success(result.message);
-    } catch (error) {
-      message.error(error.message);
-    }
+    props.assertVariant({ product, variant })
   }
 
   return (
@@ -74,12 +67,14 @@ function ProductForm(props) {
             </Col>
             <Col xs={24} lg={12}>
               <Form.Item label="Giá" onChange={e => onVariantChange(e)}>
-                <Input name="price" value={variant.price} />
+                <NumberFormat className="ant-input" name="price" thousandSeparator={true} suffix={'đ'}
+                  value={variant.price} style={{ textAlign: 'right' }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
               <Form.Item label="Giá so sánh" onChange={e => onVariantChange(e)}>
-                <Input name="compare_at_price" value={variant.compare_at_price} />
+                <NumberFormat className="ant-input" name="compare_at_price" thousandSeparator={true} suffix={'đ'}
+                  value={variant.compare_at_price} onValueChange={e => { }} style={{ textAlign: 'right' }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
@@ -94,13 +89,12 @@ function ProductForm(props) {
             </Col>
           </Row>
         </Form>
-
       </Modal>
     </div>
   )
 }
 const mapStateToProps = state => ({
-  // productUpdate: state.products.get('productUpdate'),
+  productUpdate: state.products.get('productUpdate'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

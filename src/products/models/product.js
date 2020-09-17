@@ -57,7 +57,7 @@ ProductSchema.statics._findOne = async function (filter = {}, populate = {}, opt
   return data;
 }
 
-ProductSchema.statics._create = async function (data = {}) {
+ProductSchema.statics._create = async function (data) {
   let _this = this;
   data.shop_id = cache.get('shop_id');
   let result = await _this.create(data);
@@ -66,8 +66,8 @@ ProductSchema.statics._create = async function (data = {}) {
 
 ProductSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  let data = await _this.update({ ...filter, shop_id }, data_update, option);
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.update(filter, data_update, option);
   return data;
 }
 

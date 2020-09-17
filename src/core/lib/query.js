@@ -3,7 +3,6 @@ const _ = require('lodash');
 const escapeStringRegexp = require('escape-string-regexp');
 
 function _parse(body) {
-  let shop_id = cache.get('shop_id');
   let { limit, page } = body;
   if (!limit) { limit = 20 }
   if (!page) { page = 1 }
@@ -16,7 +15,7 @@ function _parse(body) {
     page = undefined;
   }
   let query = body;
-  let criteria = { shop_id }
+  let criteria = { shop_id: cache.get('shop_id'), is_deleted: { $in: [null, false] } }
   for (field in query) {
     Object.assign(criteria, formatCriteria(field, query[field]))
   }
@@ -69,8 +68,10 @@ function formatCriteria(field, value) {
 
 
 let test = () => {
-  _parse({ "_id": "asvdsa213", "id_in": "123,234,456", "code_in": "123, 234, 456",
-   "created_at_gte": "Sat Mar 28 2020 17:46:16 GMT 0700 (Giờ Đông Dương)", "updated_at_lte": "22-12-2020", "number_ne": "22-12-2020" })
+  _parse({
+    "_id": "asvdsa213", "id_in": "123,234,456", "code_in": "123, 234, 456",
+    "created_at_gte": "Sat Mar 28 2020 17:46:16 GMT 0700 (Giờ Đông Dương)", "updated_at_lte": "22-12-2020", "number_ne": "22-12-2020"
+  })
   let body = { shop_id: 123123, number: 12312312, type_in: ['woocommerce'] };
   _parse(body);
 }

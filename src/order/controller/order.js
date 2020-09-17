@@ -77,6 +77,7 @@ async function create({ body }) {
     custom_total_shipping_price: data.custom_total_shipping_price,
     total_discounts: data.total_discounts,
     total_price: data.total_price,
+    total_items: data.total_items,
     customer: data.customer,
     customer_id: data.customer.id,
 

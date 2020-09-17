@@ -17,11 +17,19 @@ const initialState = Map({
 
     customer: null,
     shipping_address: null
-  }
+  },
+  reportOrdersGrowth: {
+    total: 0, total_price: 0, items: []
+  },
+  reportOrdersGrowthDay: {
+    total: 0, total_price: 0, items: []
+  },
 });
 
 function OrdersReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case 'DEFAULT':
+      return state.merge({ ...payload });
     case 'LOAD_ORDERS_SUCCESS':
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':

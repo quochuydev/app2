@@ -140,3 +140,30 @@ export function buildLinkMomoOrder(order) {
     }
   }
 }
+
+export function reportOrdersGrowth(order) {
+  return async (dispatch) => {
+    const data = await AdminServices.Report.OrdersGrowth(order);
+    dispatch({
+      type: 'reportOrdersGrowth', payload: data
+    });
+  }
+}
+
+export function reportOrdersGrowthDay(order) {
+  return async (dispatch) => {
+    const data = await AdminServices.Report.OrdersGrowthDay(order);
+    dispatch({
+      type: 'reportOrdersGrowthDay', payload: data
+    });
+  }
+}
+
+export function report(aggre) {
+  return async (dispatch) => {
+    const data = await AdminServices.Report.search(aggre);
+    dispatch({
+      type: 'REPORT_SEARCH', payload: data
+    });
+  }
+}
