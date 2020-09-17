@@ -24,14 +24,14 @@ import config from './../../../../utils/config';
 let { Option } = Select;
 
 function ProductForm(props) {
-  const { actions, product, count, variantUpdatel } = props;
+  const { actions, product, count, variantUpdate, productUpdate } = props;
   let [variant, setVariant] = useState({});
 
   useEffect(() => {
-    if (variantUpdatel) {
-      setVariant(variantUpdatel);
+    if (variantUpdate) {
+      setVariant(variantUpdate);
     }
-  }, [variantUpdatel])
+  }, [variantUpdate])
 
   function onVariantChange(e) {
     setVariant({ ...variant, [e.target.name]: e.target.value });
@@ -41,9 +41,11 @@ function ProductForm(props) {
     console.log(variant);
     try {
       let action = variant.id ? 'updateVariant' : 'createVariant'
-      let result = await AdminServices[action](variant)
+      let result = await AdminServices[action](variant);
       message.success(result.message);
+      props.setShowVariantModel(false);
     } catch (error) {
+      props.setShowVariantModel(false);
       message.error(error.message);
     }
   }
@@ -100,7 +102,7 @@ function ProductForm(props) {
   )
 }
 const mapStateToProps = state => ({
-  // productUpdate: state.products.get('productUpdate'),
+  productUpdate: state.products.get('productUpdate'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -29,13 +29,15 @@ function PrintOrder(props) {
               </h4>
               <h4 style={{ margin: '0 0 3mm' }}>Địa chỉ chi nhánh: <span style={{ fontWeight: 'normal' }}> formatStoreAddress</span></h4>
               <h4 style={{ margin: '0 0 5px', textTransform: 'uppercase' }}>THÔNG TIN GIAO HÀNG</h4>
-              <h4 style={{ margin: '0 0 5px' }}>Tên khách hàng: <span style={{ fontWeight: 'normal' }} ng-bind-html="joinArray([order.shipping_address.last_name, order.shipping_address.first_name])" />
+              <h4 style={{ margin: '0 0 5px' }}>Tên khách hàng:
+                <span style={{ fontWeight: 'normal' }}>{[order.shipping_address.last_name, order.shipping_address.first_name].join(' ')}</span>
               </h4>
-              <h4 style={{ margin: '0 0 5px' }}>Địa chỉ: <span style={{ fontWeight: 'normal' }} ng-bind-html="renderShippingAddress( order.shipping_address )" /></h4>
-              <h4 style={{ margin: '0 0 3mm' }}>Điện thoại: <span style={{ fontWeight: 'normal' }}> order.shipping_address.phone </span></h4>
-              <h4 style={{ margin: '0 0 5px' }}>Đơn vị vận chuyển: <span style={{ wordBreak: 'break-all', fontWeight: 'bold' }}> order.fulfillments[0].tracking_company.toLowerCase() == 'khác' ? 'Maison' : order.fulfillments[0].tracking_company </span>
+              <h4 style={{ margin: '0 0 5px' }}>Địa chỉ:
+                <span style={{ fontWeight: 'normal' }}>{[order.shipping_address.address].join(' ')}</span>
               </h4>
-              <h4 style={{ margin: '0 0 10px' }}>Mã vận đơn: <span style={{ fontWeight: 'normal' }}> order.fulfillments[0].tracking_number </span></h4>
+              <h4 style={{ margin: '0 0 3mm' }}>Điện thoại:
+                <span style={{ fontWeight: 'normal' }}>{order.shipping_address.phone}</span>
+              </h4>
             </div>
           </div>
           <table className="table-line_items">
@@ -85,7 +87,7 @@ function PrintOrder(props) {
                     </tr>
                   </tbody></table>
               </td>
-              <td style={{}}>
+              <td>
                 <table className="with-100 vertical-align-top table-height-sm" style={{ borderCollapse: 'collapse', fontSize: 'inherit' }}>
                   <tbody><tr>
                     <td className="text-left text-bold">Tổng tiền sản phẩm</td>
@@ -103,9 +105,7 @@ function PrintOrder(props) {
                         </p>
                       </td>
                       <td className="text-right">
-                        <span>
-                          order.shipping_lines[0].price | formatMoney
-                          </span>
+                        <span>0</span>
                         <span>0</span>
                       </td>
                     </tr>

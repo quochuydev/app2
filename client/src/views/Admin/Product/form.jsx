@@ -30,13 +30,15 @@ function ProductForm(props) {
   let setProduct = actions.setProduct;
 
   useEffect(() => {
-    if (product) {
+    console.log(product)
+    if (product && product.id) {
       setProduct(product);
+    } else {
+      setProduct({});
     }
   }, [product]);
 
   function onProductChange(e) {
-    console.log(e)
     setProduct({ [e.target.name]: e.target.value });
   }
 
@@ -67,8 +69,12 @@ function ProductForm(props) {
 
   async function removeVariant(variant) {
     try {
-      let result = await AdminServices.removeVariant(variant)
-      message.success(result.message);
+      if (!variant.isNew) {
+        let result = await AdminServices.removeVariant(variant)
+        message.success(result.message);
+      } else {
+        setProduct({ variants: productUpdate.variants.filter(e => e.id != variant.id) });
+      }
     } catch (error) {
       message.error(error.message);
     }
@@ -144,6 +150,22 @@ function ProductForm(props) {
     setVariantModel(variant);
     setShowVariantModel(true);
   }
+  let [count, setCount] = useState(0)
+  function handleAdd() {
+    const newVariant = {
+      id: count,
+      isNew: true,
+      option1: ``,
+      option2: ``,
+      option3: ``,
+      sku: '',
+      barcode: ``,
+      price: 0,
+      compare_at_price: 0,
+    };
+    setProduct({ variants: [...productUpdate.variants, newVariant] });
+    setCount(count + 1);
+  };
 
   return (
     <div>
@@ -177,7 +199,9 @@ function ProductForm(props) {
               <Tabs.TabPane tab="Địa chỉ" key="1">
                 <Row gutter={10}>
                   <Col span={24}>
-                    <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
+                    {/* <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button> */}
+                    <Button onClick={() => handleAdd()} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
                     <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" />
@@ -188,7 +212,7 @@ function ProductForm(props) {
           </Col>
         </Row>
       </Form>
-      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdatel={variantModel}
+      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel}
         showVariantModel={showVariantModel} />
     </div>
   )

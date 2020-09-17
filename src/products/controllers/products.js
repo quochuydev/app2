@@ -100,7 +100,6 @@ Controller.create = async function ({ data }) {
 Controller.update = async function ({ product_id, data }) {
   let result = {};
 
-
   if (!data.title) {
     throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
   }

@@ -34,8 +34,10 @@ function ProductDetail(props) {
 
 
   useEffect(() => {
-    if (product && product.id) {
-      setProductUpdate(product)
+    if (product && product.id && id != 'create') {
+      setProductUpdate(product);
+    } else {
+      setProductUpdate({});
     }
   }, [product])
 
