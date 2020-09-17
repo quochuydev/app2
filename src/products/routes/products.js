@@ -1,7 +1,7 @@
 const path = require('path');
 
 const {
-  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, deleteVariant
+  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, 
 } = require('../controllers/products');
 const VariantController = require('../controllers/variant');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
@@ -48,12 +48,6 @@ const router = ({ app }) => {
   });
   app.delete('/api/products/delete/:id', function (req, res, next) {
     deleteProduct({ product_id: req.params.id })
-      .then(result => res.json(result))
-      .catch(error => next(error));
-  });
-
-  app.delete('/api/variants/delete/:id', function (req, res, next) {
-    deleteVariant({ variant_id: req.params.id })
       .then(result => res.json(result))
       .catch(error => next(error));
   });
