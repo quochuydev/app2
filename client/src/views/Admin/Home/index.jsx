@@ -48,7 +48,7 @@ function Home(props) {
         </Col>
         <Col lg={8}>
           <Card>
-            <Statistic title="Hôm nay" value={reportOrdersGrowth.total} valueStyle={{ color: '#cf1322' }}
+            <Statistic title="Hôm nay" value={reportOrdersGrowth.count} valueStyle={{ color: '#cf1322' }}
               prefix={<Icon type="arrow-down" />} suffix="đơn hàng"
             />
           </Card>

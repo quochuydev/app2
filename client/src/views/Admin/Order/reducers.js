@@ -28,6 +28,8 @@ const initialState = Map({
 
 function OrdersReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case 'DEFAULT':
+      return state.merge({ ...payload });
     case 'LOAD_ORDERS_SUCCESS':
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':
