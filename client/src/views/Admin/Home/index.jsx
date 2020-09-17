@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
-  Layout, message, Statistic, Icon, Row, Col, Card
+  Layout, message, Statistic, Icon, Row, Col, Card, Tabs
 } from 'antd';
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
@@ -14,26 +14,15 @@ import LoadingPage from '../../Components/Loading/index';
 import AdminServices from '../../../services/adminServices';
 
 const { Content } = Layout;
+const { TabPane } = Tabs;
 
 function Home(props) {
   let { actions, orders } = props;
 
   useEffect(() => {
-    setIsProcessing(true);
     actions.loadOrders({ limit: 9999 });
-    setIsProcessing(false);
+    actions.reportOrdersTotalMonth();
   }, []);
-
-  const [alert, setAlert] = useState({
-    messageSuccess: '',
-    messageFailed: '',
-    showAlert: false,
-    isError: false,
-  });
-  const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) {
-    return <LoadingPage isProcessing={isProcessing} />;
-  }
 
   const options = {
     title: {
@@ -44,8 +33,28 @@ function Home(props) {
     }]
   }
 
+  function callback(key) {
+    console.log(key);
+  }
+
   return (
     <div>
+      <Row gutter={[15, 15]}>
+        <Col lg={24}>
+          <Tabs onChange={callback} type="card">
+            <TabPane tab="Tab 1" key="1">
+              Content of Tab Pane 1
+    </TabPane>
+            <TabPane tab="Tab 2" key="2">
+              Content of Tab Pane 2
+    </TabPane>
+            <TabPane tab="Tab 3" key="3">
+              Content of Tab Pane 3
+    </TabPane>
+          </Tabs>
+        </Col>
+      </Row>
+
       <Row gutter={[15, 15]}>
         <Col span={12}>
           <Card>

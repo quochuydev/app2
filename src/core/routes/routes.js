@@ -41,6 +41,7 @@ const routes = (app) => {
   require(path.resolve('./src/products/routes/products'))({ app });
   require(path.resolve('./src/users/routes/users'))({ app });
   require(path.resolve('./src/shop/routes/shop'))({ app });
+  require(path.resolve('./src/report/routes'))({ app });
 }
 
 module.exports = routes;

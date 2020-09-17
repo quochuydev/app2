@@ -31,7 +31,7 @@ const URLS = {
   CREATE_VARIANT: 'api/products/{id}/variants',
   UPDATE_VARIANT: 'api/products/{id}/variants/{variant_id}',
   REMOVE_VARIANT: 'api/products/{id}/variants/{variant_id}',
-  
+
   LIST_STAFFS: 'api/staffs',
 
   INSTALL_WOOCOMMERCE_APP: 'api/woocommerce/install',
@@ -206,6 +206,12 @@ async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
 }
 
+const Report = {
+  OrdersTotalMonth: async function (data) {
+    return await ApiClient.postData('api/report/orders-total-month', null, data);
+  }
+};
+
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
@@ -213,6 +219,7 @@ export default {
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
-  createVariant, updateVariant, removeVariant, 
+  createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
+  Report
 }
