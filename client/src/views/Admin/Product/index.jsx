@@ -177,13 +177,8 @@ function Products(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="Commerce">
-              <Select
-                mode="multiple"
-                name="type_in"
-                style={{ width: '100%' }}
-                placeholder="-- Chọn --"
-                onChange={onChangeType}
-              >
+              <Select mode="multiple" name="type_in"
+                style={{ width: '100%' }} placeholder="-- Chọn --" onChange={onChangeType}>
                 <Option value='app'>App</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>

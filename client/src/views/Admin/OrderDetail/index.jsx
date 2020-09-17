@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
@@ -36,14 +36,14 @@ function OrderDetailComponent(props) {
     },
     {
       title: 'Chi phí', key: 'price', render: edit => (
-        <CurrencyFormat value={edit.price} suffix={'đ'}
+        <NumberFormat value={edit.price} suffix={'đ'}
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
     { title: 'Số lượng', dataIndex: 'quantity', key: 'quantity', },
     {
       title: 'Tổng tiền', key: 'total', render: edit => (
-        <CurrencyFormat value={edit.total} suffix={'đ'}
+        <NumberFormat value={edit.total} suffix={'đ'}
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
@@ -100,11 +100,11 @@ function OrderDetailComponent(props) {
                 </Button>
               </Col>
               <Col xs={24} lg={12}>
-                <p>Tổng tiền: <CurrencyFormat value={order.total_price} suffix={'đ'}
+                <p>Tổng tiền: <NumberFormat value={order.total_price} suffix={'đ'}
                   thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
-                <p>Đã thanh toán: <CurrencyFormat value={order.total_pay} suffix={'đ'}
+                <p>Đã thanh toán: <NumberFormat value={order.total_pay} suffix={'đ'}
                   thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
-                <p>Còn lại: <CurrencyFormat value={order.total_price - order.total_pay} suffix={'đ'}
+                <p>Còn lại: <NumberFormat value={order.total_price - order.total_pay} suffix={'đ'}
                   thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" /></p>
                 <Button type="primary" onClick={() => { payOrder(order) }}>
                   Xác nhận thanh toán

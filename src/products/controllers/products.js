@@ -47,6 +47,8 @@ Controller.list = async (req, res) => {
 Controller.getProduct = async function ({ product_id }) {
   let result = {}
   result.product = await ProductModel._findOne({ id: product_id });
+  let variants = await VariantModel._find({ product_id, is_deleted: false });
+  result.product.variants = variants;
   return result;
 }
 

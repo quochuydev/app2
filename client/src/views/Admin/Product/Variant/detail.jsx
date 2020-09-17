@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import CurrencyFormat from 'react-currency-format';
 import NumberFormat from 'react-number-format';
 
 import * as productActions from '../actions';

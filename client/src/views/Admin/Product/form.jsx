@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
-import CurrencyFormat from 'react-currency-format';
 import NumberFormat from 'react-number-format';
 
 import * as productActions from './actions';
@@ -27,24 +26,28 @@ let { Option } = Select;
 
 function ProductForm(props) {
   const { product, productUpdate, actions } = props;
-  let setProduct = actions.setProduct;
+  let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
 
+  let setProduct = actions.setProduct;
   useEffect(() => {
     console.log(product)
     if (product && product.id) {
       setProduct(product);
     } else {
-      setProduct({});
+      setProduct({ option_1: options[0], option_2: options[1], option_3: options[2] });
     }
   }, [product]);
 
   const columns = [
     {
       title: (
-        <Select value={_.get(productUpdate, 'option_1')} name="option_1" onChange={e => onChangeField('option_1', e)}>
-          <Option value={'Chất liệu'}>Chất liệu</Option>
-          <Option value={'Kích thước'}>Kích thước</Option>
-          <Option value={'Màu sắc'}>Màu sắc</Option>
+        <Select value={productUpdate.option_1} name="option_1" onChange={e => onChangeField('option_1', e)}>
+          {
+            options.map(item =>
+              <Option disabled={[productUpdate.option_1, productUpdate.option_2, productUpdate.option_3].includes(item)}
+                key={item} value={item}>{item}</Option>
+            )
+          }
         </Select>
       ), key: 'option1', render: (edit, index) => <div>
         <Input name="option1" value={edit.option1} onChange={e => onVariantChange(e, edit.id)} />
@@ -52,10 +55,13 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={_.get(productUpdate, 'option_2')} name="option_2" onChange={e => onChangeField('option_2', e)}>
-          <Option value={'Chất liệu'}>Chất liệu</Option>
-          <Option value={'Kích thước'}>Kích thước</Option>
-          <Option value={'Màu sắc'}>Màu sắc</Option>
+        <Select value={productUpdate.option_2} name="option_2" onChange={e => onChangeField('option_2', e)}>
+          {
+            options.map(item =>
+              <Option disabled={[productUpdate.option_1, productUpdate.option_2, productUpdate.option_3].includes(item)}
+                key={item} value={item}>{item}</Option>
+            )
+          }
         </Select>
       ), key: 'option2', render: edit => <div>
         <Input name="option2" value={edit.option2} onChange={e => onVariantChange(e, edit.id)} />
@@ -63,10 +69,13 @@ function ProductForm(props) {
     },
     {
       title: (
-        <Select value={_.get(productUpdate, 'option_3')} name="option_3" onChange={e => onChangeField('option_3', e)}>
-          <Option value={'Chất liệu'}>Chất liệu</Option>
-          <Option value={'Kích thước'}>Kích thước</Option>
-          <Option value={'Màu sắc'}>Màu sắc</Option>
+        <Select value={productUpdate.option_3} name="option_3" onChange={e => onChangeField('option_3', e)}>
+          {
+            options.map(item =>
+              <Option disabled={[productUpdate.option_1, productUpdate.option_2, productUpdate.option_3].includes(item)}
+                key={item} value={item}>{item}</Option>
+            )
+          }
         </Select>
       ), key: 'option3', render: edit => <div>
         <Input name="option3" value={edit.option3} onChange={e => onVariantChange(e, edit.id)} />

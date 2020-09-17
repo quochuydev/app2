@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
-import CurrencyFormat from 'react-currency-format';
 import NumberFormat from 'react-number-format';
 
 const common = {}

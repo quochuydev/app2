@@ -83,6 +83,7 @@ async function create({ body }) {
 
     gateway_code: data.gateway_code,
     financial_status: data.financial_status,
+    carrier_cod_status_code: data.carrier_cod_status_code,
 
     billing: data.shipping_address,
     shipping: data.shipping_address,
@@ -90,6 +91,11 @@ async function create({ body }) {
     shipping_address: data.shipping_address,
     created_at: new Date(),
   };
+
+  if (order_data.total_price == 0) {
+    order_data.financial_status = 'paid';
+  }
+
   let order = await OrderModel._create(order_data);
   return { error: false, order, message: `Tạo đơn hàng thành công [${order.id}]` };
 }
