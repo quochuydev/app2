@@ -146,7 +146,9 @@ function ProductForm(props) {
   const [variantModel, setVariantModel] = useState(null);
 
   function onShowVariant({ product, variant = {} }) {
-    variant.product_id = product.id;
+    if (product) {
+      variant.product_id = product.id;
+    }
     setVariantModel(variant);
     setShowVariantModel(true);
   }
@@ -199,8 +201,8 @@ function ProductForm(props) {
               <Tabs.TabPane tab="Địa chỉ" key="1">
                 <Row gutter={10}>
                   <Col span={24}>
-                    {/* <Button onClick={() => onShowVariant({ product: productUpdate })} type="primary"
-                      style={{ marginBottom: 16 }}>Thêm variant</Button> */}
+                    <Button onClick={() => onShowVariant({})} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button>
                     <Button onClick={() => handleAdd()} type="primary"
                       style={{ marginBottom: 16 }}>Thêm variant</Button>
                     <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}

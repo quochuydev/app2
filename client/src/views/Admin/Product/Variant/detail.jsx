@@ -38,11 +38,24 @@ function ProductForm(props) {
   }
 
   async function assertVariant() {
+    console.log(product);
     console.log(variant);
     try {
-      let action = variant.id ? 'updateVariant' : 'createVariant'
-      let result = await AdminServices[action](variant);
-      message.success(result.message);
+      // let action = variant.id ? 'updateVariant' : 'createVariant'
+      let action = null;
+      if (variant.id) {
+        action = 'updateVariant';
+        let result = await AdminServices[action](variant);
+        message.success(result.message);
+      } else {
+        if (product.id) {
+          action = 'createVariant';
+          let result = await AdminServices[action](variant);
+          message.success(result.message);
+        } else {
+          actions.setProduct({ variants: [...product.variants, variant] });
+        }
+      }
       props.setShowVariantModel(false);
     } catch (error) {
       props.setShowVariantModel(false);
@@ -76,7 +89,8 @@ function ProductForm(props) {
             </Col>
             <Col xs={24} lg={12}>
               <Form.Item label="Giá" onChange={e => onVariantChange(e)}>
-                <Input name="price" value={variant.price} />
+                <NumberFormat className="ant-input" name="price" thousandSeparator={true} suffix={'đ'}
+                  value={variant.price} style={{ textAlign: 'right' }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
