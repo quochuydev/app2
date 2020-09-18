@@ -32,13 +32,13 @@ function ProductDetail(props) {
   let setProduct = actions.setProduct;
 
   useEffect(() => {
-    if (id && id != 'create') {
+    if (id && !!Number(id)) {
       actions.getProduct(id);
     }
   }, [])
 
   useEffect(() => {
-    if (product && product.id && id != 'create') {
+    if (product && product.id && !!Number(id)) {
       setProduct(product);
     } else {
       setProduct({});
@@ -126,8 +126,12 @@ function ProductDetail(props) {
     },
     {
       title: '', key: 'option', render: edit => <div>
-        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>update</Button>
-        <Button onClick={e => removeVariant(edit, productUpdate)}>X]</Button>
+        <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>
+          <Icon type="edit" />
+        </Button>
+        <Button onClick={e => removeVariant(edit, productUpdate)}>
+          <Icon type="close" />
+        </Button>
       </div>
     },
   ];
@@ -278,6 +282,7 @@ function ProductDetail(props) {
                 <Icon type="upload" /> Upload
                 </Upload.Dragger>
             </Card>
+            <Button size="large" type="danger" onClick={e => { }}>Xóa sản phẩm</Button>
           </Col>
         </Row>
       </Form>
