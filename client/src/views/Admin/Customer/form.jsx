@@ -25,15 +25,25 @@ let { Option } = Select;
 function CustomerForm(props) {
   const { CoreActions, customer, actions, provinces, districts, wards } = props;
 
-  useEffect(() => {
-    CoreActions.listProvinces();
-    CoreActions.listDistricts();
-    CoreActions.listWards();
-  }, []);
-
   let [customerUpdate, setCustomerUpdate] = useState({
     default_address: {}
   });
+
+  useEffect(() => {
+    CoreActions.listProvinces();
+  }, [])
+
+  useEffect(() => {
+    if (provinces[0]) {
+      CoreActions.listDistricts({ province_code: provinces[0].code });
+    }
+  }, [provinces])
+
+  useEffect(() => {
+    if (districts[0]) {
+      CoreActions.listWards({ district_code: districts[0].code });
+    }
+  }, [districts])
 
   useEffect(() => {
     if (customer.id) {

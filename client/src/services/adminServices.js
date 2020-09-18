@@ -214,24 +214,24 @@ async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
 }
 
-async function listProvinces() {
-  return await ApiClient.getData(URLS.LIST_PROVINCES);
+async function listProvinces(query) {
+  return await ApiClient.getData(URLS.LIST_PROVINCES, null, query);
 }
 async function getProvince(id) {
   let url = compile(URLS.GET_PROVINCE, { id });
   return await ApiClient.getData(url);
 }
 
-async function listDistricts() {
-  return await ApiClient.getData(URLS.LIST_DISTRICTS);
+async function listDistricts(query) {
+  return await ApiClient.getData(URLS.LIST_DISTRICTS, null, query);
 }
 async function getDistrict(id) {
   let url = compile(URLS.GET_DISTRICT, { id });
   return await ApiClient.getData(url);
 }
 
-async function listWards() {
-  return await ApiClient.getData(URLS.LIST_WARDS);
+async function listWards(query) {
+  return await ApiClient.getData(URLS.LIST_WARDS, null, query);
 }
 async function getWard(id) {
   let url = compile(URLS.GET_WARD, { id });
