@@ -145,4 +145,36 @@ Controller.pay = async function ({ order_id }) {
   return { error: false, order: updated_order, message: 'Cập nhật thanh toán thành công!' };
 }
 
+/**
+{
+customer: 'Khách hàng đổi ý',
+fraud: 'Đơn hàng giả mạo',
+inventory: 'Hết hàng',
+other: 'Khác'
+}
+ */
+
+Controller.cancel = async function ({ order_id, data }) {
+  let found_order = await OrderModel._findOne({ id: order_id });
+
+  if (!['customer', 'fraud', 'inventory', 'other',].includes(data.cancel_reason)) {
+    throw { message: 'Lí do hủy đơn không đúng định dạng' }
+  }
+
+  if (data.cancel_reason == 'other' && !data.cancel_note) {
+    throw { message: 'Vui lòng nhập ghi chú hủy đơn' }
+  }
+
+  let order_data = {
+    cancelled_at: new Date(),
+    cancel_reason: data.cancel_reason,
+    cancel_note: data.cancel_note,
+  }
+
+  let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
+
+  return { error: false, order: updated_order, message: 'Hủy đơn thành công!' };
+}
+
+
 module.exports = Controller;

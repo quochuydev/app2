@@ -81,7 +81,7 @@ const OrderSchema = new Schema({
   custom_total_shipping_price: { type: Number, default: 0 },
   total_pay: { type: Number, default: 0 },
   total_refund: { type: Number, default: 0 },
-  
+
   carrier_cod_status_code: { type: String, default: null },
   financial_status: { type: String, default: null },
   fulfillment_status: { type: String, default: null },
@@ -95,8 +95,15 @@ const OrderSchema = new Schema({
   attributes: [],
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
+
+  cancelled_at: { type: Date, default: null },
+  cancel_reason: { type: String, default: null },
+  cancel_note: { type: String, default: null },
+
   is_deleted: { type: Boolean, default: false },
+  deleted_at: { type: Date, default: null },
+  
+  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })

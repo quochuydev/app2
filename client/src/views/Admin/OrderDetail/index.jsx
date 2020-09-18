@@ -6,6 +6,7 @@ import NumberFormat from 'react-number-format';
 
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
+  Popover,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -70,11 +71,33 @@ function OrderDetailComponent(props) {
     }
   }
 
+  async function reOrder(order) {
+
+  }
+
+  async function cancelOrder(order) {
+
+  }
+
   return (
     <div>
       {
         !!(order && order.id) ? <Row gutter={15} >
           <Col xs={24} lg={16}>
+            <Popover placement="topLeft" content={
+              <div>
+                <Button className="block" onClick={() => reOrder(order)}>
+                  Đặt lại đơn hàng
+                </Button>
+                <Button className="block" onClick={() => cancelOrder(order)}>
+                  Hủy đơn
+                </Button>
+              </div>
+            } trigger="click">
+              <Button icon="plus-circle" size="large" >
+              </Button>
+            </Popover>
+
             <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
             <Row>
               <Col xs={24} lg={12}>
