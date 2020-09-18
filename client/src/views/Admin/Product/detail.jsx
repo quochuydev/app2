@@ -273,13 +273,12 @@ function ProductDetail(props) {
                 }
               }}
             />
+            <Card size="small" title="Hình ảnh sản phẩm">
+              <Upload.Dragger {...uploadSetting}>
+                <Icon type="upload" /> Upload
+                </Upload.Dragger>
+            </Card>
           </Col>
-          <Card size="small" title="Hình ảnh sản phẩm">
-            <Upload.Dragger {...uploadSetting}>
-              <Icon type="upload" /> Upload
-              </Upload.Dragger>
-          </Card>
-
         </Row>
       </Form>
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
