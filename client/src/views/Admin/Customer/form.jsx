@@ -40,7 +40,7 @@ function CustomerForm(props) {
   }, [provinces])
 
   useEffect(() => {
-    if (provinces[0]) {
+    if (customerUpdate.default_address.province_code) {
       CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
     }
   }, [customerUpdate.default_address.province_code])
@@ -153,7 +153,7 @@ function CustomerForm(props) {
                   <Form.Item label="Tỉnh">
                     <Select name="province_code" value={customerUpdate.default_address.province_code}
                       onChange={e => onAddressFieldChange('province_code', e)}>
-                      {/* <Option value={null}>-- Vui lòng chọn --</Option> */}
+                      <Option value={null}>-- Vui lòng chọn --</Option>
                       {
                         provinces.map(item =>
                           <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -166,7 +166,7 @@ function CustomerForm(props) {
                   <Form.Item label="Huyện">
                     <Select name="district_code" value={customerUpdate.default_address.district_code}
                       onChange={e => onAddressFieldChange('district_code', e)} >
-                      {/* <Option value={null}>-- Vui lòng chọn --</Option> */}
+                      <Option value={null}>-- Vui lòng chọn --</Option>
                       {
                         districts.map(item =>
                           <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -176,7 +176,7 @@ function CustomerForm(props) {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Xã">
+                  <Form.Item label="Xã.">
                     <Select name="ward_code" value={customerUpdate.default_address.ward_code}
                       onChange={e => onAddressFieldChange('ward_code', e)} >
                       <Select.Option value={null}>-- Vui lòng chọn --</Select.Option>
