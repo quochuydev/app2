@@ -14,14 +14,16 @@ let Middleware = (req, res, next) => {
       'woocommerce/return_url',
       'woocommerce/callback_url',
     ]
-    if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
+    if (authCallback.find(e => req.originalUrl.includes(e))) {
+      return next()
+    }
     let accesstoken = req.headers['accesstoken'];
     if (!accesstoken || accesstoken == 'null') {
-      return res.sendStatus(401);
+      throw { message: 'accessToken error', accesstoken }
     }
     let user = jwt.verify(accesstoken, config.hash_token);
     if (!(user && user.email)) {
-      return res.sendStatus(401);
+      throw { message: 'User invalid', user }
     }
     req.user = user;
     req.shop_id = user.shop_id;
