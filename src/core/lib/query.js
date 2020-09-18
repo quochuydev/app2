@@ -4,7 +4,7 @@ const cache = require('memory-cache');
 const _ = require('lodash');
 const escapeStringRegexp = require('escape-string-regexp');
 
-function _parse(body, option = {}) {
+function _parse(body, option = { writeLog: true }) {
   let { limit, page } = body;
   if (!limit) { limit = 20 }
   if (!page) { page = 1 }
@@ -30,14 +30,29 @@ function _parse(body, option = {}) {
   }
 
   for (field in query) {
-    Object.assign(criteria, formatCriteria(field, query[field]))
+    _.merge(criteria, formatCriteria(field, query[field]))
   }
   let sort = { created_at: -1 };
-  console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
+
+  if (option.writeLog) {
+    console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
+  }
   return { limit, page, skip, criteria, sort };
 }
 
-module.exports = { _parse }
+function _aggregate({ aggregate }) {
+  let { match = {}, group = {}, sort = { _id: 1 } } = aggregate;
+  let { criteria } = _parse(match, { writeLog: false });
+  let queryDSL = [
+    { $match: criteria },
+    { $group: group },
+    { $sort: sort }
+  ]
+  console.log(JSON.stringify(queryDSL));
+  return { queryDSL }
+}
+
+module.exports = { _parse, _aggregate }
 
 function formatCriteria(field, value) {
   if (typeof value == 'string') {
@@ -50,13 +65,13 @@ function formatCriteria(field, value) {
     return {}
   }
   if (_.endsWith(field, '_gte')) {
-    return { [field.slice(0, -4)]: { $gte: value } };
+    return { [field.slice(0, -4)]: { $gte: new Date(value) } };
   }
   if (_.endsWith(field, '_gt')) {
     return { [field.slice(0, -3)]: { $gt: value } };
   }
   if (_.endsWith(field, '_lte')) {
-    return { [field.slice(0, -4)]: { $lte: value } };
+    return { [field.slice(0, -4)]: { $lte: new Date(value) } };
   }
   if (_.endsWith(field, '_lt')) {
     return { [field.slice(0, -3)]: { $lt: value } };
