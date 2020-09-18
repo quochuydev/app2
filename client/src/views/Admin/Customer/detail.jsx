@@ -26,19 +26,17 @@ function CustomerDetail(props) {
 
   useEffect(() => {
     CoreActions.listProvinces();
-    CoreActions.listDistricts();
-    CoreActions.listWards();
   }, []);
 
   useEffect(() => {
-    if (customer.id) {
+    if (!!(customer.id)) {
       setCustomerUpdate(customer)
     } else {
       setCustomerUpdate({
         default_address: {}
       })
     }
-  }, [customer]);
+  }, [customer.id]);
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -123,7 +121,7 @@ function CustomerDetail(props) {
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Tỉnh" onChange={onAddressChange}>
-                        <Select value={customerUpdate.default_address.province_code} >
+                        <Select showSearch value={customerUpdate.default_address.province_code} >
                           {
                             provinces.map(item =>
                               <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -134,7 +132,7 @@ function CustomerDetail(props) {
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Huyện" onChange={onAddressChange}>
-                        <Select value={customerUpdate.default_address.district_code} >
+                        <Select showSearch value={customerUpdate.default_address.district_code} >
                           {
                             districts.map(item =>
                               <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -145,7 +143,7 @@ function CustomerDetail(props) {
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Xã" onChange={onAddressChange}>
-                        <Select value={customerUpdate.default_address.ward_code} >
+                        <Select showSearch value={customerUpdate.default_address.ward_code} >
                           {
                             wards.map(item =>
                               <Option key={item.id} value={item.code}>{item.name}</Option>

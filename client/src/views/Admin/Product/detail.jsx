@@ -39,7 +39,7 @@ function ProductDetail(props) {
   }, [])
 
   function onGetProduct() {
-    console.log(id)
+    console.log(id);
     if (id && !!Number(id)) {
       actions.getProduct(id);
     }
