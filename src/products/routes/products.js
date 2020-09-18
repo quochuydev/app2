@@ -1,9 +1,10 @@
 const path = require('path');
 
 const {
-  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, 
+  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct,
 } = require('../controllers/products');
 const VariantController = require('../controllers/variant');
+const { ProductImage } = require('../controllers/product-image');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
@@ -30,21 +31,13 @@ const router = ({ app }) => {
 
   app.post('/api/products/import', uploadToDisk.single('file'), function (req, res, next) {
     importProducts({ file: req.file.path })
-      .then(result => {
-        res.json(result);
-      })
-      .catch(error => {
-        next(error);
-      })
+      .then(result => res.json(result))
+      .catch(error => next(error))
   });
   app.post('/api/products/export', function (req, res, next) {
     exportExcel({ body: req.body })
-      .then(result => {
-        res.json(result);
-      })
-      .catch(error => {
-        next(error);
-      })
+      .then(result => res.json(result))
+      .catch(error => next(error))
   });
   app.delete('/api/products/delete/:id', function (req, res, next) {
     deleteProduct({ product_id: req.params.id })
@@ -70,7 +63,11 @@ const router = ({ app }) => {
       .catch(error => next(error));
   })
 
-
+  app.post('/api/products/:id/images', uploadToDisk.single('file'), function (req, res, next) {
+    ProductImage.assert({ product_id: req.params.id, data: req.body, file: req.file.path })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  });
 }
 
 module.exports = router;
