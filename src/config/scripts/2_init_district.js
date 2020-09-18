@@ -40,6 +40,9 @@ async function importWard() {
   let tasks = [];
   for (const ward of wards) {
     let options = { new: true, lean: true, upsert: true, setDefaultsOnInsert: true };
+    ward.code = ward.ward_code;
+    ward.name = ward.ward_name;
+    ward.normalized_name = ward.ward_normalized_name;
     let task = WardModel.findOneAndUpdate({ id: ward.id }, { $set: ward }, options);
     tasks.push(task);
   }

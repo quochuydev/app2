@@ -13,13 +13,13 @@ module.exports = ({ app }) => {
   })
 
   app.get('/api/districts', async function (req, res, next) {
-    let { criteria } = _parse(req.query);
+    let { criteria } = _parse(req.query, { no_check_shop: true, no_check_delete: true });
     let districts = await DistrictModel.find(criteria).lean(true);
     res.json({ districts });
   })
 
   app.get('/api/wards', async function (req, res, next) {
-    let { criteria } = _parse(req.query);
+    let { criteria } = _parse(req.query, { no_check_shop: true, no_check_delete: true });
     let wards = await WardModel.find(criteria).limit(20).lean(true);
     res.json({ wards });
   })

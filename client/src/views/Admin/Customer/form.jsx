@@ -40,10 +40,22 @@ function CustomerForm(props) {
   }, [provinces])
 
   useEffect(() => {
+    if (provinces[0]) {
+      CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    }
+  }, [customerUpdate.default_address.province_code])
+
+  useEffect(() => {
     if (districts[0]) {
       CoreActions.listWards({ district_code: districts[0].code });
     }
   }, [districts])
+
+  useEffect(() => {
+    if (districts[0]) {
+      CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    }
+  }, [customerUpdate.default_address.district_code])
 
   useEffect(() => {
     if (customer.id) {
@@ -61,6 +73,13 @@ function CustomerForm(props) {
     customerUpdate.default_address[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate });
   }
+  function onAddressFieldChange(field, value) {
+    if (!customerUpdate.default_address) {
+      customerUpdate.default_address = {};
+    }
+    customerUpdate.default_address[field] = value;
+    setCustomerUpdate({ ...customerUpdate });
+  }
   async function addCustomer(e) {
     e.preventDefault();
     try {
@@ -73,8 +92,8 @@ function CustomerForm(props) {
     }
   }
 
-  function onCustomerChangeField(e, field) {
-    setCustomerUpdate({ ...customerUpdate, [field]: e });
+  function onFieldChange(field, value) {
+    setCustomerUpdate({ ...customerUpdate, [field]: value });
   }
 
   return (
@@ -92,7 +111,7 @@ function CustomerForm(props) {
                     <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />
                   </Form.Item>
                   <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
-                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')}
+                    <DatePicker name="birthday" onChange={(e) => onFieldChange('birthday', new Date(e))}
                       defaultValue={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
                   </Form.Item>
                 </Col>
@@ -131,9 +150,10 @@ function CustomerForm(props) {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Tỉnh" onChange={onAddressChange}>
-                    <Select value={customerUpdate.default_address.province_code}>
-                      <Option value={null}>-- Vui lòng chọn --</Option>
+                  <Form.Item label="Tỉnh">
+                    <Select name="province_code" value={customerUpdate.default_address.province_code}
+                      onChange={e => onAddressFieldChange('province_code', e)}>
+                      {/* <Option value={null}>-- Vui lòng chọn --</Option> */}
                       {
                         provinces.map(item =>
                           <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -143,9 +163,10 @@ function CustomerForm(props) {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Huyện" onChange={onAddressChange}>
-                    <Select value={customerUpdate.default_address.district_code} >
-                      <Option value={null}>-- Vui lòng chọn --</Option>
+                  <Form.Item label="Huyện">
+                    <Select name="district_code" value={customerUpdate.default_address.district_code}
+                      onChange={e => onAddressFieldChange('district_code', e)} >
+                      {/* <Option value={null}>-- Vui lòng chọn --</Option> */}
                       {
                         districts.map(item =>
                           <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -155,8 +176,9 @@ function CustomerForm(props) {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Xã" onChange={onAddressChange}>
-                    <Select value={customerUpdate.default_address.ward_code} >
+                  <Form.Item label="Xã">
+                    <Select name="ward_code" value={customerUpdate.default_address.ward_code}
+                      onChange={e => onAddressFieldChange('ward_code', e)} >
                       <Select.Option value={null}>-- Vui lòng chọn --</Select.Option>
                       {
                         wards.map(item =>
