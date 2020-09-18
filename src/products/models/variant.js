@@ -11,11 +11,11 @@ const cache = require('memory-cache');
 const VariantSchema = new Schema({
   id: { type: Number, default: null },
   product_id: { type: Number, default: null },
-  price: { type: Number, default: null },
+  price: { type: Number, default: 0 },
+  compare_at_price: { type: Number, default: 0 },
   sku: { type: String, default: null },
   barcode: { type: String, default: null },
   title: { type: String, default: null },
-  compare_at_price: { type: Number, default: null },
   option1: { type: String, default: null },
   option2: { type: String, default: null },
   option3: { type: String, default: null },
@@ -45,6 +45,12 @@ VariantSchema.statics._update = async function (filter = {}, data_update = {}, o
   let _this = this;
   filter.shop_id = cache.get('shop_id');
   let data = await _this.update(filter, data_update, option);
+  return data;
+}
+
+VariantSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  let data = await this.find(filter, populate, options);
   return data;
 }
 

@@ -10,7 +10,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import ReactToPrint from "react-to-print";
 import AsyncSelect from 'react-select/async';
-import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 import {
   Link
 } from "react-router-dom";
@@ -58,7 +58,7 @@ function Customer(props) {
     },
     {
       title: 'Đơn giá', key: 'price', render: edit => (
-        <CurrencyFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+        <NumberFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -76,7 +76,7 @@ function Customer(props) {
     },
     {
       title: 'Thành tiền', key: 'total', render: edit => (
-        <CurrencyFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+        <NumberFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -255,8 +255,10 @@ function Customer(props) {
   function onSearchChange(customerSelected) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
-      setOrder({ customer });
-      setOrder({ shipping_address: customer.default_address || {} });
+      if (customer) {
+        setOrder({ customer });
+        setOrder({ shipping_address: customer.default_address || {} });
+      }
     }
   };
 
@@ -401,7 +403,7 @@ function Customer(props) {
                     <p>Tạm tính</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat value={order.total_line_items_price} suffix={'đ'}
+                    <NumberFormat value={order.total_line_items_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -410,7 +412,7 @@ function Customer(props) {
                     <p>Phí vận chuyển</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
+                    <NumberFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ custom_total_shipping_price: e.floatValue })} />
                   </Col>
@@ -420,7 +422,7 @@ function Customer(props) {
                     <p>Khuyến mãi</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
+                    <NumberFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ total_discounts: e.floatValue })} />
                   </Col>
@@ -430,7 +432,7 @@ function Customer(props) {
                     <p>Thành tiền</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat value={order.total_price} suffix={'đ'}
+                    <NumberFormat value={order.total_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -454,7 +456,7 @@ function Customer(props) {
                 <List.Item.Meta
                   avatar={<Avatar shape="square" size={'large'} src={item.image ? item.image.src : null} />}
                   title={item.title} onClick={() => addVariant(item.product_id, item)}
-                  description={<CurrencyFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
+                  description={<NumberFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
                 />
               </Menu.Item>
             )) : null

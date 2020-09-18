@@ -12,8 +12,13 @@ const ImageSchema = new Schema({
   id: { type: Number, default: null },
   src: { type: String, default: null },
   filename: { type: String, default: null },
+  attachment: { type: String, default: null },
   product_id: { type: Number, default: null },
-  variant_id: { type: Number, default: null },
+  variant_ids: [Number],
+  metafield: {
+    key: { type: String, default: null },
+    value: { type: String, default: null },
+  },
   created_at: { type: Date, default: null },
   updated_at: { type: Date, default: null },
   shop_id: { type: Number, default: null },
@@ -30,8 +35,8 @@ ImageSchema.statics._create = async function (data = {}) {
 
 ImageSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  let data = await _this.update({ ...filter, shop_id }, data_update, option);
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.update(filter, data_update, option);
   return data;
 }
 

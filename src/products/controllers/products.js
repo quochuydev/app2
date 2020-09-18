@@ -47,6 +47,8 @@ Controller.list = async (req, res) => {
 Controller.getProduct = async function ({ product_id }) {
   let result = {}
   result.product = await ProductModel._findOne({ id: product_id });
+  let variants = await VariantModel._find({ product_id, is_deleted: false });
+  result.product.variants = variants;
   return result;
 }
 
@@ -122,7 +124,7 @@ Controller.update = async function ({ product_id, data }) {
     }
   }
 
-  let found_variants = await VariantModel.find({ product_id }).lean(true);
+  let found_variants = await VariantModel.find({ product_id, is_deleted: false }).lean(true);
   let found_product = await ProductModel._findOne({ id: product_id });
   let product = makeDataProduct(data);
   product.variants = found_variants;
@@ -270,7 +272,7 @@ Controller.importProducts = async function ({ file }) {
             await VariantModel._update({ id: found_variant.id }, { $set: variant });
             result.variant_updated++;
 
-            let variants = await VariantModel.find({ product_id: item.product_id }).lean(true);
+            let variants = await VariantModel.find({ product_id: item.product_id, is_deleted: false }).lean(true);
             await ProductModel._update({ id: found_product.id }, { $set: { variants } });
             result.product_updated++;
           } else {
@@ -335,27 +337,6 @@ Controller.deleteProduct = async function ({ product_id }) {
   await VariantModel.remove({ product_id });
 
   return { message: 'Xóa sản phẩm thành công' }
-}
-
-
-Controller.deleteVariant = async function ({ variant_id }) {
-  let count_order = await OrderModel.count({ 'line_items.variant_id': variant_id });
-  if (count_order) {
-    throw { message: 'Không thể xóa sản phẩm đã phát sinh đơn hàng' }
-  }
-
-  let found_variant = await VariantModel.findOne({ id: variant_id }).lean(true);
-  if (!found_variant) {
-    throw { message: 'Biến thể không còn tồn tại' }
-  }
-
-  await VariantModel.remove({ id: variant_id });
-  let found_product = await ProductModel.find({ 'variants.id': variant_id });
-
-  let variants = found_product.variants.filter(e => e.id != variant_id);
-  await ProductModel.update({ id: found_product.id }, { $set: { variants } });
-
-  return { message: 'Xóa biến thể thành công' }
 }
 
 module.exports = Controller;

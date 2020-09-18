@@ -203,7 +203,7 @@ function Customer(props) {
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
-            expandedRowRender={expended} scroll={{ x: 1000 }} />
+            expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
           <Pagination showTotal={total => <span>{total}</span>} defaultCurrent={1} total={count}
             size="small" name="page" onChange={onChangePage} />
         </Col>

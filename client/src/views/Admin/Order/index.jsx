@@ -6,7 +6,7 @@ import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
-import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
@@ -122,12 +122,12 @@ function Orders(props) {
     },
     {
       title: 'COD', key: 'carrier_cod_status_code', render: edit => (
-        <Tag color={"blue"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
+      <Tag color={"blue"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {
       title: 'Tổng tiền', key: 'total_price', render: edit => (
-        <CurrencyFormat value={edit.total_price} suffix={'đ'}
+        <NumberFormat value={edit.total_price} suffix={'đ'}
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },

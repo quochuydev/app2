@@ -46,12 +46,13 @@ function makeDataVariant(item) {
     sku: item.sku,
     barcode: item.barcode,
     taxable: item.taxable,
-    title: [item.option1, item.option2, item.option3].join(' / '),
+    title: item.title ? item.title : [item.option1, item.option2, item.option3].join(' / '),
     option1: item.option1,
     option2: item.option2,
     option3: item.option3,
     price: item.price,
     compare_at_price: item.compare_at_price,
+    is_deleted: false,
     created_at: new Date(),
   }
   variant.requires_shipping = item.requires_shipping == 'No' ? false : true;

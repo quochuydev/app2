@@ -28,11 +28,11 @@ const ProductSchema = new Schema({
   variants: [{
     id: { type: Number, default: null },
     product_id: { type: Number, default: null },
-    price: { type: Number, default: null },
+    price: { type: Number, default: 0 },
+    compare_at_price: { type: Number, default: 0 },
     sku: { type: String, default: null },
     barcode: { type: String, default: null },
     title: { type: String, default: null },
-    compare_at_price: { type: Number, default: null },
     option1: { type: String, default: null },
     option2: { type: String, default: null },
     option3: { type: String, default: null },
