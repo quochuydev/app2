@@ -46,6 +46,15 @@ const URLS = {
 
   BUILD_LINK_MOMO: 'api/momo/buildlink',
 
+  LIST_PROVINCES: 'api/provinces',
+  GET_PROVINCES: 'api/provinces/:id',
+
+  LIST_DISTRICTS: 'api/districts',
+  GET_DISTRICTS: 'api/districts/:id',
+
+  LIST_WARDS: 'api/wards',
+  GET_WARD: 'api/wards/:id',
+
   LOGIN: 'login',
   CHANGE_SHOP: 'change-shop',
 

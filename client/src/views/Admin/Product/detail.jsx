@@ -30,12 +30,18 @@ function ProductDetail(props) {
   const { product, productUpdate, actions } = props;
   const { id } = useParams();
   let setProduct = actions.setProduct;
+  let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
 
   useEffect(() => {
+    onGetProduct();
+  }, [])
+
+  function onGetProduct() {
     if (id && !!Number(id)) {
       actions.getProduct(id);
     }
-  }, [])
+    return;
+  }
 
   useEffect(() => {
     if (product && product.id && !!Number(id)) {
@@ -45,11 +51,9 @@ function ProductDetail(props) {
     }
   }, [product])
 
-  let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
-
   useEffect(() => {
     console.log(product)
-    if (product && product.id && product.id != 'create') {
+    if (product && product.id && !!Number(product.id)) {
       setProduct(product);
     } else {
       actions.resetProduct();
@@ -186,6 +190,8 @@ function ProductDetail(props) {
     } else {
       setProduct({ variants: productUpdate.variants.filter(e => e.id != variant.id) });
     }
+    onGetProduct();
+    return;
   }
 
   async function assertVariant({ product, variant }) {
@@ -203,6 +209,7 @@ function ProductDetail(props) {
       variant.id = Date.now();
       actions.setProduct({ variants: [...product.variants, variant] });
     }
+    onGetProduct();
     setShowVariantModel(false);
   }
 
