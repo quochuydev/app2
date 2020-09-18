@@ -6,20 +6,13 @@ const cache = require('memory-cache');
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
-const { _parse } = require(path.resolve('./src/core/lib/query'));
+const { _parse, _aggregate } = require(path.resolve('./src/core/lib/query'));
 
 let Controller = {}
 
 Controller.aggregateX = async function ({ data }) {
-  let { match = {}, group = {}, sort = { _id: 1 } } = data.aggregate;
+  let { queryDSL } = _aggregate({ aggregate: data.aggregate })
   let result = { items: [], count: 0 }
-  let { criteria } = _parse(match);
-  let queryDSL = [
-    { $match: criteria },
-    { $group: group },
-    { $sort: sort }
-  ]
-  console.log(JSON.stringify(queryDSL));
   let items = await OrderModel.aggregate(queryDSL);
   result.items = items;
   result.total = _.sum(items.map(e => e.count));

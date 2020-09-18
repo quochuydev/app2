@@ -6,6 +6,7 @@ import {
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { bindActionCreators } from 'redux';
+import moment from 'moment';
 
 import 'antd/dist/antd.css';
 import * as orderActions from '../Order/actions';
@@ -23,21 +24,30 @@ function Home(props) {
     actions.report({
       code: 'reportOrdersGrowthDay',
       aggregate: {
-        match: {},
+        match: {
+          created_at_gte: moment().startOf('day'),
+          created_at_lte: moment().endOf('day'),
+        },
         group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
       },
     });
     actions.report({
       code: 'reportOrdersGrowth',
       aggregate: {
-        match: {},
+        match: {
+          created_at_gte: moment().startOf('month'),
+          created_at_lte: moment().endOf('month'),
+        },
         group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
       },
     });
     actions.report({
       code: 'OrdersGrowthLastmonth',
       aggregate: {
-        match: { created_at: { $gte: new Date("2020-01-01T00:00:00.000Z"), $lte: new Date("2020-09-20T14:55:11.990Z") } },
+        match: {
+          created_at_gte: moment().subtract(1, 'months').startOf('month'),
+          created_at_lte: moment().subtract(1, 'months').endOf('month'),
+        },
         group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
       },
     });
@@ -45,7 +55,7 @@ function Home(props) {
 
   const options = {
     title: {
-      text: 'My chart'
+      text: 'Đơn hàng'
     },
     series: [
       {
@@ -63,21 +73,28 @@ function Home(props) {
       <Row gutter={[15, 15]}>
         <Col lg={8}>
           <Card>
-            <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} valueStyle={{ color: '#3f8600' }}
-              prefix={<Icon type="arrow-up" />} suffix="đ"
+            <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} suffix="đ"
+              valueStyle={{ color: reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? '#3f8600' : '#cf1322' }}
+              prefix={<Icon type={reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? 'arrow-up' : 'arrow-down'} />}
+            />
+            <Statistic value={reportOrdersGrowth.total} suffix="đơn hàng"
             />
           </Card>
         </Col>
         <Col lg={8}>
           <Card>
-            <Statistic title="Hôm nay" value={reportOrdersGrowth.total} valueStyle={{ color: '#cf1322' }}
-              prefix={<Icon type="arrow-down" />} suffix="đơn hàng"
+            <Statistic title="Hôm nay" value={reportOrdersGrowthDay.total_price} suffix="đơn hàng"
+              valueStyle={{ color: reportOrdersGrowthDay.total_price > OrdersGrowthLastmonth.total_price ? '#3f8600' : '#cf1322' }}
+              prefix={<Icon type={reportOrdersGrowthDay.total_price > OrdersGrowthLastmonth.total_price ? 'arrow-up' : 'arrow-down'} />}
+            />
+            <Statistic value={reportOrdersGrowthDay.total} suffix="đơn hàng"
             />
           </Card>
         </Col>
         <Col lg={8}>
           <Card>
             <Statistic title="Tháng trước" value={OrdersGrowthLastmonth.total_price} suffix="đ" />
+            <Statistic value={OrdersGrowthLastmonth.total} suffix="đơn hàng" />
           </Card>
         </Col>
         <Col lg={24}>
