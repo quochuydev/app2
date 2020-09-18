@@ -44,34 +44,6 @@ let auth = async (req, res) => {
   }
 }
 
-let middleware = (req, res, next) => {
-  try {
-    let authCallback = [
-      'haravan/login',
-      'haravan/grandservice',
-      'shopify/auth/callback',
-      'woocommerce/return_url',
-      'woocommerce/callback_url',
-    ]
-    if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
-    let accesstoken = req.headers['accesstoken'];
-    if (!accesstoken || accesstoken == 'null') {
-      return res.sendStatus(401);
-    }
-    let user = jwt.verify(accesstoken, hash_token);
-    if (!(user && user.email)) {
-      return res.sendStatus(401);
-    }
-    req.user = user;
-    req.shop_id = user.shop_id;
-    cache.put('shop_id', user.shop_id);
-    next();
-  } catch (error) {
-    logger(error)
-    res.sendStatus(401);
-  }
-}
-
 async function changeShop({ user, shop_id }) {
   let result = {};
   let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
@@ -173,7 +145,7 @@ let login = async (req, res, next) => {
       id: user.id,
       email: user.email,
       shop_id: user.shop_id,
-      exp: (Date.now() + 60 * 60 * 1000) / 1000
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
     res.json({ error: false, token: userToken, url: `${frontend_site}/loading?token=${userToken}` });
@@ -196,5 +168,5 @@ let logout_redirect = (req, res) => {
 
 module.exports = {
   auth, login, loginGoogle,
-  logout, middleware, logout_redirect, signup, changeShop, checkUser
+  logout, logout_redirect, signup, changeShop, checkUser
 }

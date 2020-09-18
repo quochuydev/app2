@@ -22,39 +22,7 @@ const { Option } = Select;
 
 function Products(props) {
   const { actions, products, count } = props;
-  const cssProductType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'red';
-    }
-  }
-  const cssStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-  const cssProductStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-
+  
   const columns = [
     {
       title: 'Tên sản phẩm', key: 'title',

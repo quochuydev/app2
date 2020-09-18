@@ -6,9 +6,19 @@ const { ImageModel } = require(path.resolve('./src/images/model.js'));
 
 const Controller = {}
 
+Controller.asserts = async function ({ images, product_id }) {
+
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i];
+    await Controller.assert({ product_id, data: image });
+  }
+
+  return { ok: true }
+}
+
 Controller.assert = async function ({ product_id, data, file }) {
   if (!product_id) {
-    throw { message: 'Chưa có thông tin product_id' }
+    throw { message: 'Chưa có thông tin product id' }
   }
 
   let data_update = {

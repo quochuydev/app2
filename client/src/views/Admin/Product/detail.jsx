@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
+import CKEditor from "react-ckeditor-component";
 
 import * as productActions from './actions';
 import VariantDetail from './Variant/detail'
@@ -19,13 +20,15 @@ import './style.css'
 
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
+import ApiClient from '../../../utils/apiClient';
+
+const apiUrl = `${config.backend_url}/api`;
 
 let { Option } = Select;
 
 function ProductDetail(props) {
   const { product, productUpdate, actions } = props;
   const { id } = useParams();
-  console.log(123, id);
   let setProduct = actions.setProduct;
 
   useEffect(() => {
@@ -142,7 +145,7 @@ function ProductDetail(props) {
     console.log(productUpdate);
     try {
       let action = productUpdate.id ? 'updateProduct' : 'createProduct'
-      let result = await AdminServices[action](productUpdate)
+      let result = await AdminServices[action](productUpdate);
       message.success(result.message);
     } catch (error) {
       message.error(error.message);
@@ -199,55 +202,88 @@ function ProductDetail(props) {
     setShowVariantModel(false);
   }
 
+  const uploadSetting = {
+    multiple: true,
+    action: `${apiUrl}/images`,
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
+
   return (
     <div>
-      {/* <ProductForm product={productUpdate} />
-       */}
-      <div>
-        <Form onSubmit={addProduct}>
-          <Row>
-            <Col span={5}>
-              <button className="btn-primary w-100" type="submit">Accept</button>
-            </Col>
-            <Col xs={24} lg={24}>
-              <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
-                <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} lg={12}>
-              <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
-                <Select value={1} >
-                  <Select.Option value={1}>Mới</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} lg={12}>
-              <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
-                <Select value={1} >
-                  <Select.Option value={1}>Mới</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
+      <Form onSubmit={addProduct}>
+        <Row>
+          <Col span={5}>
+            <button className="btn-primary w-100" type="submit">Accept</button>
+          </Col>
+          <Col xs={24} lg={24}>
+            <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
+              <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
+              <Select value={1} >
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
 
-            <Col xs={24} lg={24}>
-              <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Địa chỉ" key="1">
-                  <Row gutter={10}>
-                    <Col span={24}>
-                      <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
-                        style={{ marginBottom: 16 }}>Thêm variant</Button>
-                      <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
-                        pagination={false} size="small" />
-                    </Col>
-                  </Row>
-                </Tabs.TabPane>
-              </Tabs>
-            </Col>
-          </Row>
-        </Form>
-        <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
-          showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
-      </div>
+          <Col xs={24} lg={24}>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Địa chỉ" key="1">
+                <Row gutter={10}>
+                  <Col span={24}>
+                    <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button>
+                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                      pagination={false} size="small" />
+                  </Col>
+                </Row>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+
+          <Col xs={24} lg={24}>
+            <CKEditor
+              activeClass="p10"
+              content={productUpdate.body_html}
+              events={{
+                "change": function (evt) {
+                  let newContent = evt.editor.getData();
+                  console.log("onChange fired with event info: ", evt, newContent);
+                }
+              }}
+            />
+          </Col>
+          <Card size="small" title="Hình ảnh sản phẩm">
+            <Upload.Dragger {...uploadSetting}>
+              <Icon type="upload" /> Upload
+              </Upload.Dragger>
+          </Card>
+
+        </Row>
+      </Form>
+      <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
+        showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
     </div>
   )
 }
