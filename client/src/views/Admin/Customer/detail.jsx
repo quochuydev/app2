@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-
 import _ from 'lodash';
 import moment from 'moment';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -13,10 +14,24 @@ import 'antd/dist/antd.css';
 
 import AdminServices from '../../../services/adminServices';
 import * as customerActions from './actions';
+import * as coreActions from '../Core/actions';
+
+let { Option } = Select;
 
 function CustomerDetail(props) {
-  const { actions, visible, customer, onCloseModal, setDone } = props;
+  const { CoreActions, provinces, districts, wards, actions, visible, customer, onCloseModal, setDone } = props;
   const [customerUpdate, setCustomerUpdate] = useState({})
+
+  useEffect(() => {
+    CoreActions.listProvinces();
+    CoreActions.listDistricts();
+    CoreActions.listWards();
+  }, []);
+  useEffect(() => {
+    console.log(districts)
+    console.log(provinces)
+    console.log(wards)
+  }, [districts]);
 
   useEffect(() => {
     if (customer.id) {
@@ -24,7 +39,7 @@ function CustomerDetail(props) {
     } else {
       setCustomerUpdate({})
     }
-  }, [customer])
+  }, [customer]);
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -109,22 +124,34 @@ function CustomerDetail(props) {
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Tỉnh" onChange={onAddressChange}>
-                        <Select value={1} >
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select value={customerUpdate.default_address.province_code} >
+                          {
+                            provinces.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Huyện" onChange={onAddressChange}>
-                        <Select value={1}>
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select value={customerUpdate.default_address.district_code} >
+                          {
+                            districts.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Xã" onChange={onAddressChange}>
-                        <Select value={1} >
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select value={customerUpdate.default_address.ward_code} >
+                          {
+                            wards.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
                       </Form.Item>
                     </Col>
@@ -132,7 +159,6 @@ function CustomerDetail(props) {
                 </Tabs.TabPane>
               </Tabs>
             </Col>
-
             <Col span={24}>
               <button className="btn-primary w-100" type="submit">Accept</button>
             </Col>
@@ -143,5 +169,14 @@ function CustomerDetail(props) {
   )
 }
 
+const mapStateToProps = state => ({
+  provinces: state.core.get('provinces'),
+  districts: state.core.get('districts'),
+  wards: state.core.get('wards'),
+});
 
-export default CustomerDetail;
+const mapDispatchToProps = (dispatch) => ({
+  CoreActions: bindActionCreators(coreActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerDetail);

@@ -47,11 +47,9 @@ const URLS = {
   BUILD_LINK_MOMO: 'api/momo/buildlink',
 
   LIST_PROVINCES: 'api/provinces',
-  GET_PROVINCES: 'api/provinces/:id',
-
+  GET_PROVINCE: 'api/provinces/:id',
   LIST_DISTRICTS: 'api/districts',
-  GET_DISTRICTS: 'api/districts/:id',
-
+  GET_DISTRICT: 'api/districts/:id',
   LIST_WARDS: 'api/wards',
   GET_WARD: 'api/wards/:id',
 
@@ -198,6 +196,7 @@ async function updateVariant(data) {
   let url = compile(URLS.UPDATE_VARIANT, { id: data.product_id, variant_id: data.id });
   return await ApiClient.putData(url, null, data);
 }
+
 async function removeVariant(data) {
   let url = compile(URLS.REMOVE_VARIANT, { id: data.product_id, variant_id: data.id });
   return await ApiClient.deleteData(url, null, data);
@@ -213,6 +212,30 @@ async function changeShop(data) {
 
 async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
+}
+
+async function listProvinces() {
+  return await ApiClient.getData(URLS.LIST_PROVINCES);
+}
+async function getProvince(id) {
+  let url = compile(URLS.GET_PROVINCE, { id });
+  return await ApiClient.getData(url);
+}
+
+async function listDistricts() {
+  return await ApiClient.getData(URLS.LIST_DISTRICTS);
+}
+async function getDistrict(id) {
+  let url = compile(URLS.GET_DISTRICT, { id });
+  return await ApiClient.getData(url);
+}
+
+async function listWards() {
+  return await ApiClient.getData(URLS.LIST_WARDS);
+}
+async function getWard(id) {
+  let url = compile(URLS.GET_WARD, { id });
+  return await ApiClient.getData(url);
 }
 
 const Report = {
@@ -236,5 +259,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report
+  Report,
+  listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

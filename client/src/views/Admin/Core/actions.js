@@ -3,27 +3,27 @@ import AdminServices from '../../../services/adminServices';
 export const ACTIONS = {
 };
 
-export function loadProvinces() {
+export function listProvinces() {
   return async function (dispatch) {
-    const data = await AdminServices.loadProvinces();
+    const data = await AdminServices.listProvinces();
     dispatch({
       type: 'LIST', payload: { provinces: data.provinces }
     });
   }
 }
 
-export function loadDistricts() {
+export function listDistricts() {
   return async function (dispatch) {
-    const data = await AdminServices.loadDistricts();
+    const data = await AdminServices.listDistricts();
     dispatch({
       type: 'LIST', payload: { districts: data.districts }
     });
   }
 }
 
-export function loadWards() {
+export function listWards() {
   return async function (dispatch) {
-    const data = await AdminServices.loadWards();
+    const data = await AdminServices.listWards();
     dispatch({
       type: 'LIST', payload: { wards: data.wards }
     });
