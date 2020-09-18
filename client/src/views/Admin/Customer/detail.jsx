@@ -20,24 +20,23 @@ let { Option } = Select;
 
 function CustomerDetail(props) {
   const { CoreActions, provinces, districts, wards, actions, visible, customer, onCloseModal, setDone } = props;
-  const [customerUpdate, setCustomerUpdate] = useState({})
+  const [customerUpdate, setCustomerUpdate] = useState({
+    default_address: {}
+  })
 
   useEffect(() => {
     CoreActions.listProvinces();
     CoreActions.listDistricts();
     CoreActions.listWards();
   }, []);
-  useEffect(() => {
-    console.log(districts)
-    console.log(provinces)
-    console.log(wards)
-  }, [districts]);
 
   useEffect(() => {
     if (customer.id) {
       setCustomerUpdate(customer)
     } else {
-      setCustomerUpdate({})
+      setCustomerUpdate({
+        default_address: {}
+      })
     }
   }, [customer]);
 

@@ -18,14 +18,31 @@ import './style.css'
 
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
+import * as coreActions from '../Core/actions';
+
+let { Option } = Select;
 
 function CustomerForm(props) {
-  const { customer, actions } = props;
-
-  let [customerUpdate, setCustomerUpdate] = useState({});
+  const { CoreActions, customer, actions, provinces, districts, wards } = props;
 
   useEffect(() => {
-    setCustomerUpdate(customer);
+    CoreActions.listProvinces();
+    CoreActions.listDistricts();
+    CoreActions.listWards();
+  }, []);
+
+  let [customerUpdate, setCustomerUpdate] = useState({
+    default_address: {}
+  });
+
+  useEffect(() => {
+    if (customer.id) {
+      setCustomerUpdate(customer);
+    } else {
+      setCustomerUpdate({
+        default_address: {}
+      });
+    }
   }, [customer])
 
   function onCustomerChange(e) {
@@ -109,22 +126,37 @@ function CustomerForm(props) {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Tỉnh" onChange={onAddressChange}>
-                    <Select value={1} >
-                      <Select.Option value={1}>Mới</Select.Option>
+                    <Select value={customerUpdate.default_address.province_code}>
+                      <Option value={null}>-- Vui lòng chọn --</Option>
+                      {
+                        provinces.map(item =>
+                          <Option key={item.id} value={item.code}>{item.name}</Option>
+                        )
+                      }
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Huyện" onChange={onAddressChange}>
-                    <Select value={1}>
-                      <Select.Option value={1}>Mới</Select.Option>
+                    <Select value={customerUpdate.default_address.district_code} >
+                      <Option value={null}>-- Vui lòng chọn --</Option>
+                      {
+                        districts.map(item =>
+                          <Option key={item.id} value={item.code}>{item.name}</Option>
+                        )
+                      }
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Xã" onChange={onAddressChange}>
-                    <Select value={1} >
-                      <Select.Option value={1}>Mới</Select.Option>
+                    <Select value={customerUpdate.default_address.ward_code} >
+                      <Select.Option value={null}>-- Vui lòng chọn --</Select.Option>
+                      {
+                        wards.map(item =>
+                          <Option key={item.id} value={item.code}>{item.name}</Option>
+                        )
+                      }
                     </Select>
                   </Form.Item>
                 </Col>
@@ -132,9 +164,8 @@ function CustomerForm(props) {
             </Tabs.TabPane>
           </Tabs>
         </Col>
-
         <Col span={24}>
-          <button className="btn-primary w-100" type="submit">Accept</button>
+          <button className="btn-primary" type="submit">Accept</button>
         </Col>
       </Row>
     </Form>
@@ -142,10 +173,14 @@ function CustomerForm(props) {
 }
 
 const mapStateToProps = state => ({
+  provinces: state.core.get('provinces'),
+  districts: state.core.get('districts'),
+  wards: state.core.get('wards'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(productActions, dispatch)
+  actions: bindActionCreators(productActions, dispatch),
+  CoreActions: bindActionCreators(coreActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomerForm);
