@@ -38,10 +38,6 @@ function CustomerForm(props) {
   useEffect(() => {
     if (customer.id) {
       setCustomerUpdate(customer);
-    } else {
-      setCustomerUpdate({
-        default_address: {}
-      });
     }
   }, [customer])
 

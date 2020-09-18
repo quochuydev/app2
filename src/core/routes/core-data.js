@@ -6,17 +6,17 @@ const { WardModel } = require(path.resolve('./src/core/models/ward.js'));
 
 module.exports = ({ app }) => {
   app.get('/api/provinces', async function (req, res, next) {
-    let provinces = await ProvinceModel.find({}).lean(true);
+    let provinces = await ProvinceModel.find({}).limit(20).lean(true);
     res.json({ provinces });
   })
 
   app.get('/api/districts', async function (req, res, next) {
-    let districts = await DistrictModel.find({}).lean(true);
+    let districts = await DistrictModel.find({}).limit(20).lean(true);
     res.json({ districts });
   })
 
   app.get('/api/wards', async function (req, res, next) {
-    let wards = await WardModel.find({}).lean(true);
+    let wards = await WardModel.find({}).limit(20).lean(true);
     res.json({ wards });
   })
 
