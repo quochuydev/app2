@@ -36,17 +36,21 @@ Controller.OrdersGrowthDay = async function ({ }) {
   return { reportOrdersGrowthDay: result };
 }
 
-Controller.aggregateX = async function ({ match, group, sort = { _id: 1 } }) {
+Controller.aggregateX = async function ({ data }) {
+  let { match = {}, group = {}, sort = { _id: 1 } } = data.aggregate;
   let result = { items: [], count: 0 }
-  match.shop_id = cache.get('shop_id');
-  let items = await OrderModel.aggregate([
-    { $match: match },
+  let { criteria } = _parse(match);
+  let queryDSL = [
+    { $match: criteria },
     { $group: group },
     { $sort: sort }
-  ]);
+  ]
+  console.log(JSON.stringify(queryDSL))
+  let items = await OrderModel.aggregate(queryDSL);
   result.items = items;
   result.count = items.length;
-  return { aggregation: result };
+  result.total_price = _.sum(items.map(e => e.total_price));
+  return result;
 }
 
 module.exports = Controller;

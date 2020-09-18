@@ -159,11 +159,11 @@ export function reportOrdersGrowthDay(order) {
   }
 }
 
-export function report(aggre) {
+export function report({ code, aggregate }) {
   return async (dispatch) => {
-    const data = await AdminServices.Report.search(aggre);
+    const data = await AdminServices.Report.search({ aggregate });
     dispatch({
-      type: 'REPORT_SEARCH', payload: data
+      type: 'REPORT_SEARCH', payload: { [code]: data }
     });
   }
 }

@@ -17,12 +17,30 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 function Home(props) {
-  let { actions, orders, reportOrdersGrowth, reportOrdersGrowthDay } = props;
+  let { actions, orders, reportOrdersGrowth, reportOrdersGrowthDay, OrdersGrowthLastmonth } = props;
 
   useEffect(() => {
-    actions.loadOrders({ limit: 9999 });
-    actions.reportOrdersGrowth();
-    actions.reportOrdersGrowthDay();
+    actions.report({
+      code: 'reportOrdersGrowthDay',
+      aggregate: {
+        match: { created_at_gte: "2020-09-01T00:00:00.000Z", created_at_lte: "2020-09-30T23:59:59.999Z" },
+        group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
+      },
+    });
+    actions.report({
+      code: 'reportOrdersGrowth',
+      aggregate: {
+        match: { created_at_gte: "2020-09-01T00:00:00.000Z", created_at_lte: "2020-09-30T23:59:59.999Z" },
+        group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
+      },
+    });
+    actions.report({
+      code: 'OrdersGrowthLastmonth',
+      aggregate: {
+        match: { created_at: { $gte: new Date("2020-01-01T00:00:00.000Z"), $lte: new Date("2020-09-20T14:55:11.990Z") } },
+        group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
+      },
+    });
   }, []);
 
   const options = {
@@ -35,6 +53,10 @@ function Home(props) {
       }
     ],
   }
+
+  useEffect(() => {
+    console.log(OrdersGrowthLastmonth)
+  }, [OrdersGrowthLastmonth])
 
   return (
     <div>
@@ -55,15 +77,15 @@ function Home(props) {
         </Col>
         <Col lg={8}>
           <Card>
-            <Statistic title="Tháng trước" value={reportOrdersGrowth.total_price} suffix="đ" />
+            <Statistic title="Tháng trước" value={OrdersGrowthLastmonth.total_price} suffix="đ" />
           </Card>
         </Col>
-      </Row>
-      <Row>
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={options}
-        />
+        <Col lg={24}>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={options}
+          />
+        </Col>
       </Row>
     </div >
   );
@@ -73,6 +95,8 @@ const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
   reportOrdersGrowth: state.orders.get('reportOrdersGrowth'),
   reportOrdersGrowthDay: state.orders.get('reportOrdersGrowthDay'),
+  OrdersGrowthLastmonth: state.orders.get('OrdersGrowthLastmonth'),
+
 });
 
 const mapDispatchToProps = (dispatch) => ({

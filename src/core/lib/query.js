@@ -50,13 +50,13 @@ function formatCriteria(field, value) {
     return {}
   }
   if (_.endsWith(field, '_gte')) {
-    return { [field.slice(0, -4)]: { $gte: value } };
+    return { [field.slice(0, -4)]: { $gte: new Date(value) } };
   }
   if (_.endsWith(field, '_gt')) {
     return { [field.slice(0, -3)]: { $gt: value } };
   }
   if (_.endsWith(field, '_lte')) {
-    return { [field.slice(0, -4)]: { $lte: value } };
+    return { [field.slice(0, -4)]: { $lte: new Date(value) } };
   }
   if (_.endsWith(field, '_lt')) {
     return { [field.slice(0, -3)]: { $lt: value } };

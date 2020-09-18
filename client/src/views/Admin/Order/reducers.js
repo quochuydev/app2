@@ -24,6 +24,7 @@ const initialState = Map({
   reportOrdersGrowthDay: {
     total: 0, total_price: 0, items: []
   },
+  OrdersGrowthLastmonth: {}
 });
 
 function OrdersReducer(state = initialState, { type, payload }) {
