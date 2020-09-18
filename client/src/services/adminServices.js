@@ -239,12 +239,6 @@ async function getWard(id) {
 }
 
 const Report = {
-  OrdersGrowth: async function (data) {
-    return await ApiClient.postData('api/report/orders-growth', null, data);
-  },
-  OrdersGrowthDay: async function (data) {
-    return await ApiClient.postData('api/report/orders-growth-day', null, data);
-  },
   search: async function (data) {
     return await ApiClient.postData('api/report/search', null, data);
   },

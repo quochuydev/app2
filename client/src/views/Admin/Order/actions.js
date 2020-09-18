@@ -141,24 +141,6 @@ export function buildLinkMomoOrder(order) {
   }
 }
 
-export function reportOrdersGrowth(order) {
-  return async (dispatch) => {
-    const data = await AdminServices.Report.OrdersGrowth(order);
-    dispatch({
-      type: 'reportOrdersGrowth', payload: data
-    });
-  }
-}
-
-export function reportOrdersGrowthDay(order) {
-  return async (dispatch) => {
-    const data = await AdminServices.Report.OrdersGrowthDay(order);
-    dispatch({
-      type: 'reportOrdersGrowthDay', payload: data
-    });
-  }
-}
-
 export function report({ code, aggregate }) {
   return async (dispatch) => {
     const data = await AdminServices.Report.search({ aggregate });

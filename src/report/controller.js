@@ -10,32 +10,6 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 let Controller = {}
 
-Controller.OrdersGrowth = async function ({ }) {
-  let result = { items: [], count: 0, total_price: 0 }
-  let items = await OrderModel.aggregate([
-    { $match: { shop_id: cache.get('shop_id') } },
-    { $group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } } },
-    { $sort: { _id: 1 } }
-  ]);
-  result.items = items;
-  result.count = _.sum(items.map(e => e.count));
-  result.total_price = _.sum(items.map(e => e.total_price));
-  return { reportOrdersGrowth: result };
-}
-
-Controller.OrdersGrowthDay = async function ({ }) {
-  let result = { items: [], count: 0, total_price: 0 }
-  let items = await OrderModel.aggregate([
-    { $match: { shop_id: cache.get('shop_id'), created_at: { $gte: moment().startOf('day'), $lte: moment().endOf('day') } } },
-    { $group: { _id: { $hour: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } } },
-    { $sort: { _id: 1 } }
-  ]);
-  result.items = items;
-  result.count = _.sum(items.map(e => e.count));
-  result.total_price = _.sum(items.map(e => e.total_price));
-  return { reportOrdersGrowthDay: result };
-}
-
 Controller.aggregateX = async function ({ data }) {
   let { match = {}, group = {}, sort = { _id: 1 } } = data.aggregate;
   let result = { items: [], count: 0 }
@@ -45,10 +19,10 @@ Controller.aggregateX = async function ({ data }) {
     { $group: group },
     { $sort: sort }
   ]
-  console.log(JSON.stringify(queryDSL))
+  console.log(JSON.stringify(queryDSL));
   let items = await OrderModel.aggregate(queryDSL);
   result.items = items;
-  result.count = items.length;
+  result.total = _.sum(items.map(e => e.count));
   result.total_price = _.sum(items.map(e => e.total_price));
   return result;
 }

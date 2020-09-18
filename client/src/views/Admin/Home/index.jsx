@@ -23,14 +23,14 @@ function Home(props) {
     actions.report({
       code: 'reportOrdersGrowthDay',
       aggregate: {
-        match: { created_at_gte: "2020-09-01T00:00:00.000Z", created_at_lte: "2020-09-30T23:59:59.999Z" },
+        match: {},
         group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
       },
     });
     actions.report({
       code: 'reportOrdersGrowth',
       aggregate: {
-        match: { created_at_gte: "2020-09-01T00:00:00.000Z", created_at_lte: "2020-09-30T23:59:59.999Z" },
+        match: {},
         group: { _id: { $month: '$created_at' }, total_price: { $sum: "$total_price" }, count: { $sum: 1 } }
       },
     });
@@ -70,7 +70,7 @@ function Home(props) {
         </Col>
         <Col lg={8}>
           <Card>
-            <Statistic title="Hôm nay" value={reportOrdersGrowth.count} valueStyle={{ color: '#cf1322' }}
+            <Statistic title="Hôm nay" value={reportOrdersGrowth.total} valueStyle={{ color: '#cf1322' }}
               prefix={<Icon type="arrow-down" />} suffix="đơn hàng"
             />
           </Card>
