@@ -1,3 +1,5 @@
+// const { _parse } = require(path.resolve('./src/core/lib/query'));
+
 const cache = require('memory-cache');
 const _ = require('lodash');
 const escapeStringRegexp = require('escape-string-regexp');

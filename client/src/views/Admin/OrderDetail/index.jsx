@@ -83,8 +83,8 @@ function OrderDetailComponent(props) {
     <div>
       {
         !!(order && order.id) ? <Row gutter={15} >
-          <Col xs={24} lg={16}>
-            <Popover placement="topLeft" content={
+          <Col xs={24} lg={24}>
+            <Popover placement="topRight" content={
               <div>
                 <Button className="block" onClick={() => reOrder(order)}>
                   Đặt lại đơn hàng
@@ -97,7 +97,8 @@ function OrderDetailComponent(props) {
               <Button icon="plus-circle" size="large" >
               </Button>
             </Popover>
-
+          </Col>
+          <Col xs={24} lg={16}>
             <Table rowKey='_id' dataSource={order.line_items} size="small" pagination={false} columns={detailColumns} />
             <Row>
               <Col xs={24} lg={12}>
