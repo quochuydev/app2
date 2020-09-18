@@ -131,7 +131,7 @@ function LayoutContainer() {
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 0 }}
             >
-              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} />
+              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} style={{ padding: 10 }} />
             </Button>}
             style={{ padding: 0, display: _display(isMobile && !!token) }}
             subTitle={menuName}

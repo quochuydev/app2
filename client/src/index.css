@@ -12,3 +12,11 @@ body {
 .block {
   display: block !important;
 }
+
+.m-r-10 {
+  margin-right: 10px;
+}
+
+.m-t-10 {
+  margin-top: 10px;
+}

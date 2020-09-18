@@ -46,7 +46,7 @@ function makeDataVariant(item) {
     sku: item.sku,
     barcode: item.barcode,
     taxable: item.taxable,
-    title: item.title ? item.title : [item.option1, item.option2, item.option3].join(' / '),
+    title: [item.option1, item.option2, item.option3].join(' / '),
     option1: item.option1,
     option2: item.option2,
     option3: item.option3,

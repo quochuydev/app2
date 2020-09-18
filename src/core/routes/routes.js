@@ -44,6 +44,7 @@ const routes = (app) => {
   require(path.resolve('./src/shop/routes/shop'))({ app });
   require(path.resolve('./src/report/routes'))({ app });
   require(path.resolve('./src/images/route'))({ app });
+  require(path.resolve('./src/core/routes/core-data'))({ app });
 }
 
 module.exports = routes;

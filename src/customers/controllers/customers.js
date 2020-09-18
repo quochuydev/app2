@@ -70,9 +70,9 @@ let create = async ({ body }) => {
       phone: default_address.phone,
       zip: default_address.zip,
       address: default_address.address,
-      district_code: default_address.address,
-      province_code: default_address.address,
-      ward_code: default_address.address,
+      district_code: default_address.district_code,
+      province_code: default_address.province_code,
+      ward_code: default_address.ward_code,
     }
   }
 
@@ -97,12 +97,12 @@ let update = async ({ body, customer_id }) => {
       phone: default_address.phone,
       zip: default_address.zip,
       address: default_address.address,
-      district_code: default_address.address,
-      province_code: default_address.address,
-      ward_code: default_address.address,
+      district_code: default_address.district_code,
+      province_code: default_address.province_code,
+      ward_code: default_address.ward_code,
     }
   }
-  
+
   let customer = await CustomerModel.findOneAndUpdate({ id: customer_id },
     { $set: data },
     { lean: true, new: true, });

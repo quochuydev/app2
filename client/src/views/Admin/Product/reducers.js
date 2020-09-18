@@ -23,10 +23,9 @@ function ProductsReducer(state = initialState, { type, payload }) {
     case 'REFRESH_PRODUCT':
       let product = state.get('productUpdate')
       product = _.assign({}, product, payload.product);
-
       return state.merge({ productUpdate: product });
     case 'RESET_PRODUCT':
-      return state.merge({ productUpdate: initialState.get('productUpdate') });
+      return state.merge({ productUpdate: initialState.get('productUpdate'), product: initialState.get('productUpdate') });
     case 'SEARCH':
       return state.merge({ searchProducts: payload.products });
     default:

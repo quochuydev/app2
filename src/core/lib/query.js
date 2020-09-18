@@ -1,8 +1,10 @@
+// const { _parse } = require(path.resolve('./src/core/lib/query'));
+
 const cache = require('memory-cache');
 const _ = require('lodash');
 const escapeStringRegexp = require('escape-string-regexp');
 
-function _parse(body) {
+function _parse(body, option = {}) {
   let { limit, page } = body;
   if (!limit) { limit = 20 }
   if (!page) { page = 1 }
@@ -15,7 +17,18 @@ function _parse(body) {
     page = undefined;
   }
   let query = body;
-  let criteria = { shop_id: cache.get('shop_id'), is_deleted: { $in: [null, false] } }
+  let criteria = {
+    shop_id: cache.get('shop_id'),
+    is_deleted: { $in: [null, false] }
+  }
+
+  if (option.no_check_delete) {
+    delete criteria.is_deleted;
+  }
+  if (option.no_check_shop) {
+    delete criteria.shop_id;
+  }
+
   for (field in query) {
     Object.assign(criteria, formatCriteria(field, query[field]))
   }

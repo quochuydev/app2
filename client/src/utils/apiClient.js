@@ -63,7 +63,11 @@ function checkUnauthorized(e) {
     }
   }
 }
-async function getData(url, headers) {
+async function getData(url, headers, objQuery) {
+  if (objQuery) {
+    let query = Object.keys(objQuery).map(key => key + '=' + objQuery[key]).join('&');
+    url = `${url}?${query}`;
+  }
   const request = createRequest('GET', url, headers);
   return await fetch(request)
     .then(responseHandler)

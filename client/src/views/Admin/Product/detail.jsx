@@ -21,6 +21,8 @@ import './style.css'
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import ApiClient from '../../../utils/apiClient';
+import common from '../../../utils/common';
+let compile = common.compile;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -30,31 +32,27 @@ function ProductDetail(props) {
   const { product, productUpdate, actions } = props;
   const { id } = useParams();
   let setProduct = actions.setProduct;
+  let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
 
   useEffect(() => {
+    onGetProduct();
+  }, [])
+
+  function onGetProduct() {
+    console.log(id);
     if (id && !!Number(id)) {
       actions.getProduct(id);
     }
-  }, [])
+    return;
+  }
 
   useEffect(() => {
     if (product && product.id && !!Number(id)) {
       setProduct(product);
     } else {
-      setProduct({});
-    }
-  }, [product])
-
-  let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
-
-  useEffect(() => {
-    console.log(product)
-    if (product && product.id && product.id != 'create') {
-      setProduct(product);
-    } else {
       actions.resetProduct();
     }
-  }, [product]);
+  }, [product])
 
   const columns = [
     {
@@ -186,6 +184,8 @@ function ProductDetail(props) {
     } else {
       setProduct({ variants: productUpdate.variants.filter(e => e.id != variant.id) });
     }
+    onGetProduct();
+    return;
   }
 
   async function assertVariant({ product, variant }) {
@@ -203,12 +203,13 @@ function ProductDetail(props) {
       variant.id = Date.now();
       actions.setProduct({ variants: [...product.variants, variant] });
     }
+    onGetProduct();
     setShowVariantModel(false);
   }
 
   const uploadSetting = {
     multiple: true,
-    action: `${apiUrl}/images`,
+    action: productUpdate.id ? compile(`${apiUrl}/products/{id}/images`, { id: productUpdate.id }) : `${apiUrl}/images`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -232,57 +233,71 @@ function ProductDetail(props) {
             <button className="btn-primary w-100" type="submit">Accept</button>
           </Col>
           <Col xs={24} lg={24}>
-            <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
-              <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
-              <Select value={1} >
-                <Select.Option value={1}>Mới</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
-              <Select value={1} >
-                <Select.Option value={1}>Mới</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} lg={24}>
             <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="Địa chỉ" key="1">
-                <Row gutter={10}>
-                  <Col span={24}>
-                    <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
-                      style={{ marginBottom: 16 }}>Thêm variant</Button>
-                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
-                      pagination={false} size="small" />
+              <Tabs.TabPane tab="Thông tin sản phẩm" key="1">
+                <Row>
+                  <Col xs={24} lg={16}>
+                    <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
+                      <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
+                    </Form.Item>
+                    <CKEditor activeClass="p10 m-r-10" onChange={e => onProductChange(e)} content={productUpdate.body_html}
+                      name="body_html" events={{
+                        "change": function (evt) {
+                          let newContent = evt.editor.getData();
+                          console.log("onChange fired with event info: ", evt, newContent);
+                        }
+                      }}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
+                      <Select value={1} >
+                        <Select.Option value={1}>Mới</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
+                      <Select value={1} >
+                        <Select.Option value={1}>Mới</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Card size="small" title="Hình ảnh sản phẩm">
+                      <Upload {...uploadSetting} listType="picture-card" fileList={[{
+                        uid: '-1',
+                        name: 'image.png',
+                        status: 'done',
+                        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                      }]}
+                        onPreview={() => { }} onChange={() => { }} >
+                        <div>
+                          <Icon type="plus" />
+                          <div className="ant-upload-text">Upload</div>
+                        </div>
+                      </Upload>
+                    </Card>
                   </Col>
                 </Row>
               </Tabs.TabPane>
             </Tabs>
           </Col>
-
           <Col xs={24} lg={24}>
-            <CKEditor
-              activeClass="p10"
-              content={productUpdate.body_html}
-              events={{
-                "change": function (evt) {
-                  let newContent = evt.editor.getData();
-                  console.log("onChange fired with event info: ", evt, newContent);
-                }
-              }}
-            />
-            <Card size="small" title="Hình ảnh sản phẩm">
-              <Upload.Dragger {...uploadSetting}>
-                <Icon type="upload" /> Upload
-                </Upload.Dragger>
-            </Card>
-            <Button size="large" type="danger" onClick={e => { }}>Xóa sản phẩm</Button>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Danh sách phiên bản sản phẩm" key="1">
+                <Row gutter={10}>
+                  <Col span={24}>
+                    <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
+                      style={{ marginBottom: 16 }}>Thêm variant</Button>
+                    <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
+                      pagination={false} size="small" scroll={{ x: 900 }} />
+                  </Col>
+                </Row>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+          <Col xs={24} lg={24}>
+            {
+              productUpdate.id ? <Button type="danger" onClick={e => { }}>Xóa sản phẩm</Button> : null
+            }
+
           </Col>
         </Row>
       </Form>
