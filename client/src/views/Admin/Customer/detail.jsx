@@ -25,18 +25,22 @@ function CustomerDetail(props) {
   })
 
   useEffect(() => {
+    if (!!Number(customer.id)) {
+      setCustomerUpdate(customer)
+    }
+  }, [customer.id]);
+
+  useEffect(() => {
     CoreActions.listProvinces();
   }, []);
 
   useEffect(() => {
-    if (!!(customer.id)) {
-      setCustomerUpdate(customer)
-    } else {
-      setCustomerUpdate({
-        default_address: {}
-      })
-    }
-  }, [customer.id]);
+    CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+  }, [customerUpdate.default_address.province_code])
+
+  useEffect(() => {
+    CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+  }, [customerUpdate.default_address.district_code])
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -49,7 +53,6 @@ function CustomerDetail(props) {
     customerUpdate.default_address[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate });
   }
-
 
   function onCustomerChangeField(e, field) {
     setCustomerUpdate({ ...customerUpdate, [field]: e });

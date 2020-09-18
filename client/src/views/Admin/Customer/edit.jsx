@@ -59,6 +59,10 @@ function CustomerEdit(props) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value })
   }
 
+  function onFieldChange(field, value) {
+    setCustomerUpdate({ ...customerUpdate, [field]: value });
+  }
+
   function onAddressChange(e) {
     if (!customerUpdate.default_address) {
       customerUpdate.default_address = {};
@@ -66,6 +70,7 @@ function CustomerEdit(props) {
     customerUpdate.default_address[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate });
   }
+  
   function onAddressFieldChange(field, value) {
     if (!customerUpdate.default_address) {
       customerUpdate.default_address = {};
@@ -73,6 +78,7 @@ function CustomerEdit(props) {
     customerUpdate.default_address[field] = value;
     setCustomerUpdate({ ...customerUpdate });
   }
+
   async function addCustomer(e) {
     e.preventDefault();
     try {
@@ -85,10 +91,6 @@ function CustomerEdit(props) {
     }
   }
 
-  function onFieldChange(field, value) {
-    setCustomerUpdate({ ...customerUpdate, [field]: value });
-  }
-  
   return (
     <div>
       <Form onSubmit={addCustomer}>
