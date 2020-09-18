@@ -21,6 +21,8 @@ import './style.css'
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import ApiClient from '../../../utils/apiClient';
+import common from '../../../utils/common';
+let compile = common.compile;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -37,6 +39,7 @@ function ProductDetail(props) {
   }, [])
 
   function onGetProduct() {
+    console.log(id)
     if (id && !!Number(id)) {
       actions.getProduct(id);
     }
@@ -47,7 +50,7 @@ function ProductDetail(props) {
     if (product && product.id && !!Number(id)) {
       setProduct(product);
     } else {
-      setProduct({});
+      actions.resetProduct();
     }
   }, [product])
 
@@ -215,7 +218,7 @@ function ProductDetail(props) {
 
   const uploadSetting = {
     multiple: true,
-    action: `${apiUrl}/images`,
+    action: productUpdate.id ? compile(`${apiUrl}/products/{id}/images`, { id: productUpdate.id }) : `${apiUrl}/images`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -239,28 +242,51 @@ function ProductDetail(props) {
             <button className="btn-primary w-100" type="submit">Accept</button>
           </Col>
           <Col xs={24} lg={24}>
-            <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
-              <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
-            </Form.Item>
+            <Row>
+              <Col xs={24} lg={16}>
+                <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
+                  <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
+                </Form.Item>
+                <CKEditor activeClass="p10" content={productUpdate.body_html}
+                  events={{
+                    "change": function (evt) {
+                      let newContent = evt.editor.getData();
+                      console.log("onChange fired with event info: ", evt, newContent);
+                    }
+                  }}
+                />
+              </Col>
+              <Col xs={24} lg={8}>
+                <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
+                  <Select value={1} >
+                    <Select.Option value={1}>Mới</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
+                  <Select value={1} >
+                    <Select.Option value={1}>Mới</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Card size="small" title="Hình ảnh sản phẩm">
+                  <Upload {...uploadSetting} listType="picture-card" fileList={[{
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                  }]}
+                    onPreview={() => { }} onChange={() => { }} >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">Upload</div>
+                    </div>
+                  </Upload>
+                </Card>
+              </Col>
+            </Row>
           </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
-              <Select value={1} >
-                <Select.Option value={1}>Mới</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
-              <Select value={1} >
-                <Select.Option value={1}>Mới</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
-
           <Col xs={24} lg={24}>
             <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="Địa chỉ" key="1">
+              <Tabs.TabPane tab="Danh sách phiên bản sản phẩm" key="1">
                 <Row gutter={10}>
                   <Col span={24}>
                     <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
@@ -272,24 +298,8 @@ function ProductDetail(props) {
               </Tabs.TabPane>
             </Tabs>
           </Col>
-
           <Col xs={24} lg={24}>
-            <CKEditor
-              activeClass="p10"
-              content={productUpdate.body_html}
-              events={{
-                "change": function (evt) {
-                  let newContent = evt.editor.getData();
-                  console.log("onChange fired with event info: ", evt, newContent);
-                }
-              }}
-            />
-            <Card size="small" title="Hình ảnh sản phẩm">
-              <Upload.Dragger {...uploadSetting}>
-                <Icon type="upload" /> Upload
-                </Upload.Dragger>
-            </Card>
-            <Button size="large" type="danger" onClick={e => { }}>Xóa sản phẩm</Button>
+            <Button type="danger" onClick={e => { }}>Xóa sản phẩm</Button>
           </Col>
         </Row>
       </Form>

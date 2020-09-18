@@ -1,7 +1,7 @@
 const router = ({ app }) => {
 
   app.post('/api/images', function (req, res, next) {
-    res.json({});
+    res.json({ ok: true });
   })
 
 }

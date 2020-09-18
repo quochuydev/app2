@@ -39,7 +39,11 @@ Controller.OrdersGrowthDay = async function ({ }) {
 Controller.aggregateX = async function ({ match, group, sort = { _id: 1 } }) {
   let result = { items: [], count: 0 }
   match.shop_id = cache.get('shop_id');
-  let items = await OrderModel.aggregate([{ $match: match }, { $group: group }, { $sort: sort }]);
+  let items = await OrderModel.aggregate([
+    { $match: match },
+    { $group: group },
+    { $sort: sort }
+  ]);
   result.items = items;
   result.count = items.length;
   return { aggregation: result };
