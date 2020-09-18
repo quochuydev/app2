@@ -23,7 +23,7 @@ import config from './../../../../utils/config';
 let { Option } = Select;
 
 function ProductForm(props) {
-  const { actions, product, count, variantUpdate, productUpdate } = props;
+  const { product, variantUpdate, productUpdate } = props;
   let [variant, setVariant] = useState({});
 
   useEffect(() => {
@@ -34,6 +34,10 @@ function ProductForm(props) {
 
   function onVariantChange(e) {
     setVariant({ ...variant, [e.target.name]: e.target.value });
+  }
+
+  function onChangeField(name, value) {
+    setVariant({ ...variant, [name]: value });
   }
 
   async function assertVariant() {
@@ -65,15 +69,19 @@ function ProductForm(props) {
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
-              <Form.Item label="Giá" onChange={e => onVariantChange(e)}>
+              <Form.Item label="Giá">
                 <NumberFormat className="ant-input" name="price" thousandSeparator={true} suffix={'đ'}
-                  value={variant.price} style={{ textAlign: 'right' }} />
+                  value={variant.price} style={{ textAlign: 'right' }} onValueChange={e => {
+                    onChangeField('price', e.floatValue);
+                  }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>
-              <Form.Item label="Giá so sánh" onChange={e => onVariantChange(e)}>
+              <Form.Item label="Giá so sánh">
                 <NumberFormat className="ant-input" name="compare_at_price" thousandSeparator={true} suffix={'đ'}
-                  value={variant.compare_at_price} onValueChange={e => { }} style={{ textAlign: 'right' }} />
+                  value={variant.compare_at_price} style={{ textAlign: 'right' }} onValueChange={e => {
+                    onChangeField('compare_at_price', e.floatValue);
+                  }} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={12}>

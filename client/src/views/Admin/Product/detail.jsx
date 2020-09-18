@@ -109,12 +109,17 @@ function ProductDetail(props) {
     {
       title: 'Giá bán', key: 'price', render: edit =>
         <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.price}
-          onValueChange={e => { }} style={{ textAlign: 'right' }} />
+          style={{ textAlign: 'right' }} onValueChange={values => {
+            let { formattedValue, value, floatValue } = values;
+            onChangeField('price', floatValue);
+          }} />
     },
     {
       title: 'Giá so sánh', key: 'compare_at_price', render: edit =>
         <NumberFormat className="ant-input" thousandSeparator={true} suffix={'đ'} value={edit.compare_at_price}
-          onValueChange={e => { }} style={{ textAlign: 'right' }} />
+          style={{ textAlign: 'right' }} onValueChange={({ formattedValue, value }) => {
+            onChangeField('compare_at_price', value);
+          }} />
     },
     {
       title: '', key: 'option', render: edit => <div>
@@ -162,7 +167,7 @@ function ProductDetail(props) {
     if (product && product.id) {
       variant.product_id = product.id;
     }
-    setActive(active)
+    setActive(active);
     setVariantModel(variant);
     setShowVariantModel(true);
   }
@@ -177,6 +182,7 @@ function ProductDetail(props) {
   }
 
   async function assertVariant({ product, variant }) {
+    console.log(variant)
     if (product.id) {
       if (active == 'add') {
         let result = await AdminServices.createVariant(variant);
