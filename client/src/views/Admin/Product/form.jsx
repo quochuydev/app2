@@ -30,7 +30,6 @@ function ProductForm(props) {
 
   let setProduct = actions.setProduct;
   useEffect(() => {
-    console.log(product)
     if (product && product.id && product.id != 'create') {
       setProduct(product);
     } else {
@@ -228,6 +227,8 @@ function ProductForm(props) {
 }
 
 const mapStateToProps = state => ({
+  products: state.products.get('products'),
+  product: state.products.get('product'),
   productUpdate: state.products.get('productUpdate'),
 });
 
