@@ -74,7 +74,7 @@ function CustomerDetail(props) {
           <Row>
             <Col xs={24} lg={12}>
               <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Thông tin" key="1">
+                <Tabs.TabPane tab="Thông tin khách hàng" key="1">
                   <Row>
                     <Col span={12}>
                       <Form.Item label="Họ" required onChange={onCustomerChange}>
@@ -109,17 +109,29 @@ function CustomerDetail(props) {
 
             <Col xs={24} lg={12}>
               <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Địa chỉ" key="1">
+                <Tabs.TabPane tab="Địa chỉ giao hàng" key="1">
                   <Row gutter={10}>
-                    <Col span={24}>
-                      <Form.Item label="Địa chỉ" onChange={onAddressChange}>
-                        <Input name="address" placeholder="Nhập địa chỉ khách hàng"
-                          value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                    <Col span={12}>
+                      <Form.Item label="Họ" onChange={onAddressChange}>
+                        <Input name="last_name" placeholder="Họ"
+                          value={customerUpdate.default_address.last_name} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Tên" onChange={onAddressChange}>
+                        <Input name="first_name" placeholder="Tên"
+                          value={customerUpdate.default_address.first_name} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Số điện thoại" onChange={onAddressChange}>
+                        <Input name="phone" placeholder="Số điện thoại giao hàng"
+                          value={customerUpdate.default_address.phone} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Mã zip" onChange={onAddressChange}>
-                        <Input name="zip" value={customerUpdate.default_address ? customerUpdate.default_address.zip : null} />
+                        <Input name="zip" value={customerUpdate.default_address.zip} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -155,12 +167,18 @@ function CustomerDetail(props) {
                         </Select>
                       </Form.Item>
                     </Col>
+                    <Col span={24}>
+                      <Form.Item label="Địa chỉ" onChange={onAddressChange}>
+                        <Input name="address" placeholder="Nhập địa chỉ khách hàng"
+                          value={customerUpdate.default_address.address} />
+                      </Form.Item>
+                    </Col>
                   </Row>
                 </Tabs.TabPane>
               </Tabs>
             </Col>
             <Col span={24}>
-              <button className="btn-primary w-100" type="submit">Accept</button>
+              <button className="btn-primary m-t-10" type="submit">Accept</button>
             </Col>
           </Row>
         </Form>
