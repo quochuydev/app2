@@ -4,7 +4,7 @@ const {
 } = require(path.resolve('./src/products/business/make-data.js'));
 const { ProductImage } = require(path.resolve('./src/products/controllers/product-image.js'));
 
-module.exports = ({ ERR, ProductModel, VariantModel }) => async function createProduct({ data }) {
+module.exports = ({ ERR, ProductModel, VariantModel }) => async function create({ data }) {
   let result = { error: false };
 
   if (!data.title) {
