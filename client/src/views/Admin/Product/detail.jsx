@@ -262,7 +262,8 @@ function ProductDetail(props) {
       }
       return;
     },
-    onSuccess(info) {
+    onSuccess(result) {
+      console.log(result)
       onGetProduct();
       return;
     },
