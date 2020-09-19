@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import CKEditor from "react-ckeditor-component";
+import _ from 'lodash';
 
 import * as productActions from './actions';
 import VariantDetail from './Variant/detail'
@@ -22,6 +23,7 @@ import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import ApiClient from '../../../utils/apiClient';
 import common from '../../../utils/common';
+import { Model } from "mongoose";
 let compile = common.compile;
 
 const apiUrl = `${config.backend_url}/api`;
@@ -54,7 +56,49 @@ function ProductDetail(props) {
     }
   }, [product])
 
+  let [modalImages, setModalImages] = useState(false)
+  let [selectVariant, setSelectVariant] = useState(null)
+  let [selectImage, setSelectImage] = useState(null)
+
+  function onChangeImage({ variant }) {
+    setModalImages(true);
+    setSelectVariant(variant);
+    if (variant.image) {
+      setSelectImage({
+        uid: variant.image.id,
+        name: variant.image.filename,
+        url: variant.image.src,
+      });
+    }
+  }
+
+  async function changeImage() {
+    try {
+      console.log(selectVariant)
+      console.log('selectImage', selectImage)
+      if (!selectImage) {
+        return;
+      }
+      selectVariant.image = {
+        id: selectImage.uid,
+        src: selectImage.url,
+        filename: selectImage.filename,
+      }
+      let result = await AdminServices.updateVariant(selectVariant);
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+    setModalImages(false);
+  }
+
   const columns = [
+    {
+      title: '', key: 'image', width: 65, render: edit =>
+        <a onClick={() => { onChangeImage({ variant: edit }) }}>
+          <Avatar shape="square" size={45} src={_.get(edit, 'image.src', null)} />
+        </a>
+    },
     {
       title: (
         <Select value={productUpdate.option_1} name="option_1" onChange={e => onChangeField('option_1', e)}>
@@ -261,12 +305,13 @@ function ProductDetail(props) {
                       </Select>
                     </Form.Item>
                     <Card size="small" title="Hình ảnh sản phẩm">
-                      <Upload {...uploadSetting} listType="picture-card" fileList={[{
-                        uid: '-1',
-                        name: 'image.png',
-                        status: 'done',
-                        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                      }]}
+                      <Upload {...uploadSetting} listType="picture-card"
+                        fileList={productUpdate.images ? productUpdate.images.map(e => {
+                          return {
+                            uid: e.id, name: e.filename, status: 'done',
+                            url: e.src,
+                          }
+                        }) : null}
                         onPreview={() => { }} onChange={() => { }} >
                         <div>
                           <Icon type="plus" />
@@ -297,13 +342,28 @@ function ProductDetail(props) {
             {
               productUpdate.id ? <Button type="danger" onClick={e => { }}>Xóa sản phẩm</Button> : null
             }
-
           </Col>
         </Row>
       </Form>
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
         showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
-    </div>
+      <Modal
+        visible={modalImages}
+        onOk={() => { changeImage() }}
+        onCancel={() => setModalImages(false)}
+      >
+        {selectVariant && selectVariant.id ?
+          <Upload listType="picture-card" className="cursor-pointer"
+            fileList={productUpdate.images ? productUpdate.images.map(e => {
+              return {
+                uid: e.id, name: e.filename, url: e.src,
+                status: (selectImage && selectImage.uid == e.id) ? 'error' : 'done',
+              }
+            }) : null} onPreview={(e) => { setSelectImage(e) }} >
+          </Upload>
+          : null}
+      </Modal>
+    </div >
   )
 }
 

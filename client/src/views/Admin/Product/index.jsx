@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload, message, Pagination
+  Upload, message, Pagination, Avatar, List
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -22,12 +22,15 @@ const { Option } = Select;
 
 function Products(props) {
   const { actions, products, count } = props;
-  
+
   const columns = [
     {
-      title: 'Tên sản phẩm', key: 'title',
+      title: '', key: 'image',
       render: edit => (
-        <Link to={`product/${edit.id}`}>{edit.title}</Link>
+        <List.Item.Meta
+          avatar={<Avatar shape="square" size={45} src={_.get(edit, 'images[0].src', null)} />}
+          title={<Link to={`product/${edit.id}`}>{edit.title}</Link>}
+        />
       ),
     },
     {
@@ -164,8 +167,7 @@ function Products(props) {
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false}
-            scroll={{ x: 1000 }} defaultExpandAllRows={true}
+          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} scroll={{ x: 1000 }}
             expandedRowRender={record => <Table rowKey='id' columns={subColumns}
               dataSource={record.variants} pagination={false} showHeader={false} />} />
         </Col>

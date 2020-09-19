@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const {
   list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct,
@@ -64,9 +65,26 @@ const router = ({ app }) => {
   })
 
   app.post('/api/products/:id/images', uploadToDisk.single('file'), function (req, res, next) {
-    ProductImage.assert({ product_id: req.params.id, data: req.body, file: req.file.path })
+    ProductImage.assert({ product_id: req.params.id, data: req.body, file: req.file })
       .then(result => res.json(result))
       .catch(error => next(error))
+  });
+
+  app.get('/images/:FileName', (req, res) => {
+    var FileName = req.params.FileName || '';
+    var fullPath = path.join(path.resolve('./uploads'), FileName);
+    fs.exists(fullPath, function (exists) {
+      if (exists) {
+        var name = path.basename(fullPath);
+        res.setHeader('Content-disposition', 'attachment; filename=' + name);
+        var filestream = fs.createReadStream(fullPath);
+        filestream.pipe(res);
+      } else {
+        return res.status(400).send({
+          message: "File không tồn tại!"
+        });
+      }
+    });
   });
 }
 
