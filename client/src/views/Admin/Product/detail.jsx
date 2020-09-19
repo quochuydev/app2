@@ -206,6 +206,9 @@ function ProductDetail(props) {
     return;
   }
 
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+
   const [showVariantModel, setShowVariantModel] = useState(false);
   const [variantModel, setVariantModel] = useState(null);
   const [active, setActive] = useState(null);
@@ -263,7 +266,7 @@ function ProductDetail(props) {
       return;
     },
     onSuccess(result) {
-      console.log(result)
+      console.log(result);
       onGetProduct();
       return;
     },
@@ -324,7 +327,7 @@ function ProductDetail(props) {
                             url: e.src,
                           }
                         }) : null}
-                        onPreview={() => { }} onRemove={(e) => { removeImage(e) }} >
+                        onPreview={(e) => { setPreviewImage(e.url); setPreviewVisible(true); }} onRemove={(e) => { removeImage(e) }} >
                         <div>
                           <Icon type="plus" />
                           <div className="ant-upload-text">Upload</div>
@@ -359,6 +362,9 @@ function ProductDetail(props) {
       </Form>
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
         showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
+      <Modal visible={previewVisible} footer={null} onCancel={() => setPreviewVisible(false)}>
+        <img alt="example" style={{ width: '100%' }} src={previewImage} />
+      </Modal>
       <Modal
         visible={modalImages}
         onOk={() => { changeImage() }}
