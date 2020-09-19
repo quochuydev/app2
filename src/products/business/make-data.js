@@ -1,3 +1,4 @@
+// const { makeDataProduct, makeDataVariant, makeDataVariants } = require(path.resolve('./src/products/business/make-data.js'));
 
 function makeDataProduct(item) {
   let product = {
@@ -19,7 +20,8 @@ function makeDataProduct(item) {
       position: 3,
       name: item.option_3
     }],
-    variants: []
+    variants: [],
+    images: item.images,
   }
 
   if (item.published == 'No') {
@@ -52,6 +54,7 @@ function makeDataVariant(item) {
     option3: item.option3,
     price: item.price,
     compare_at_price: item.compare_at_price,
+    image: item.image,
     is_deleted: false,
     created_at: new Date(),
   }

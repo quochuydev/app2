@@ -37,7 +37,8 @@ const ProductSchema = new Schema({
     option2: { type: String, default: null },
     option3: { type: String, default: null },
     created_at: { type: Date, default: null },
-    updated_at: { type: Date, default: null }
+    updated_at: { type: Date, default: null },
+    image: {},
   }],
   is_deleted: { type: Boolean, default: false },
   shop_id: { type: Number, default: null },

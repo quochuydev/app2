@@ -1,8 +1,12 @@
+// const { ProductImage } = require(path.resolve('./src/products/controllers/product-image.js'));
+
 const path = require('path');
 const uuid = require('uuid/v4');
 
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
+const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
+const config = require(path.resolve('./src/config/config'));
 
 const Controller = {}
 
@@ -27,8 +31,13 @@ Controller.assert = async function ({ product_id, data, file }) {
     updated_at: new Date(),
   }
 
-  if (data.src) {
-    data_update.src = data.src;
+  if (file && file.path) {
+    let filename = null;
+    if (file.filename) {
+
+    }
+    data_update.src = `${config.app_host}/images/${file.filename}`;
+    data_update.filename = file.originalname;
   }
 
   if (data.attachment) {
@@ -43,6 +52,8 @@ Controller.assert = async function ({ product_id, data, file }) {
   }
 
   let new_image = await ImageModel._create(data_update);
+  new_image = new_image.toJSON();
+  await ProductModel._update({ id: product_id }, { $push: { images: new_image } });
 
   return { image: new_image }
 }

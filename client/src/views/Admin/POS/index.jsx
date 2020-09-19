@@ -48,7 +48,7 @@ function Customer(props) {
       title: (<span>Sản phẩm <Badge count={order.total_items} style={{ backgroundColor: '#52c41a' }} /></span>), key: 'title', render: item => (
         <div>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image .src', null)} />}
+            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
             title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
             description={[item.sku, item.barcode, item.price].join(' - ')}
             onClick={() => addProduct(item.id)}
