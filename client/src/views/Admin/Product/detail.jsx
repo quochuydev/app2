@@ -255,7 +255,14 @@ function ProductDetail(props) {
     action: productUpdate.id ? compile(`${apiUrl}/products/{id}/images`, { id: productUpdate.id }) : `${apiUrl}/images`,
     headers: ApiClient.getHeader(),
     onChange(info) {
-      message.success(`${info.file.name} file uploaded thành công.`);
+      const { status } = info.file;
+      console.log(status)
+      if (['uploading', 'done'].includes(status)) {
+        message.success(`${info.file.name} file uploaded thành công.`);
+      }
+      return;
+    },
+    onSuccess(info) {
       onGetProduct();
       return;
     },
