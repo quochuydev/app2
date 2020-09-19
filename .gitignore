@@ -8,3 +8,4 @@ src/config/env/production.js
 package-lock.json
 .git
 /download/
+/uploads/

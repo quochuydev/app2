@@ -6,6 +6,8 @@ const uuid = require('uuid/v4');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
+const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
+
 const config = require(path.resolve('./src/config/config'));
 
 const Controller = {}
@@ -59,7 +61,7 @@ Controller.assert = async function ({ product_id, data, file }) {
 }
 
 Controller.upload = async function ({ }) {
-
+  
   return { ok: true }
 }
 
