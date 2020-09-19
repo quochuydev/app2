@@ -79,19 +79,6 @@ Controller.create = async function ({ data }) {
 
   let product = makeDataProduct(data);
   let newProduct = await ProductModel._create(product);
-
-  if (newProduct && newProduct.id) {
-    let newVariants = []
-    let variants = makeDataVariants(data.variants);
-    for (const variant of variants) {
-      variant.product_id = newProduct.id;
-      let newVariant = await VariantModel._create(variant);
-      newVariant = newVariant.toJSON();
-      newVariants.push(newVariant);
-    }
-    await ProductModel._update({ id: newProduct.id }, { $set: { variants: newVariants } });
-  }
-
   result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
   result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
   result.message = 'Thêm sản phẩm thành công!';
@@ -249,9 +236,7 @@ Controller.importProducts = async function ({ file }) {
       if (item.product_id) {
         let found_product = await ProductModel.findOne({ id: item.product_id }).lean(true);
         if (!found_product) {
-          let product = makeDataProduct(item);
-          found_product = await ProductModel._create(product);
-          result.product_created++;
+          throw { message: 'Sản phẩm không tồn tại' }
         }
 
         let criteria = {};
@@ -295,19 +280,9 @@ Controller.importProducts = async function ({ file }) {
         }
       } else {
         let product = makeDataProduct(item);
+        product.variants = makeDataVariants([item]);
         let newProduct = await ProductModel._create(product);
         result.product_created++;
-
-        if (newProduct && newProduct.id) {
-          let variant = makeDataVariant(item);
-          variant.product_id = newProduct.id;
-          let newVariant = await VariantModel._create(variant);
-          newVariant = newVariant.toJSON();
-          result.variant_created++;
-
-          await ProductModel._update({ id: newProduct.id }, { $set: { variants: [newVariant] } });
-          result.product_updated++;
-        }
       }
       result.success++;
     } catch (error) {
