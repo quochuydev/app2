@@ -23,7 +23,6 @@ import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import ApiClient from '../../../utils/apiClient';
 import common from '../../../utils/common';
-import { Model } from "mongoose";
 let compile = common.compile;
 
 const apiUrl = `${config.backend_url}/api`;
@@ -257,17 +256,30 @@ function ProductDetail(props) {
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+      console.log(status)
+      if (['uploading', 'done'].includes(status)) {
+        message.success(`${info.file.name} file uploaded thành công.`);
       }
-
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
+      return;
+    },
+    onSuccess(result) {
+      console.log(result)
+      onGetProduct();
+      return;
     },
   };
+
+  async function removeImage(file) {
+    let image_id = Number(file.uid);
+    try {
+      let result = await AdminServices.Image.remove({ id: image_id });
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+    onGetProduct();
+    return;
+  }
 
   return (
     <div>
@@ -284,11 +296,11 @@ function ProductDetail(props) {
                     <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
                       <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
                     </Form.Item>
-                    <CKEditor activeClass="p10 m-r-10" onChange={e => onProductChange(e)} content={productUpdate.body_html}
+                    <CKEditor activeClass="p10 m-r-10" content={productUpdate.body_html}
                       name="body_html" events={{
                         "change": function (evt) {
                           let newContent = evt.editor.getData();
-                          console.log("onChange fired with event info: ", evt, newContent);
+                          setProduct({ body_html: newContent });
                         }
                       }}
                     />
@@ -312,7 +324,7 @@ function ProductDetail(props) {
                             url: e.src,
                           }
                         }) : null}
-                        onPreview={() => { }} onChange={() => { }} >
+                        onPreview={() => { }} onRemove={(e) => { removeImage(e) }} >
                         <div>
                           <Icon type="plus" />
                           <div className="ant-upload-text">Upload</div>

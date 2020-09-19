@@ -127,7 +127,7 @@ function PrintOrder(props) {
             </tbody></table>
           <div className="printrow">
             <div className="printcol last" style={{ backgroundColor: '#B9B9B9' }}>
-              <p style={{ margin: '0 0 0 10px' }}>Cảm ơn quý khách đã sử dụng dịch vụ của Maison Online!</p>
+              <p style={{ margin: '0 0 0 10px' }}>Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</p>
               <p style={{ margin: '0 0 0 10px' }}>Nếu quý khách cần hỗ trợ, vui lòng liên hệ đến bộ phận chăm sóc Khách hàng</p>
               <div style={{ margin: '10px 0 0 20px', float: 'left', fontWeight: 'bold', display: 'flex', verticalAlign: 'middle' }}>
                 <div style={{ backgroundColor: '#000000', borderRadius: '50%', padding: '6px' }}>
@@ -141,7 +141,7 @@ function PrintOrder(props) {
                   <img style={{ width: '11px', height: '11px', filter: 'invert(1)' }}
                     src="https://topdev.vn/blog/wp-content/uploads/2020/08/logo-new-retina.png" />
                 </div>
-                <span style={{ marginLeft: '5px', alignSelf: 'center' }}> customercare@maisonjsc.com</span>
+                <span style={{ marginLeft: '5px', alignSelf: 'center' }}> quochuy.dev@gmail.com</span>
               </div>
             </div>
           </div>

@@ -85,10 +85,10 @@ function Login() {
           >
             <Input.Password name="password" onChange={onChange} value={account.password} />
           </Form.Item>
-
+{/* 
           <Form.Item name="remember" value="checked">
             <Checkbox>Remember me</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item >
             <Button type="primary" htmlType="submit" className="login-form-button">

@@ -46,7 +46,7 @@ function ProductForm(props) {
 
   return (
     <div>
-      <Modal title="createVariant"
+      <Modal title={`Thông tin biến thể sản phẩm`}
         visible={props.showVariantModel}
         onOk={() => assertVariant()}
         onCancel={() => props.setShowVariantModel(false)}
@@ -54,17 +54,17 @@ function ProductForm(props) {
         <Form>
           <Row>
             <Col xs={24} lg={8}>
-              <Form.Item label="option1" onChange={e => onVariantChange(e)}>
+              <Form.Item label={productUpdate.option_1} onChange={e => onVariantChange(e)}>
                 <Input name="option1" value={variant.option1} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
-              <Form.Item label="option2" onChange={e => onVariantChange(e)}>
+              <Form.Item label={productUpdate.option_2} onChange={e => onVariantChange(e)}>
                 <Input name="option2" value={variant.option2} />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
-              <Form.Item label="option3" onChange={e => onVariantChange(e)}>
+              <Form.Item label={productUpdate.option_3} onChange={e => onVariantChange(e)}>
                 <Input name="option3" value={variant.option3} />
               </Form.Item>
             </Col>

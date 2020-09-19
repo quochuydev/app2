@@ -5,7 +5,7 @@ const {
 const { ProductImage } = require(path.resolve('./src/products/controllers/product-image.js'));
 
 module.exports = ({ ERR, ProductModel, VariantModel }) => async function createProduct({ data }) {
-  let result = {};
+  let result = { error: false };
 
   if (!data.title) {
     throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });

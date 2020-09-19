@@ -202,6 +202,13 @@ async function removeVariant(data) {
   return await ApiClient.deleteData(url, null, data);
 }
 
+let Image = {
+  remove: async function removeImage(data) {
+    let url = compile('api/images/{id}', { id: data.id });
+    return await ApiClient.deleteData(url);
+  }
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -253,6 +260,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report,
+  Report, Image,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }
