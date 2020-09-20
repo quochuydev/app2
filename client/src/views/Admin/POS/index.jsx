@@ -29,6 +29,9 @@ import config from './../../../utils/config';
 import './style.css'
 import PrintOrder from './print.jsx';
 import CustomerDetail from './../Customer/detail'
+import common from '../../../utils/common';
+
+let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -292,7 +295,15 @@ function Customer(props) {
           <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
+                <Collapse.Panel key="1" isActive={false} header={<p>
+                  <span>Danh sách sản phẩm </span>
+                  <Link to={`product/create`} target="_blank">
+                    <Tag color="blue" className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
+                  </Link>
+                </p>}>
                   <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
@@ -317,9 +328,9 @@ function Customer(props) {
                     {
                       products.map(product => {
                         return (
-                          <Col xs={8} lg={4} key={product._id}>
-                            <Badge count={product.variants.length > 1 ? '--' : 99}
-                              style={{ backgroundColor: '#52c41a' }}>
+                          <Col xs={8} lg={4} key={product._id} style={{ padding: 5 }}>
+                            {/* <Badge count={product.variants.length > 1 ? '--' : 99}
+                              style={{ backgroundColor: '#52c41a' }}> */}
                               <Card className="cursor-pointer"
                                 cover={<div>
                                   <Avatar shape="square" style={{ width: "100%", height: 100 }}
@@ -327,9 +338,16 @@ function Customer(props) {
                                 </div>}
                                 onClick={() => addProduct(product.id)}>
                                 <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
-                                  description={product.id} />
+                                  description={
+                                    <div>
+                                      <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
+                                      <Tag color="blue" className="cursor-pointer">
+                                        {product.variants.length} biến thể
+                                      </Tag>
+                                    </div>
+                                  } />
                               </Card>
-                            </Badge>
+                            {/* </Badge> */}
                           </Col>
                         )
                       })
