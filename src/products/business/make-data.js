@@ -20,7 +20,7 @@ function makeDataProduct(item) {
       position: 3,
       name: item.option_3
     }],
-    variants: [],
+    variants: item.variants,
     images: item.images,
   }
 

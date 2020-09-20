@@ -4,7 +4,7 @@ const {
 } = require(path.resolve('./src/products/business/make-data.js'));
 const { ProductImage } = require(path.resolve('./src/products/controllers/product-image.js'));
 
-module.exports = ({ ERR, ProductModel, VariantModel }) => async function createProduct({ data }) {
+module.exports = ({ ERR, ProductModel, VariantModel }) => async function create({ data }) {
   let result = { error: false };
 
   if (!data.title) {
@@ -31,19 +31,6 @@ module.exports = ({ ERR, ProductModel, VariantModel }) => async function createP
 
   let product = makeDataProduct(data);
   let newProduct = await ProductModel._create(product);
-
-  if (newProduct && newProduct.id) {
-    let newVariants = []
-    let variants = makeDataVariants(data.variants);
-    for (const variant of variants) {
-      variant.product_id = newProduct.id;
-      let newVariant = await VariantModel._create(variant);
-      newVariant = newVariant.toJSON();
-      newVariants.push(newVariant);
-    }
-    await ProductModel._update({ id: newProduct.id }, { $set: { variants: newVariants } });
-  }
-
   result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
   result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
   result.message = 'Thêm sản phẩm thành công!';

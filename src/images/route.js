@@ -1,16 +1,43 @@
-let path = require('path')
-const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
+let path = require('path');
+const uuid = require('uuid/v4');
 
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
+const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
+const config = require(path.resolve('./src/config/config'));
+
 const router = ({ app }) => {
   app.post('/api/images', uploadToDisk.single('file'), function (req, res, next) {
+    createImage({ file: req.file })
+      .then(result => res.json(result))
+      .catch(error => next(error));
 
-    res.json({ image: null });
+    async function createImage({ file }) {
+      let data_update = {
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
+
+      if (file && file.path) {
+        let filename = null;
+        if (file.filename) {
+          filename = file.filename;
+        } else {
+          filename = `${uuid()}.jpg`;
+        }
+        data_update.src = `${config.app_host}/images/${filename}`;
+        data_update.filename = file.originalname ? file.originalname : filename;
+      }
+
+      let new_image = await ImageModel._create(data_update);
+      new_image = new_image.toJSON();
+
+      return { image: new_image }
+    }
   })
-  app.delete('/api/images/:id', uploadToDisk.single('file'), function (req, res, next) {
+  app.delete('/api/images/:id', function (req, res, next) {
     removeImage({ image_id: req.params.id })
       .then(result => res.json(result))
       .catch(error => next(error));

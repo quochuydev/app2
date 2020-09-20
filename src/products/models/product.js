@@ -2,11 +2,17 @@
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 */
 
+const path = require('path');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 const cache = require('memory-cache');
+
+const {
+  makeDataVariants
+} = require(path.resolve('./src/products/business/make-data.js'));
+const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
 const ProductSchema = new Schema({
   number: { type: Number, default: null },
@@ -67,11 +73,30 @@ ProductSchema.statics._findOne = async function (filter = {}, populate = {}, opt
   return data;
 }
 
+ProductSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  return data;
+}
+
 ProductSchema.statics._create = async function (data) {
   let _this = this;
   data.shop_id = cache.get('shop_id');
-  let result = await _this.create(data);
-  return result;
+  let product = await _this.create(data);
+  if (product && product.id) {
+    let newVariants = []
+    let variants = makeDataVariants(data.variants);
+    for (const variant of variants) {
+      variant.product_id = product.id;
+      let newVariant = await VariantModel._create(variant);
+      newVariant = newVariant.toJSON();
+      newVariants.push(newVariant);
+    }
+    product = await this._findOneAndUpdate({ id: product.id }, { variants: newVariants });
+  }
+  return product;
 }
 
 ProductSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {

@@ -11,7 +11,8 @@ const initialState = Map({
     option_1: options[0],
     option_2: options[1],
     option_3: options[2],
-    variants: []
+    variants: [],
+    images: []
   }
 });
 
