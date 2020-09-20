@@ -364,7 +364,7 @@ function ProductDetail(props) {
                 <Row gutter={10}>
                   <Col span={24}>
                     <Button onClick={() => onShowVariant({ product: productUpdate, active: 'add' })} type="primary"
-                      style={{ marginBottom: 16 }}>Thêm variant</Button>
+                      style={{ marginBottom: 16 }}>Thêm biến thể sản phẩm</Button>
                     <Table rowKey="id" bordered dataSource={productUpdate.variants} columns={columns}
                       pagination={false} size="small" scroll={{ x: 900 }} />
                   </Col>
