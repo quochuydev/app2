@@ -18,7 +18,14 @@ const CustomersSchema = new Schema({
   default_address: {},
   billing_address: {},
   shipping_address: {},
-  created_at: { type: Date, default: null },
+
+  image: {
+    id: { type: Number, default: null },
+    filename: { type: String, default: null },
+    src: { type: String, default: null },
+    created_at: { type: Date, default: Date.now },
+  },
+  created_at: { type: Date, default: Date.now },
   phone: { type: String, default: null },
   email: { type: String, default: null },
   first_name: { type: String, default: null },

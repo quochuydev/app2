@@ -24,7 +24,6 @@ import config from './../../../utils/config';
 import ApiClient from '../../../utils/apiClient';
 import common from '../../../utils/common';
 let compile = common.compile;
-
 const apiUrl = `${config.backend_url}/api`;
 
 let { Option } = Select;

@@ -17,9 +17,14 @@ import 'antd/dist/antd.css';
 import './style.css'
 
 import AdminServices from '../../../services/adminServices';
+import ApiClient from '../../../utils/apiClient';
+import common from '../../../utils/common';
 import config from './../../../utils/config';
 import * as coreActions from '../Core/actions';
 import * as customerActions from './actions';
+
+let compile = common.compile;
+const apiUrl = `${config.backend_url}/api`;
 
 let { Option } = Select;
 
@@ -70,7 +75,7 @@ function CustomerEdit(props) {
     customerUpdate.default_address[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate });
   }
-  
+
   function onAddressFieldChange(field, value) {
     if (!customerUpdate.default_address) {
       customerUpdate.default_address = {};
@@ -91,11 +96,50 @@ function CustomerEdit(props) {
     }
   }
 
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const uploadSetting = {
+    multiple: true,
+    action: customerUpdate.id ? compile(`${apiUrl}/customers/{id}/images`, { id: customerUpdate.id }) : `${apiUrl}/images`,
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      console.log(status)
+      if (['uploading', 'done'].includes(status)) {
+        message.success(`${info.file.name} file uploaded thành công.`);
+      }
+      return;
+    },
+    onSuccess(result) {
+      console.log(result);
+      if (result && result.image) {
+        setCustomerUpdate({ customerUpdate, image: result.image });
+      }
+      return;
+    },
+  };
+
   return (
     <div>
       <Form onSubmit={addCustomer}>
         <Row>
-          <Col xs={24} lg={12}>
+          <Col xs={24} lg={6}>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Khách hàng" key="1">
+                <Upload name="avatar"
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  {...uploadSetting}
+                >
+                  {
+                    imageUrl ? <Avatar shape="square" style={{}} size={240} src={imageUrl} /> :
+                      <div className="ant-upload-text" style={{ width: 240 }}>Upload</div>
+                  }
+                </Upload>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+          <Col xs={24} lg={18}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Thông tin" key="1">
                 <Row>
@@ -130,7 +174,10 @@ function CustomerEdit(props) {
             </Tabs>
           </Col>
 
-          <Col xs={24} lg={12}>
+          <Col xs={24} lg={6}>
+
+          </Col>
+          <Col xs={24} lg={18}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Địa chỉ" key="1">
                 <Row gutter={10}>
@@ -138,6 +185,16 @@ function CustomerEdit(props) {
                     <Form.Item label="Địa chỉ" onChange={onAddressChange}>
                       <Input name="address" placeholder="Nhập địa chỉ khách hàng"
                         value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="Tên người nhận" onChange={onAddressChange}>
+                      <Input name="first_name" value={customerUpdate.default_address ? customerUpdate.default_address.first_name : null} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="SĐT nhận hàng" onChange={onAddressChange}>
+                      <Input name="phone" value={customerUpdate.default_address ? customerUpdate.default_address.phone : null} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -184,12 +241,12 @@ function CustomerEdit(props) {
                       </Select>
                     </Form.Item>
                   </Col>
+                  <Col span={24}>
+                    <button className="btn-primary" type="submit">Accept</button>
+                  </Col>
                 </Row>
               </Tabs.TabPane>
             </Tabs>
-          </Col>
-          <Col span={24}>
-            <button className="btn-primary" type="submit">Accept</button>
           </Col>
         </Row>
       </Form>
