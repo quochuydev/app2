@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
@@ -16,6 +17,9 @@ let list = async (req, res) => {
     let { limit, skip, criteria, sort } = _parse(req.body);
     let count = await CustomerModel._count(criteria);
     let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
+    for (const customer of customers) {
+      customer.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'customer_id': customer.id })
+    }
     res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)

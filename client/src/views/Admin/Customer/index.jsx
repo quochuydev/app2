@@ -43,10 +43,15 @@ function Customer(props) {
     },
     {
       title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a') : null}</span>
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
       )
     },
     { title: 'Email', dataIndex: 'email', key: 'email', },
+    {
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="green">{edit.total_orders}</Tag>
+      )
+    },
     {
       title: '', key: 'option',
       render: edit => (
