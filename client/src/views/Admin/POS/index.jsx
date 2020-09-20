@@ -385,7 +385,7 @@ function Customer(props) {
           <Col xs={24} lg={8}>
             <Layout>
               <Content style={{ height: '70vh', marginTop: 10 }}>
-                <Card title="Thông tin khách hàng">
+                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
                   <p><span>Khách hàng </span>
                     <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
                       <Icon style={{ color: '#007bff' }}

@@ -33,8 +33,7 @@ const router = ({ app }) => {
 
       let new_image = await ImageModel._create(data_update);
       new_image = new_image.toJSON();
-
-      return { image: new_image }
+      return { error: false, image: new_image }
     }
   })
   app.delete('/api/images/:id', function (req, res, next) {

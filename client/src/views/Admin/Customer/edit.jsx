@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 
 import * as productActions from './actions';
 
@@ -47,6 +48,11 @@ function CustomerEdit(props) {
       setCustomerUpdate(customer);
     }
   }, [customer])
+
+  const [imageUrl, setImageUrl] = useState(null);
+  useEffect(() => {
+    setImageUrl(_.get(customerUpdate, 'image.src'));
+  }, [customerUpdate])
 
   useEffect(() => {
     CoreActions.listProvinces();
@@ -100,11 +106,9 @@ function CustomerEdit(props) {
     }
   }
 
-  const [imageUrl, setImageUrl] = useState(null);
-
   const uploadSetting = {
     multiple: true,
-    action: customerUpdate.id ? compile(`${apiUrl}/customers/{id}/images`, { id: customerUpdate.id }) : `${apiUrl}/images`,
+    action: `${apiUrl}/images`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -117,7 +121,8 @@ function CustomerEdit(props) {
     onSuccess(result) {
       console.log(result);
       if (result && result.image) {
-        setCustomerUpdate({ customerUpdate, image: result.image });
+        setImageUrl(result.image.src)
+        setCustomerUpdate({ ...customerUpdate, image: result.image });
       }
       return;
     },
@@ -130,14 +135,16 @@ function CustomerEdit(props) {
           <Col xs={24} lg={6}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Khách hàng" key="1">
-                <Upload name="avatar"
+                <Upload name="file"
                   listType="picture-card"
                   className="avatar-uploader"
+                  beforeUpload={() => { return true; }}
+                  fileList={[]}
                   {...uploadSetting}
                 >
                   {
                     imageUrl ? <Avatar shape="square" style={{}} size={240} src={imageUrl} /> :
-                      <div className="ant-upload-text" style={{ width: 240 }}>Upload</div>
+                      <div className="ant-upload-text" style={{ width: 240 }}>Upload {imageUrl}</div>
                   }
                 </Upload>
               </Tabs.TabPane>
@@ -221,9 +228,10 @@ function CustomerEdit(props) {
                   </Col>
                   <Col span={12}>
                     <Form.Item label="Huyện">
-                      <Select showSearch placeholder="-- Vui lòng chọn --"
-                        name="district_code" value={customerUpdate.default_address.district_code}
+                      <Select showSearch placeholder="-- Vui lòng chọn --" name="district_code"
+                        value={customerUpdate.default_address.district_code}
                         onChange={e => onAddressFieldChange('district_code', e)} >
+                        <Option value={null}>-- Vui lòng chọn --</Option>
                         {
                           districts.map(item =>
                             <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -254,7 +262,7 @@ function CustomerEdit(props) {
           </Col>
         </Row>
       </Form>
-    </div>
+    </div >
   )
 }
 

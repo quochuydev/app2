@@ -122,15 +122,6 @@ function Customer(props) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
-  function onShowCreate(customerUpdate) {
-    setIsShowModal(true);
-    if (customerUpdate) {
-      setCustomer(customerUpdate);
-    } else {
-      setCustomer({});
-    }
-  }
-
   async function syncCustomers() {
     setIsProcessing(true);
     await actions.syncCustomers();
