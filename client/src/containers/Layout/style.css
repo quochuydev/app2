@@ -9,3 +9,9 @@
 .ant-page-header-heading-sub-title {
   line-height: 30px !important;
 }
+
+aside {
+  width: 200px !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+}
