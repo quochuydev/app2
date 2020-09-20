@@ -104,7 +104,7 @@ function Customer(props) {
   }, [queryProducts])
 
   useEffect(() => {
-    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt' });
+    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt', fulfillment_status: 'delivered' });
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -331,22 +331,22 @@ function Customer(props) {
                           <Col xs={8} lg={4} key={product._id} style={{ padding: 5 }}>
                             {/* <Badge count={product.variants.length > 1 ? '--' : 99}
                               style={{ backgroundColor: '#52c41a' }}> */}
-                              <Card className="cursor-pointer"
-                                cover={<div>
-                                  <Avatar shape="square" style={{ width: "100%", height: 100 }}
-                                    alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
-                                </div>}
-                                onClick={() => addProduct(product.id)}>
-                                <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
-                                  description={
-                                    <div>
-                                      <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
-                                      <Tag color="blue" className="cursor-pointer">
-                                        {product.variants.length} biến thể
+                            <Card className="cursor-pointer"
+                              cover={<div>
+                                <Avatar shape="square" style={{ width: "100%", height: 100 }}
+                                  alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
+                              </div>}
+                              onClick={() => addProduct(product.id)}>
+                              <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
+                                description={
+                                  <div>
+                                    <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
+                                    <Tag color="blue" className="cursor-pointer">
+                                      {product.variants.length} biến thể
                                       </Tag>
-                                    </div>
-                                  } />
-                              </Card>
+                                  </div>
+                                } />
+                            </Card>
                             {/* </Badge> */}
                           </Col>
                         )
