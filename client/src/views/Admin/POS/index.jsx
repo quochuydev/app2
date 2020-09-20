@@ -366,9 +366,11 @@ function Customer(props) {
             <Layout>
               <Content style={{ height: '70vh', marginTop: 10 }}>
                 <Card title="Thông tin khách hàng">
-                  <p>Khách hàng:
-                    <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
-                      theme="filled" type="plus-circle" />
+                  <p><span>Khách hàng </span>
+                    <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
                   </p>
                   <AsyncSelect
                     defaultOptions={formatOptionCustomers(customers)}
