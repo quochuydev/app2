@@ -36,10 +36,12 @@ Controller.assert = async function ({ product_id, data, file }) {
   if (file && file.path) {
     let filename = null;
     if (file.filename) {
-
+      filename = file.filename;
+    } else {
+      filename = `${uuid()}.jpg`;
     }
-    data_update.src = `${config.app_host}/images/${file.filename}`;
-    data_update.filename = file.originalname;
+    data_update.src = `${config.app_host}/images/${filename}`;
+    data_update.filename = file.originalname ? file.originalname : filename;
   }
 
   if (data.attachment) {
@@ -61,7 +63,7 @@ Controller.assert = async function ({ product_id, data, file }) {
 }
 
 Controller.upload = async function ({ }) {
-  
+
   return { ok: true }
 }
 

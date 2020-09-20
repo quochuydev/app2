@@ -55,42 +55,6 @@ function ProductDetail(props) {
     }
   }, [product])
 
-  let [modalImages, setModalImages] = useState(false)
-  let [selectVariant, setSelectVariant] = useState(null)
-  let [selectImage, setSelectImage] = useState(null)
-
-  function onChangeImage({ variant }) {
-    setModalImages(true);
-    setSelectVariant(variant);
-    if (variant.image) {
-      setSelectImage({
-        uid: variant.image.id,
-        name: variant.image.filename,
-        url: variant.image.src,
-      });
-    }
-  }
-
-  async function changeImage() {
-    try {
-      console.log(selectVariant)
-      console.log('selectImage', selectImage)
-      if (!selectImage) {
-        return;
-      }
-      selectVariant.image = {
-        id: selectImage.uid,
-        src: selectImage.url,
-        filename: selectImage.filename,
-      }
-      let result = await AdminServices.updateVariant(selectVariant);
-      message.success(result.message);
-    } catch (error) {
-      message.error(error.message);
-    }
-    setModalImages(false);
-  }
-
   const columns = [
     {
       title: '', key: 'image', width: 65, render: edit =>
@@ -235,7 +199,7 @@ function ProductDetail(props) {
   }
 
   async function assertVariant({ product, variant }) {
-    console.log(variant)
+    console.log(active, variant)
     if (product.id) {
       if (active == 'add') {
         let result = await AdminServices.createVariant(variant);
@@ -246,11 +210,63 @@ function ProductDetail(props) {
         message.success(result.message);
       }
     } else {
-      variant.id = Date.now();
-      actions.setProduct({ variants: [...product.variants, variant] });
+      if (active == 'add') {
+        variant.id = Date.now();
+        actions.setProduct({ variants: [...product.variants, variant] });
+      }
+      if (active == 'update') {
+        let index = product.variants.findIndex(e => e.id == variant.id)
+        if (index != -1) {
+          product.variants[index] = variant;
+          actions.setProduct({ variants: product.variants });
+        }
+      }
     }
     onGetProduct();
     setShowVariantModel(false);
+  }
+
+  let [modalImages, setModalImages] = useState(false)
+  let [selectVariant, setSelectVariant] = useState(null)
+  let [selectImage, setSelectImage] = useState(null)
+
+  function onChangeImage({ variant }) {
+    setModalImages(true);
+    setSelectVariant(variant);
+    if (variant.image) {
+      setSelectImage({
+        uid: variant.image.id,
+        name: variant.image.filename,
+        url: variant.image.src,
+      });
+    }
+  }
+
+  async function changeImage() {
+    try {
+      if (!selectImage) {
+        return;
+      }
+      let image = {
+        id: selectImage.uid,
+        src: selectImage.url,
+        filename: selectImage.name,
+      }
+      if (productUpdate.id) {
+        selectVariant.image = image;
+        let result = await AdminServices.updateVariant(selectVariant);
+        message.success(result.message);
+      } else {
+        let index = productUpdate.variants.findIndex(e => e.id == selectVariant.id)
+        if (index != -1) {
+          productUpdate.variants[index].image = image;
+          actions.setProduct({ variants: productUpdate.variants });
+        }
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+    setModalImages(false);
   }
 
   const uploadSetting = {
@@ -267,6 +283,10 @@ function ProductDetail(props) {
     },
     onSuccess(result) {
       console.log(result);
+      if (result && result.image) {
+        productUpdate.images.push(result.image);
+        setProduct({ images: productUpdate.images });
+      }
       onGetProduct();
       return;
     },
@@ -360,11 +380,14 @@ function ProductDetail(props) {
           </Col>
         </Row>
       </Form>
+
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
         showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />
+
       <Modal visible={previewVisible} footer={null} onCancel={() => setPreviewVisible(false)}>
         <img alt="example" style={{ width: '100%' }} src={previewImage} />
       </Modal>
+
       <Modal
         visible={modalImages}
         onOk={() => { changeImage() }}
