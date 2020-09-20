@@ -56,7 +56,9 @@ function Customer(props) {
       title: '', key: 'option',
       render: edit => (
         <span>
-          <Icon type="close" onClick={() => { }} />
+          <Button type="danger" size="small" onClick={() => { }}>
+            <Icon type="close" />
+          </Button>
         </span>
       ),
     },

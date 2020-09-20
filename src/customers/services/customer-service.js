@@ -1,4 +1,4 @@
-// const { ProductService } = require(path.resolve('./src/products/services/product-service.js'));
+// const { CustomerService } = require(path.resolve('./src/customers/services/customer-service.js'));
 
 const path = require('path');
 
@@ -9,8 +9,10 @@ const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const { ERR } = require(path.resolve('./src/core/lib/error.js'));
 
-let ProductService = {}
-let di = { ERR, ProductModel, ProductService, VariantModel, OrderModel, CustomerModel }
-ProductService.create = require('./activities/product.create')(di)
+let CustomerService = {}
 
-module.exports = { ProductService }
+let di = { ERR, ProductModel, CustomerService, VariantModel, OrderModel, CustomerModel }
+
+CustomerService.remove = require('./activities/customer.remove')(di);
+
+module.exports = { CustomerService }

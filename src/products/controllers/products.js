@@ -290,7 +290,6 @@ Controller.importProducts = async function ({ file }) {
   return { error: false, result };
 }
 
-
 Controller.deleteProduct = async function ({ product_id }) {
   let count_order = await OrderModel.count({ 'line_items.product_id': product_id });
   if (count_order) {
@@ -303,8 +302,8 @@ Controller.deleteProduct = async function ({ product_id }) {
     throw { message: 'Sản phẩm không còn tồn tại' }
   }
 
-  await ProductModel.remove({ id: product_id });
-  await VariantModel.remove({ product_id });
+  await ProductModel._findOneAndUpdate({ id: product_id }, { is_deleted: true });
+  await VariantModel._findOneAndUpdate({ product_id }, { is_deleted: true });
 
   return { message: 'Xóa sản phẩm thành công' }
 }

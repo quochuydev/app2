@@ -53,11 +53,15 @@ function CustomerEdit(props) {
   }, [])
 
   useEffect(() => {
-    CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    if (customerUpdate.default_address.province_code) {
+      CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    }
   }, [customerUpdate.default_address.province_code])
 
   useEffect(() => {
-    CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    if (customerUpdate.default_address.district_code) {
+      CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    }
   }, [customerUpdate.default_address.district_code])
 
   function onCustomerChange(e) {

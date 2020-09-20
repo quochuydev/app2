@@ -90,6 +90,15 @@ CustomersSchema.statics._create = async function (data = {}) {
   return result;
 }
 
+CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  return data;
+}
+
+
 let CustomerModel = mongoose.model('Customer', CustomersSchema);
 
 module.exports = { CustomerModel }
