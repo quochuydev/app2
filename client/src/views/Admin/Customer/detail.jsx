@@ -19,7 +19,8 @@ import * as coreActions from '../Core/actions';
 let { Option } = Select;
 
 function CustomerDetail(props) {
-  const { CoreActions, provinces, districts, wards, actions, visible, customer, onCloseModal, setDone } = props;
+  const { CoreActions, provinces, districts, wards, actions,
+    visible, customer, onCloseModal, setDone } = props;
   const [customerUpdate, setCustomerUpdate] = useState({
     default_address: {}
   })
@@ -58,12 +59,12 @@ function CustomerDetail(props) {
     setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
 
-  async function addCustomer(e) {
+  function addCustomer(e) {
     e.preventDefault();
     if (customer.id) {
       customerUpdate.id = customer.id;
     }
-    setDone({ customer: customerUpdate });
+    props.assertCustomer({ customer: customerUpdate });
   }
 
   return (

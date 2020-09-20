@@ -110,16 +110,23 @@ function Customer(props) {
   const [orderCreated, setOrderCreated] = useState(null);
   const [isCustomerModal, setIsCustomerModal] = useState(false);
   const [customer, setCustomer] = useState({ gender: 1 })
-  const [done, setDone] = useState(null)
   let setOrder = OrderActions.setOrder;
 
-  useEffect(() => {
-    if (done && done.customer) {
-      setOrder({ shipping_address: done.customer.default_address });
+  async function assertCustomer({ customer }) {
+    try {
+      let action = customer.id ? 'updateCustomer' : 'addCustomer';
+      const result = await AdminServices[action](customer);
+      setOrder({
+        customer: result.customer,
+        shipping_address: result.customer.default_address
+      });
+      message.success(result.message);
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);
+    } catch (error) {
+      message.error(error.message);
     }
-  }, [done])
+  }
 
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
@@ -379,7 +386,7 @@ function Customer(props) {
                         }>
                         <p className="hide">id: {order.customer.id}</p>
                         <p>Họ tên:
-                          <Link to={`customers/${order.customer.id}`} target="_blank">
+                          <Link to={`customer/${order.customer.id}`} target="_blank">
                             {order.customer.last_name} {order.customer.first_name}</Link>
                         </p>
                         <p>Email: {order.customer.email}</p>
@@ -464,7 +471,7 @@ function Customer(props) {
         </Menu>
       </Modal>
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} setDone={setDone} />
+        customer={customer} assertCustomer={assertCustomer} />
 
       <Modal
         visible={isCreateSuccess}
