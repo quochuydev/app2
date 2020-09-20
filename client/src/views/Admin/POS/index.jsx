@@ -52,7 +52,9 @@ function Customer(props) {
         <div>
           <List.Item.Meta
             avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
-            title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
+            title={<Link to={`product/${item.product_id}`} target="_blank">
+              {[item.title, item.variant_title].join(' - ')}
+            </Link>}
             description={[item.sku, item.barcode].join(' - ')}
             onClick={() => addProduct(item.id)}
           />
