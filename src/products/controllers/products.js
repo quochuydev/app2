@@ -5,6 +5,8 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
+const { ProductService } = require(path.resolve('./src/products/services/product-service.js'));
+
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
@@ -53,8 +55,6 @@ Controller.getProduct = async function ({ product_id }) {
 }
 
 Controller.create = async function ({ data }) {
-  let result = {};
-
   if (!data.title) {
     throw new ERR({ message: 'Chưa nhập tiêu đề sản phẩm' });
   }
@@ -78,12 +78,7 @@ Controller.create = async function ({ data }) {
   }
 
   let product = makeDataProduct(data);
-  let newProduct = await ProductModel._create(product);
-  result.product = await ProductModel.findOne({ id: newProduct.id }).lean(true);
-  result.variants = await VariantModel.find({ product_id: newProduct.id }).lean(true);
-  result.message = 'Thêm sản phẩm thành công!';
-
-  return result;
+  return await ProductService.create({ product });
 }
 
 Controller.update = async function ({ product_id, data }) {
@@ -281,7 +276,7 @@ Controller.importProducts = async function ({ file }) {
       } else {
         let product = makeDataProduct(item);
         product.variants = makeDataVariants([item]);
-        let newProduct = await ProductModel._create(product);
+        await ProductService.create({ product });
         result.product_created++;
       }
       result.success++;

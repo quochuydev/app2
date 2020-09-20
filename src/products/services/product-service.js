@@ -1,3 +1,5 @@
+// const { ProductService } = require(path.resolve('./src/products/services/product-service.js'));
+
 const path = require('path');
 
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
