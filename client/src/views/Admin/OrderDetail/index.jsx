@@ -12,6 +12,12 @@ import 'antd/dist/antd.css';
 
 import * as orderActions from './../Order/actions';
 import AdminServices from '../../../services/adminServices';
+import common from '../../../utils/common';
+
+let formatMoney = common.formatMoney;
+let formatFulfillmentStatus = common.formatFulfillmentStatus;
+let textCarrierCod = common.textCarrierCod;
+let textFinancial = common.textFinancial;
 
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
@@ -75,8 +81,24 @@ function OrderDetailComponent(props) {
 
   }
 
-  async function cancelOrder(order) {
+  let [showConfirmCancel, setShowConfirmCancel] = useState(false);
 
+  function onCancelOrder() {
+    setShowConfirmCancel(true)
+  }
+
+  async function cancelOrder(order) {
+    try {
+      let result = await AdminServices.cancelOrder({
+        id: order.id,
+        cancel_reason: 'other',
+        cancel_note: 'data.cancel_note',
+      });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   return (
@@ -139,12 +161,11 @@ function OrderDetailComponent(props) {
 
           <Col xs={24} lg={8} >
             <Card title="Thông tin khách hàng">
-              <p> {_.get(order, 'customer.first_name')}</p>
-              <p> {_.get(order, 'customer.last_name')}</p>
-              <p> {_.get(order, 'customer.email')}</p>
-              <p> {_.get(order, 'customer.phone')}</p>
-              <p> {_.get(order, 'customer.address1')}</p>
-              <p> {_.get(order, 'customer.address2')}</p>
+              <p>Tên: {_.get(order, 'customer.first_name')}</p>
+              <p>Họ: {_.get(order, 'customer.last_name')}</p>
+              <p>Email: {_.get(order, 'customer.email')}</p>
+              <p>Số điện thoại: {_.get(order, 'customer.phone')}</p>
+              <p>Địa chỉ: {_.get(order, 'customer.address1')}</p>
             </Card>
             <Card title="Thông tin Giao hàng">
               <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>

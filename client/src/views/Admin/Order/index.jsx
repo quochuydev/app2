@@ -20,49 +20,15 @@ import PrintOrder from './../POS/print.jsx';
 import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
+import common from '../../../utils/common';
+let textCarrierCod = common.textCarrierCod;
+let textFinancial = common.textFinancial;
+let formatFulfillmentStatus = common.formatFulfillmentStatus;
+
 const { Option } = Select;
 
 function Orders(props) {
   const { count, actions, orders } = props;
-  const cssOrderType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'purple';
-    }
-  }
-
-  function textFinancial(code) {
-    switch (code) {
-      case 'paid':
-        return 'Đã thanh toán';
-      default:
-        return 'Chưa thanh toán'
-    }
-  }
-
-  function textCarrierCod(code) {
-    switch (code) {
-      case 'codreceipt':
-        return 'Đã nhận';
-      default:
-        return ''
-    }
-  }
-
-  function formatFulfillmentStatus(code) {
-    switch (code) {
-      case 'delivered':
-        return 'Đã giao hàng';
-      default:
-        return ''
-    }
-  }
 
   const columns = [
     {
@@ -146,10 +112,6 @@ function Orders(props) {
     setIsProcessing(false);
   }
 
-  function openInfoModal(order) {
-    setOrder(order)
-    setIsShowInfoModal(true);
-  }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
   }
@@ -161,7 +123,6 @@ function Orders(props) {
   function onChangePage(e) {
     setQuery({ ...query, page: e })
   }
-
 
   return (
     <div>
