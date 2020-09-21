@@ -420,7 +420,7 @@ function Customer(props) {
                             theme="filled" type="edit" /></p>
                         <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
                         <p>Sđt: {order.shipping_address.phone}</p>
-                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
+                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address1}</p>
                       </Card>
                     </div> : null
                   }

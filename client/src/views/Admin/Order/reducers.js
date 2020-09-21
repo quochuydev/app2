@@ -16,7 +16,8 @@ const initialState = Map({
     total_pay: 0,
 
     customer: null,
-    shipping_address: null
+    shipping_address: null,
+    billing_address: null,
   },
   OrdersGrowthPerMonth: { items: [] },
   

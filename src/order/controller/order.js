@@ -86,8 +86,6 @@ async function create({ body }) {
     carrier_cod_status_code: data.carrier_cod_status_code,
     fulfillment_status: data.fulfillment_status,
 
-    billing: data.shipping_address,
-    shipping: data.shipping_address,
     billing_address: data.shipping_address,
     shipping_address: data.shipping_address,
     created_at: new Date(),

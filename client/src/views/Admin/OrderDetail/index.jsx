@@ -143,14 +143,12 @@ function OrderDetailComponent(props) {
               <p> {_.get(order, 'customer.last_name')}</p>
               <p> {_.get(order, 'customer.email')}</p>
               <p> {_.get(order, 'customer.phone')}</p>
-              <p> {_.get(order, 'customer.address')}</p>
+              <p> {_.get(order, 'customer.address1')}</p>
             </Card>
             <Card title="Thông tin Giao hàng">
-              <p> {_.get(order, 'shipping_address.first_name')}</p>
-              <p> {_.get(order, 'shipping_address.last_name')}</p>
-              <p> {_.get(order, 'shipping_address.email')}</p>
-              <p> {_.get(order, 'shipping_address.phone')}</p>
-              <p>{_.get(order, 'shipping_address.address')}</p>
+              <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
+              <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
+              <p>Địa chỉ giao hàng: {_.get(order, 'shipping_address.address1')}</p>
             </Card>
             <Card title="Tình trạng đơn hàng">
               <p> {_.get(order, 'financial_status')}</p>
