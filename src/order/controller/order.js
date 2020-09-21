@@ -54,7 +54,7 @@ async function create({ body }) {
     throw { message: 'Chọn khách hàng' }
   }
 
-  if (!(data.shipping_address && data.shipping_address.address)) {
+  if (!(data.shipping_address && data.shipping_address.address1)) {
     throw { message: 'Chưa đủ thông tin giao hàng' }
   }
 
