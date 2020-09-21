@@ -3,11 +3,11 @@ const MapOrderWoocommerce = {
     let order = {
       id: order_woo.id,
       code: order_woo.number,
-      "billing": {
+      "billing_address": {
         "first_name": order_woo.billing.first_name,
         "last_name": order_woo.billing.last_name,
         "company": order_woo.billing.company,
-        "address_1": order_woo.billing.address_1,
+        "address1": order_woo.billing.address_1,
         "address_2": order_woo.billing.address_2,
         "city": order_woo.billing.city,
         "state": order_woo.billing.state,
@@ -15,11 +15,11 @@ const MapOrderWoocommerce = {
         "email": order_woo.billing.email,
         "phone": order_woo.billing.phone
       },
-      "shipping": {
+      "shipping_address": {
         "first_name": order_woo.shipping.first_name,
         "last_name": order_woo.shipping.last_name,
         "company": order_woo.shipping.company,
-        "address_1": order_woo.shipping.address_1,
+        "address1": order_woo.shipping.address_1,
         "address_2": order_woo.shipping.address_2,
         "city": order_woo.shipping.city,
         "state": order_woo.shipping.state,
@@ -31,6 +31,7 @@ const MapOrderWoocommerce = {
         product_id: line_item.product_id,
         sku: line_item.sku,
         name: line_item.name,
+        title: line_item.name,
         variant_id: line_item.variation_id,
         quantity: line_item.quantity,
         price: Number(line_item.price),

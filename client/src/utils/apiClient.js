@@ -55,17 +55,19 @@ async function responseHandler(response) {
 function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
-      localStorage.removeItem('AccessToken');
-      localStorage.removeItem('user');
+      localStorage.clear();
       window.location.href = '/site/logout';
     } else if (e.data === 403) {
-      localStorage.removeItem('AccessToken');
-      localStorage.removeItem('user');
+      localStorage.clear();
       window.location.href = '/site/permission';
     }
   }
 }
-async function getData(url, headers) {
+async function getData(url, headers, objQuery) {
+  if (objQuery) {
+    let query = Object.keys(objQuery).map(key => key + '=' + objQuery[key]).join('&');
+    url = `${url}?${query}`;
+  }
   const request = createRequest('GET', url, headers);
   return await fetch(request)
     .then(responseHandler)

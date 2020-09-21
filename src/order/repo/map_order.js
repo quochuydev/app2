@@ -2,8 +2,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 const cache = require('memory-cache');
 
-let OrderMD = mongoose.model('Order');
-
 const MapOrderHaravan = require(path.resolve('./src/order/repo/map_order_hrv'));
 const MapOrderWoocommerce = require(path.resolve('./src/order/repo/map_order_woo'));
 const MapOrderShopify = require(path.resolve('./src/order/repo/map_order_shopify'));

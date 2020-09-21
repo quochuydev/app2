@@ -3,6 +3,8 @@ import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Link } from "react-router-dom";
+
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
@@ -12,55 +14,66 @@ import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
+import CustomerDetail from './detail'
+import AdminServices from './../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
   const { Option } = Select;
   const { count, customers, actions, downloadLink } = props;
-  const cssOrderType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'blue';
-    }
-  }
+
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <span>{edit.number}</span>
+        <Link to={`customer/${edit.id}`}>
+          {edit.number}
+        </Link>
       )
     },
     {
-      title: 'Ngày tạo', key: 'created_at', render: edit => (
-        <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
+      title: 'Tên khách hàng', key: 'name', render: edit => (
+        <span>{[edit.last_name, edit.first_name].join(' ')}</span>
       )
     },
     {
-      title: 'Type', key: 'type', render: edit => (
-        <Tag color={cssOrderType(edit.type)}>{edit.type}</Tag>)
+      title: 'Số điện thoại', key: 'phone', render: edit => (
+        <span>{edit.phone}</span>
+      )
     },
-    { title: 'Họ', dataIndex: 'last_name', key: 'last_name', },
-    { title: 'Tên', dataIndex: 'first_name', key: 'first_name', },
-    { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
-    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
+    {
+      title: 'Ngày sinh', key: 'birthday', render: edit => (
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
+      )
+    },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'billing.address_1', key: 'address_1', },
-    { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
-      title: 'Edit', key: 'edit',
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="green">{edit.total_orders}</Tag>
+      )
+    },
+    {
+      title: '', key: 'option',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => onShowUpdate(edit)} />
+          <Button type="danger" size="small" onClick={() => { }}>
+            <Icon type="close" />
+          </Button>
         </span>
       ),
     },
   ];
+
+  const expended = edit => (
+    <div>
+      <p style={{ margin: 0 }}>{edit.type}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.first_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address1 : null}</p>
+    </div>
+  );
 
   const uploadSetting = {
     multiple: false,
@@ -80,15 +93,14 @@ function Customer(props) {
     },
   };
 
+  let [query, setQuery] = useState({ limit: 10, page: 1 });
   useEffect(() => {
     actions.listCustomers(query);
-  }, []);
+  }, [query]);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
-  const [isCreateModal, setIsCreateModal] = useState(false);
-  const [isUpdateModal, setIsUpdateModal] = useState(false);
-  let [query, setQuery] = useState({});
+  const [isShowModal, setIsShowModal] = useState(false);
 
   let [customer, setCustomer] = useState({})
 
@@ -98,32 +110,16 @@ function Customer(props) {
   function onLoadCustomer() {
     actions.listCustomers(query);
   }
-  function addCustomer() {
-    actions.addCustomer(customer);
-  }
+
   function importCustomer() {
     actions.importCustomer();
   }
   function exportCustomer() {
-    actions.exportCustomer(customer);
+    actions.exportCustomer();
   }
 
   function onChange(e) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
-  }
-  function onChangeField(e, field) {
-    setCustomer({ ...customer, [field]: e });
-  }
-
-  function onShowUpdate(customer) {
-    setIsUpdateModal(true);
-    setCustomer(customer)
-  }
-
-  function updateCustomer() {
-    actions.updateCustomer(customer);
-    setIsUpdateModal(false);
-    onLoadCustomer()
   }
 
   async function syncCustomers() {
@@ -142,6 +138,14 @@ function Customer(props) {
     setQuery({ ...query, [name]: value })
   }
 
+  function onChangePage(e) {
+    setQuery({ ...query, page: e })
+  }
+
+  async function assertCustomer({ customer }) {
+    console.log(customer)
+  }
+
   return (
     <div>
       <Row key='1'>
@@ -157,6 +161,7 @@ function Customer(props) {
               placeholder="-- Chọn --"
               onChange={onChangeType}
             >
+              <Option value='app'>App</Option>
               <Option value='haravan'>Haravan</Option>
               <Option value='woocommerce'>Woocommerce</Option>
               <Option value='shopify'>Shopify</Option>
@@ -165,12 +170,16 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          {/* <Button onClick={() => setIsCreateModal(true)}>Thêm khách hàng</Button> */}
+          <Link to={`customer/create`}>
+            <Button>Thêm khách hàng</Button>
+          </Link>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false} />
-          <Pagination defaultCurrent={1} total={count} size="small" onChange={() => { }} />
+          <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
+          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
+            expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
+          <Pagination showTotal={total => <span>{total}</span>} defaultCurrent={1} total={count}
+            size="small" name="page" onChange={onChangePage} />
         </Col>
       </Row>
       <Modal
@@ -187,12 +196,6 @@ function Customer(props) {
         onOk={() => importCustomer()}
         onCancel={() => setIsImportModal(false)}
       >
-        <Upload {...uploadSetting}>
-          <Button>
-            <Icon type="upload" /> Upload
-          </Button>
-        </Upload>
-
         <Upload.Dragger {...uploadSetting}>
           <div style={{ width: '100%' }}>
             <p className="ant-upload-drag-icon">
@@ -201,44 +204,6 @@ function Customer(props) {
             <p className="ant-upload-text">Click or drag file to this area to upload</p>
           </div>
         </Upload.Dragger>
-      </Modal>
-      <Modal
-        title="Create Modal"
-        visible={isCreateModal}
-        onOk={addCustomer}
-        onCancel={() => setIsCreateModal(false)}
-        width={1400}
-      >
-        <Row key='1'>
-          <Col span={12}>
-            <Input name="first_name" onChange={onChange} />
-            <Input name="last_name" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <DatePicker name="birthday" onChange={(e) => onChangeField(e, 'birthday')} />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Input name="phone" onChange={onChange} />
-            <Input name="email" onChange={onChange} />
-          </Col>
-          <Col span={12}>
-            <Select name="gender" onChange={(e) => onChangeField(e, 'gender')} defaultValue={1} style={{ width: 120 }}>
-              <Option value={'1'}>Nam</Option>
-              <Option value={'0'}>Nữ</Option>
-            </Select>
-          </Col>
-        </Row>
-      </Modal>
-      <Modal
-        title="Update Modal"
-        visible={isUpdateModal}
-        onOk={() => updateCustomer()}
-        onCancel={() => setIsUpdateModal(false)}
-      >
-        <Input value={customer.first_name} name='first_name' onChange={onChange} />
-        <p>{JSON.stringify(customer)}</p>
       </Modal>
     </div >
   );

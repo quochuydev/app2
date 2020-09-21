@@ -1,3 +1,7 @@
+/*
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+*/
+
 const mongoose = require('mongoose');
 const cache = require('memory-cache');
 const { Schema } = mongoose;
@@ -6,15 +10,20 @@ autoIncrement.initialize(mongoose.connection);
 
 const CustomersSchema = new Schema({
   number: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
-
+  code: { type: String, default: null },
   type: { type: String, default: null },
   id: { type: Number, default: null },
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],
-  created_at: { type: Date, default: null },
   default_address: {},
-  billing: {},
+
+  image: {
+    id: { type: Number, default: null },
+    filename: { type: String, default: null },
+    src: { type: String, default: null },
+    created_at: { type: Date, default: Date.now },
+  },
+  created_at: { type: Date, default: Date.now },
   phone: { type: String, default: null },
   email: { type: String, default: null },
   first_name: { type: String, default: null },
@@ -33,6 +42,8 @@ const CustomersSchema = new Schema({
   birthday: { type: Date, default: null },
   gender: { type: Number, default: null },
   last_order_date: { type: Date, default: null },
+  is_deleted: { type: Boolean, default: false },
+  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
@@ -43,47 +54,49 @@ CustomersSchema.plugin(autoIncrement.plugin, {
   startAt: 10000,
   incrementBy: 1
 });
+CustomersSchema.plugin(autoIncrement.plugin, {
+  model: 'Customer',
+  field: 'id',
+  startAt: 10000,
+  incrementBy: 1
+});
 
-CustomersSchema.statics._count = function (filter = {}) {
+CustomersSchema.statics._count = async function (filter = {}) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let data = await _this.count({ ...filter, shop_id });
-      resolve(data)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.count(filter);
+  return data;
 }
 
-CustomersSchema.statics._findOne = function (filter = {}, populate = {}) {
+CustomersSchema.statics._findOne = async function (filter = {}, populate = {}) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      let data = await _this.findOne({ ...filter, shop_id }, populate);
-      resolve(data)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  filter.shop_id = cache.get('shop_id');
+  let data = await _this.findOne(filter, populate);
+  return data;
 }
 
-CustomersSchema.statics._create = function (data = {}) {
+CustomersSchema.statics._create = async function (data = {}) {
   let _this = this;
-  let shop_id = cache.get('shop_id');
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!data.created_at) { data.created_at = new Date() }
-      if (!data.updated_at) { data.updated_at = new Date() }
-      if (!data.type) { data.type = 'app' }
-      let result = await _this.create({ ...data, shop_id });
-      resolve(result)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  data.shop_id = cache.get('shop_id');
+  if (!data.created_at) {
+    data.created_at = new Date()
+  }
+  if (!data.type) {
+    data.type = 'app'
+  }
+  let result = await _this.create(data);
+  return result;
 }
 
-mongoose.model('Customer', CustomersSchema);
+CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  return data;
+}
+
+
+let CustomerModel = mongoose.model('Customer', CustomersSchema);
+
+module.exports = { CustomerModel }

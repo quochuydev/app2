@@ -6,18 +6,21 @@ import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
+import NumberFormat from 'react-number-format';
+
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
-  Select, Form, Modal, Radio, Pagination, Tabs
+  Select, Form, Modal, Radio, Pagination, Tabs,
+  Popover, message,
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
 
+import PrintOrder from './../POS/print.jsx';
 import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 function Orders(props) {
   const { count, actions, orders } = props;
@@ -33,24 +36,31 @@ function Orders(props) {
         return 'purple';
     }
   }
-  const cssStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
+
+  function textFinancial(code) {
+    switch (code) {
+      case 'paid':
+        return 'Đã thanh toán';
       default:
-        return 'blue';
+        return 'Chưa thanh toán'
     }
   }
-  const cssOrderStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
+
+  function textCarrierCod(code) {
+    switch (code) {
+      case 'codreceipt':
+        return 'Đã nhận';
       default:
-        return 'blue';
+        return ''
+    }
+  }
+
+  function formatFulfillmentStatus(code) {
+    switch (code) {
+      case 'delivered':
+        return 'Đã giao hàng';
+      default:
+        return ''
     }
   }
 
@@ -62,19 +72,29 @@ function Orders(props) {
       ),
     },
     {
-      title: 'Type', key: 'type', render: edit => (
-        <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
-      )
-
-    },
-    {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
     },
     {
-      title: 'Trạng thái', key: 'status', render: edit => (
-        <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
+      title: 'Thanh toán', key: 'financial_status', render: edit => (
+        <Tag color={"blue"}>{textFinancial(edit.financial_status)}</Tag>
+      )
+    },
+    {
+      title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
+        <Tag color={"green"}>{formatFulfillmentStatus(edit.fulfillment_status)}</Tag>
+      )
+    },
+    {
+      title: 'COD', key: 'carrier_cod_status_code', render: edit => (
+        <Tag color={"magenta"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
+      )
+    },
+    {
+      title: 'Tổng tiền', key: 'total_price', render: edit => (
+        <NumberFormat value={edit.total_price} suffix={'đ'}
+          thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
     {
@@ -135,6 +155,7 @@ function Orders(props) {
   }
   function onChange(e) {
     let { name, value } = e.target;
+    console.log({ name, value });
     setQuery({ ...query, [name]: value })
   }
   function onChangePage(e) {
@@ -144,19 +165,58 @@ function Orders(props) {
 
   return (
     <div>
-      {/* <Tabs tabPosition={'left'}>
-        <TabPane tab="Tab 1" key="1">
-          Content of Tab 1
-      </TabPane>
-        <TabPane tab="Tab 2" key="2">
-          Content of Tab 2
-      </TabPane>
-      </Tabs> */}
-
-      <Row key='1'>
-        <Form>
+      <Form>
+        <Row type="flex">
+          <Col lg={4}>
+            <Popover placement="bottomLeft" content={
+              <div>
+                <p>Content</p>
+                <Select value={1} className="block">
+                  <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
+                </Select>
+                <p>Content</p>
+                <Select value={1} className="block">
+                  <Select.Option value={1}>Mới</Select.Option>
+                </Select>
+                <br />
+                <Button>Hủy</Button>
+                <Button type="primary">Thêm điều kiện lọc</Button>
+              </div>
+            } trigger="click">
+              <Button icon="filter" size="large">
+                <span className="hidden-xs">Áp dụng bộ lọc</span>
+              </Button>
+            </Popover>
+          </Col>
+          <Col xs={14} lg={16}>
+            <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
+              prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
+          </Col>
+          <Col xs={6} lg={4}>
+            <Link to={`POS`}>
+              <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
+                <span className="hidden-xs">Tạo đơn hàng</span>
+              </Button>
+            </Link>
+            <Popover placement="topLeft" content={
+              <div>
+                <Button className="block" onClick={() => loadOrders()}>
+                  Xuất excel
+                </Button>
+                <Button className="block" onClick={() => loadOrders()}>
+                  Xác nhận thanh toán
+                </Button>
+              </div>
+            } trigger="click">
+              <Button icon="swap" size="large" >
+              </Button>
+            </Popover>
+          </Col>
+        </Row>
+        <Row key='1'>
           <Col span={8}>
-            <Form.Item label="Mã đơn hàng"><Input name="number" onChange={onChange} /></Form.Item>
+            <Form.Item label="Mã đơn hàng">
+              <Input name="number" onChange={onChange} /></Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Commerce">
@@ -167,41 +227,44 @@ function Orders(props) {
                 placeholder="-- Chọn --"
                 onChange={onChangeType}
               >
-                <Option value='app'>app</Option>
+                <Option value='app'>App</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
               </Select>
             </Form.Item>
           </Col>
-        </Form>
 
-        <Col span={24}>
-          <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-          <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'} />
-        </Col>
-        <Col span={24}>
-          <Pagination defaultCurrent={1} total={count} name="page" onChange={onChangePage} />
-        </Col>
-      </Row>
-      <ModalInfo
-        order={order}
-        isShowInfoModal={isShowInfoModal}
-        setIsShowInfoModal={setIsShowInfoModal}
-      ></ModalInfo>
-      <ModalMail
-        order={order}
-        isShowSendMailModal={isShowSendMailModal}
-        setIsShowSendMailModal={setIsShowSendMailModal}
-      ></ModalMail>
+          <Col span={24}>
+            <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
+            <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
+            <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
+              scroll={{ x: 900 }} />
+          </Col>
+          <Col span={24}>
+            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage}
+              showTotal={total => <span>{total}</span>} />
+          </Col>
+        </Row>
+        <ModalInfo
+          order={order}
+          isShowInfoModal={isShowInfoModal}
+          setIsShowInfoModal={setIsShowInfoModal}
+        ></ModalInfo>
+        <ModalMail
+          order={order}
+          isShowSendMailModal={isShowSendMailModal}
+          setIsShowSendMailModal={setIsShowSendMailModal}
+        ></ModalMail>
 
-      <div style={{ display: isShowPrint ? 'block' : 'none' }}>
-        <div ref={componentRef}>
-          123123
-          <p>{JSON.stringify(order.type)}</p>
+        <div style={{ display: isShowPrint ? 'block' : 'none' }}>
+          <div ref={componentRef}>
+            {
+              (order && order.id) ? <PrintOrder order={order} /> : null
+            }
+          </div>
         </div>
-      </div>
+      </Form>
     </div >
   );
 }

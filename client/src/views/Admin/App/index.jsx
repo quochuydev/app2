@@ -109,23 +109,6 @@ function App(props) {
     Toast.success('Cập nhật thành công!');
   }
 
-  let ListHaravanShop;
-  if (setting && setting.haravan.shop) {
-    ListHaravanShop = (
-      <div>
-        {
-          <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
-            <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
-          </p>
-        }
-      </div>
-    )
-  } else {
-    ListHaravanShop = (
-      <div>Không có shop haravan</div>
-    )
-  }
-
   return (
     <div>
       <Row key='1'>
@@ -134,7 +117,17 @@ function App(props) {
             <Item>
               Haravan App
             <Button onClick={() => setIsShowHaravanAppModal(true)}>Setting</Button>
-              {ListHaravanShop}
+              {
+                (setting && setting.haravan && setting.haravan.shop) ?
+                  <div>
+                    {
+                      <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
+                        <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
+                      </p>
+                    }
+                  </div>
+                  : <div>Không có shop haravan</div>
+              }
             </Item>
             <Item>
               Woocommerce App
@@ -177,18 +170,6 @@ function App(props) {
           onOk={() => buildLinkHaravanApp()}
           onCancel={() => setIsShowHaravanAppModal(false)}
         >
-          {/* <Form>
-          <Form.Item>
-            <Radio.Group name="is_test" onChange={onChangeChecked} defaultValue={true}>
-              <Radio value={true}>sku</Radio>
-              <Radio value={false}>production</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item><Checkbox name="api_orders" onChange={onChangeChecked}>API đơn hàng</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="api_products" onChange={onChangeChecked}>API sản phẩm</Checkbox></Form.Item>
-          <Form.Item><Checkbox name="api_customers" onChange={onChangeChecked}>API khách hàng</Checkbox></Form.Item>
-        </Form> */}
-          {/* <Button onClick={buildLinkHaravanApp}>Build</Button> */}
           <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
         </Modal>
         <Modal

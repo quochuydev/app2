@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const crypto = require('crypto');
 const autoIncrement = require('mongoose-auto-increment');
+const cache = require('memory-cache');
+const { Schema } = mongoose;
 autoIncrement.initialize(mongoose.connection);
 
 let UserSchema = new Schema({
@@ -37,4 +39,31 @@ UserSchema.plugin(autoIncrement.plugin, {
   incrementBy: 1
 });
 
-mongoose.model('User', UserSchema);
+function hashPassword(salt, password) {
+  return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64, 'sha1').toString('base64');
+};
+
+UserSchema.pre('save', function (next) {
+  this.salt = crypto.randomBytes(16).toString('base64');
+  if (this.password) {
+    this.password = hashPassword(this.salt, this.password);
+  }
+  next();
+});
+
+UserSchema.statics.authenticate = function (user, password) {
+  return user.password == hashPassword(user.salt, password);
+}
+
+UserSchema.statics.user_system = {
+  id: 1,
+  first_name: 'Hệ thống',
+  shop_id: cache.get('shop_id')
+}
+UserSchema.statics.authenticate = function (user, password) {
+  return user.password == hashPassword(user.salt, password);
+}
+
+let UserModel = mongoose.model('User', UserSchema);
+
+module.exports = { UserModel }
