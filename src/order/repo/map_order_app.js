@@ -6,24 +6,24 @@ const MapOrderHaravan = {
     let order = {
       id: order_map.id,
       code: order_map.order_number,
-      "billing_address": {
+      "billing": {
         "first_name": order_map.billing.first_name,
         "last_name": order_map.billing.last_name,
         "company": order_map.billing.company,
-        "address1": order_map.billing.address1,
-        "address2": order_map.billing.address2,
+        "address_1": order_map.billing.address1,
+        "address_2": order_map.billing.address2,
         "city": order_map.billing.province,
         "state": order_map.billing.district,
         "country": order_map.billing.country,
         "email": order_map.email,
         "phone": order_map.billing.phone
       },
-      "shipping_address": {
+      "shipping": {
         "first_name": order_map.shipping_address.first_name,
         "last_name": order_map.shipping_address.last_name,
         "company": order_map.shipping_address.company,
-        "address1": order_map.shipping_address.address1,
-        "address2": order_map.shipping_address.address2,
+        "address_1": order_map.shipping_address.address1,
+        "address_2": order_map.shipping_address.address2,
         "city": order_map.shipping_address.province,
         "state": order_map.shipping_address.district,
         "country": order_map.shipping_address.country,

@@ -12,12 +12,12 @@ const MapCustomerWoocommerce = {
       phone: customer_woo.phone,
       orders_count: customer_woo.orders_count,
       total_spent: customer_woo.total_spent,
-      "billing_address": {
+      "billing": {
         "first_name": customer_woo.billing.first_name,
         "last_name": customer_woo.billing.last_name,
         "company": customer_woo.billing.company,
-        "address1": customer_woo.billing.address_1,
-        "address2": customer_woo.billing.address_2,
+        "address_1": customer_woo.billing.address_1,
+        "address_2": customer_woo.billing.address_2,
         "city": customer_woo.billing.city,
         "country": customer_woo.billing.country,
         "state": customer_woo.billing.state,

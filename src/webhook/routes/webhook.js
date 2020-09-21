@@ -1,8 +1,6 @@
 const path = require('path');
 const mongoose = require('mongoose');
-
-const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
-
+const OrderMD = mongoose.model('Order');
 const { haravan } = require(path.resolve('./src/config/config'));
 const { webhook } = haravan;
 const MapOrder = require(path.resolve('./src/order/repo/map_order'));
@@ -19,13 +17,13 @@ const router = ({ app }) => {
             let { id } = order_woo;
             let order = MapOrder.gen('woocommerce', order_woo);
             let { type } = order;
-            let found = await OrderModel.findOne({ id, type }).lean(true);
+            let found = await OrderMD.findOne({ id, type }).lean(true);
             if (found) {
               console.log(`[WOO] [WEBHOOK] [ORDER] [UPDATE] [${id}]`);
-              await OrderModel.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+              await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
             } else {
               console.log(`[WOO] [WEBHOOK] [ORDER] [CREATE] [${id}]`);
-              await OrderModel.create(order);
+              await OrderMD.create(order);
             }
           }
           break;
@@ -47,12 +45,12 @@ const router = ({ app }) => {
             let { id } = order_hrv;
             let order = MapOrder.gen('haravan', order_hrv);
             let { type } = order;
-            let found = await OrderModel.findOne({ id, type }).lean(true);
+            let found = await OrderMD.findOne({ id, type }).lean(true);
             if (found) {
-              let updateOrder = await OrderModel.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
+              let updateOrder = await OrderMD.findOneAndUpdate({ id, type }, { $set: order }, { new: true, lean: true });
               console.log(`[HARAVAN] [WEBHOOK] [ORDER] [UPDATE] [${id}] [${updateOrder.number}]`);
             } else {
-              let newOrder = await OrderModel.create(order);
+              let newOrder = await OrderMD.create(order);
               console.log(`[HARAVAN] [WEBHOOK] [ORDER] [CREATE] [${id}] [${newOrder.number}]`);
             }
           }

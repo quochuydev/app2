@@ -2,17 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import BlockUi from 'react-block-ui';
 import {
   BrowserRouter,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+import styled from "styled-components"
 import {
   Layout, Menu, Icon, Breadcrumb, Button, Popover,
-  message, List, Drawer, PageHeader, Tag, Dropdown
+  message, List
 } from 'antd';
-import './style.css';
 
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
@@ -26,17 +27,13 @@ import assetProvider from '../../utils/assetProvider';
 
 const basedUrl = config.backend_url;
 
-const { Header, Content, Footer, Sider, } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
-let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 function LayoutContainer() {
-  const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
-  const [isShowDrawer, setIsShowDrawer] = useState(false);
-  let menuName = 'Menu'
-
+  const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false, });
   let { messageFailed, messageSuccess, isError, showAlert } = alert;
 
   const token = localStorage.getItem('AccessToken');
@@ -52,13 +49,9 @@ function LayoutContainer() {
   let menuItems = [];
   for (let i = 0; i < MENU_DATA.length; i++) {
     const menu = MENU_DATA[i];
-    if (menu.path == window.location.pathname) {
-      menuName = menu.name;
-    }
-
     if (menu.is_open) {
       menuItems.push(
-        <Menu.Item key={'sub_' + menu.key} style={{ paddingLeft: 0 }}>
+        <Menu.Item key={'sub_' + menu.key}>
           <Link to={menu.path}><Icon type={menu.icon} /><span>{menu.name}</span></Link>
         </Menu.Item>
       );
@@ -75,32 +68,21 @@ function LayoutContainer() {
     })
   }
 
-  function changeLogo() {
+  return (
+    <BrowserRouter>
+      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
 
-  }
-
-  function LeftMenu(props) {
-    return (
-      <div style={{ display: props.display }}>
+      <Layout style={{ background: '#fff' }}>
         {
-          token && <Sider collapsible={!isMobile} style={{ width: '100%' }} defaultCollapsed={false}
-            style={{ background: '#fff' }}>
+          token && <Sider collapsible width={200} style={{ background: '#fff' }} defaultCollapsed={false}>
             <Popover placement="right" content={<div>
-              <List size="small" bordered={false}>
-                {
-                  user.shops.map(e => (
-                    <List.Item key={e.id}>
-                      <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
-                    </List.Item>
-                  ))
-                }
-                <List.Item key={'change_logo'}>
-                  <a onClick={() => changeLogo()}>Đổi logo cửa hàng</a>
-                </List.Item>
-                <List.Item key={'logout'}>
-                  <a onClick={() => logout()}>Đăng xuất</a>
-                </List.Item>
-              </List>
+              <List
+                size="small"
+                bordered={false}
+                dataSource={user.shops}
+                renderItem={e => <List.Item>
+                  <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
+                </List.Item>}></List>
             </div>} trigger="click"
             >
               <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
@@ -108,50 +90,20 @@ function LayoutContainer() {
 
             <Menu theme="light" mode="inline">
               {menuItems}
+              <Menu.Item key={'sub_logout'}>
+                <a onClick={() => logout()}><Icon type="logout" /><span>Đăng xuất</span></a>
+              </Menu.Item>
             </Menu>
           </Sider>
         }
-      </div>
-    )
-  }
-
-  let _display = (boolean) => boolean ? 'block' : 'none';
-
-  return (
-    <BrowserRouter>
-      <Alert messageFailed={messageFailed} messageSuccess={messageSuccess} error={isError} showAlert={showAlert} />
-      <Drawer
-        placement={'left'}
-        closable={false}
-        onClose={() => { setIsShowDrawer(false) }}
-        visible={isShowDrawer && isMobile}
-        bodyStyle={{ padding: 0 }}
-      >
-        <LeftMenu display={_display(isMobile)} />
-      </Drawer>
-
-      <Layout style={{ background: '#fff' }}>
-        <LeftMenu display={_display(!isMobile)} />
-        <Layout.Content>
-          <PageHeader
-            title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
-              style={{ border: 'none', padding: 0 }}
-            >
-              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} style={{ padding: 10 }} />
-            </Button>}
-            style={{ padding: 0, display: _display(isMobile && !!token) }}
-            subTitle={menuName}
-          >
-          </PageHeader>
-
+        <Content style={{ padding: '0 16px' }}>
           <Switch>
             <Middleware setAlert={setAlert}>
-              {RouteList.map((props, index) => (<Route key={index} {...props} />))}
+              {RouteList.map((props, index) => (< Route key={index} {...props} />))}
             </Middleware>
           </Switch>
-        </Layout.Content>
+        </Content>
       </Layout>
-
     </BrowserRouter >
   );
 }

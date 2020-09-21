@@ -9,26 +9,6 @@ export const ACTIONS = {
   BUILD_LINK_MOMO_FAILED: 'BUILD_LINK_MOMO_FAILED'
 };
 
-export function setProduct(product) {
-  return function (dispatch) {
-    dispatch({
-      type: 'REFRESH_PRODUCT', payload: {
-        error: false, message: 'Merge success', product
-      }
-    });
-  }
-}
-
-export function resetProduct() {
-  return function (dispatch) {
-    dispatch({
-      type: 'RESET_PRODUCT', payload: {
-        error: false, message: 'Merge success'
-      }
-    });
-  }
-}
-
 export function merge(data) {
   return function (dispatch) {
     dispatch({
@@ -67,26 +47,15 @@ export function loadProducts(query) {
   }
 }
 
-export function getProduct(id) {
-  return async (dispatch) => {
-    try {
-      const data = await AdminServices.getProduct(id);
-      dispatch({ type: ACTIONS.LOAD_PRODUCTS_SUCCESS, payload: { ...data } });
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.LOAD_PRODUCTS_FAILED, payload: { error: true, message: 'LOAD_PRODUCTS_FAILED.message' }
-      });
-    }
-  }
-}
-
 export function syncProducts() {
   return async (dispatch) => {
     try {
       const data = await AdminServices.syncProducts();
       dispatch({
         type: ACTIONS.SYNC_PRODUCTS_SUCCESS, payload: {
-          error: false, message: 'SYNC_PRODUCTS_SUCCESS.message', ...data
+          error: false,
+          message: 'SYNC_PRODUCTS_SUCCESS.message',
+          ...data
         }
       });
     } catch (error) {
@@ -95,6 +64,21 @@ export function syncProducts() {
           error: true,
           message: 'SYNC_PRODUCTS_FAILED.message'
         }
+      });
+    }
+  }
+}
+
+export function buildLinkMomoProduct(product) {
+  return async (dispatch) => {
+    try {
+      const data = await AdminServices.buildLinkMomoProduct(product);
+      dispatch({
+        type: ACTIONS.BUILD_LINK_MOMO_SUCCESS, payload: data
+      });
+    } catch (error) {
+      dispatch({
+        type: ACTIONS.BUILD_LINK_MOMO_FAILED, payload: {}
       });
     }
   }

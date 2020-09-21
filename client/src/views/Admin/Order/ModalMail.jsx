@@ -17,9 +17,9 @@ function ModalInfo(props) {
     >
       <p>Gửi mail thanh toán momo</p>
       <Radio.Group onChange={() => { }} defaultValue={1}>
-        <Radio style={radioStyle} value={1}>Email bill: {_.get(order, 'billing_address.email')}
+        <Radio style={radioStyle} value={1}>Email bill: {_.get(order, 'billing.email')}
         </Radio>
-        <Radio style={radioStyle} value={2}>Email giao hàng:: {_.get(order, 'shipping_address.email')}
+        <Radio style={radioStyle} value={2}>Email giao hàng:: {_.get(order, 'shipping.email')}
         </Radio>
       </Radio.Group>
       <TextArea rows={5} value={'{{momo_pay_url}}'} />

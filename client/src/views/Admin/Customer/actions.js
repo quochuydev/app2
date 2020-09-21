@@ -2,7 +2,7 @@ import AdminServices from '../../../services/adminServices';
 
 export const ACTIONS = {
   LOAD_CUSTOMER_SUCCESS: 'LOAD_CUSTOMER_SUCCESS',
-  GET_CUSTOMER_SUCCESS: 'GET_CUSTOMER_SUCCESS',
+  LOAD_CUSTOMER_FAILED: 'LOAD_CUSTOMER_FAILED',
   ADD_CUSTOMER_SUCCESS: 'ADD_CUSTOMER_SUCCESS',
   ADD_CUSTOMER_FAILED: 'ADD_CUSTOMER_FAILED',
   UPDATE_CUSTOMER_SUCCESS: 'UPDATE_CUSTOMER_SUCCESS',
@@ -25,15 +25,6 @@ export function merge(data) {
   }
 }
 
-export function reset() {
-  return function (dispatch) {
-    dispatch({
-      type: 'RESET', payload: {
-        error: false, message: 'RESET customer success'
-      }
-    });
-  }
-}
 export function listCustomers(query) {
   return async (dispatch) => {
     try {
@@ -43,26 +34,6 @@ export function listCustomers(query) {
           error: false,
           message: 'createAccountAdmin.message',
           ...data
-        }
-      });
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.LOAD_CUSTOMER_FAILED, payload: {
-          error: true,
-          message: 'createAccountAdmin.message'
-        }
-      });
-    }
-  }
-}
-
-export function getCustomer(id) {
-  return async (dispatch) => {
-    try {
-      const data = await AdminServices.getCustomer(id);
-      dispatch({
-        type: ACTIONS.GET_CUSTOMER_SUCCESS, payload: {
-          error: false, message: 'createAccountAdmin.message', ...data
         }
       });
     } catch (error) {
@@ -142,7 +113,7 @@ export function importCustomer(customer) {
   }
 }
 
-export function exportCustomer() {
+export function exportCustomer(customer) {
   return async (dispatch) => {
     try {
       const payload = await AdminServices.exportCustomer();

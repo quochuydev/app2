@@ -6,24 +6,24 @@ const MapOrderShopify = {
     let order = {
       id: order_shopify.id,
       code: order_shopify.order_number,
-      billing_address: {
+      billing: {
         first_name: order_shopify.billing_address.first_name,
         last_name: order_shopify.billing_address.last_name,
         company: order_shopify.billing_address.company,
-        address1: order_shopify.billing_address.address1,
-        address2: order_shopify.billing_address.address2,
+        address_1: order_shopify.billing_address.address1,
+        address_2: order_shopify.billing_address.address2,
         city: order_shopify.billing_address.province,
         state: order_shopify.billing_address.district,
         country: order_shopify.billing_address.country,
         email: order_shopify.email,
         phone: order_shopify.billing_address.phone
       },
-      shipping_address: {
+      shipping: {
         first_name: order_shopify.shipping_address.first_name,
         last_name: order_shopify.shipping_address.last_name,
         company: order_shopify.shipping_address.company,
-        address1: order_shopify.shipping_address.address1,
-        address2: order_shopify.shipping_address.address2,
+        address_1: order_shopify.shipping_address.address1,
+        address_2: order_shopify.shipping_address.address2,
         city: order_shopify.shipping_address.city,
         state: order_shopify.shipping_address.province,
         country: order_shopify.shipping_address.country,
@@ -34,7 +34,6 @@ const MapOrderShopify = {
         product_id: line_item.product_id,
         sku: line_item.sku,
         name: line_item.title,
-        title: line_item.title,
         variant_id: line_item.variant_id,
         quantity: line_item.quantity,
         price: line_item.price,

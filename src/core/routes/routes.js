@@ -1,15 +1,8 @@
 const path = require('path');
-const { auth, login, loginGoogle, logout, signup, changeShop, checkUser } = require('../controllers/core');
-const { Middleware } = require('../middlewares/core');
-const config = require(path.resolve('./src/config/config'));
+const { auth, login, loginGoogle, logout, signup, middleware, changeShop, checkUser } = require('../controllers/core');
 
 const routes = (app) => {
   app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
-
-  app.get('/site', (req, res, next) => {
-    res.redirect(`${config.frontend_site}/`);
-  });
-
   app.get('/auth', auth);
   app.post('/login', login);
   app.post('/login-google', loginGoogle);
@@ -27,7 +20,7 @@ const routes = (app) => {
       .catch(error => next(error))
   });
 
-  app.use('/api/*', Middleware);
+  app.use('/api/*', middleware);
 
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });
@@ -42,9 +35,6 @@ const routes = (app) => {
   require(path.resolve('./src/products/routes/products'))({ app });
   require(path.resolve('./src/users/routes/users'))({ app });
   require(path.resolve('./src/shop/routes/shop'))({ app });
-  require(path.resolve('./src/report/routes'))({ app });
-  require(path.resolve('./src/images/route'))({ app });
-  require(path.resolve('./src/core/routes/core-data'))({ app });
 }
 
 module.exports = routes;

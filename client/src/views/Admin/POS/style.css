@@ -2,10 +2,6 @@ p {
   margin: 5px;
 }
 
-.m-y-10 {
-  margin: 10px 0;
-}
-
 .m-y-15 {
   margin: 15px 0;
 }
@@ -16,6 +12,10 @@ p {
 
 .ant-card-body {
   padding: 10px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .ant-layout, .ant-layout-footer {
@@ -57,15 +57,4 @@ p {
 
 .ant-collapse-content-box {
   padding: 0 !important;
-}
-
-.ui-information-title, .ui-title-page {
-	line-height: 18px;
-	font-weight: 600;
-	text-transform: capitalize;
-	color: #0b3d88;
-}
-
-.ant-card-head-title, .ant-card-head {
-  padding: 0;
 }

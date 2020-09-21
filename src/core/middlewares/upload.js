@@ -1,4 +1,4 @@
-// const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
+// const { UploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 
 const _ = require('lodash');
 const path = require('path');

@@ -10,7 +10,6 @@ const MapProductWoo = {
       variations: product_woo.variations,
       images: product_woo.images,
       url: url,
-      variants: product_woo.variants,
       detail: product_woo
     };
 

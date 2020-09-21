@@ -1,9 +1,7 @@
 const path = require('path');
 const mongoose = require('mongoose');
 
-const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
-const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
-const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
+const OrderMD = mongoose.model('Order');
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { _parse } = require(path.resolve('./src/core/lib/query'));
@@ -12,168 +10,94 @@ const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../bu
 const list = async (req, res) => {
   try {
     let { limit, skip, criteria } = _parse(req.body);
-    let count = await OrderModel.countDocuments(criteria);
-    let orders = await OrderModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+    let count = await OrderMD.countDocuments(criteria);
+    let orders = await OrderMD.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
     res.json({ error: false, count, orders });
   } catch (error) {
-    next(error);
+    logger({ error })
+    res.status(400).send({ error: true });
   }
 }
 
 const detail = async (req, res) => {
   try {
     let number = req.params.id;
-    let order = await OrderModel.findOne({ number }).lean(true);
+    let order = await OrderMD.findOne({ number }).lean(true);
     res.json({ error: false, order })
   } catch (error) {
-    next(error);
+    logger({ error })
+    res.status(400).send({ error: true });
   }
 }
 
 const sync = async (req, res) => {
   try {
-    await Promise.all([
-      syncOrdersHaravan(),
-      syncOrdersWoo(),
-      syncOrdersShopify()
-    ])
+    await syncOrdersHaravan();
+    await syncOrdersWoo();
+    await syncOrdersShopify();
     res.json({ error: false });
   } catch (error) {
+    logger(error);
+    res.status(400).send({ error: true });
+  }
+}
+
+
+const create = async (req, res, next) => {
+  try {
+    let data = req.body;
+
+    if (!(data.line_items && data.line_items.length)) {
+      throw { message: 'Chọn sản phẩm' }
+    }
+
+    if (!(data.customer)) {
+      throw { message: 'Chọn khách hàng' }
+    }
+
+    let order_data = {
+      type: data.type,
+      line_items: data.line_items,
+      total_line_items_price: data.total_line_items_price,
+      custom_total_shipping_price: data.custom_total_shipping_price,
+      total_discounts: data.total_discounts,
+      total_price: data.total_price,
+      customer: data.customer,
+      shipping_address: null,
+      created_at: new Date(),
+    };
+    let order = await OrderMD._create(order_data);
+    res.json({ error: false, order });
+  } catch (error) {
+    logger(error);
     next(error);
   }
 }
 
-async function create({ body }) {
-  let data = body;
-
-  if (!(data.line_items && data.line_items.length)) {
-    throw { message: 'Chọn sản phẩm' }
+const update = async (req, res) => {
+  try {
+    let { customer, line_items } = req.body;
+    let order_data = {
+      type: 'app',
+      billing: customer.billing,
+      shipping: customer.shipping,
+      line_items: line_items.map(line_item => ({
+        product_id: line_item.id,
+        sku: line_item.variant.sku,
+        product_name: line_item.title,
+        name: line_item.variant.title,
+        variant_id: line_item.variant.id,
+        quantity: line_item.quantity,
+        price: line_item.variant.price,
+        total: line_item.variant.price * line_item.quantity,
+      }))
+    }
+    let order = await OrderMD._create(order_data);
+    res.json({ error: false, order });
+  } catch (error) {
+    logger({ error });
+    res.status(400).send({ error: true });
   }
-
-  if (!(data.customer && data.customer.id)) {
-    throw { message: 'Chọn khách hàng' }
-  }
-
-  if (!(data.shipping_address && data.shipping_address.address)) {
-    throw { message: 'Chưa đủ thông tin giao hàng' }
-  }
-
-  let line_items = Array.isArray(data.line_items) ? data.line_items.map(e => e) : [];
-
-  let product_ids = line_items.map(e => e.product_id);
-  let products = await ProductModel.find({ id: { $in: product_ids } }).lean(true);
-  let order_products = products.map(e => Object({
-    id: e.id,
-    title: e.title,
-    options: e.options,
-    variants: e.variants,
-  }))
-
-  let order_data = {
-    type: data.type,
-    line_items,
-    products: order_products,
-    total_line_items_price: data.total_line_items_price,
-    custom_total_shipping_price: data.custom_total_shipping_price,
-    total_discounts: data.total_discounts,
-    total_price: data.total_price,
-    total_items: data.total_items,
-    customer: data.customer,
-    customer_id: data.customer.id,
-
-    gateway_code: data.gateway_code,
-    financial_status: data.financial_status,
-    carrier_cod_status_code: data.carrier_cod_status_code,
-    fulfillment_status: data.fulfillment_status,
-
-    billing_address: data.shipping_address,
-    shipping_address: data.shipping_address,
-    created_at: new Date(),
-  };
-
-  if (order_data.total_price == 0) {
-    order_data.financial_status = 'paid';
-  }
-
-  let order = await OrderModel._create(order_data);
-  return { error: false, order, message: `Tạo đơn hàng thành công [${order.id}]` };
 }
 
-const update = async ({ order_id, data }) => {
-  let order_data = {
-
-  }
-
-  return { error: false };
-}
-
-const Controller = {
-  list, detail, sync, create, update
-}
-
-Controller.updateNote = async function ({ order_id, data }) {
-  let found_order = await OrderModel._findOne({ id: order_id });
-
-  let order_data = {
-    attributes: data.attributes,
-    note: data.note,
-  }
-
-  let order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
-  return { error: false, order, message: 'Cập nhật ghi chú thành công!' };
-}
-
-Controller.pay = async function ({ order_id }) {
-  let found_order = await OrderModel._findOne({ id: order_id });
-
-  if (found_order.financial_status == 'paid') {
-    throw { message: 'Đơn hàng đã thanh toán xong' }
-  }
-
-  let order_data = {
-    total_pay: found_order.total_price
-  }
-
-  if (order_data.total_pay == found_order.total_price) {
-    order_data.financial_status = 'paid';
-  }
-
-  let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
-  return { error: false, order: updated_order, message: 'Cập nhật thanh toán thành công!' };
-}
-
-/**
-{
-customer: 'Khách hàng đổi ý',
-fraud: 'Đơn hàng giả mạo',
-inventory: 'Hết hàng',
-other: 'Khác'
-}
- */
-
-Controller.cancel = async function ({ order_id, data }) {
-  let found_order = await OrderModel._findOne({ id: order_id });
-
-  if (!['customer', 'fraud', 'inventory', 'other',].includes(data.cancel_reason)) {
-    throw { message: 'Lí do hủy đơn không đúng định dạng' }
-  }
-
-  if (data.cancel_reason == 'other' && !data.cancel_note) {
-    throw { message: 'Vui lòng nhập ghi chú hủy đơn' }
-  }
-
-  let order_data = {
-    cancelled_at: new Date(),
-    cancel_reason: data.cancel_reason,
-    cancel_note: data.cancel_note,
-  }
-
-  let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
-  return { error: false, order: updated_order, message: 'Hủy đơn thành công!' };
-}
-
-
-module.exports = Controller;
+module.exports = { list, detail, sync, create, update };

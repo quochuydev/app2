@@ -1,12 +1,10 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const logger = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const config = require(path.resolve('./src/config/config'));
-const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
 
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
@@ -16,7 +14,6 @@ module.exports = (app, db) => {
   //   next();
   // });
   app.use(cors());
-  app.use(logger('tiny'));
 
   if (process.env.NODE_ENV == 'production') {
     console.log(path.resolve('client/build', 'index.html'))
@@ -50,13 +47,8 @@ module.exports = (app, db) => {
   const Routes = require(path.resolve('./src/core/routes/routes'))
   Routes(app);
   app.use(function (error, req, res, next) {
-    if (!error) {
-      return next();
-    }
-    console.error(error);
-    let status = error.statusCode || 400;
-    let result = { message: error.message || 'Server Error!', error: JSON.stringify(error) };
-    result.error = result.error || true;
-    res.status(status).send(result);
+    if (!error) { next() }
+    console.log(error);
+    res.status(500).send({ message: error.message ? error.message : 'Server Error!', error: JSON.stringify(error) });
   })
 }

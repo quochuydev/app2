@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload, message, Pagination, Avatar, List
+  Upload, message
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -21,53 +21,64 @@ const apiUrl = `${config.backend_url}/api`;
 const { Option } = Select;
 
 function Products(props) {
-  const { actions, products, count } = props;
+  const { actions, products } = props;
+  const cssProductType = (type) => {
+    switch (type) {
+      case 'woocommerce':
+        return 'magenta';
+      case 'haravan':
+        return 'blue';
+      case 'shopify':
+        return 'green';
+      default:
+        return 'blue';
+    }
+  }
+  const cssStatus = (status) => {
+    switch (status) {
+      case 'success':
+        return 'green';
+      case 'fail':
+        return 'red';
+      default:
+        return 'blue';
+    }
+  }
+  const cssProductStatus = (status) => {
+    switch (status) {
+      case 'success':
+        return 'green';
+      case 'fail':
+        return 'red';
+      default:
+        return 'blue';
+    }
+  }
 
   const columns = [
     {
-      title: '', key: 'image',
+      title: 'Number', key: 'edit',
       render: edit => (
-        <List.Item.Meta
-          avatar={<Avatar shape="square" size={45} src={_.get(edit, 'images[0].src', null)} />}
-          title={<Link to={`product/${edit.id}`}>{edit.title}</Link>}
-        />
+        <Link to={`product/detail/${edit.number}`}>{edit.number}</Link>
       ),
+    },
+    {
+      title: 'Tên sản phẩm', key: 'title',
+      render: edit => (
+        <Link to={`product/detail/${edit.number}`}>{edit.title}</Link>
+      ),
+    },
+    {
+      title: 'Type', key: 'type', render: edit => (
+        <p><Tag color={cssProductType(edit.type)}>{edit.type}</Tag></p>
+      )
     },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
-    },
-    {
-      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
-        <Tag color="magenta">{edit.total_orders}</Tag>
-      )
-    },
-    {
-      title: 'Option', key: 'option', render: edit => (
-        <div>
-          <Button type="danger" size="small" onClick={() => deleteProduct(edit.id)}>
-            <Icon type="close"/>
-          </Button>
-        </div>
-      )
     }
   ];
-
-  const subColumns = [
-    { title: 'Title', dataIndex: 'title', key: 'title' },
-    { title: 'Sku', dataIndex: 'sku', key: 'sku' },
-    { title: 'Barcode', dataIndex: 'barcode', key: 'barcode' },
-    {
-      title: 'Giá', key: 'price', render: edit => (
-        <div>
-          {edit.price} đ
-        </div>
-      )
-    },
-    { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at' },
-    { title: 'Ngày cập nhật', dataIndex: 'update_at', key: 'update_at' },
-  ]
 
   const uploadSetting = {
     multiple: false,
@@ -87,12 +98,13 @@ function Products(props) {
     },
   };
 
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
-
   useEffect(() => {
+    setIsProcessing(true);
     actions.loadProducts(query);
-  }, [query]);
+    setIsProcessing(false);
+  }, []);
 
+  let [query, setQuery] = useState({});
   let [isImportModal, setIsImportModal] = useState(false);
   let [isExportModal, setIsExportModal] = useState(false);
   let [downloadLink, setDownloadLink] = useState(null);
@@ -127,20 +139,6 @@ function Products(props) {
     }
   }
 
-  async function deleteProduct(id) {
-    try {
-      const result = await AdminServices.deleteProduct(id);
-      message.success(result.message);
-      actions.loadProducts();
-    } catch (error) {
-      message.error(error.message);
-    }
-  }
-
-  function onChangePage(e) {
-    setQuery({ ...query, page: e })
-  }
-
   return (
     <div className="">
       <Row key='1'>
@@ -150,9 +148,13 @@ function Products(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="Commerce">
-              <Select mode="multiple" name="type_in"
-                style={{ width: '100%' }} placeholder="-- Chọn --" onChange={onChangeType}>
-                <Option value='app'>App</Option>
+              <Select
+                mode="multiple"
+                name="type_in"
+                style={{ width: '100%' }}
+                placeholder="-- Chọn --"
+                onChange={onChangeType}
+              >
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
                 <Option value='shopify'>Shopify</Option>
@@ -162,22 +164,15 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          <Link to={`product/create`}>
-            <Button>Thêm sản phẩm</Button>
-          </Link>
+          {/* <Link to={`product/detail`}>
+            <Button>Tạo sản phẩm</Button>
+          </Link> */}
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
-          <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
+          <Button onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} scroll={{ x: 1000 }}
-            expandedRowRender={record => <Table rowKey='id' columns={subColumns}
-              dataSource={record.variants} pagination={false} showHeader={false} />} />
+          <Table rowKey='number' dataSource={products} columns={columns} />
         </Col>
-        <Col span={24}>
-          <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage}
-            showTotal={total => <span>{total}</span>} />
-        </Col>
-
       </Row>
       <Modal
         title="Import excel"
@@ -208,7 +203,6 @@ const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   products: state.products.get('products'),
   product: state.products.get('product'),
-  count: state.products.get('count'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

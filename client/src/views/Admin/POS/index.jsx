@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as customerActions from '../Customer/actions';
 import * as productActions from '../Product/actions';
 import * as orderActions from '../Order/actions';
+import * as orderDetailActions from '../OrderDetail/actions';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,10 +11,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import ReactToPrint from "react-to-print";
 import AsyncSelect from 'react-select/async';
-import NumberFormat from 'react-number-format';
-import {
-  Link
-} from "react-router-dom";
+import CurrencyFormat from 'react-currency-format';
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -27,16 +25,14 @@ import 'antd/dist/antd.css';
 import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import './style.css'
+import data from './data.json';
 import PrintOrder from './print.jsx';
-import CustomerDetail from './../Customer/detail'
-import common from '../../../utils/common';
-
-let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
-  const { count, products, order, OrderActions, ProductActions, CustomerActions, customers } = props;
+  const { count, products, order, OrderActions, OrderDetailActions, ProductActions, CustomerActions, customers } = props;
+  // let products = data.products;
 
   const { Option } = Select;
   const { Meta } = Card;
@@ -51,19 +47,17 @@ function Customer(props) {
       title: (<span>Sản phẩm <Badge count={order.total_items} style={{ backgroundColor: '#52c41a' }} /></span>), key: 'title', render: item => (
         <div>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
-            title={<Link to={`product/${item.product_id}`} target="_blank">
-              {[item.title, item.variant_title].join(' - ')}
-            </Link>}
-            description={[item.sku, item.barcode].join(' - ')}
+            avatar={<Avatar shape="square" size={45} src={_.get(item, 'images[0].src', null)} />}
+            title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
+            description={[item.sku, item.barcode, item.price].join(' - ')}
             onClick={() => addProduct(item.id)}
           />
         </div>
-      ), width: 300
+      )
     },
     {
       title: 'Đơn giá', key: 'price', render: edit => (
-        <NumberFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+        <CurrencyFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -80,8 +74,8 @@ function Customer(props) {
       )
     },
     {
-      title: 'Thành tiền', key: 'total', render: edit => (
-        <NumberFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+      title: 'Thành tiền', key: 'custom_total_price', render: edit => (
+        <CurrencyFormat value={edit.custom_total_price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -105,38 +99,17 @@ function Customer(props) {
     ProductActions.loadProducts(queryProducts);
   }, [queryProducts])
 
-  useEffect(() => {
-    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt', fulfillment_status: 'delivered' });
-  }, [])
-
   const [isShowPrint, setIsShowPrint] = useState(false)
+  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isCreateSuccess, setIsCreateSuccess] = useState(false);
   const [addVariantModal, setAddVariantModal] = useState(null);
   const [orderCreated, setOrderCreated] = useState(null);
-  const [isCustomerModal, setIsCustomerModal] = useState(false);
+
   const [customer, setCustomer] = useState({ gender: 1 })
   let setOrder = OrderActions.setOrder;
 
-  async function assertCustomer({ customer }) {
-    try {
-      let action = customer.id ? 'updateCustomer' : 'addCustomer';
-      const result = await AdminServices[action](customer);
-      setOrder({
-        customer: result.customer,
-        shipping_address: result.customer.default_address
-      });
-      message.success(result.message);
-      CustomerActions.listCustomers(query);
-      setIsCustomerModal(false);
-    } catch (error) {
-      message.error(error.message);
-    }
-  }
-
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
-    if (!(product && variant)) { return message.error(JSON.stringify({ product, variant })) }
-
     let line_item = {
       id: variant.id,
       product_id: product.id,
@@ -145,8 +118,7 @@ function Customer(props) {
       variant_id: variant.id,
       variant_title: variant.title,
       sku: variant.sku,
-      barcode: variant.barcode,
-      image: variant.image
+      barcode: variant.barcode
     };
     let index = order.line_items.findIndex(e => e.variant_id == variant.id);
     if (index != -1) {
@@ -163,13 +135,11 @@ function Customer(props) {
 
   function addProduct(product_id) {
     let product = products.find(e => e.id == product_id);
-    if (product) {
-      if (product.variants.length > 1) {
-        setAddVariantModal(product.variants);
-      } else {
-        let variant = product.variants[0];
-        addVariant(product.id, variant);
-      }
+    if (product.variants.length > 1) {
+      setAddVariantModal(product.variants);
+    } else {
+      let variant = product.variants[0];
+      addVariant(product.id, variant);
     }
     return;
   }
@@ -206,18 +176,16 @@ function Customer(props) {
     setOrder({ line_items });
   }
 
-  function onShowCustomerModal(customerUpdate) {
-    console.log(customerUpdate)
-    setIsCustomerModal(true);
-    if (customerUpdate) {
-      setCustomer(customerUpdate);
-    } else {
-      setCustomer({});
-    }
+  function addCustomer(e) {
+    e.preventDefault();
+    console.log(customer);
+    setIsCreateModal(false)
   }
-  function removeCustomer() {
-    setCustomer({});
-    setOrder({ customer: null })
+  function onCustomerChange(e) {
+    setCustomer({ ...customer, [e.target.name]: e.target.value });
+  }
+  function onCustomerChangeField(e, field) {
+    setCustomer({ ...customer, [field]: e });
   }
 
   function onChange(e, data, setData) {
@@ -232,6 +200,7 @@ function Customer(props) {
         setIsCreateSuccess(true);
       })
       .catch(error => {
+        console.log(error);
         message.error(error.message);
       })
   }
@@ -244,15 +213,13 @@ function Customer(props) {
   }
 
   function formatOptionCustomer(customer) {
-    if (!(customer && customer.id)) {
+    if (!customer) {
       return { value: null, label: '-- Vui lòng chọn --' };
     }
     return { value: customer.id, label: `${customer.first_name} ${customer.last_name}` }
   }
 
   function formatOptionCustomers(customers) {
-    if (!customers) { return []; }
-    customers = customers.filter(e => !!e.id)
     let option_customers = customers.map(e => formatOptionCustomer(e))
     option_customers.unshift({ value: null, label: '-- Vui lòng chọn --' });
     return option_customers;
@@ -267,10 +234,7 @@ function Customer(props) {
   function onSearchChange(customerSelected) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
-      if (customer) {
-        setOrder({ customer });
-        setOrder({ shipping_address: customer.default_address || {} });
-      }
+      setOrder({ customer });
     }
   };
 
@@ -292,20 +256,12 @@ function Customer(props) {
 
   return (
     <div>
-      <Row gutter={10}>
+      <Row>
         <Form onSubmit={handleSubmit}>
-          <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
+          <Col span={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Collapse.Panel key="1" isActive={false} header={<p>
-                  <span>Danh sách sản phẩm </span>
-                  <Link to={`product/create`} target="_blank">
-                    <Tag color="blue" className="cursor-pointer">
-                      <Icon style={{ color: '#007bff' }}
-                        theme="filled" type="plus-circle" /> Thêm
-                    </Tag>
-                  </Link>
-                </p>}>
+                <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
                   <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
@@ -326,43 +282,34 @@ function Customer(props) {
                       </Select>
                     </Col>
                   </Row>
-                  <Row style={{ height: 280, overflow: 'scroll', padding: 15 }}>
+                  <Row gutter={10} style={{ height: 280, overflow: 'scroll', padding: 15 }}>
                     {
                       products.map(product => {
                         return (
-                          <Col xs={8} lg={4} key={product._id} style={{ padding: 5 }}>
-                            {/* <Badge count={product.variants.length > 1 ? '--' : 99}
-                              style={{ backgroundColor: '#52c41a' }}> */}
-                            <Card className="cursor-pointer"
-                              cover={<div>
-                                <Avatar shape="square" style={{ width: "100%", height: 100 }}
-                                  alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
-                              </div>}
-                              onClick={() => addProduct(product.id)}>
-                              <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
-                                description={
-                                  <div>
-                                    <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
-                                    <Tag color="blue" className="cursor-pointer">
-                                      {product.variants.length} biến thể
-                                      </Tag>
-                                  </div>
-                                } />
-                            </Card>
-                            {/* </Badge> */}
+                          <Col span={4} key={product._id}>
+                            <Badge count={product.variants.length > 1 ? '--' : 99} style={{ backgroundColor: '#52c41a' }}>
+                              <Card className="cursor-pointer"
+                                cover={<div>
+                                  <Avatar shape="square" style={{ width: "100%", height: 100 }}
+                                    alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
+                                </div>}
+                                onClick={() => addProduct(product.id)}>
+                                <Meta title={product.title ? _.cloneDeep(product).title.slice(0, 5) : ''} />
+                              </Card>
+                            </Badge>
                           </Col>
                         )
                       })
                     }
                   </Row>
                 </Collapse.Panel>
-              </Collapse>
+              </Collapse>,
             </div>
 
             <Dropdown overlay={(
-              <Menu style={{ height: 150, overflow: 'scroll' }}>
+              <Menu>
                 {
-                  _.cloneDeep(products).map(item => (
+                  _.cloneDeep(products).splice(0, 8).map(item => (
                     <Menu.Item key={item.id}>
                       <List.Item.Meta
                         avatar={<Avatar shape="square" size={60} src={_.get(item, 'images[0].src', null)} />}
@@ -375,23 +322,18 @@ function Customer(props) {
                 }
               </Menu>
             )} trigger={['click']}>
-              <Input size="large" className="m-y-10" placeholder="Nhập sản phẩm để tìm kiếm"
+              <Input size="large" className="m-y-15" placeholder="Nhập sản phẩm để tìm kiếm"
                 addonAfter={<Icon type="search" />} onChange={e => { onSearchProduct(e) }} />
             </Dropdown>
 
-            <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'}
-              scroll={{ x: 900 }} />
+            <Table rowKey='id' dataSource={order.line_items} columns={columns} pagination={false} size={'small'} />
           </Col>
-          <Col xs={24} lg={8}>
+          <Col span={8} style={{ padding: 15 }}>
             <Layout>
-              <Content style={{ height: '70vh', marginTop: 10 }}>
-                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
-                  <p><span>Khách hàng </span>
-                    <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
-                      <Icon style={{ color: '#007bff' }}
-                        theme="filled" type="plus-circle" /> Thêm
-                    </Tag>
-                  </p>
+              <Content style={{ height: '65vh' }}>
+                <Card title="Thông tin khách hàng">
+                  <p>Khách hàng: <Icon onClick={() => setIsCreateModal(true)} style={{ color: '#007bff' }}
+                    theme="filled" type="plus-circle" /></p>
                   <AsyncSelect
                     defaultOptions={formatOptionCustomers(customers)}
                     value={formatOptionCustomer(order.customer)}
@@ -401,38 +343,20 @@ function Customer(props) {
                   />
                   {
                     !!(order.customer && order.customer.id) ? <div style={{ marginTop: 15 }}>
-                      <Card title={<p className="ui-title-page">Thông Tin Người Mua </p>} style={{ width: '100%' }}
-                        extra={<Icon onClick={() => removeCustomer()}
-                          style={{ color: '#007bff', display: !!order.customer ? 'inline-block' : 'none' }}
-                          type="close" />
-                        }>
-                        <p className="hide">id: {order.customer.id}</p>
-                        <p>Họ tên:
-                          <Link to={`customer/${order.customer.id}`} target="_blank">
-                            {order.customer.last_name} {order.customer.first_name}</Link>
-                        </p>
-                        <p>Email: {order.customer.email}</p>
-                        <p>Sđt: {order.customer.phone}</p>
-                        <p>Ngày sinh: {order.customer.birthday}</p>
-                        <p className="ui-title-page">Thông Tin Giao Hàng:
-                              <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
-                            style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
-                            theme="filled" type="edit" /></p>
-                        <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
-                        <p>Sđt: {order.shipping_address.phone}</p>
-                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address1}</p>
-                      </Card>
+                      <p>id: {order.customer.id}</p>
+                      <p>Họ tên: {order.customer.last_name} {order.customer.first_name}</p>
+                      <p>Email: {order.customer.email}</p>
                     </div> : null
                   }
                 </Card>
               </Content>
-              <Footer style={{ bottom: 0, padding: 5, color: '#000' }}>
+              <Footer style={{ bottom: 0, padding: 15, color: '#000' }}>
                 <Row>
                   <Col span={9}>
                     <p>Tạm tính</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <NumberFormat value={order.total_line_items_price} suffix={'đ'}
+                    <CurrencyFormat value={order.total_line_items_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -441,7 +365,7 @@ function Customer(props) {
                     <p>Phí vận chuyển</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <NumberFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
+                    <CurrencyFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ custom_total_shipping_price: e.floatValue })} />
                   </Col>
@@ -451,7 +375,7 @@ function Customer(props) {
                     <p>Khuyến mãi</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <NumberFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
+                    <CurrencyFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ total_discounts: e.floatValue })} />
                   </Col>
@@ -461,7 +385,7 @@ function Customer(props) {
                     <p>Thành tiền</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <NumberFormat value={order.total_price} suffix={'đ'}
+                    <CurrencyFormat value={order.total_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -485,16 +409,63 @@ function Customer(props) {
                 <List.Item.Meta
                   avatar={<Avatar shape="square" size={'large'} src={item.image ? item.image.src : null} />}
                   title={item.title} onClick={() => addVariant(item.product_id, item)}
-                  description={<NumberFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
+                  description={<CurrencyFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
                 />
               </Menu.Item>
             )) : null
           }
         </Menu>
       </Modal>
-      <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} assertCustomer={assertCustomer} />
-
+      <Modal
+        title="Tạo khách hàng mới"
+        visible={isCreateModal}
+        footer={null}
+        onCancel={() => setIsCreateModal(false)}
+        width={700}
+      >
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Thông tin" key="1">
+            <Row>
+              <Form onSubmit={addCustomer}>
+                <Col span={24}>
+                  <Radio.Group onChange={onCustomerChange} name="gender" value={customer.gender}>
+                    <Radio value={1}>Anh</Radio>
+                    <Radio value={0}>Chị</Radio>
+                  </Radio.Group>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Email" onChange={onCustomerChange}>
+                    <Input name="email" placeholder="example@gmail.com" />
+                  </Form.Item>
+                  <Form.Item label="Ngày sinh" required>
+                    <DatePicker name="birthday" onChange={(e) => onCustomerChangeField(new Date(e), 'birthday')} />
+                  </Form.Item>
+                  <Form.Item label="Số điện thoại" required>
+                    <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                  <Form.Item label="Field A" required>
+                    <Input placeholder="input placeholder" />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Địa chỉ">
+                    <Input placeholder="Nhập địa chỉ khách hàng" />
+                  </Form.Item>
+                  <button className="btn-primary w-100" type="submit">Thêm mới</button>
+                </Col>
+              </Form>
+            </Row>
+          </TabPane>
+        </Tabs>
+      </Modal>
       <Modal
         visible={isCreateSuccess}
         width={600}
@@ -524,7 +495,7 @@ function Customer(props) {
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
           {
-            (orderCreated && orderCreated.id) ? <PrintOrder order={orderCreated} /> : null
+            orderCreated ? <PrintOrder order={orderCreated} /> : null
           }
         </div>
       </div>
@@ -542,6 +513,7 @@ const mapDispatchToProps = (dispatch) => ({
   CustomerActions: bindActionCreators(customerActions, dispatch),
   ProductActions: bindActionCreators(productActions, dispatch),
   OrderActions: bindActionCreators(orderActions, dispatch),
+  OrderDetailActions: bindActionCreators(orderDetailActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Customer);

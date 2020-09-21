@@ -44,6 +44,34 @@ let auth = async (req, res) => {
   }
 }
 
+let middleware = (req, res, next) => {
+  try {
+    let authCallback = [
+      'haravan/login',
+      'haravan/grandservice',
+      'shopify/auth/callback',
+      'woocommerce/return_url',
+      'woocommerce/callback_url',
+    ]
+    if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
+    let accesstoken = req.headers['accesstoken'];
+    if (!accesstoken || accesstoken == 'null') {
+      return res.sendStatus(401);
+    }
+    let user = jwt.verify(accesstoken, hash_token);
+    if (!(user && user.email)) {
+      return res.sendStatus(401);
+    }
+    req.user = user;
+    req.shop_id = user.shop_id;
+    cache.put('shop_id', user.shop_id);
+    next();
+  } catch (error) {
+    logger(error)
+    res.sendStatus(401);
+  }
+}
+
 async function changeShop({ user, shop_id }) {
   let result = {};
   let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
@@ -53,7 +81,6 @@ async function changeShop({ user, shop_id }) {
 
   cache.put('shop_id', shop_id);
   let user_gen_token = {
-    id: found_user,
     email: found_user.email,
     shop_id: found_user.shop_id,
     exp: (Date.now() + 60 * 60 * 1000) / 1000
@@ -66,21 +93,17 @@ async function changeShop({ user, shop_id }) {
 
 async function checkUser({ body }) {
   let verify_user = jwt.verify(body.token, hash_token);
-  if (!verify_user.email) {
-    throw { message: 'check user failed' }
-  }
   let group_users = await UserMD.aggregate([
     { $match: { email: verify_user.email, is_deleted: false } },
     { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
   ]);
-  if (!(group_users && group_users.length)) {
-    throw { message: 'check user failed' }
+  if (group_users && group_users.length) {
+    let group_user = group_users[0];
+    let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
+    let user = { email: group_user._id, shops };
+    return { error: false, user };
   }
-  let group_user = group_users[0];
-  let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
-  let shop = await ShopModel.findOne({ shop_id: verify_user.shop_id }).lean(true);
-  let user = { id: verify_user.id, email: group_user._id, shops, shop };
-  return { error: false, user };
+  throw { message: 'check user failed' }
 }
 
 
@@ -123,35 +146,23 @@ async function signup(req, res, next) {
   }
 }
 
-let login = async (req, res, next) => {
-  try {
-    let { email, password } = req.body;
+let login = async (req, res) => {
+  let { email, password } = req.body;
+  let user = await UserMD.findOne({ email }).lean(true);
+  // if (!user.authenticate(password)) {
+  //   return res.sendStatus(401)
+  // }
 
-    if (!email) {
-      throw { message: `Vui lòng nhập 'email!'` }
-    }
-
-    let user = await UserMD.findOne({ email, salt: { $ne: null } }).lean(true);
-
-    if (!user) {
-      throw { message: `User này không tồn tại` }
-    }
-
-    if (!UserMD.authenticate(user, password)) {
-      throw { statusCode: 401, message: `Mật khẩu không đúng` }
-    }
-
-    let user_gen_token = {
-      id: user.id,
-      email: user.email,
-      shop_id: user.shop_id,
-      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
-    }
-    let userToken = jwt.sign(user_gen_token, hash_token);
-    res.json({ error: false, token: userToken, url: `${frontend_site}/loading?token=${userToken}` });
-  } catch (error) {
-    next(error);
+  if (!user) {
+    return res.sendStatus(400)
   }
+  let user_gen_token = {
+    email: user.email,
+    shop_id: user.shop_id,
+    exp: (Date.now() + 60 * 60 * 1000) / 1000
+  }
+  let userToken = jwt.sign(user_gen_token, hash_token);
+  res.json({ error: false, url: `${frontend_site}/loading?token=${userToken}` });
 }
 
 function loginGoogle(req, res) {
@@ -163,10 +174,10 @@ let logout = (req, res) => {
 }
 
 let logout_redirect = (req, res) => {
-  res.redirect(`${frontend_site}/logout`);
+  res.redirect(`${frontend_site}/logout`)
 }
 
 module.exports = {
   auth, login, loginGoogle,
-  logout, logout_redirect, signup, changeShop, checkUser
+  logout, middleware, logout_redirect, signup, changeShop, checkUser
 }

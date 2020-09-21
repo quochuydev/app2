@@ -13,36 +13,19 @@ const initialState = Map({
     custom_total_shipping_price: 0,
     total_discounts: 0,
     total_price: 0,
-    total_pay: 0,
 
     customer: null,
-    shipping_address: null,
-    billing_address: null,
-  },
-  OrdersGrowthPerMonth: { items: [] },
-  
-  reportOrdersGrowth: { items: [] },
-  reportOrdersGrowthDay: { items: [] },
-
-  OrdersGrowthLastmonth: { items: [] },
-  OrdersGrowthLastday: { items: [] },
+    shipping_address: null
+  }
 });
 
 function OrdersReducer(state = initialState, { type, payload }) {
   switch (type) {
-    case 'DEFAULT':
-      return state.merge({ ...payload });
     case 'LOAD_ORDERS_SUCCESS':
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':
     case 'CREATE_ORDER_SUCCESS':
       return state.merge({ ...payload });
-    case 'MERGE':
-      {
-        let order = state.get('order')
-        order = _.assign({}, order, payload.order);
-        return state.merge({ order: order });
-      }
     case 'CLEAR_ORDER_CREATE':
       {
         let order = initialState.get('orderCreate');
@@ -59,8 +42,8 @@ function OrdersReducer(state = initialState, { type, payload }) {
 
       for (let i = 0; i < order.line_items.length; i++) {
         const line_item = order.line_items[i];
-        line_item.total = line_item.quantity * line_item.price;
-        order.total_line_items_price += Number(line_item.total);
+        line_item.custom_total_price = line_item.quantity * line_item.price;
+        order.total_line_items_price += Number(line_item.custom_total_price);
         order.total_items += line_item.quantity;
       }
 
