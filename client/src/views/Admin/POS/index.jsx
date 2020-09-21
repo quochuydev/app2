@@ -28,9 +28,8 @@ import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import './style.css'
 import PrintOrder from './print.jsx';
-import CustomerDetail from './../Customer/detail'
+import CustomerDetail from './../Customer/detail';
 import common from '../../../utils/common';
-
 let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
