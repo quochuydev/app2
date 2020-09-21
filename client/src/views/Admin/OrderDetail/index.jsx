@@ -144,6 +144,7 @@ function OrderDetailComponent(props) {
               <p> {_.get(order, 'customer.email')}</p>
               <p> {_.get(order, 'customer.phone')}</p>
               <p> {_.get(order, 'customer.address1')}</p>
+              <p> {_.get(order, 'customer.address2')}</p>
             </Card>
             <Card title="Thông tin Giao hàng">
               <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
