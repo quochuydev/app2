@@ -84,6 +84,7 @@ async function create({ body }) {
     gateway_code: data.gateway_code,
     financial_status: data.financial_status,
     carrier_cod_status_code: data.carrier_cod_status_code,
+    fulfillment_status: data.fulfillment_status,
 
     billing: data.shipping_address,
     shipping: data.shipping_address,

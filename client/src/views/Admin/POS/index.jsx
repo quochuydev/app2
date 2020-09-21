@@ -29,6 +29,9 @@ import config from './../../../utils/config';
 import './style.css'
 import PrintOrder from './print.jsx';
 import CustomerDetail from './../Customer/detail'
+import common from '../../../utils/common';
+
+let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -49,8 +52,10 @@ function Customer(props) {
         <div>
           <List.Item.Meta
             avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
-            title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
-            description={[item.sku, item.barcode, item.price].join(' - ')}
+            title={<Link to={`product/${item.product_id}`} target="_blank">
+              {[item.title, item.variant_title].join(' - ')}
+            </Link>}
+            description={[item.sku, item.barcode].join(' - ')}
             onClick={() => addProduct(item.id)}
           />
         </div>
@@ -101,7 +106,7 @@ function Customer(props) {
   }, [queryProducts])
 
   useEffect(() => {
-    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt' });
+    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt', fulfillment_status: 'delivered' });
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -110,16 +115,23 @@ function Customer(props) {
   const [orderCreated, setOrderCreated] = useState(null);
   const [isCustomerModal, setIsCustomerModal] = useState(false);
   const [customer, setCustomer] = useState({ gender: 1 })
-  const [done, setDone] = useState(null)
   let setOrder = OrderActions.setOrder;
 
-  useEffect(() => {
-    if (done && done.customer) {
-      setOrder({ shipping_address: done.customer.default_address });
+  async function assertCustomer({ customer }) {
+    try {
+      let action = customer.id ? 'updateCustomer' : 'addCustomer';
+      const result = await AdminServices[action](customer);
+      setOrder({
+        customer: result.customer,
+        shipping_address: result.customer.default_address
+      });
+      message.success(result.message);
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);
+    } catch (error) {
+      message.error(error.message);
     }
-  }, [done])
+  }
 
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
@@ -285,7 +297,15 @@ function Customer(props) {
           <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
+                <Collapse.Panel key="1" isActive={false} header={<p>
+                  <span>Danh sách sản phẩm </span>
+                  <Link to={`product/create`} target="_blank">
+                    <Tag color="blue" className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
+                  </Link>
+                </p>}>
                   <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
@@ -310,19 +330,26 @@ function Customer(props) {
                     {
                       products.map(product => {
                         return (
-                          <Col xs={8} lg={4} key={product._id}>
-                            <Badge count={product.variants.length > 1 ? '--' : 99}
-                              style={{ backgroundColor: '#52c41a' }}>
-                              <Card className="cursor-pointer"
-                                cover={<div>
-                                  <Avatar shape="square" style={{ width: "100%", height: 100 }}
-                                    alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
-                                </div>}
-                                onClick={() => addProduct(product.id)}>
-                                <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
-                                  description={product.id} />
-                              </Card>
-                            </Badge>
+                          <Col xs={8} lg={4} key={product._id} style={{ padding: 5 }}>
+                            {/* <Badge count={product.variants.length > 1 ? '--' : 99}
+                              style={{ backgroundColor: '#52c41a' }}> */}
+                            <Card className="cursor-pointer"
+                              cover={<div>
+                                <Avatar shape="square" style={{ width: "100%", height: 100 }}
+                                  alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
+                              </div>}
+                              onClick={() => addProduct(product.id)}>
+                              <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
+                                description={
+                                  <div>
+                                    <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
+                                    <Tag color="blue" className="cursor-pointer">
+                                      {product.variants.length} biến thể
+                                      </Tag>
+                                  </div>
+                                } />
+                            </Card>
+                            {/* </Badge> */}
                           </Col>
                         )
                       })
@@ -358,10 +385,12 @@ function Customer(props) {
           <Col xs={24} lg={8}>
             <Layout>
               <Content style={{ height: '70vh', marginTop: 10 }}>
-                <Card title="Thông tin khách hàng">
-                  <p>Khách hàng:
-                    <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
-                      theme="filled" type="plus-circle" />
+                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
+                  <p><span>Khách hàng </span>
+                    <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
                   </p>
                   <AsyncSelect
                     defaultOptions={formatOptionCustomers(customers)}
@@ -379,7 +408,7 @@ function Customer(props) {
                         }>
                         <p className="hide">id: {order.customer.id}</p>
                         <p>Họ tên:
-                          <Link to={`customers/${order.customer.id}`} target="_blank">
+                          <Link to={`customer/${order.customer.id}`} target="_blank">
                             {order.customer.last_name} {order.customer.first_name}</Link>
                         </p>
                         <p>Email: {order.customer.email}</p>
@@ -464,7 +493,7 @@ function Customer(props) {
         </Menu>
       </Modal>
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} setDone={setDone} />
+        customer={customer} assertCustomer={assertCustomer} />
 
       <Modal
         visible={isCreateSuccess}

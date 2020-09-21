@@ -22,18 +22,7 @@ const apiUrl = `${config.backend_url}/api`;
 function Customer(props) {
   const { Option } = Select;
   const { count, customers, actions, downloadLink } = props;
-  const cssOrderType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'blue';
-    }
-  }
+
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
@@ -54,15 +43,22 @@ function Customer(props) {
     },
     {
       title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a') : null}</span>
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
       )
     },
     { title: 'Email', dataIndex: 'email', key: 'email', },
     {
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="green">{edit.total_orders}</Tag>
+      )
+    },
+    {
       title: '', key: 'option',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => onShowCreate(edit)} />
+          <Button type="danger" size="small" onClick={() => { }}>
+            <Icon type="close" />
+          </Button>
         </span>
       ),
     },
@@ -102,23 +98,6 @@ function Customer(props) {
     actions.listCustomers(query);
   }, [query]);
 
-  let [done, setDone] = useState(null);
-  useEffect(() => {
-    console.log(done)
-    if (done && done.customer) {
-      let action = done.customer.id ? 'updateCustomer' : 'addCustomer'
-      AdminServices[action](done.customer)
-        .then(result => {
-          actions.listCustomers(query);
-          setIsShowModal(false);
-          message.success(result.message);
-        })
-        .catch(error => {
-          message.error(error.message);
-        })
-    }
-  }, [done]);
-
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
@@ -143,15 +122,6 @@ function Customer(props) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
-  function onShowCreate(customerUpdate) {
-    setIsShowModal(true);
-    if (customerUpdate) {
-      setCustomer(customerUpdate);
-    } else {
-      setCustomer({});
-    }
-  }
-
   async function syncCustomers() {
     setIsProcessing(true);
     await actions.syncCustomers();
@@ -170,6 +140,10 @@ function Customer(props) {
 
   function onChangePage(e) {
     setQuery({ ...query, page: e })
+  }
+
+  async function assertCustomer({ customer }) {
+    console.log(customer)
   }
 
   return (
@@ -231,7 +205,6 @@ function Customer(props) {
           </div>
         </Upload.Dragger>
       </Modal>
-      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} setDone={setDone} />
     </div >
   );
 }

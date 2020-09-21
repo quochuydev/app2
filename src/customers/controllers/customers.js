@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');
@@ -16,6 +17,9 @@ let list = async (req, res) => {
     let { limit, skip, criteria, sort } = _parse(req.body);
     let count = await CustomerModel._count(criteria);
     let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
+    for (const customer of customers) {
+      customer.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'customer_id': customer.id })
+    }
     res.json({ error: false, count, customers })
   } catch (error) {
     console.log(error)
@@ -91,6 +95,7 @@ let update = async ({ body, customer_id }) => {
     birthday: birthday ? new Date(birthday) : null,
     gender: gender ? 1 : 0,
     phone,
+    image: body.image,
     default_address: {
       first_name: default_address.first_name,
       last_name: default_address.last_name,
@@ -107,6 +112,41 @@ let update = async ({ body, customer_id }) => {
     { $set: data },
     { lean: true, new: true, });
   return { error: false, customer, message: 'Cập nhật khách hàng thành công' };
+}
+
+async function updateImage({ }) {
+  let data_update = {
+    created_at: new Date(),
+    updated_at: new Date(),
+  }
+
+  if (file && file.path) {
+    let filename = null;
+    if (file.filename) {
+      filename = file.filename;
+    } else {
+      filename = `${uuid()}.jpg`;
+    }
+    data_update.src = `${config.app_host}/images/${filename}`;
+    data_update.filename = file.originalname ? file.originalname : filename;
+  }
+
+  if (data.attachment) {
+    if (!data.filename) {
+      data_update.filename = `${uuid()}.jpg`;
+    }
+    data_update.attachment = data.attachment;
+  }
+
+  if (data.variant_ids) {
+    data_update.variant_ids = data.variant_ids;
+  }
+
+  let new_image = await ImageModel._create(data_update);
+  new_image = new_image.toJSON();
+  await ProductModel._update({ id: product_id }, { $push: { images: new_image } });
+
+  return { image: new_image }
 }
 
 let headers = [
@@ -160,4 +200,4 @@ let exportExcel = async (req, res) => {
   res.json({ error: false, downloadLink });
 }
 
-module.exports = { list, getCustomer, sync, create, update, importExcel, exportExcel }
+module.exports = { list, getCustomer, sync, create, update, importExcel, exportExcel, updateImage }

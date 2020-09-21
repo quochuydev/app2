@@ -36,26 +36,6 @@ function Orders(props) {
         return 'purple';
     }
   }
-  const cssStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-  const cssOrderStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
 
   function textFinancial(code) {
     switch (code) {
@@ -63,15 +43,6 @@ function Orders(props) {
         return 'Đã thanh toán';
       default:
         return 'Chưa thanh toán'
-    }
-  }
-
-  function textGateway(code) {
-    switch (code) {
-      case 'cod':
-        return 'Thanh toán khi giao hàng';
-      default:
-        return ''
     }
   }
 
@@ -84,12 +55,12 @@ function Orders(props) {
     }
   }
 
-  function cssGateway(code) {
+  function formatFulfillmentStatus(code) {
     switch (code) {
-      case 'paid':
-        return 'Đã thanh toán';
+      case 'delivered':
+        return 'Đã giao hàng';
       default:
-        return 'Chưa thanh toán'
+        return ''
     }
   }
 
@@ -100,11 +71,6 @@ function Orders(props) {
         <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
       ),
     },
-    // {
-    //   title: 'Type', key: 'type', render: edit => (
-    //     <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
-    //   )
-    // },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
@@ -117,12 +83,12 @@ function Orders(props) {
     },
     {
       title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
-        <Tag color={"blue"}>{edit.fulfillment_status}</Tag>
+        <Tag color={"green"}>{formatFulfillmentStatus(edit.fulfillment_status)}</Tag>
       )
     },
     {
       title: 'COD', key: 'carrier_cod_status_code', render: edit => (
-      <Tag color={"blue"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
+        <Tag color={"magenta"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {

@@ -46,7 +46,9 @@ function Products(props) {
     {
       title: 'Option', key: 'option', render: edit => (
         <div>
-          <Button onClick={() => deleteProduct(edit.id)}>Xóa</Button>
+          <Button type="danger" size="small" onClick={() => deleteProduct(edit.id)}>
+            <Icon type="close"/>
+          </Button>
         </div>
       )
     }

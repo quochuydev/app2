@@ -18,7 +18,14 @@ const CustomersSchema = new Schema({
   default_address: {},
   billing_address: {},
   shipping_address: {},
-  created_at: { type: Date, default: null },
+
+  image: {
+    id: { type: Number, default: null },
+    filename: { type: String, default: null },
+    src: { type: String, default: null },
+    created_at: { type: Date, default: Date.now },
+  },
+  created_at: { type: Date, default: Date.now },
   phone: { type: String, default: null },
   email: { type: String, default: null },
   first_name: { type: String, default: null },
@@ -82,6 +89,15 @@ CustomersSchema.statics._create = async function (data = {}) {
   let result = await _this.create(data);
   return result;
 }
+
+CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  return data;
+}
+
 
 let CustomerModel = mongoose.model('Customer', CustomersSchema);
 

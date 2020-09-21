@@ -19,7 +19,8 @@ import * as coreActions from '../Core/actions';
 let { Option } = Select;
 
 function CustomerDetail(props) {
-  const { CoreActions, provinces, districts, wards, actions, visible, customer, onCloseModal, setDone } = props;
+  const { CoreActions, provinces, districts, wards, actions,
+    visible, customer, onCloseModal, setDone } = props;
   const [customerUpdate, setCustomerUpdate] = useState({
     default_address: {}
   })
@@ -35,11 +36,15 @@ function CustomerDetail(props) {
   }, []);
 
   useEffect(() => {
-    CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    if (customerUpdate.default_address.province_code) {
+      CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    }
   }, [customerUpdate.default_address.province_code])
 
   useEffect(() => {
-    CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    if (customerUpdate.default_address.district_code) {
+      CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    }
   }, [customerUpdate.default_address.district_code])
 
   function onCustomerChange(e) {
@@ -58,12 +63,12 @@ function CustomerDetail(props) {
     setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
 
-  async function addCustomer(e) {
+  function addCustomer(e) {
     e.preventDefault();
     if (customer.id) {
       customerUpdate.id = customer.id;
     }
-    setDone({ customer: customerUpdate });
+    props.assertCustomer({ customer: customerUpdate });
   }
 
   return (

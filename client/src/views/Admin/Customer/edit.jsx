@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 
 import * as productActions from './actions';
 
@@ -17,9 +18,14 @@ import 'antd/dist/antd.css';
 import './style.css'
 
 import AdminServices from '../../../services/adminServices';
+import ApiClient from '../../../utils/apiClient';
+import common from '../../../utils/common';
 import config from './../../../utils/config';
 import * as coreActions from '../Core/actions';
 import * as customerActions from './actions';
+
+let compile = common.compile;
+const apiUrl = `${config.backend_url}/api`;
 
 let { Option } = Select;
 
@@ -43,16 +49,25 @@ function CustomerEdit(props) {
     }
   }, [customer])
 
+  const [imageUrl, setImageUrl] = useState(null);
+  useEffect(() => {
+    setImageUrl(_.get(customerUpdate, 'image.src'));
+  }, [customerUpdate])
+
   useEffect(() => {
     CoreActions.listProvinces();
   }, [])
 
   useEffect(() => {
-    CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    if (customerUpdate.default_address.province_code) {
+      CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    }
   }, [customerUpdate.default_address.province_code])
 
   useEffect(() => {
-    CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    if (customerUpdate.default_address.district_code) {
+      CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    }
   }, [customerUpdate.default_address.district_code])
 
   function onCustomerChange(e) {
@@ -70,7 +85,7 @@ function CustomerEdit(props) {
     customerUpdate.default_address[e.target.name] = e.target.value;
     setCustomerUpdate({ ...customerUpdate });
   }
-  
+
   function onAddressFieldChange(field, value) {
     if (!customerUpdate.default_address) {
       customerUpdate.default_address = {};
@@ -91,11 +106,51 @@ function CustomerEdit(props) {
     }
   }
 
+  const uploadSetting = {
+    multiple: true,
+    action: `${apiUrl}/images`,
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      console.log(status)
+      if (['uploading', 'done'].includes(status)) {
+        message.success(`${info.file.name} file uploaded thành công.`);
+      }
+      return;
+    },
+    onSuccess(result) {
+      console.log(result);
+      if (result && result.image) {
+        setImageUrl(result.image.src)
+        setCustomerUpdate({ ...customerUpdate, image: result.image });
+      }
+      return;
+    },
+  };
+
   return (
     <div>
       <Form onSubmit={addCustomer}>
         <Row>
-          <Col xs={24} lg={12}>
+          <Col xs={24} lg={6}>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Khách hàng" key="1">
+                <Upload name="file"
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  beforeUpload={() => { return true; }}
+                  fileList={[]}
+                  {...uploadSetting}
+                >
+                  {
+                    imageUrl ? <Avatar shape="square" style={{}} size={240} src={imageUrl} /> :
+                      <div className="ant-upload-text" style={{ width: 240 }}>Upload {imageUrl}</div>
+                  }
+                </Upload>
+              </Tabs.TabPane>
+            </Tabs>
+          </Col>
+          <Col xs={24} lg={18}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Thông tin" key="1">
                 <Row>
@@ -130,7 +185,10 @@ function CustomerEdit(props) {
             </Tabs>
           </Col>
 
-          <Col xs={24} lg={12}>
+          <Col xs={24} lg={6}>
+
+          </Col>
+          <Col xs={24} lg={18}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Địa chỉ" key="1">
                 <Row gutter={10}>
@@ -138,6 +196,16 @@ function CustomerEdit(props) {
                     <Form.Item label="Địa chỉ" onChange={onAddressChange}>
                       <Input name="address" placeholder="Nhập địa chỉ khách hàng"
                         value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="Tên người nhận" onChange={onAddressChange}>
+                      <Input name="first_name" value={customerUpdate.default_address ? customerUpdate.default_address.first_name : null} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label="SĐT nhận hàng" onChange={onAddressChange}>
+                      <Input name="phone" value={customerUpdate.default_address ? customerUpdate.default_address.phone : null} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -160,9 +228,10 @@ function CustomerEdit(props) {
                   </Col>
                   <Col span={12}>
                     <Form.Item label="Huyện">
-                      <Select showSearch placeholder="-- Vui lòng chọn --"
-                        name="district_code" value={customerUpdate.default_address.district_code}
+                      <Select showSearch placeholder="-- Vui lòng chọn --" name="district_code"
+                        value={customerUpdate.default_address.district_code}
                         onChange={e => onAddressFieldChange('district_code', e)} >
+                        <Option value={null}>-- Vui lòng chọn --</Option>
                         {
                           districts.map(item =>
                             <Option key={item.id} value={item.code}>{item.name}</Option>
@@ -184,16 +253,16 @@ function CustomerEdit(props) {
                       </Select>
                     </Form.Item>
                   </Col>
+                  <Col span={24}>
+                    <button className="btn-primary" type="submit">Accept</button>
+                  </Col>
                 </Row>
               </Tabs.TabPane>
             </Tabs>
           </Col>
-          <Col span={24}>
-            <button className="btn-primary" type="submit">Accept</button>
-          </Col>
         </Row>
       </Form>
-    </div>
+    </div >
   )
 }
 

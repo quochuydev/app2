@@ -85,17 +85,6 @@ ProductSchema.statics._create = async function (data) {
   let _this = this;
   data.shop_id = cache.get('shop_id');
   let product = await _this.create(data);
-  if (product && product.id) {
-    let newVariants = []
-    let variants = makeDataVariants(data.variants);
-    for (const variant of variants) {
-      variant.product_id = product.id;
-      let newVariant = await VariantModel._create(variant);
-      newVariant = newVariant.toJSON();
-      newVariants.push(newVariant);
-    }
-    product = await this._findOneAndUpdate({ id: product.id }, { variants: newVariants });
-  }
   return product;
 }
 
