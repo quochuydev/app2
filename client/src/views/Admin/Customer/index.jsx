@@ -71,7 +71,7 @@ function Customer(props) {
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address1 : null}</p>
     </div>
   );
 

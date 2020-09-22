@@ -33,7 +33,7 @@ function PrintOrder(props) {
                 <span style={{ fontWeight: 'normal' }}>{[order.shipping_address.last_name, order.shipping_address.first_name].join(' ')}</span>
               </h4>
               <h4 style={{ margin: '0 0 5px' }}>Địa chỉ:
-                <span style={{ fontWeight: 'normal' }}>{[order.shipping_address.address].join(' ')}</span>
+                <span style={{ fontWeight: 'normal' }}>{[order.shipping_address.address1].join(' ')}</span>
               </h4>
               <h4 style={{ margin: '0 0 3mm' }}>Điện thoại:
                 <span style={{ fontWeight: 'normal' }}>{order.shipping_address.phone}</span>

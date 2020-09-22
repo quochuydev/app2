@@ -52,4 +52,32 @@ common.cssStatus = (status) => {
   }
 }
 
+common.formatFulfillmentStatus = function (code) {
+  switch (code) {
+    case 'delivered':
+      return 'Đã giao hàng';
+    default:
+      return ''
+  }
+}
+
+common.textFinancial = function (code) {
+  switch (code) {
+    case 'paid':
+      return 'Đã thanh toán';
+    default:
+      return 'Chưa thanh toán'
+  }
+}
+
+common.textCarrierCod = function (code) {
+  switch (code) {
+    case 'codreceipt':
+      return 'Đã nhận';
+    default:
+      return ''
+  }
+}
+
+
 export default common;

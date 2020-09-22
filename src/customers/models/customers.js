@@ -16,8 +16,6 @@ const CustomersSchema = new Schema({
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],
   default_address: {},
-  billing_address: {},
-  shipping_address: {},
 
   image: {
     id: { type: Number, default: null },

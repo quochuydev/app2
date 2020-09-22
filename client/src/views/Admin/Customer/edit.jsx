@@ -194,8 +194,8 @@ function CustomerEdit(props) {
                 <Row gutter={10}>
                   <Col span={24}>
                     <Form.Item label="Địa chỉ" onChange={onAddressChange}>
-                      <Input name="address" placeholder="Nhập địa chỉ khách hàng"
-                        value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                      <Input name="address1" placeholder="Nhập địa chỉ khách hàng"
+                        value={customerUpdate.default_address ? customerUpdate.default_address.address1 : null} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>

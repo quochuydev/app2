@@ -6,7 +6,7 @@ const {
 } = require('../controllers/products');
 const VariantController = require('../controllers/variant');
 const { ProductImage } = require('../controllers/product-image');
-const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
+const { uploadToDisk, uploadToCloud } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
   app.post('/api/products/sync', sync);

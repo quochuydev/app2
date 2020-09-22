@@ -28,9 +28,8 @@ import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import './style.css'
 import PrintOrder from './print.jsx';
-import CustomerDetail from './../Customer/detail'
+import CustomerDetail from './../Customer/detail';
 import common from '../../../utils/common';
-
 let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
@@ -420,7 +419,7 @@ function Customer(props) {
                             theme="filled" type="edit" /></p>
                         <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
                         <p>Sđt: {order.shipping_address.phone}</p>
-                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
+                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address1}</p>
                       </Card>
                     </div> : null
                   }
