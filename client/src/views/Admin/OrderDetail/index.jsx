@@ -54,13 +54,7 @@ function OrderDetailComponent(props) {
       ),
     },
     {
-      title: 'Sản phẩm', key: 'title',
-      render: edit => (
-        <a onClick={() => { }}>{edit.title}</a>
-      ),
-    },
-    {
-      title: 'Chi phí', key: 'price', render: edit => (
+      title: 'Giá bán', key: 'price', render: edit => (
         <NumberFormat value={edit.price} suffix={'đ'}
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )

@@ -81,6 +81,11 @@ const OrderSchema = new Schema({
     quantity: { type: Number, default: null },
     price: { type: Number, default: null },
     total: { type: Number, default: null },
+    image: {
+      id: { type: String, default: null },
+      src: { type: String, default: null },
+      filename: { type: String, default: null },
+    },
   }],
   products: [],
 
