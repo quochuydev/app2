@@ -60,7 +60,6 @@ p {
 }
 
 .ui-information-title, .ui-title-page {
-	line-height: 18px;
 	font-weight: 600;
 	text-transform: capitalize;
 	color: #0b3d88;

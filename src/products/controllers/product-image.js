@@ -81,7 +81,6 @@ async function uploadToFlirk({ file }) {
       if (error) { throw error; }
       Flickr.upload(uploadOptions, config.flirk_options, function (err, images) {
         if (err) { throw error; }
-        console.log("photos uploaded", images);
         for (const image of images) {
           flickr.photos.getInfo({
             photo_id: image

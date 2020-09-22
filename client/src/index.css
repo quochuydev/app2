@@ -24,3 +24,19 @@ body {
 .m-t-10 {
   margin-top: 10px;
 }
+
+.m-b-10 {
+  margin-bottom: 10px !important;
+}
+
+.p-15 {
+  padding: 15px;
+}
+
+.p-10 {
+  padding: 10px;
+}
+
+.text-right{
+  text-align: right;
+}
