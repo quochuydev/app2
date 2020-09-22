@@ -136,32 +136,28 @@ function OrderDetailComponent(props) {
     <div>
       {
         !!(order && order.id) ?
-          <div>
-            <PageHeader
-              extra={[
-
-              ]}>
+          <div className="p-10">
+            <PageHeader>
               <Row type="flex">
-                <Col xs={24} lg={4}>
+                <Col xs={12} lg={4}>
                   <Statistic type="text" title="Mã đơn hàng" value={order.number}
                     style={{ marginRight: '35px', }}
                   />
                 </Col>
-                <Col xs={24} lg={4}>
+                <Col xs={12} lg={4}>
                   <Statistic
                     title={'Ngày tạo'}
                     value={moment(order.created_at).format('DD/MM/yyyy HH:mm:ss')}
                     style={{ marginRight: '35px', }}
                   />
                 </Col>
-                <Col xs={24} lg={6}>
+                <Col xs={12} lg={6}>
                   <Statistic
                     title={'Trạng thái thanh toán'}
                     value={textFinancial(order.financial_status)}
-                    style={{ margin: '0 35px', }}
                   />
                 </Col>
-                <Col xs={24} lg={6}>
+                <Col xs={12} lg={6}>
                   <Statistic
                     title={'Tình trạng giao hàng'}
                     value={formatFulfillmentStatus(order.fulfillment_status)}
@@ -193,12 +189,12 @@ function OrderDetailComponent(props) {
               </Row>
             </PageHeader>
 
-            <Row >
+            <Row gutter={15}>
               <Col xs={24} lg={16}>
                 <Table rowKey='variant_id' dataSource={order.line_items} size="small" pagination={false}
                   columns={detailColumns} style={{ minHeight: 250 }} />
-                <Card title="Thông tin khách hàng">
-                  <Row gutter={[15, 15]}>
+                <Card title={<p className="ui-title-page"></p>}>
+                  <Row gutter={[20, 20]}>
                     <Col xs={24} lg={12}>
                       <p>Thuộc tính</p>
                       {
@@ -213,28 +209,27 @@ function OrderDetailComponent(props) {
                           </Row>
                         ) : null
                       }
-                      <p>Ghi chú</p>
-                      <Input type="text" value={order.note} name="note"
+                      <p>Ghi chú: </p>
+                      <Input type="text" value={order.note} name="note" className="m-b-10"
                         onChange={e => actions.merge({ note: e.target.value })} />
                       <Button type="primary" onClick={() => { updateNoteOrder(order) }}>
                         Cập nhật ghi chú</Button>
                     </Col>
                     <Col xs={24} lg={12}>
-                      <Col xs={24} lg={12}>Giảm giá:</Col>
-                      <Col xs={24} lg={12}>{formatMoney(order.total_discounts)}</Col>
+                      <Col span={12}>Giảm giá:</Col>
+                      <Col span={12} className="text-right">{formatMoney(order.total_discounts)}</Col>
 
-                      <Col xs={24} lg={12}>Vận chuyển:</Col>
-                      <Col xs={24} lg={12}>{formatMoney(order.custom_total_shipping_price)}</Col>
+                      <Col span={12}>Vận chuyển:</Col>
+                      <Col span={12} className="text-right">{formatMoney(order.custom_total_shipping_price)}</Col>
 
-                      <Col xs={24} lg={12}>Tổng tiền:</Col>
-                      <Col xs={24} lg={12}>{formatMoney(order.total_price)}</Col>
+                      <Col span={12}><strong>Tổng tiền:</strong></Col>
+                      <Col span={12} className="text-right"><strong>{formatMoney(order.total_price)}</strong></Col>
 
+                      <Col span={12}>Đã thanh toán:</Col>
+                      <Col span={12} className="text-right">{formatMoney(order.total_pay)}</Col>
 
-                      <Col xs={24} lg={12}>Đã thanh toán:</Col>
-                      <Col xs={24} lg={12}>{formatMoney(order.total_pay)}</Col>
-
-                      <Col xs={24} lg={12}>Còn lại:</Col>
-                      <Col xs={24} lg={12}>{formatMoney(order.total_price - order.total_pay)}</Col>
+                      <Col span={12}>Còn lại:</Col>
+                      <Col span={12} className="text-right">{formatMoney(order.total_price - order.total_pay)}</Col>
 
                       <Button type="primary" onClick={() => { payOrder(order) }}>
                         Xác nhận thanh toán</Button>
@@ -244,13 +239,15 @@ function OrderDetailComponent(props) {
               </Col>
 
               <Col xs={24} lg={8} >
-                <Card title="Thông tin khách hàng">
-                  <p>Tên: {_.get(order, 'customer.first_name')}</p>
-                  <p>Họ: {_.get(order, 'customer.last_name')}</p>
+                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
+                  <p>Họ tên: <Link to={`../../customer/${order.customer_id}`} target="_blank">
+                    {[order.customer.last_name, order.customer.first_name].join(' ')}
+                  </Link>
+                  </p>
                   <p>Email: {_.get(order, 'customer.email')}</p>
                   <p>Số điện thoại: {_.get(order, 'customer.phone')}</p>
                   <p>Địa chỉ: {_.get(order, 'customer.address1')}</p>
-                  <p>Thông tin giao hàng</p>
+                  <p className="ui-title-page">Thông tin giao hàng</p>
                   <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
                   <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
                   <p>Địa chỉ giao hàng: {_.get(order, 'shipping_address.address1')}</p>
