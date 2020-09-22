@@ -63,5 +63,22 @@ module.exports = {
 
   socket: {
     active: false,
+  },
+
+
+  flirk_options: {
+    api_key: process.env.FLIRK_API_KEY,
+    secret: process.env.FLIRK_SECRET,
+    user_id: process.env.FLIRK_USER_ID,
+    access_token: process.env.FLIRK_ACCESS_TOKEN,
+    access_token_secret: process.env.FLIRK_ACCESS_TOKEN_SECRET,
+    permissions: 'delete',
+    requestOptions: {
+      timeout: 20000,
+    },
+  },
+  file_cloud: {
+    active: true
   }
+
 }
