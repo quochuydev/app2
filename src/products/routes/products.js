@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 const {
   list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct,
@@ -70,21 +69,12 @@ const router = ({ app }) => {
       .catch(error => next(error))
   });
 
-  app.get('/images/:FileName', (req, res) => {
-    var FileName = req.params.FileName || '';
-    var fullPath = path.join(path.resolve('./uploads'), FileName);
-    fs.exists(fullPath, function (exists) {
-      if (exists) {
-        var name = path.basename(fullPath);
-        res.setHeader('Content-disposition', 'attachment; filename=' + name);
-        var filestream = fs.createReadStream(fullPath);
-        filestream.pipe(res);
-      } else {
-        return res.status(400).send({
-          message: "File không tồn tại!"
-        });
-      }
-    });
+  app.get('/api/products/vendors', function (req, res, next) {
+    res.json({ vendors: [] })
+  });
+
+  app.get('/api/products/collections', function (req, res, next) {
+    res.json({ collections: [] })
   });
 }
 

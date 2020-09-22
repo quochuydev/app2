@@ -1,5 +1,6 @@
 let path = require('path');
 const uuid = require('uuid/v4');
+const fs = require('fs');
 
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
@@ -8,6 +9,20 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 const config = require(path.resolve('./src/config/config'));
 
 const Controller = {}
+
+Controller.getImage = async function (req, res) {
+  let fileName = req.params.fileName;
+  let fullPath = path.join(path.resolve('./uploads'), fileName);
+  fs.exists(fullPath, function (exists) {
+    if (!exists) {
+      return res.status(400).send({ message: "File không tồn tại!" });
+    }
+    let name = path.basename(fullPath);
+    res.setHeader('Content-disposition', 'attachment; filename=' + name);
+    let filestream = fs.createReadStream(fullPath);
+    filestream.pipe(res);
+  });
+}
 
 Controller.createImage = async function ({ file }) {
   let data_update = {

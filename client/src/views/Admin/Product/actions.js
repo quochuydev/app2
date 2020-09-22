@@ -99,3 +99,25 @@ export function syncProducts() {
     }
   }
 }
+
+export function loadVendors(query) {
+  return async (dispatch) => {
+    const data = await AdminServices.Product.loadVendors(query);
+    dispatch({
+      type: 'LOAD_VENDORS_SUCCESS', payload: {
+        error: false, message: 'LOAD_VENDORS_SUCCESS.message', ...data
+      }
+    });
+  }
+}
+
+export function loadCollections(query) {
+  return async (dispatch) => {
+    const data = await AdminServices.Product.loadCollections(query);
+    dispatch({
+      type: 'LOAD_COLLECTIONS_SUCCESS', payload: {
+        error: false, message: 'LOAD_COLLECTIONS_SUCCESS.message', ...data
+      }
+    });
+  }
+}

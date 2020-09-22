@@ -209,6 +209,17 @@ let Image = {
   }
 }
 
+let Product = {
+  loadVendors: async function loadVendors() {
+    let url = compile('api/products/vendors');
+    return await ApiClient.getData(url);
+  },
+  loadCollections: async function loadCollections() {
+    let url = compile('api/products/collections');
+    return await ApiClient.getData(url);
+  },
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -260,6 +271,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report, Image,
+  Report, Image, Product,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

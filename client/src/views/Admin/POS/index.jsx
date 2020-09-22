@@ -105,7 +105,11 @@ function Customer(props) {
   }, [queryProducts])
 
   useEffect(() => {
-    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt', fulfillment_status: 'delivered' });
+    ProductActions.loadVendors();
+  }, [])
+  
+  useEffect(() => {
+    ProductActions.loadCollections();
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
