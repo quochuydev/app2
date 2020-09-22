@@ -1,5 +1,7 @@
-var Flickr = require("flickrapi")
-var uploadOptions = {
+// const Cloud = require(path.resolve('./src/order/models/order.js'));
+
+let Flickr = require("flickrapi")
+let uploadOptions = {
   photos: [{
     title: "test",
     tags: [

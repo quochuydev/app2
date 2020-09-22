@@ -10,7 +10,7 @@ const router = ({ app }) => {
       .catch(error => next(error));
   })
   app.put('/api/images:id', function (req, res, next) {
-    updateImage({ file: req.file })
+    updateImage({ data: req.body, image_id: req.params.id })
       .then(result => res.json(result))
       .catch(error => next(error));
   })

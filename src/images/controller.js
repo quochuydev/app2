@@ -5,7 +5,6 @@ const { ImageModel } = require(path.resolve('./src/images/model.js'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
-const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 const config = require(path.resolve('./src/config/config'));
 
 const Controller = {}
@@ -32,7 +31,7 @@ Controller.createImage = async function ({ file }) {
   return { error: false, image: new_image }
 }
 
-Controller.updateImage = async function ({ }) {
+Controller.updateImage = async function ({ image_id, data }) {
 
   return {}
 }
