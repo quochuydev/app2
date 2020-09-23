@@ -10,6 +10,7 @@ const cache = require('memory-cache');
 
 const TagSchema = new Schema({
   id: { type: Number, default: null },
+  title: { type: String, default: null },
   updated_at: { type: Date, default: null },
   created_at: { type: Date, default: Date.now },
   is_deleted: { type: Boolean, default: false },
@@ -17,6 +18,12 @@ const TagSchema = new Schema({
 })
 
 TagSchema.plugin(autoIncrement.plugin, { model: 'Tag', field: 'id', startAt: 10000, incrementBy: 1 });
+
+TagSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  let data = await this.find(filter, populate, options);
+  return data;
+}
 
 TagSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   filter.shop_id = filter.shop_id || cache.get('shop_id');

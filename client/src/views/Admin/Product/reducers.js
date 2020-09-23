@@ -13,13 +13,19 @@ const initialState = Map({
     option_3: options[2],
     variants: [],
     images: []
-  }
+  },
+  vendors: [],
+  collections: [],
+  tags: [],
 });
 
 function ProductsReducer(state = initialState, { type, payload }) {
   switch (type) {
     case 'MERGE':
     case 'LOAD_PRODUCTS_SUCCESS':
+    case 'LOAD_VENDORS_SUCCESS':
+    case 'LOAD_COLLECTIONS_SUCCESS':
+    case 'LOAD_TAGS_SUCCESS':
       return state.merge({ ...payload });
     case 'REFRESH_PRODUCT':
       let product = state.get('productUpdate')

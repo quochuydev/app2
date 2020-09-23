@@ -15,12 +15,16 @@ const initialState = Map({
     total_price: 0,
     total_pay: 0,
 
+    gateway_code: 'cod',
+    carrier_cod_status_code: 'codreceipt',
+    fulfillment_status: 'delivered',
+    
     customer: null,
     shipping_address: null,
     billing_address: null,
   },
   OrdersGrowthPerMonth: { items: [] },
-  
+
   reportOrdersGrowth: { items: [] },
   reportOrdersGrowthDay: { items: [] },
 

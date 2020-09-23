@@ -100,7 +100,7 @@ function OrderDetailComponent(props) {
 
   async function cancelOrder(order) {
     try {
-      let result = await AdminServices.cancelOrder({
+      let result = await AdminServices.Order.cancelOrder({
         id: order.id,
         cancel_reason: 'other',
         cancel_note: 'data.cancel_note',

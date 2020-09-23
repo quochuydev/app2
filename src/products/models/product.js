@@ -28,8 +28,10 @@ const ProductSchema = new Schema({
   options: [],
   product_type: { type: String, default: null },
   tags: { type: String, default: null },
+  tags_array: [String],
   title: { type: String, default: null },
-  vendor: { type: String, default: null },
+  vendor: { type: Number, default: null },
+  collect: { type: Number, default: null },
   body_html: { type: String, default: null },
   variants: [{
     id: { type: Number, default: null },

@@ -19,6 +19,7 @@ const URLS = {
   UPDATE_ORDER: 'api/orders',
   PAY_ORDER: 'api/orders/{id}/pay',
   UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
+  CANCEL_ORDER: 'api/orders/{id}/cancel',
 
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT: 'api/products',
@@ -115,6 +116,13 @@ async function payOrder(data) {
   return await ApiClient.putData(url, null, data);
 }
 
+let Order = {
+  cancelOrder: async function (data) {
+    let url = compile(URLS.CANCEL_ORDER, { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  }
+}
+
 async function loadStaffs() {
   return await ApiClient.postData(URLS.LIST_STAFFS);
 }
@@ -209,6 +217,31 @@ let Image = {
   }
 }
 
+let Product = {
+  loadVendors: async function (query) {
+    let url = compile('api/vendors');
+    return await ApiClient.getData(url, null, query);
+  },
+  createVendor: async function (data) {
+    let url = compile('api/vendors');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadCollections: async function (query) {
+    let url = compile('api/collections');
+    return await ApiClient.getData(url, null, query);
+  },
+  createCollection: async function (data) {
+    let url = compile('api/collections');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadTags: async function (query) {
+    return await ApiClient.getData('api/tags', null, query);
+  },
+  createTag: async function (data) {
+    return await ApiClient.postData('api/tags', null, data);
+  },
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -260,6 +293,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report, Image,
+  Report, Image, Product, Order,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

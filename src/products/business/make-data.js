@@ -5,6 +5,8 @@ function makeDataProduct(item) {
     title: item.title,
     body_html: item.body_html,
     tags: item.tags,
+    tags_array: item.tags ? item.tags.split(',') : [],
+    collect: item.collect,
     vendor: item.vendor,
     not_allow_promotion: item.not_allow_promotion,
     option_1: item.option_1,

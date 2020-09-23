@@ -35,7 +35,10 @@ let formatMoney = common.formatMoney;
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
-  const { count, products, order, OrderActions, ProductActions, CustomerActions, customers } = props;
+  const {
+    count, products, order, OrderActions, ProductActions, CustomerActions, customers,
+    vendors, collections, tags,
+  } = props;
 
   const { Option } = Select;
   const { Meta } = Card;
@@ -105,7 +108,15 @@ function Customer(props) {
   }, [queryProducts])
 
   useEffect(() => {
-    setOrder({ gateway_code: 'cod', carrier_cod_status_code: 'codreceipt', fulfillment_status: 'delivered' });
+    ProductActions.loadVendors();
+  }, [])
+
+  useEffect(() => {
+    ProductActions.loadCollections();
+  }, [])
+
+  useEffect(() => {
+    ProductActions.loadTags();
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -289,6 +300,18 @@ function Customer(props) {
     }
   }
 
+  async function createVendor(items) {
+    ProductActions.loadProducts({ vendor_in: items });
+  }
+
+  async function createCollection(items) {
+    ProductActions.loadProducts({ collect_in: items });
+  }
+
+  async function onTags(items) {
+    ProductActions.loadProducts({ tags_array_in: items });
+  }
+
   return (
     <div>
       <Row gutter={10}>
@@ -308,20 +331,35 @@ function Customer(props) {
                   <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select style={{ width: '100%' }}
+                        onChange={e => createCollection(e)}>
+                        {
+                          collections.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select style={{ width: '100%' }}
+                        onChange={e => createVendor(e)}>
+                        {
+                          vendors.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                     <Col span={8}>
                       <p>Được tag với</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select mode="tags" style={{ width: '100%' }}
+                        onChange={e => onTags(e)}>
+                        {
+                          tags.map((e, i) =>
+                            <Option key={i} value={e.title}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                   </Row>
@@ -535,6 +573,9 @@ const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   products: state.products.get('products'),
   order: state.orders.get('orderCreate'),
+  collections: state.products.get('collections'),
+  vendors: state.products.get('vendors'),
+  tags: state.products.get('tags'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,9 +1,12 @@
 let path = require('path');
+const fs = require('fs');
 
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
-const { createImage, updateImage, removeImage } = require('./controller')
+const { getImage, createImage, updateImage, removeImage } = require('./controller')
 
 const router = ({ app }) => {
+  app.get('/images/:fileName', getImage);
+
   app.post('/api/images', uploadToDisk.single('file'), function (req, res, next) {
     createImage({ file: req.file })
       .then(result => res.json(result))

@@ -25,6 +25,11 @@ const router = ({ app }) => {
       .then(result => res.json(result))
       .catch(error => next(error))
   })
+  app.put('/api/orders/:id/cancel', function (req, res, next) {
+    Controller.cancel({ order_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  })
 }
 
 module.exports = router;

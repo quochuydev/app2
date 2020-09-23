@@ -10,6 +10,9 @@ const cache = require('memory-cache');
 
 const VendorSchema = new Schema({
   id: { type: Number, default: null },
+  code: { type: String, default: null },
+  title: { type: String, default: null },
+  description: { type: String, default: null },
   updated_at: { type: Date, default: null },
   created_at: { type: Date, default: Date.now },
   is_deleted: { type: Boolean, default: false },
@@ -17,6 +20,12 @@ const VendorSchema = new Schema({
 })
 
 VendorSchema.plugin(autoIncrement.plugin, { model: 'Vendor', field: 'id', startAt: 10000, incrementBy: 1 });
+
+VendorSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  let data = await this.find(filter, populate, options);
+  return data;
+}
 
 VendorSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   filter.shop_id = filter.shop_id || cache.get('shop_id');

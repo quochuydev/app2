@@ -29,7 +29,7 @@ const apiUrl = `${config.backend_url}/api`;
 let { Option } = Select;
 
 function ProductDetail(props) {
-  const { product, productUpdate, actions } = props;
+  const { product, productUpdate, actions, collections, vendors, tags } = props;
   const { id } = useParams();
   let setProduct = actions.setProduct;
   let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
@@ -53,6 +53,18 @@ function ProductDetail(props) {
       actions.resetProduct();
     }
   }, [product])
+
+  useEffect(() => {
+    actions.loadVendors();
+  }, [])
+
+  useEffect(() => {
+    actions.loadCollections();
+  }, [])
+
+  useEffect(() => {
+    actions.loadTags();
+  }, [])
 
   const columns = [
     {
@@ -161,12 +173,17 @@ function ProductDetail(props) {
   }
 
   function onVariantChange(e, id) {
+    console.log(e.target.name, e.target.value)
     let index = productUpdate.variants.findIndex(e => e.id == id)
     if (index != -1) {
       productUpdate.variants[index][e.target.name] = e.target.value;
     }
     setProduct({ variants: productUpdate.variants });
     return;
+  }
+
+  function setVariant(name, value) {
+
   }
 
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -243,9 +260,7 @@ function ProductDetail(props) {
 
   async function changeImage() {
     try {
-      if (!selectImage) {
-        return;
-      }
+      if (!selectImage) { return; }
       let image = {
         id: selectImage.uid,
         src: selectImage.url,
@@ -303,6 +318,18 @@ function ProductDetail(props) {
     return;
   }
 
+  async function createTag(items) {
+    console.log(items)
+    let title_tags = tags.map(e => e.title);
+    for (const item of items) {
+      if (!title_tags.includes(item)) {
+        await AdminServices.Product.createTag({ title: item });
+      }
+    }
+    actions.loadTags({});
+    onChangeField('tags', items.join(','))
+  }
+
   return (
     <div>
       <Form onSubmit={addProduct}>
@@ -328,14 +355,34 @@ function ProductDetail(props) {
                     />
                   </Col>
                   <Col xs={24} lg={8}>
-                    <Form.Item label={'Nhà sản xuất'} onChange={onVariantChange}>
-                      <Select value={1} >
-                        <Select.Option value={1}>Mới</Select.Option>
+                    <Form.Item label={'Nhà sản xuất'}>
+                      <Select name="vendor" value={productUpdate.vendor}
+                        onChange={e => onChangeField('vendor', e)}>
+                        {
+                          vendors.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Form.Item>
-                    <Form.Item label={'Nhóm sản phẩm'} onChange={onVariantChange}>
-                      <Select value={1} >
-                        <Select.Option value={1}>Mới</Select.Option>
+                    <Form.Item label={'Nhóm sản phẩm'}>
+                      <Select onChange={e => onChangeField('collect', e)} name="collect"
+                        value={productUpdate.collect}>
+                        {
+                          collections.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label={'Tags'}>
+                      <Select mode="tags" name="tags" value={productUpdate.tags ? productUpdate.tags.split(',') : []}
+                        onChange={e => createTag(e)}>
+                        {
+                          tags.map((e, i) =>
+                            <Option key={i} value={e.title}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Form.Item>
                     <Card size="small" title="Hình ảnh sản phẩm">
@@ -411,6 +458,9 @@ const mapStateToProps = state => ({
   products: state.products.get('products'),
   product: state.products.get('product'),
   productUpdate: state.products.get('productUpdate'),
+  vendors: state.products.get('vendors'),
+  collections: state.products.get('collections'),
+  tags: state.products.get('tags'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
