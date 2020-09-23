@@ -41,9 +41,21 @@ common.cssProductType = (type) => {
       return 'red';
   }
 }
+
+common.colorStatus = (status) => {
+  switch (status) {
+    case 'success': case 'delivered': case 'paid':
+      return 'green';
+    case 'fail':
+      return 'red';
+    default:
+      return 'blue';
+  }
+}
+
 common.cssStatus = (status) => {
   switch (status) {
-    case 'success':
+    case 'success': case 'delivered': case 'paid':
       return 'green';
     case 'fail':
       return 'red';
@@ -56,6 +68,8 @@ common.formatFulfillmentStatus = function (code) {
   switch (code) {
     case 'delivered':
       return 'Đã giao hàng';
+    case 'delivering':
+      return 'Đang giao hàng';
     default:
       return ''
   }
@@ -70,14 +84,15 @@ common.textFinancial = function (code) {
   }
 }
 
-common.textCarrierCod = function (code) {
+common.formatCodStatus = function (code) {
   switch (code) {
+    case "codpending":
+      return "Chưa nhận";
     case 'codreceipt':
       return 'Đã nhận';
     default:
       return ''
   }
 }
-
 
 export default common;

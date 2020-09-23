@@ -106,10 +106,12 @@ const OrderSchema = new Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   currency: { type: String, default: null },
-  attributes: [{
-    name: { type: String, default: null },
-    value: { type: String, default: null },
-  }],
+  attributes: {
+    type: [{
+      name: { type: String, default: null },
+      value: { type: String, default: null },
+    }], default: []
+  },
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
 
