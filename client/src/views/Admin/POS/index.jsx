@@ -421,7 +421,7 @@ function Customer(props) {
           </Col>
           <Col xs={24} lg={8}>
             <Layout>
-              <Content style={{ height: '70vh', marginTop: 10 }}>
+              <Content style={{ height: '70vh', marginTop: 9 }}>
                 <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
                   <p><span>Khách hàng </span>
                     <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
@@ -444,17 +444,21 @@ function Customer(props) {
                           type="close" />
                         }>
                         <p className="hide">id: {order.customer.id}</p>
-                        <p>Họ tên:
+                        <p><span>Họ tên: </span>
                           <Link to={`customer/${order.customer.id}`} target="_blank">
                             {order.customer.last_name} {order.customer.first_name}</Link>
                         </p>
                         <p>Email: {order.customer.email}</p>
                         <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
-                        <p className="ui-title-page">Thông Tin Giao Hàng:
-                              <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
-                            style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
-                            theme="filled" type="edit" /></p>
+                        <p className="ui-title-page">
+                          <span>Thông Tin Giao Hàng </span>
+                          <Tag color="blue" className="cursor-pointer">
+                            <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
+                              style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                              theme="filled" type="edit" /> Sửa
+                          </Tag>
+                        </p>
                         <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
                         <p>Sđt: {order.shipping_address.phone}</p>
                         <p>Địa Chỉ Giao Hàng: {order.shipping_address.address1}</p>

@@ -41,6 +41,10 @@ body {
   text-align: right;
 }
 
-.ant-card, .ant-list-item-meta-title > a, .ant-list-item-meta-title, .ant-table, .ant-menu-item > a {
+.ant-card, .ant-list-item-meta-title>a, .ant-list-item-meta-title, .ant-table, .ant-menu-item>a {
   color: black !important;
+}
+
+.ant-card-head {
+  min-height: 40px !important;
 }
