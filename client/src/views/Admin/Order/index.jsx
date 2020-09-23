@@ -21,9 +21,10 @@ import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
 import common from '../../../utils/common';
-let textCarrierCod = common.textCarrierCod;
+let formatCodStatus = common.formatCodStatus;
 let textFinancial = common.textFinancial;
 let formatFulfillmentStatus = common.formatFulfillmentStatus;
+let cssStatus = common.cssStatus;
 
 const { Option } = Select;
 
@@ -44,17 +45,17 @@ function Orders(props) {
     },
     {
       title: 'Thanh toán', key: 'financial_status', render: edit => (
-        <Tag color={"blue"}>{textFinancial(edit.financial_status)}</Tag>
+        <Tag color={cssStatus(edit.financial_status)}>{textFinancial(edit.financial_status)}</Tag>
       )
     },
     {
       title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
-        <Tag color={"green"}>{formatFulfillmentStatus(edit.fulfillment_status)}</Tag>
+        <Tag color={cssStatus(edit.fulfillment_status)}>{formatFulfillmentStatus(edit.fulfillment_status)}</Tag>
       )
     },
     {
       title: 'COD', key: 'carrier_cod_status_code', render: edit => (
-        <Tag color={"magenta"}>{textCarrierCod(edit.carrier_cod_status_code)}</Tag>
+        <Tag color={"magenta"}>{formatCodStatus(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {

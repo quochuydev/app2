@@ -4,7 +4,9 @@ import _ from 'lodash';
 const initialState = Map({
   total: 0,
   orders: [],
-  order: {},
+  order: {
+    attributes: []
+  },
   orderCreate: {
     type: 'app',
     line_items: [],
@@ -18,7 +20,7 @@ const initialState = Map({
     gateway_code: 'cod',
     carrier_cod_status_code: 'codreceipt',
     fulfillment_status: 'delivered',
-    
+
     customer: null,
     shipping_address: null,
     billing_address: null,

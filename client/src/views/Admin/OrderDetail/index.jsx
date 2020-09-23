@@ -11,7 +11,7 @@ import {
 
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
-  Popover, Statistic, PageHeader, Icon, List, Avatar
+  Popover, Statistic, PageHeader, Icon, List, Avatar, Tag,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -22,8 +22,9 @@ import PrintOrder from './../POS/print.jsx';
 
 let formatMoney = common.formatMoney;
 let formatFulfillmentStatus = common.formatFulfillmentStatus;
-let textCarrierCod = common.textCarrierCod;
+let formatCodStatus = common.formatCodStatus;
 let textFinancial = common.textFinancial;
+let cssStatus = common.cssStatus;
 
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
@@ -47,9 +48,9 @@ function OrderDetailComponent(props) {
         <List.Item.Meta
           avatar={<Avatar shape="square" size={'large'} src={edit.image ? edit.image.src : null} />}
           title={<Link to={`../../product/${edit.product_id}`} target="_blank">
-            {edit.title}
+            {[edit.title, edit.variant_title].join(' - ')}
           </Link>}
-          description={< NumberFormat value={edit.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
+          description={[edit.sku, edit.barcode].join(' - ')}
         />
       ),
     },
@@ -69,7 +70,6 @@ function OrderDetailComponent(props) {
 
   ];
 
-
   async function payOrder(order) {
     try {
       let result = await AdminServices.payOrder({ id: order.id });
@@ -79,9 +79,10 @@ function OrderDetailComponent(props) {
       message.error(error.message);
     }
   }
+
   async function updateNoteOrder(order) {
     try {
-      let result = await AdminServices.updateNoteOrder({ id: order.id, note: order.note });
+      let result = await AdminServices.updateNoteOrder({ id: order.id, note: order.note, attributes: order.attributes });
       refreshOrder();
       message.success(result.message);
     } catch (error) {
@@ -121,9 +122,21 @@ function OrderDetailComponent(props) {
     })
   }
 
+  let [count, setCount] = useState(0)
+  function addAttribute() {
+    setCount(count++)
+    if (!order.attributes) {
+      order.attributes = [];
+    }
+    order.attributes.push({ id: count, name: '', value: '' })
+    actions.merge({ attributes: order.attributes })
+  }
+
   function onChangeAttribute(index, e) {
     console.log(index, e.target.name, e.target.value)
     console.log(order)
+    order.attributes[index][e.target.name] = e.target.value;
+    actions.merge({ attributes: order.attributes })
   }
 
   return (
@@ -178,7 +191,6 @@ function OrderDetailComponent(props) {
                     }
                     content={() => componentRef.current}
                   />
-
                 </Col>
               </Row>
             </PageHeader>
@@ -190,15 +202,16 @@ function OrderDetailComponent(props) {
                 <Card title={<p className="ui-title-page"></p>}>
                   <Row gutter={[20, 20]}>
                     <Col xs={24} lg={12}>
-                      <p>Thuộc tính</p>
+                      <p>Thuộc tính <Button icon="plus" size="small" type="primary" onClick={() => { addAttribute() }}>
+                      </Button></p>
                       {
                         order.attributes ? order.attributes.map((e, i) =>
                           <Row key={i}>
                             <Col lg={12}>
-                              <Input type="text" name="key" onChange={(e) => onChangeAttribute(i, e)} />
+                              <Input type="text" name="name" value={e.name} onChange={(e) => onChangeAttribute(i, e)} />
                             </Col>
                             <Col lg={12}>
-                              <Input type="text" name="value" onChange={(e) => onChangeAttribute(i, e)} />
+                              <Input type="text" name="value" value={e.value} onChange={(e) => onChangeAttribute(i, e)} />
                             </Col>
                           </Row>
                         ) : null
@@ -244,7 +257,7 @@ function OrderDetailComponent(props) {
                   <p className="ui-title-page">Thông tin giao hàng</p>
                   <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
                   <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
-                  <p>Địa chỉ giao hàng: {_.get(order, 'shipping_address.address1')}</p>
+                  <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
                 </Card>
               </Col>
             </Row >
