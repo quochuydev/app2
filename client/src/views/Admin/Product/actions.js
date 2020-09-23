@@ -121,3 +121,14 @@ export function loadCollections(query) {
     });
   }
 }
+
+export function loadTags(query) {
+  return async (dispatch) => {
+    const data = await AdminServices.Product.loadTags(query);
+    dispatch({
+      type: 'LOAD_TAGS_SUCCESS', payload: {
+        error: false, message: 'LOAD_TAGS_SUCCESS.message', ...data
+      }
+    });
+  }
+}

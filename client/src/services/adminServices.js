@@ -218,13 +218,27 @@ let Image = {
 }
 
 let Product = {
-  loadVendors: async function loadVendors() {
+  loadVendors: async function (query) {
     let url = compile('api/vendors');
-    return await ApiClient.getData(url);
+    return await ApiClient.getData(url, null, query);
   },
-  loadCollections: async function loadCollections() {
+  createVendor: async function (data) {
+    let url = compile('api/vendors');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadCollections: async function (query) {
     let url = compile('api/collections');
-    return await ApiClient.getData(url);
+    return await ApiClient.getData(url, null, query);
+  },
+  createCollection: async function (data) {
+    let url = compile('api/collections');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadTags: async function (query) {
+    return await ApiClient.getData('api/tags', null, query);
+  },
+  createTag: async function (data) {
+    return await ApiClient.postData('api/tags', null, data);
   },
 }
 

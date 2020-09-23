@@ -6,6 +6,10 @@ const {
 const VariantController = require('../controllers/variant');
 const { ProductImage } = require('../controllers/product-image');
 const { uploadToDisk, uploadToCloud } = require(path.resolve('./src/core/middlewares/upload'));
+const {
+  listVendors, createVendor, listCollections, createCollection,
+  createTag, listTags,
+} = require('../controllers/collect');
 
 const router = ({ app }) => {
   app.post('/api/products/sync', sync);
@@ -69,12 +73,40 @@ const router = ({ app }) => {
       .catch(error => next(error))
   });
 
-  app.get('/api/vendors', function (req, res, next) {
-    res.json({ vendors: [] })
+  app.get('/api/vendors', async function (req, res, next) {
+    listVendors({ query: req.query })
+      .then(result => res.json(result))
+      .catch(error => next(error));
   });
 
-  app.get('/api/collections', function (req, res, next) {
-    res.json({ collections: [] })
+  app.get('/api/collections', async function (req, res, next) {
+    listCollections({ query: req.query })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.post('/api/vendors', async function (req, res, next) {
+    createVendor({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.post('/api/collections', async function (req, res, next) {
+    createCollection({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.get('/api/tags', async function (req, res, next) {
+    listTags({ query: req.query })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.post('/api/tags', async function (req, res, next) {
+    createTag({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
   });
 }
 
