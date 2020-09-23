@@ -19,6 +19,7 @@ const URLS = {
   UPDATE_ORDER: 'api/orders',
   PAY_ORDER: 'api/orders/{id}/pay',
   UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
+  CANCEL_ORDER: 'api/orders/{id}/cancel',
 
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT: 'api/products',
@@ -113,6 +114,13 @@ async function updateNoteOrder(data) {
 async function payOrder(data) {
   let url = compile(URLS.PAY_ORDER, { id: data.id });
   return await ApiClient.putData(url, null, data);
+}
+
+let Order = {
+  cancelOrder: async function (data) {
+    let url = compile(URLS.CANCEL_ORDER, { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  }
 }
 
 async function loadStaffs() {
@@ -211,11 +219,11 @@ let Image = {
 
 let Product = {
   loadVendors: async function loadVendors() {
-    let url = compile('api/products/vendors');
+    let url = compile('api/vendors');
     return await ApiClient.getData(url);
   },
   loadCollections: async function loadCollections() {
-    let url = compile('api/products/collections');
+    let url = compile('api/collections');
     return await ApiClient.getData(url);
   },
 }
@@ -271,6 +279,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report, Image, Product,
+  Report, Image, Product, Order,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

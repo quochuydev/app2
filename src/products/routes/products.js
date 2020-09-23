@@ -69,11 +69,11 @@ const router = ({ app }) => {
       .catch(error => next(error))
   });
 
-  app.get('/api/products/vendors', function (req, res, next) {
+  app.get('/api/vendors', function (req, res, next) {
     res.json({ vendors: [] })
   });
 
-  app.get('/api/products/collections', function (req, res, next) {
+  app.get('/api/collections', function (req, res, next) {
     res.json({ collections: [] })
   });
 }
