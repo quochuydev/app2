@@ -88,11 +88,11 @@ function LayoutContainer() {
             <Popover placement="right" content={<div>
               <List size="small" bordered={false}>
                 {
-                  user.shops.map(e => (
+                  user && user.shops ? user.shops.map(e => (
                     <List.Item key={e.id}>
                       <a key={e.id} onClick={() => changeShop({ user: { email: user.email }, shop_id: e.id })}>{e.id} - {e.name}</a>
                     </List.Item>
-                  ))
+                  )) : null
                 }
                 <List.Item key={'change_logo'}>
                   <a onClick={() => changeLogo()}>Đổi logo cửa hàng</a>
