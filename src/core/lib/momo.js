@@ -44,4 +44,4 @@ let buildLinkMomoOrder = () => {
   })
 }
 
-module.exports = { buildLinkMomoOrder, buildLinkMomoOrders }
+module.exports = { buildLinkMomoOrder }
