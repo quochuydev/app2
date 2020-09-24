@@ -42,9 +42,9 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
   app.engine('liquid', expressLiquid(options));
   app.use('/site/', expressLiquid.middleware);
-  app.use('/site/*', function (req, res, next) {
+  app.use('/site/:shop/*', function (req, res, next) {
     try {
-      let shop = req.query.shop;
+      let shop = req.params.shop;
       if (!shop) {
         throw { message: 'error' }
       }
@@ -53,14 +53,37 @@ module.exports = (app, db) => {
       res.render('404');
     }
   });
-  app.get('/site', function (req, res) {
-    let shop = req.query.shop;
+  app.get('/site/:shop', function (req, res) {
+    let shop = req.params.shop;
     res.render(`shops/${shop}/index`);
   });
-  app.get('/site/products/:handle', function (req, res) {
-    let shop = req.query.shop;
-    let product = { title: 'this title' }
-    res.render(`shops/${shop}/product`, { product })
+  app.get('/site/:shop/pages/:page', function (req, res) {
+    let shop = req.params.shop;
+    let page = req.params.page;
+    res.render(`shops/${shop}/pages`)
+  });
+  app.get('/site/:shop/products/:handle', function (req, res) {
+    let shop = req.params.shop;
+    let handle = req.params.handle;
+    let product = { title: `this is title ${handle}` }
+    res.render(`shops/${shop}/products`, { product })
+  });
+  app.get('/site/:shop/collections/:type', function (req, res) {
+    let shop = req.params.shop;
+    let type = req.params.type;
+    res.render(`shops/${shop}/collections`)
+  });
+  app.get('/site/:shop/cart', function (req, res) {
+    let shop = req.params.shop;
+    res.render(`shops/${shop}/cart`)
+  });
+  app.get('/site/:shop/cart', function (req, res) {
+    let shop = req.params.shop;
+    res.render(`shops/${shop}/cart`)
+  });
+  app.get('/site/:shop/checkouts/:checkout_token', function (req, res) {
+    let shop = req.params.shop;
+    res.render(`shops/${shop}/checkouts`)
   });
 
   app.use(bodyParser.json({ limit: '50mb' }));
