@@ -6,10 +6,11 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
+const expressLiquid = require('express-liquid');
 
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
-const expressLiquid = require('express-liquid');
+const { errorHandle } = require('./errorHandle');
 
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
@@ -64,18 +65,10 @@ module.exports = (app, db) => {
       stringify: false
     })
   }))
+
   const Routes = require(path.resolve('./src/core/routes/routes'))
   Routes(app);
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes(app);
-  app.use(function (error, req, res, next) {
-    if (!error) {
-      return next();
-    }
-    console.error(error);
-    let status = error.statusCode || 400;
-    let result = { message: error.message || 'Server Error!', error: JSON.stringify(error) };
-    result.error = result.error || true;
-    res.status(status).send(result);
-  })
+  app.use(errorHandle)
 }
