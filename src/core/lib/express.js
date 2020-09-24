@@ -42,6 +42,9 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
   app.engine('liquid', expressLiquid(options));
   app.use('/site/', expressLiquid.middleware);
+  app.get('/site', function (req, res) {
+    res.render('index');
+  });
   app.get('/site/user', function (req, res) {
     let users = [
       { name: 'tobi', email: 'tobi@learnboost.com' },
