@@ -42,17 +42,25 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
   app.engine('liquid', expressLiquid(options));
   app.use('/site/', expressLiquid.middleware);
+  app.use('/site/*', function (req, res, next) {
+    try {
+      let shop = req.query.shop;
+      if (!shop) {
+        throw { message: 'error' }
+      }
+      next();
+    } catch (error) {
+      res.render('404');
+    }
+  });
   app.get('/site', function (req, res) {
     let shop = req.query.shop;
     res.render(`shops/${shop}/index`);
   });
-  app.get('/site/user', function (req, res) {
-    let users = [
-      { name: 'tobi', email: 'tobi@learnboost.com' },
-      { name: 'loki', email: 'loki@learnboost.com' },
-      { name: 'jane', email: 'jane@learnboost.com' }
-    ];
-    res.render('user', { users })
+  app.get('/site/products/:handle', function (req, res) {
+    let shop = req.query.shop;
+    let product = { title: 'this title' }
+    res.render(`shops/${shop}/product`, { product })
   });
 
   app.use(bodyParser.json({ limit: '50mb' }));
