@@ -7,7 +7,7 @@ let cache = require('memory-cache');
 let UserMD = mongoose.model('User');
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
-const { frontend_site, google_app, hash_token } = require(path.resolve('./src/config/config'));
+const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 
@@ -19,56 +19,37 @@ let auth = async (req, res) => {
   try {
     let { code } = req.query;
     const { tokens } = await oauth2Client.getToken(code)
-    // oauth2Client.setCredentials(tokens);
-    let { id_token } = tokens;
-    let userAuth = jwt.decode(id_token)
+    let userAuth = jwt.decode(tokens.id_token)
     let { email } = userAuth;
     if (!email) {
       return res.sendStatus(401);
     }
     let user = await UserMD.findOne({ email }).lean(true);
+    // if (!user) {
+    //   return res.sendStatus(401);
+    // }
     if (!user) {
-      return res.sendStatus(401);
+      let shop_data = {
+        name: email, code: email, google_info: userAuth
+      }
+      let new_shop = await ShopModel.create(shop_data);
+      let new_user = {
+        email,
+        shop_id: new_shop.id
+      }
+      user = await UserMD.create(new_user);
     }
 
     let user_gen_token = {
       email: user.email,
       shop_id: user.shop_id,
-      exp: (Date.now() + 60 * 60 * 1000) / 1000
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.redirect(`${frontend_site}/loading?token=${userToken}`)
+    res.redirect(`${frontend_admin}/loading?token=${userToken}`)
   } catch (error) {
     console.log(error);
-    res.redirect(`${frontend_site}/login?message=${encodeURIComponent('Something errror!')}`)
-  }
-}
-
-let middleware = (req, res, next) => {
-  try {
-    let authCallback = [
-      'haravan/login',
-      'haravan/grandservice',
-      'shopify/auth/callback',
-      'woocommerce/return_url',
-      'woocommerce/callback_url',
-    ]
-    if (authCallback.find(e => req.originalUrl.includes(e))) { return next() }
-    let accesstoken = req.headers['accesstoken'];
-    if (!accesstoken || accesstoken == 'null') {
-      return res.sendStatus(401);
-    }
-    let user = jwt.verify(accesstoken, hash_token);
-    if (!(user && user.email)) {
-      return res.sendStatus(401);
-    }
-    req.user = user;
-    req.shop_id = user.shop_id;
-    cache.put('shop_id', user.shop_id);
-    next();
-  } catch (error) {
-    logger(error)
-    res.sendStatus(401);
+    res.redirect(`${frontend_admin}/login?message=${encodeURIComponent('Something errror!')}`)
   }
 }
 
@@ -88,7 +69,7 @@ async function changeShop({ user, shop_id }) {
   }
 
   let userToken = jwt.sign(user_gen_token, hash_token);
-  result.url = `${frontend_site}/loading?token=${userToken}`
+  result.url = `${frontend_admin}/loading?token=${userToken}`
   return result;
 }
 
@@ -173,10 +154,10 @@ let login = async (req, res, next) => {
       id: user.id,
       email: user.email,
       shop_id: user.shop_id,
-      exp: (Date.now() + 60 * 60 * 1000) / 1000
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.json({ error: false, token: userToken, url: `${frontend_site}/loading?token=${userToken}` });
+    res.json({ error: false, token: userToken, url: `${frontend_admin}/loading?token=${userToken}` });
   } catch (error) {
     next(error);
   }
@@ -191,10 +172,10 @@ let logout = (req, res) => {
 }
 
 let logout_redirect = (req, res) => {
-  res.redirect(`${frontend_site}/logout`);
+  res.redirect(`${frontend_admin}/logout`);
 }
 
 module.exports = {
   auth, login, loginGoogle,
-  logout, middleware, logout_redirect, signup, changeShop, checkUser
+  logout, logout_redirect, signup, changeShop, checkUser
 }

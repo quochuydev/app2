@@ -10,7 +10,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import ReactToPrint from "react-to-print";
 import AsyncSelect from 'react-select/async';
-import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 import {
   Link
 } from "react-router-dom";
@@ -28,12 +28,17 @@ import AdminServices from '../../../services/adminServices';
 import config from './../../../utils/config';
 import './style.css'
 import PrintOrder from './print.jsx';
-import CustomerDetail from './../Customer/detail'
+import CustomerDetail from './../Customer/detail';
+import common from '../../../utils/common';
+let formatMoney = common.formatMoney;
 
 const apiUrl = `${config.backend_url}/api`;
 
 function Customer(props) {
-  const { count, products, order, OrderActions, ProductActions, CustomerActions, customers } = props;
+  const {
+    count, products, order, OrderActions, ProductActions, CustomerActions, customers,
+    vendors, collections, tags,
+  } = props;
 
   const { Option } = Select;
   const { Meta } = Card;
@@ -48,9 +53,11 @@ function Customer(props) {
       title: (<span>Sản phẩm <Badge count={order.total_items} style={{ backgroundColor: '#52c41a' }} /></span>), key: 'title', render: item => (
         <div>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image .src', null)} />}
-            title={<a onClick={() => { }}>{item.title} {item.variant_title}</a>}
-            description={[item.sku, item.barcode, item.price].join(' - ')}
+            avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
+            title={<Link to={`product/${item.product_id}`} target="_blank">
+              {[item.title, item.variant_title].join(' - ')}
+            </Link>}
+            description={[item.sku, item.barcode].join(' - ')}
             onClick={() => addProduct(item.id)}
           />
         </div>
@@ -58,7 +65,7 @@ function Customer(props) {
     },
     {
       title: 'Đơn giá', key: 'price', render: edit => (
-        <CurrencyFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+        <NumberFormat value={edit.price} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -76,7 +83,7 @@ function Customer(props) {
     },
     {
       title: 'Thành tiền', key: 'total', render: edit => (
-        <CurrencyFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
+        <NumberFormat value={edit.total} displayType={'text'} suffix={'đ'} thousandSeparator={true} />
       )
     },
     {
@@ -100,10 +107,16 @@ function Customer(props) {
     ProductActions.loadProducts(queryProducts);
   }, [queryProducts])
 
+  useEffect(() => {
+    ProductActions.loadVendors();
+  }, [])
 
   useEffect(() => {
-    setOrder({ gateway_code: 'cod' });
+    ProductActions.loadCollections();
+  }, [])
 
+  useEffect(() => {
+    ProductActions.loadTags();
   }, [])
 
   const [isShowPrint, setIsShowPrint] = useState(false)
@@ -112,16 +125,23 @@ function Customer(props) {
   const [orderCreated, setOrderCreated] = useState(null);
   const [isCustomerModal, setIsCustomerModal] = useState(false);
   const [customer, setCustomer] = useState({ gender: 1 })
-  const [done, setDone] = useState(null)
   let setOrder = OrderActions.setOrder;
 
-  useEffect(() => {
-    if (done && done.customer) {
-      setOrder({ shipping_address: done.customer.default_address });
+  async function assertCustomer({ customer }) {
+    try {
+      let action = customer.id ? 'updateCustomer' : 'addCustomer';
+      const result = await AdminServices[action](customer);
+      setOrder({
+        customer: result.customer,
+        shipping_address: result.customer.default_address
+      });
+      message.success(result.message);
       CustomerActions.listCustomers(query);
       setIsCustomerModal(false);
+    } catch (error) {
+      message.error(error.message);
     }
-  }, [done])
+  }
 
   function addVariant(product_id, variant) {
     let product = products.find(e => e.id == product_id);
@@ -257,8 +277,10 @@ function Customer(props) {
   function onSearchChange(customerSelected) {
     if (customerSelected) {
       let customer = customers.find(e => e.id == customerSelected.value);
-      setOrder({ customer });
-      setOrder({ shipping_address: customer.default_address || {} });
+      if (customer) {
+        setOrder({ customer });
+        setOrder({ shipping_address: customer.default_address || {} });
+      }
     }
   };
 
@@ -278,6 +300,18 @@ function Customer(props) {
     }
   }
 
+  async function createVendor(items) {
+    ProductActions.loadProducts({ vendor_in: items });
+  }
+
+  async function createCollection(items) {
+    ProductActions.loadProducts({ collect_in: items });
+  }
+
+  async function onTags(items) {
+    ProductActions.loadProducts({ tags_array_in: items });
+  }
+
   return (
     <div>
       <Row gutter={10}>
@@ -285,24 +319,47 @@ function Customer(props) {
           <Col xs={24} lg={16} style={{ position: 'relative', height: '100vh' }}>
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100 }}>
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
-                <Collapse.Panel header="Danh sách sản phẩm" key="1" isActive={false} >
+                <Collapse.Panel key="1" isActive={false} header={<p>
+                  <span>Danh sách sản phẩm </span>
+                  <Link to={`product/create`} target="_blank">
+                    <Tag color="blue" className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
+                  </Link>
+                </p>}>
                   <Row gutter={10} style={{ margin: 10 }}>
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select style={{ width: '100%' }}
+                        onChange={e => createCollection(e)}>
+                        {
+                          collections.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select style={{ width: '100%' }}
+                        onChange={e => createVendor(e)}>
+                        {
+                          vendors.map((e, i) =>
+                            <Option key={i} value={e.id}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                     <Col span={8}>
                       <p>Được tag với</p>
-                      <Select>
-                        <Option value={1}>123</Option>
+                      <Select mode="tags" style={{ width: '100%' }}
+                        onChange={e => onTags(e)}>
+                        {
+                          tags.map((e, i) =>
+                            <Option key={i} value={e.title}>{e.title}</Option>
+                          )
+                        }
                       </Select>
                     </Col>
                   </Row>
@@ -310,19 +367,26 @@ function Customer(props) {
                     {
                       products.map(product => {
                         return (
-                          <Col xs={8} lg={4} key={product._id}>
-                            <Badge count={product.variants.length > 1 ? '--' : 99}
-                              style={{ backgroundColor: '#52c41a' }}>
-                              <Card className="cursor-pointer"
-                                cover={<div>
-                                  <Avatar shape="square" style={{ width: "100%", height: 100 }}
-                                    alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
-                                </div>}
-                                onClick={() => addProduct(product.id)}>
-                                <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
-                                  description={product.id} />
-                              </Card>
-                            </Badge>
+                          <Col xs={8} lg={4} key={product._id} style={{ padding: 5 }}>
+                            {/* <Badge count={product.variants.length > 1 ? '--' : 99}
+                              style={{ backgroundColor: '#52c41a' }}> */}
+                            <Card className="cursor-pointer"
+                              cover={<div>
+                                <Avatar shape="square" style={{ width: "100%", height: 100 }}
+                                  alt={_.get(product, 'images[0].filename')} src={_.get(product, 'images[0].src')} />
+                              </div>}
+                              onClick={() => addProduct(product.id)}>
+                              <Card.Meta title={product.title ? _.cloneDeep(product).title.slice(0, 8) : ''}
+                                description={
+                                  <div>
+                                    <p>{product.variants.length == 1 ? formatMoney(product.variants[0].price) : '--'}</p>
+                                    <Tag color="blue" className="cursor-pointer">
+                                      {product.variants.length} biến thể
+                                      </Tag>
+                                  </div>
+                                } />
+                            </Card>
+                            {/* </Badge> */}
                           </Col>
                         )
                       })
@@ -357,11 +421,13 @@ function Customer(props) {
           </Col>
           <Col xs={24} lg={8}>
             <Layout>
-              <Content style={{ height: '70vh', marginTop: 10 }}>
-                <Card title="Thông tin khách hàng">
-                  <p>Khách hàng:
-                    <Icon onClick={() => onShowCustomerModal()} style={{ color: '#007bff' }}
-                      theme="filled" type="plus-circle" />
+              <Content style={{ height: '70vh', marginTop: 9 }}>
+                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
+                  <p><span>Khách hàng </span>
+                    <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
+                      <Icon style={{ color: '#007bff' }}
+                        theme="filled" type="plus-circle" /> Thêm
+                    </Tag>
                   </p>
                   <AsyncSelect
                     defaultOptions={formatOptionCustomers(customers)}
@@ -378,20 +444,24 @@ function Customer(props) {
                           type="close" />
                         }>
                         <p className="hide">id: {order.customer.id}</p>
-                        <p>Họ tên:
-                          <Link to={`customers/${order.customer.id}`} target="_blank">
+                        <p><span>Họ tên: </span>
+                          <Link to={`customer/${order.customer.id}`} target="_blank">
                             {order.customer.last_name} {order.customer.first_name}</Link>
                         </p>
                         <p>Email: {order.customer.email}</p>
                         <p>Sđt: {order.customer.phone}</p>
                         <p>Ngày sinh: {order.customer.birthday}</p>
-                        <p className="ui-title-page">Thông Tin Giao Hàng:
-                              <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
-                            style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
-                            theme="filled" type="edit" /></p>
+                        <p className="ui-title-page">
+                          <span>Thông Tin Giao Hàng </span>
+                          <Tag color="blue" className="cursor-pointer">
+                            <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
+                              style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                              theme="filled" type="edit" /> Sửa
+                          </Tag>
+                        </p>
                         <p>Họ tên: {order.shipping_address.last_name} {order.shipping_address.first_name}</p>
                         <p>Sđt: {order.shipping_address.phone}</p>
-                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address}</p>
+                        <p>Địa Chỉ Giao Hàng: {order.shipping_address.address1}</p>
                       </Card>
                     </div> : null
                   }
@@ -403,7 +473,7 @@ function Customer(props) {
                     <p>Tạm tính</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat value={order.total_line_items_price} suffix={'đ'}
+                    <NumberFormat value={order.total_line_items_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -412,7 +482,7 @@ function Customer(props) {
                     <p>Phí vận chuyển</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
+                    <NumberFormat className="ant-input" value={order.custom_total_shipping_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ custom_total_shipping_price: e.floatValue })} />
                   </Col>
@@ -422,7 +492,7 @@ function Customer(props) {
                     <p>Khuyến mãi</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
+                    <NumberFormat className="ant-input" value={order.total_discounts} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }}
                       onValueChange={e => setOrder({ total_discounts: e.floatValue })} />
                   </Col>
@@ -432,7 +502,7 @@ function Customer(props) {
                     <p>Thành tiền</p>
                   </Col>
                   <Col span={15} style={{ textAlign: 'right' }}>
-                    <CurrencyFormat value={order.total_price} suffix={'đ'}
+                    <NumberFormat value={order.total_price} suffix={'đ'}
                       thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
                   </Col>
                 </Row>
@@ -456,7 +526,7 @@ function Customer(props) {
                 <List.Item.Meta
                   avatar={<Avatar shape="square" size={'large'} src={item.image ? item.image.src : null} />}
                   title={item.title} onClick={() => addVariant(item.product_id, item)}
-                  description={<CurrencyFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
+                  description={<NumberFormat value={item.price} suffix={'đ'} thousandSeparator={true} displayType="text" />}
                 />
               </Menu.Item>
             )) : null
@@ -464,7 +534,7 @@ function Customer(props) {
         </Menu>
       </Modal>
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} setDone={setDone} />
+        customer={customer} assertCustomer={assertCustomer} />
 
       <Modal
         visible={isCreateSuccess}
@@ -495,7 +565,7 @@ function Customer(props) {
       <div style={{ display: isShowPrint ? 'block' : 'none' }}>
         <div ref={componentRef}>
           {
-            orderCreated ? <PrintOrder order={orderCreated} /> : null
+            (orderCreated && orderCreated.id) ? <PrintOrder order={orderCreated} /> : null
           }
         </div>
       </div>
@@ -507,6 +577,9 @@ const mapStateToProps = state => ({
   customers: state.customers.get('customers'),
   products: state.products.get('products'),
   order: state.orders.get('orderCreate'),
+  collections: state.products.get('collections'),
+  vendors: state.products.get('vendors'),
+  tags: state.products.get('tags'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,4 +1,4 @@
-// const { UploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
+// const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload.js'));
 
 const _ = require('lodash');
 const path = require('path');
@@ -31,7 +31,7 @@ const FileFilters = {
 const DEFAULT_CONFIG = {
   limits: {
     fieldNameSize: 100, // Max field name size	100 bytes
-    fieldSize: 1 * 1024 * 1024, //	Max field value size	1MB
+    fieldSize: 5 * 1024 * 1024, //	Max field value size	1MB
     fields: Number.MAX_SAFE_INTEGER, //	Max number of non-file fields	Infinity
     fileSize: 100 * 1024 * 1024, //	For multipart forms, the max file size (in bytes)	Infinity
     files: Number.MAX_SAFE_INTEGER, //	For multipart forms, the max number of file fields	Infinity
@@ -44,9 +44,9 @@ const DEFAULT_CONFIG = {
 /**
  * @param {string} API upload | import
  */
+
 const CloudStorage = ({ API = 'upload', filename }) => Object({
   _handleFile: function _handleFile(req, file, cb) {
-
     let file_name = uuid() + path.extname(file.originalname);
 
     if (typeof filename === 'function') {
@@ -56,10 +56,11 @@ const CloudStorage = ({ API = 'upload', filename }) => Object({
       file_name = filename({ shop, user, file });
     }
 
-    return cb({ error: true });
     // fileCloud[API]({ fileStream : file.stream, fileName : file_name })
     // .then(downloadLink => cb(null, { path : downloadLink }))
     // .catch(cb);
+
+    return cb(null, { error: false })
   },
   _removeFile: function _removeFile(req, file, cb) {
     cb();

@@ -1,9 +1,15 @@
 const path = require('path');
 
 const {
-  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct, deleteVariant
+  list, getProduct, create, update, sync, importProducts, exportExcel, deleteProduct,
 } = require('../controllers/products');
-const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
+const VariantController = require('../controllers/variant');
+const { ProductImage } = require('../controllers/product-image');
+const { uploadToDisk, uploadToCloud } = require(path.resolve('./src/core/middlewares/upload'));
+const {
+  listVendors, createVendor, listCollections, createCollection,
+  createTag, listTags,
+} = require('../controllers/collect');
 
 const router = ({ app }) => {
   app.post('/api/products/sync', sync);
@@ -29,21 +35,13 @@ const router = ({ app }) => {
 
   app.post('/api/products/import', uploadToDisk.single('file'), function (req, res, next) {
     importProducts({ file: req.file.path })
-      .then(result => {
-        res.json(result);
-      })
-      .catch(error => {
-        next(error);
-      })
+      .then(result => res.json(result))
+      .catch(error => next(error))
   });
   app.post('/api/products/export', function (req, res, next) {
     exportExcel({ body: req.body })
-      .then(result => {
-        res.json(result);
-      })
-      .catch(error => {
-        next(error);
-      })
+      .then(result => res.json(result))
+      .catch(error => next(error))
   });
   app.delete('/api/products/delete/:id', function (req, res, next) {
     deleteProduct({ product_id: req.params.id })
@@ -51,13 +49,65 @@ const router = ({ app }) => {
       .catch(error => next(error));
   });
 
-  app.delete('/api/variants/delete/:id', function (req, res, next) {
-    deleteVariant({ variant_id: req.params.id })
+  app.post('/api/products/:id/variants', function (req, res, next) {
+    VariantController.create({ product_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
+
+  app.put('/api/products/:id/variants/:variant_id', function (req, res, next) {
+    VariantController.update({ product_id: req.params.id, variant_id: req.params.variant_id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
+
+  app.delete('/api/products/:id/variants/:variant_id', function (req, res, next) {
+    VariantController.remove({ product_id: req.params.id, variant_id: req.params.variant_id })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  })
+
+  app.post('/api/products/:id/images', uploadToDisk.single('file'), function (req, res, next) {
+    ProductImage.assert({ product_id: req.params.id, data: req.body, file: req.file })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+  });
+
+  app.get('/api/vendors', async function (req, res, next) {
+    listVendors({ query: req.query })
       .then(result => res.json(result))
       .catch(error => next(error));
   });
 
+  app.get('/api/collections', async function (req, res, next) {
+    listCollections({ query: req.query })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
 
+  app.post('/api/vendors', async function (req, res, next) {
+    createVendor({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.post('/api/collections', async function (req, res, next) {
+    createCollection({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.get('/api/tags', async function (req, res, next) {
+    listTags({ query: req.query })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.post('/api/tags', async function (req, res, next) {
+    createTag({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
 }
 
 module.exports = router;

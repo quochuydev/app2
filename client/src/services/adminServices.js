@@ -19,6 +19,7 @@ const URLS = {
   UPDATE_ORDER: 'api/orders',
   PAY_ORDER: 'api/orders/{id}/pay',
   UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
+  CANCEL_ORDER: 'api/orders/{id}/cancel',
 
   LIST_PRODUCTS: 'api/products/list',
   GET_PRODUCT: 'api/products',
@@ -27,6 +28,10 @@ const URLS = {
   SYNC_PRODUCTS: 'api/products/sync',
   EXPORT_PRODUCTS: 'api/products/export',
   DELETE_PRODUCT: 'api/products/delete',
+
+  CREATE_VARIANT: 'api/products/{id}/variants',
+  UPDATE_VARIANT: 'api/products/{id}/variants/{variant_id}',
+  REMOVE_VARIANT: 'api/products/{id}/variants/{variant_id}',
 
   LIST_STAFFS: 'api/staffs',
 
@@ -41,6 +46,13 @@ const URLS = {
   UPDATE_STATUS_APP: 'api/setting/update-status',
 
   BUILD_LINK_MOMO: 'api/momo/buildlink',
+
+  LIST_PROVINCES: 'api/provinces',
+  GET_PROVINCE: 'api/provinces/:id',
+  LIST_DISTRICTS: 'api/districts',
+  GET_DISTRICT: 'api/districts/:id',
+  LIST_WARDS: 'api/wards',
+  GET_WARD: 'api/wards/:id',
 
   LOGIN: 'login',
   CHANGE_SHOP: 'change-shop',
@@ -104,6 +116,13 @@ async function payOrder(data) {
   return await ApiClient.putData(url, null, data);
 }
 
+let Order = {
+  cancelOrder: async function (data) {
+    let url = compile(URLS.CANCEL_ORDER, { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  }
+}
+
 async function loadStaffs() {
   return await ApiClient.postData(URLS.LIST_STAFFS);
 }
@@ -160,12 +179,67 @@ async function syncProducts() {
   return await ApiClient.postData(URLS.SYNC_PRODUCTS);
 }
 
+async function createProduct(data) {
+  return await ApiClient.postData(`${URLS.CREATE_PRODUCT}`, null, data);
+}
+
+async function updateProduct(data) {
+  return await ApiClient.putData(`${URLS.UPDATE_PRODUCT}/${data.id}`, null, data);
+}
+
 async function exportProducts() {
   return await ApiClient.postData(URLS.EXPORT_PRODUCTS, null, null);
 }
 
 async function deleteProduct(id) {
   return await ApiClient.deleteData(`${URLS.DELETE_PRODUCT}/${id}`, null, null);
+}
+
+async function createVariant(data) {
+  let url = compile(URLS.CREATE_VARIANT, { id: data.product_id });
+  return await ApiClient.postData(url, null, data);
+}
+
+async function updateVariant(data) {
+  let url = compile(URLS.UPDATE_VARIANT, { id: data.product_id, variant_id: data.id });
+  return await ApiClient.putData(url, null, data);
+}
+
+async function removeVariant(data) {
+  let url = compile(URLS.REMOVE_VARIANT, { id: data.product_id, variant_id: data.id });
+  return await ApiClient.deleteData(url, null, data);
+}
+
+let Image = {
+  remove: async function removeImage(data) {
+    let url = compile('api/images/{id}', { id: data.id });
+    return await ApiClient.deleteData(url);
+  }
+}
+
+let Product = {
+  loadVendors: async function (query) {
+    let url = compile('api/vendors');
+    return await ApiClient.getData(url, null, query);
+  },
+  createVendor: async function (data) {
+    let url = compile('api/vendors');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadCollections: async function (query) {
+    let url = compile('api/collections');
+    return await ApiClient.getData(url, null, query);
+  },
+  createCollection: async function (data) {
+    let url = compile('api/collections');
+    return await ApiClient.postData(url, null, data);
+  },
+  loadTags: async function (query) {
+    return await ApiClient.getData('api/tags', null, query);
+  },
+  createTag: async function (data) {
+    return await ApiClient.postData('api/tags', null, data);
+  },
 }
 
 async function login(data) {
@@ -175,10 +249,45 @@ async function login(data) {
 async function changeShop(data) {
   return await ApiClient.postData(URLS.CHANGE_SHOP, null, data);
 }
+let Shop = {
+  get: async function () {
+    return await ApiClient.getData('api/shop');
+  }
+}
 
 async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
 }
+
+async function listProvinces(query) {
+  return await ApiClient.getData(URLS.LIST_PROVINCES, null, query);
+}
+async function getProvince(id) {
+  let url = compile(URLS.GET_PROVINCE, { id });
+  return await ApiClient.getData(url);
+}
+
+async function listDistricts(query) {
+  return await ApiClient.getData(URLS.LIST_DISTRICTS, null, query);
+}
+async function getDistrict(id) {
+  let url = compile(URLS.GET_DISTRICT, { id });
+  return await ApiClient.getData(url);
+}
+
+async function listWards(query) {
+  return await ApiClient.getData(URLS.LIST_WARDS, null, query);
+}
+async function getWard(id) {
+  let url = compile(URLS.GET_WARD, { id });
+  return await ApiClient.getData(url);
+}
+
+const Report = {
+  search: async function (data) {
+    return await ApiClient.postData('api/report/search', null, data);
+  },
+};
 
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
@@ -186,6 +295,9 @@ export default {
   getOrderDetail, createOrder, updateOrder, updateNoteOrder, payOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
-  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct,
+  buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
+  createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
+  Report, Image, Product, Order, Shop,
+  listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

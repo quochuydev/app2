@@ -6,7 +6,7 @@ import ReactToPrint from "react-to-print";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import moment from 'moment';
-import CurrencyFormat from 'react-currency-format';
+import NumberFormat from 'react-number-format';
 
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
@@ -20,69 +20,16 @@ import PrintOrder from './../POS/print.jsx';
 import ModalInfo from './ModalInfo';
 import ModalMail from './ModalMail';
 
+import common from '../../../utils/common';
+let formatCodStatus = common.formatCodStatus;
+let textFinancial = common.textFinancial;
+let formatFulfillmentStatus = common.formatFulfillmentStatus;
+let cssStatus = common.cssStatus;
+
 const { Option } = Select;
 
 function Orders(props) {
   const { count, actions, orders } = props;
-  const cssOrderType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'purple';
-    }
-  }
-  const cssStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-  const cssOrderStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-
-  function textFinancial(code) {
-    switch (code) {
-      case 'paid':
-        return 'Đã thanh toán';
-      default:
-        return 'Chưa thanh toán'
-    }
-  }
-
-  function textGateway(code) {
-    switch (code) {
-      case 'cod':
-        return 'Thanh toán khi giao hàng';
-      default:
-        return ''
-    }
-  }
-
-  function cssGateway(code) {
-    switch (code) {
-      case 'paid':
-        return 'Đã thanh toán';
-      default:
-        return 'Chưa thanh toán'
-    }
-  }
 
   const columns = [
     {
@@ -91,43 +38,39 @@ function Orders(props) {
         <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
       ),
     },
-    // {
-    //   title: 'Type', key: 'type', render: edit => (
-    //     <p><Tag color={cssOrderType(edit.type)}>{edit.type}</Tag><Icon type="form" onClick={() => openInfoModal(edit)} /></p>
-    //   )
-    // },
     {
       title: 'Ngày tạo', key: 'created_at', render: edit => (
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
     },
     {
+      title: 'Khách hàng', key: 'customer', render: edit => (
+        <Link to={`customer/${edit.customer_id}`} target="_blank">
+          {[edit.customer.last_name, edit.customer.first_name].join(' ')}
+        </Link>
+      )
+    },
+    {
       title: 'Thanh toán', key: 'financial_status', render: edit => (
-        <div>{textFinancial(edit.financial_status)}</div>
+        <Tag color={cssStatus(edit.financial_status)}>{textFinancial(edit.financial_status)}</Tag>
       )
     },
     {
       title: 'Giao hàng', key: 'fulfillment_status', render: edit => (
-        <div>{edit.fulfillment_status}</div>
+        <Tag color={cssStatus(edit.fulfillment_status)}>{formatFulfillmentStatus(edit.fulfillment_status)}</Tag>
       )
     },
     {
-      title: 'COD', key: 'gateway_code', render: edit => (
-        <div>{textGateway(edit.gateway_code)}</div>
+      title: 'COD', key: 'carrier_cod_status_code', render: edit => (
+        <Tag color={"magenta"}>{formatCodStatus(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {
       title: 'Tổng tiền', key: 'total_price', render: edit => (
-        <CurrencyFormat value={edit.total_price} suffix={'đ'}
+        <NumberFormat value={edit.total_price} suffix={'đ'}
           thousandSeparator={true} style={{ textAlign: 'right' }} displayType="text" />
       )
     },
-    // {
-    //   title: 'Trạng thái', key: 'status', render: edit => (
-    //     <Tag color={cssOrderStatus(edit.status)} onClick={() => { }}>{edit.status}</Tag>
-    //   )
-    // },
-    // Thanh toán	Giao hàng	COD Tổng tiền
     {
       title: 'In', key: 'print', render: edit => (
         <ReactToPrint
@@ -177,10 +120,6 @@ function Orders(props) {
     setIsProcessing(false);
   }
 
-  function openInfoModal(order) {
-    setOrder(order)
-    setIsShowInfoModal(true);
-  }
   function onChangeType(e) {
     setQuery({ ...query, type_in: e })
   }
@@ -193,7 +132,6 @@ function Orders(props) {
     setQuery({ ...query, page: e })
   }
 
-
   return (
     <div>
       <Form>
@@ -203,11 +141,11 @@ function Orders(props) {
               <div>
                 <p>Content</p>
                 <Select value={1} className="block">
-                  <Option value={1}>Trạng thái đơn hàng</Option>
+                  <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
                 </Select>
                 <p>Content</p>
                 <Select value={1} className="block">
-                  <Option value={1}>Mới</Option>
+                  <Select.Option value={1}>Mới</Select.Option>
                 </Select>
                 <br />
                 <Button>Hủy</Button>
@@ -291,7 +229,7 @@ function Orders(props) {
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>
           <div ref={componentRef}>
             {
-              order ? <PrintOrder order={order} /> : null
+              (order && order.id) ? <PrintOrder order={order} /> : null
             }
           </div>
         </div>

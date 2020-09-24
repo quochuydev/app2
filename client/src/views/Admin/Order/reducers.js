@@ -4,7 +4,9 @@ import _ from 'lodash';
 const initialState = Map({
   total: 0,
   orders: [],
-  order: {},
+  order: {
+    attributes: []
+  },
   orderCreate: {
     type: 'app',
     line_items: [],
@@ -15,13 +17,27 @@ const initialState = Map({
     total_price: 0,
     total_pay: 0,
 
+    gateway_code: 'cod',
+    carrier_cod_status_code: 'codreceipt',
+    fulfillment_status: 'delivered',
+
     customer: null,
-    shipping_address: null
-  }
+    shipping_address: null,
+    billing_address: null,
+  },
+  OrdersGrowthPerMonth: { items: [] },
+
+  reportOrdersGrowth: { items: [] },
+  reportOrdersGrowthDay: { items: [] },
+
+  OrdersGrowthLastmonth: { items: [] },
+  OrdersGrowthLastday: { items: [] },
 });
 
 function OrdersReducer(state = initialState, { type, payload }) {
   switch (type) {
+    case 'DEFAULT':
+      return state.merge({ ...payload });
     case 'LOAD_ORDERS_SUCCESS':
     case 'BUILD_LINK_MOMO_SUCCESS':
     case 'GET_ORDER_DETAIL_SUCCESS':

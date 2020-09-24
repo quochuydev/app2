@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import BlockUi from 'react-block-ui';
 import {
   BrowserRouter,
   Switch,
@@ -76,6 +75,10 @@ function LayoutContainer() {
     })
   }
 
+  function changeLogo() {
+
+  }
+
   function LeftMenu(props) {
     return (
       <div style={{ display: props.display }}>
@@ -91,6 +94,9 @@ function LayoutContainer() {
                     </List.Item>
                   ))
                 }
+                <List.Item key={'change_logo'}>
+                  <a onClick={() => changeLogo()}>Đổi logo cửa hàng</a>
+                </List.Item>
                 <List.Item key={'logout'}>
                   <a onClick={() => logout()}>Đăng xuất</a>
                 </List.Item>
@@ -131,7 +137,7 @@ function LayoutContainer() {
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 0 }}
             >
-              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} />
+              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} style={{ padding: 10 }} />
             </Button>}
             style={{ padding: 0, display: _display(isMobile && !!token) }}
             subTitle={menuName}

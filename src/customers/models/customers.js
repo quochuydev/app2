@@ -10,16 +10,20 @@ autoIncrement.initialize(mongoose.connection);
 
 const CustomersSchema = new Schema({
   number: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
-
+  code: { type: String, default: null },
   type: { type: String, default: null },
   id: { type: Number, default: null },
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],
   default_address: {},
-  billing_address: {},
-  shipping_address: {},
-  created_at: { type: Date, default: null },
+
+  image: {
+    id: { type: Number, default: null },
+    filename: { type: String, default: null },
+    src: { type: String, default: null },
+    created_at: { type: Date, default: Date.now },
+  },
+  created_at: { type: Date, default: Date.now },
   phone: { type: String, default: null },
   email: { type: String, default: null },
   first_name: { type: String, default: null },
@@ -38,6 +42,8 @@ const CustomersSchema = new Schema({
   birthday: { type: Date, default: null },
   gender: { type: Number, default: null },
   last_order_date: { type: Date, default: null },
+  is_deleted: { type: Boolean, default: false },
+  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
@@ -81,6 +87,15 @@ CustomersSchema.statics._create = async function (data = {}) {
   let result = await _this.create(data);
   return result;
 }
+
+CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  data_update.updated_at = new Date();
+  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  return data;
+}
+
 
 let CustomerModel = mongoose.model('Customer', CustomersSchema);
 

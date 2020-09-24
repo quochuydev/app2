@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload, message, Pagination
+  Upload, message, Pagination, Avatar, List
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -22,44 +22,15 @@ const { Option } = Select;
 
 function Products(props) {
   const { actions, products, count } = props;
-  const cssProductType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'red';
-    }
-  }
-  const cssStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
-  const cssProductStatus = (status) => {
-    switch (status) {
-      case 'success':
-        return 'green';
-      case 'fail':
-        return 'red';
-      default:
-        return 'blue';
-    }
-  }
 
   const columns = [
     {
-      title: 'Tên sản phẩm', key: 'title',
+      title: '', key: 'image',
       render: edit => (
-        <Link to={`product/${edit.id}`}>{edit.title}</Link>
+        <List.Item.Meta
+          avatar={<Avatar shape="square" size={45} src={_.get(edit, 'images[0].src', null)} />}
+          title={<Link to={`product/${edit.id}`}>{edit.title}</Link>}
+        />
       ),
     },
     {
@@ -75,7 +46,9 @@ function Products(props) {
     {
       title: 'Option', key: 'option', render: edit => (
         <div>
-          <Button onClick={() => deleteProduct(edit.id)}>Xóa</Button>
+          <Button type="danger" size="small" onClick={() => deleteProduct(edit.id)}>
+            <Icon type="close"/>
+          </Button>
         </div>
       )
     }
@@ -177,13 +150,8 @@ function Products(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="Commerce">
-              <Select
-                mode="multiple"
-                name="type_in"
-                style={{ width: '100%' }}
-                placeholder="-- Chọn --"
-                onChange={onChangeType}
-              >
+              <Select mode="multiple" name="type_in"
+                style={{ width: '100%' }} placeholder="-- Chọn --" onChange={onChangeType}>
                 <Option value='app'>App</Option>
                 <Option value='haravan'>Haravan</Option>
                 <Option value='woocommerce'>Woocommerce</Option>
@@ -194,13 +162,14 @@ function Products(props) {
         </Form>
 
         <Col span={24}>
-          <Button href="product/create">Thêm sản phẩm</Button>
+          <Link to={`product/create`}>
+            <Button>Thêm sản phẩm</Button>
+          </Link>
           <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
           <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
           <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
-          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false}
-            scroll={{ x: 1000 }} defaultExpandAllRows={true}
+          <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} scroll={{ x: 1000 }}
             expandedRowRender={record => <Table rowKey='id' columns={subColumns}
               dataSource={record.variants} pagination={false} showHeader={false} />} />
         </Col>

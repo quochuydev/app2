@@ -3,6 +3,8 @@ import * as customerActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Link } from "react-router-dom";
+
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
@@ -20,22 +22,13 @@ const apiUrl = `${config.backend_url}/api`;
 function Customer(props) {
   const { Option } = Select;
   const { count, customers, actions, downloadLink } = props;
-  const cssOrderType = (type) => {
-    switch (type) {
-      case 'woocommerce':
-        return 'magenta';
-      case 'haravan':
-        return 'blue';
-      case 'shopify':
-        return 'green';
-      default:
-        return 'blue';
-    }
-  }
+
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <span><a href={`customer/${edit.id}`}>{edit.number}</a></span>
+        <Link to={`customer/${edit.id}`}>
+          {edit.number}
+        </Link>
       )
     },
     {
@@ -50,15 +43,22 @@ function Customer(props) {
     },
     {
       title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY hh:mm:ss a') : null}</span>
+        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
       )
     },
     { title: 'Email', dataIndex: 'email', key: 'email', },
     {
+      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
+        <Tag color="green">{edit.total_orders}</Tag>
+      )
+    },
+    {
       title: '', key: 'option',
       render: edit => (
         <span>
-          <Icon type="edit" onClick={() => onShowCreate(edit)} />
+          <Button type="danger" size="small" onClick={() => { }}>
+            <Icon type="close" />
+          </Button>
         </span>
       ),
     },
@@ -71,7 +71,7 @@ function Customer(props) {
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
       <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address : null}</p>
+      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address1 : null}</p>
     </div>
   );
 
@@ -98,23 +98,6 @@ function Customer(props) {
     actions.listCustomers(query);
   }, [query]);
 
-  let [done, setDone] = useState(null);
-  useEffect(() => {
-    console.log(done)
-    if (done && done.customer) {
-      let action = done.customer.id ? 'updateCustomer' : 'addCustomer'
-      AdminServices[action](done.customer)
-        .then(result => {
-          actions.listCustomers(query);
-          setIsShowModal(false);
-          message.success(result.message);
-        })
-        .catch(error => {
-          message.error(error.message);
-        })
-    }
-  }, [done]);
-
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
@@ -139,15 +122,6 @@ function Customer(props) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
-  function onShowCreate(customerUpdate) {
-    setIsShowModal(true);
-    if (customerUpdate) {
-      setCustomer(customerUpdate);
-    } else {
-      setCustomer({});
-    }
-  }
-
   async function syncCustomers() {
     setIsProcessing(true);
     await actions.syncCustomers();
@@ -166,6 +140,10 @@ function Customer(props) {
 
   function onChangePage(e) {
     setQuery({ ...query, page: e })
+  }
+
+  async function assertCustomer({ customer }) {
+    console.log(customer)
   }
 
   return (
@@ -192,13 +170,14 @@ function Customer(props) {
         </Col>
         <Col span={24}>
           <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Button onClick={() => onShowCreate()}>Thêm khách hàng</Button>
-          <Button href={'customer/create'}>Thêm khách hàng detail</Button>
+          <Link to={`customer/create`}>
+            <Button>Thêm khách hàng</Button>
+          </Link>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
-            expandedRowRender={expended} scroll={{ x: 1000 }} />
+            expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
           <Pagination showTotal={total => <span>{total}</span>} defaultCurrent={1} total={count}
             size="small" name="page" onChange={onChangePage} />
         </Col>
@@ -226,7 +205,6 @@ function Customer(props) {
           </div>
         </Upload.Dragger>
       </Modal>
-      <CustomerDetail visible={isShowModal} onCloseModal={() => setIsShowModal(false)} customer={customer} setDone={setDone} />
     </div >
   );
 }

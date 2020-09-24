@@ -5,7 +5,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { SHOPIFY, listWebhooks } = require('./../CONST');
 const config = require(path.resolve('./src/config/config'));
-const { app_host, shopify, frontend_site } = config;
+const { app_host, shopify, frontend_admin } = config;
 const { client_id, client_secret, callback_path } = shopify;
 
 const buildlink = async (req, res) => {
@@ -26,7 +26,7 @@ const callback = async (req, res) => {
   } else {
     await ShopModel._findOneAndUpdate({}, { $set: { shopify: { shopify_host, status: 1, access_token } } });
   }
-  res.redirect(`${frontend_site}/app`)
+  res.redirect(`${frontend_admin}/app`)
 
   let webhooks = await API.call(SHOPIFY.WEBHOOKS.LIST, { access_token });
   for (let i = 0; i < listWebhooks.length; i++) {

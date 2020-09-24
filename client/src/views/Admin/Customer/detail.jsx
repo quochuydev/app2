@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-
 import _ from 'lodash';
 import moment from 'moment';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import {
   Table, Icon, Row, Col, Button, Modal, Badge,
@@ -13,18 +14,38 @@ import 'antd/dist/antd.css';
 
 import AdminServices from '../../../services/adminServices';
 import * as customerActions from './actions';
+import * as coreActions from '../Core/actions';
+
+let { Option } = Select;
 
 function CustomerDetail(props) {
-  const { actions, visible, customer, onCloseModal, setDone } = props;
-  const [customerUpdate, setCustomerUpdate] = useState({})
+  const { CoreActions, provinces, districts, wards, actions,
+    visible, customer, onCloseModal, setDone } = props;
+  const [customerUpdate, setCustomerUpdate] = useState({
+    default_address: {}
+  })
 
   useEffect(() => {
-    if (customer.id) {
+    if (!!Number(customer.id)) {
       setCustomerUpdate(customer)
-    } else {
-      setCustomerUpdate({})
     }
-  }, [customer])
+  }, [customer.id]);
+
+  useEffect(() => {
+    CoreActions.listProvinces();
+  }, []);
+
+  useEffect(() => {
+    if (customerUpdate.default_address.province_code) {
+      CoreActions.listDistricts({ province_code: customerUpdate.default_address.province_code });
+    }
+  }, [customerUpdate.default_address.province_code])
+
+  useEffect(() => {
+    if (customerUpdate.default_address.district_code) {
+      CoreActions.listWards({ district_code: customerUpdate.default_address.district_code });
+    }
+  }, [customerUpdate.default_address.district_code])
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });
@@ -38,17 +59,16 @@ function CustomerDetail(props) {
     setCustomerUpdate({ ...customerUpdate });
   }
 
-
   function onCustomerChangeField(e, field) {
     setCustomerUpdate({ ...customerUpdate, [field]: e });
   }
 
-  async function addCustomer(e) {
+  function addCustomer(e) {
     e.preventDefault();
     if (customer.id) {
       customerUpdate.id = customer.id;
     }
-    setDone({ customer: customerUpdate });
+    props.assertCustomer({ customer: customerUpdate });
   }
 
   return (
@@ -59,7 +79,7 @@ function CustomerDetail(props) {
           <Row>
             <Col xs={24} lg={12}>
               <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Thông tin" key="1">
+                <Tabs.TabPane tab="Thông tin khách hàng" key="1">
                   <Row>
                     <Col span={12}>
                       <Form.Item label="Họ" required onChange={onCustomerChange}>
@@ -94,47 +114,76 @@ function CustomerDetail(props) {
 
             <Col xs={24} lg={12}>
               <Tabs defaultActiveKey="1">
-                <Tabs.TabPane tab="Địa chỉ" key="1">
+                <Tabs.TabPane tab="Địa chỉ giao hàng" key="1">
                   <Row gutter={10}>
-                    <Col span={24}>
-                      <Form.Item label="Địa chỉ" onChange={onAddressChange}>
-                        <Input name="address" placeholder="Nhập địa chỉ khách hàng"
-                          value={customerUpdate.default_address ? customerUpdate.default_address.address : null} />
+                    <Col span={12}>
+                      <Form.Item label="Họ" onChange={onAddressChange}>
+                        <Input name="last_name" placeholder="Họ"
+                          value={customerUpdate.default_address.last_name} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Tên" onChange={onAddressChange}>
+                        <Input name="first_name" placeholder="Tên"
+                          value={customerUpdate.default_address.first_name} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Số điện thoại" onChange={onAddressChange}>
+                        <Input name="phone" placeholder="Số điện thoại giao hàng"
+                          value={customerUpdate.default_address.phone} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Mã zip" onChange={onAddressChange}>
-                        <Input name="zip" value={customerUpdate.default_address ? customerUpdate.default_address.zip : null} />
+                        <Input name="zip" value={customerUpdate.default_address.zip} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Tỉnh" onChange={onAddressChange}>
-                        <Select value={1} >
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select showSearch value={customerUpdate.default_address.province_code} >
+                          {
+                            provinces.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Huyện" onChange={onAddressChange}>
-                        <Select value={1}>
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select showSearch value={customerUpdate.default_address.district_code} >
+                          {
+                            districts.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item label="Xã" onChange={onAddressChange}>
-                        <Select value={1} >
-                          <Select.Option value={1}>Mới</Select.Option>
+                        <Select showSearch value={customerUpdate.default_address.ward_code} >
+                          {
+                            wards.map(item =>
+                              <Option key={item.id} value={item.code}>{item.name}</Option>
+                            )
+                          }
                         </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item label="Địa chỉ" onChange={onAddressChange}>
+                        <Input name="address1" placeholder="Nhập địa chỉ khách hàng"
+                          value={customerUpdate.default_address.address1} />
                       </Form.Item>
                     </Col>
                   </Row>
                 </Tabs.TabPane>
               </Tabs>
             </Col>
-
             <Col span={24}>
-              <button className="btn-primary w-100" type="submit">Accept</button>
+              <button className="btn-primary m-t-10" type="submit">Accept</button>
             </Col>
           </Row>
         </Form>
@@ -143,5 +192,14 @@ function CustomerDetail(props) {
   )
 }
 
+const mapStateToProps = state => ({
+  provinces: state.core.get('provinces'),
+  districts: state.core.get('districts'),
+  wards: state.core.get('wards'),
+});
 
-export default CustomerDetail;
+const mapDispatchToProps = (dispatch) => ({
+  CoreActions: bindActionCreators(coreActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerDetail);

@@ -17,6 +17,7 @@ import CustomersReducer from './views/Admin/Customer/reducers';
 import OrdersReducer from './views/Admin/Order/reducers';
 import ProductsReducer from './views/Admin/Product/reducers';
 import AppReducer from './views/Admin/App/reducers';
+import CoreReducer from './views/Admin/Core/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
@@ -24,6 +25,7 @@ const combinedReducers = combineReducers({
   orders: OrdersReducer,
   products: ProductsReducer,
   app: AppReducer,
+  core: CoreReducer,
 });
 
 const middleware = [thunk];
