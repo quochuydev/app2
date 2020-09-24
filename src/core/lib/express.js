@@ -43,7 +43,8 @@ module.exports = (app, db) => {
   app.engine('liquid', expressLiquid(options));
   app.use('/site/', expressLiquid.middleware);
   app.get('/site', function (req, res) {
-    res.render('index');
+    let shop = req.query.shop;
+    res.render(`shops/${shop}/index`);
   });
   app.get('/site/user', function (req, res) {
     let users = [
