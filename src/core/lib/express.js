@@ -5,8 +5,11 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
+const fs = require('fs');
+
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
+const expressLiquid = require('express-liquid');
 
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
@@ -25,6 +28,28 @@ module.exports = (app, db) => {
       res.sendFile(path.resolve('client/build', 'index.html'));
     });
   }
+
+  let options = {
+    includeFile: function (filename, callback) {
+      fs.readFile(filename, 'utf8', callback);
+    },
+    context: expressLiquid.newContext(),
+    customTags: {},
+    traceError: false
+  };
+  console.log(path.resolve('./views'))
+  app.set('views', path.resolve('./views'));
+  app.set('view engine', 'liquid');
+  app.engine('liquid', expressLiquid(options));
+  app.use('/site/', expressLiquid.middleware);
+  app.get('/site/user', function (req, res) {
+    let users = [
+      { name: 'tobi', email: 'tobi@learnboost.com' },
+      { name: 'loki', email: 'loki@learnboost.com' },
+      { name: 'jane', email: 'jane@learnboost.com' }
+    ];
+    res.render('user', { users })
+  });
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
