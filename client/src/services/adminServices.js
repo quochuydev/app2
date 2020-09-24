@@ -249,6 +249,11 @@ async function login(data) {
 async function changeShop(data) {
   return await ApiClient.postData(URLS.CHANGE_SHOP, null, data);
 }
+let Shop = {
+  get: async function () {
+    return await ApiClient.getData('api/shop');
+  }
+}
 
 async function getUser(data) {
   return await ApiClient.postData(URLS.GET_USER, null, data);
@@ -293,6 +298,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, changeShop, getUser,
-  Report, Image, Product, Order,
+  Report, Image, Product, Order, Shop,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

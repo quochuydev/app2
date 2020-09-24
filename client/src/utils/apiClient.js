@@ -56,10 +56,10 @@ function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
       localStorage.clear();
-      window.location.href = '/site/logout';
+      window.location.href = '/admin/logout';
     } else if (e.data === 403) {
       localStorage.clear();
-      window.location.href = '/site/permission';
+      window.location.href = '/admin/permission';
     }
   }
 }

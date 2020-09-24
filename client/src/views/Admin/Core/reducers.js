@@ -1,6 +1,8 @@
 import { Map } from 'immutable';
 
 const initialState = Map({
+  shop: null,
+
   countries: [],
   country: null,
   provinces: [],

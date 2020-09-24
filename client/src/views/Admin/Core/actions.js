@@ -3,6 +3,13 @@ import AdminServices from '../../../services/adminServices';
 export const ACTIONS = {
 };
 
+export function getShop() {
+  return async function (dispatch) {
+    const data = await AdminServices.Shop.get();
+    dispatch({ type: 'LIST', payload: { shop: data.shop } });
+  }
+}
+
 export function listProvinces(query) {
   return async function (dispatch) {
     const data = await AdminServices.listProvinces(query);

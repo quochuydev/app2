@@ -5,8 +5,8 @@ const HaravanAPI = require('haravan_api');
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
 const { HRV } = require(path.resolve('./src/haravan/CONST'));
-const { haravan, frontend_site } = require(path.resolve('./src/config/config'));
-const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url, is_test } = haravan;
+const config = require(path.resolve('./src/config/config'));
+const { app_id, app_secret, scope_login, scope_install, login_callback_url, install_callback_url, is_test } = config.haravan;
 
 function buildlinkBus(type = 'install') {
   let application = {};
@@ -56,7 +56,7 @@ const grandservice = async (req, res) => {
   } else {
     await ShopModel._findOneAndUpdate({}, { $set: { haravan } });
   }
-  res.redirect(`${frontend_site}/app`)
+  res.redirect(`${config.frontend_admin}/app`)
 }
 
 module.exports = { buildlink, install, login, grandservice }
