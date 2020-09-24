@@ -44,6 +44,13 @@ function Orders(props) {
       )
     },
     {
+      title: 'Khách hàng', key: 'customer', render: edit => (
+        <Link to={`customer/${edit.customer_id}`} target="_blank">
+          {[edit.customer.last_name, edit.customer.first_name].join(' ')}
+        </Link>
+      )
+    },
+    {
       title: 'Thanh toán', key: 'financial_status', render: edit => (
         <Tag color={cssStatus(edit.financial_status)}>{textFinancial(edit.financial_status)}</Tag>
       )
