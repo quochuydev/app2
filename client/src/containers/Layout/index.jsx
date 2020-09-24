@@ -66,9 +66,6 @@ function LayoutContainer() {
   }
 
   let user = localStorage.getItem('user');
-  if (!user) {
-    window.location.href = LOGIN_ROUTE;
-  }
   user = JSON.parse(user);
   function changeShop({ shop_id, user }) {
     AdminServices.changeShop({ user, shop_id }).then(data => {
