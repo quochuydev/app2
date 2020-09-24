@@ -39,7 +39,8 @@ const ShopSchema = new Schema({
     woo_customers_at: { type: Date, default: null },
     hrv_customers_at: { type: Date, default: null },
     shopify_customers_at: { type: Date, default: null },
-  }
+  },
+  google_info: {}
 })
 
 ShopSchema.plugin(autoIncrement.plugin, {

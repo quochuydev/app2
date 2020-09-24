@@ -19,22 +19,31 @@ let auth = async (req, res) => {
   try {
     let { code } = req.query;
     const { tokens } = await oauth2Client.getToken(code)
-    // oauth2Client.setCredentials(tokens);
-    let { id_token } = tokens;
-    let userAuth = jwt.decode(id_token)
+    let userAuth = jwt.decode(tokens.id_token)
     let { email } = userAuth;
     if (!email) {
       return res.sendStatus(401);
     }
     let user = await UserMD.findOne({ email }).lean(true);
+    // if (!user) {
+    //   return res.sendStatus(401);
+    // }
     if (!user) {
-      return res.sendStatus(401);
+      let shop_data = {
+        name: email, code: email, google_info: userAuth
+      }
+      let new_shop = await ShopModel.create(shop_data);
+      let new_user = {
+        email,
+        shop_id: new_shop.id
+      }
+      user = await UserMD.create(new_user);
     }
 
     let user_gen_token = {
       email: user.email,
       shop_id: user.shop_id,
-      exp: (Date.now() + 60 * 60 * 1000) / 1000
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
     res.redirect(`${frontend_admin}/loading?token=${userToken}`)
