@@ -60,8 +60,8 @@ ShopSchema.statics._create = async function (data = {}) {
 
 ShopSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   let _this = this;
-  let id = cache.get('shop_id');
-  let data = await _this.findOne({ ...filter, id }, populate, options);
+  filter.id = cache.get('shop_id');
+  let data = await _this.findOne(filter, populate, options);
   return data;
 }
 
