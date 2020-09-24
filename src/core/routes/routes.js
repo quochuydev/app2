@@ -9,6 +9,10 @@ const routes = (app) => {
   app.get('/site', (req, res, next) => {
     res.redirect(`${config.frontend_site}/`);
   });
+  
+  app.get('/admin', (req, res, next) => {
+    res.redirect(`${config.frontend_admin}/`);
+  });
 
   app.get('/auth', auth);
   app.post('/login', login);

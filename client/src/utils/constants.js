@@ -1,5 +1,5 @@
 const HOME_ROUTE = ``;
-const SITE_ROUTE = `${HOME_ROUTE}/site`;
+const SITE_ROUTE = `${HOME_ROUTE}/admin`;
 const CUSTOMER_ROUTE = `${SITE_ROUTE}/customers`;
 const CUSTOMER_CREATE_ROUTE = `${SITE_ROUTE}/customer/create`;
 const CUSTOMER_DETAIL_ROUTE = `${SITE_ROUTE}/customer/:id`;

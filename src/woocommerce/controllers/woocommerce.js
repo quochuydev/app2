@@ -6,7 +6,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const config = require(path.resolve('./src/config/config'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { WOO, listWebhooks } = require('./../CONST')
-const { app_host, frontend_site, woocommerce } = config;
+const { app_host, woocommerce, frontend_admin } = config;
 const { delivery_url } = woocommerce;
 
 const install = async (req, res) => {
@@ -26,7 +26,7 @@ const install = async (req, res) => {
 
 const return_url = async (req, res) => {
   if (req.query && req.query.success) {
-    res.redirect(`${frontend_site}/app`)
+    res.redirect(`${frontend_admin}/app`)
   } else {
     res.json({ error: true, message: 'Install App Failed' });
   }
