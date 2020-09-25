@@ -3,9 +3,13 @@ import React, { useState, useEffect } from 'react';
 import config from '../../../utils/config';
 import './style.css';
 import { Button, Form, Input, Checkbox, message } from 'antd';
-import AdminServices from '../../../services/adminServices';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
+
+import AdminServices from '../../../services/adminServices';
+import Constants from '../../../utils/constants';
+
+const { LOGIN_ROUTE } = Constants.PATHS;
 
 const layout = {
   labelCol: { span: 8 },
@@ -28,19 +32,7 @@ function Login() {
     event.preventDefault();
     AdminServices.signup(account)
       .then(result => {
-        if (result.token) {
-          localStorage.setItem('AccessToken', result.token);
-          AdminServices.getUser({ token: result.token })
-            .then(data => {
-              localStorage.setItem('user', JSON.stringify(data.user));
-              localStorage.setItem('shop', JSON.stringify(data.shop));
-              setTimeout(async function () {
-                setRedirect(true);
-              }, 200)
-            })
-        } else {
-          throw { message: 'Đã có lỗi xảy ra' }
-        }
+        window.location.href = LOGIN_ROUTE;
       })
       .catch(error => {
         message.error(error.message);

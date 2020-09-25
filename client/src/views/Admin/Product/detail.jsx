@@ -336,6 +336,15 @@ function ProductDetail(props) {
   const [modalAssertCollection, setModalAssertCollection] = useState(false);
   const [modalAssertVendor, setModalAssertVendor] = useState(false);
 
+  function onModalCollection(collection) {
+    actions.merge({ collection })
+    setModalAssertCollection(true);
+  }
+
+  function assertCollection() {
+
+  }
+
   return (
     <div>
       <Form onSubmit={addProduct}>
@@ -372,8 +381,11 @@ function ProductDetail(props) {
                       </Select>
                     </Form.Item>
                     <Form.Item label={'Nhóm sản phẩm'}>
-                      <Select onChange={e => onChangeField('collect', e)} name="collect"
-                        value={productUpdate.collect}>
+                      <Select onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}
+                        addonAfter={<div>
+                          <Icon type="search" onClick={e => onModalCollection(productUpdate.collect)} />
+                          <Icon type="search" onClick={e => onModalCollection(productUpdate.collect)} />
+                        </div>}>
                         {
                           collections.map((e, i) =>
                             <Option key={i} value={e.id}>{e.title}</Option>
@@ -457,9 +469,9 @@ function ProductDetail(props) {
       <Modal visible={modalAssertCollection}
         onCancel={() => setModalAssertCollection(false)}>
         {
-          vendor ? <div>
-            <Input value={vendor.title} />
-            <Button>Submit</Button>
+          collection ? <div>
+            <Input value={collection.title} onChange={e => { }} />
+            <Button onClick={() => { assertCollection() }}>Submit</Button>
           </div> : null
         }
       </Modal>

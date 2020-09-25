@@ -101,7 +101,6 @@ async function signup(req, res, next) {
     }
 
     let count_shop_by_code = await ShopModel.count({ code });
-    console.log({ code, count_shop_by_code });
     if (count_shop_by_code) {
       code = code + String(count_shop_by_code + 1);
     }
@@ -167,6 +166,10 @@ let login = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+}
+
+function resetPassword(req, res) {
+
 }
 
 function loginGoogle(req, res) {

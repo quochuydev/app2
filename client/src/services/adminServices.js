@@ -247,6 +247,10 @@ async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
 
+async function signup(data) {
+  return await ApiClient.postData(URLS.SIGNUP, null, data);
+}
+
 async function changeShop(data) {
   return await ApiClient.postData(URLS.CHANGE_SHOP, null, data);
 }
@@ -284,6 +288,8 @@ async function getWard(id) {
   return await ApiClient.getData(url);
 }
 
+let Core = {}
+
 const Report = {
   search: async function (data) {
     return await ApiClient.postData('api/report/search', null, data);
@@ -298,7 +304,7 @@ export default {
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
-  login, changeShop, getUser,
-  Report, Image, Product, Order, Shop,
+  login, signup, changeShop, getUser,
+  Report, Image, Product, Order, Shop, Core,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }
