@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-import config from '../../../utils/config';
 import './style.css';
 import { Button, Form, Input, Checkbox, message } from 'antd';
 import AdminServices from '../../../services/adminServices';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+
+import Constants from '../../../utils/constants';
+import config from '../../../utils/config';
+
+const { LOGIN_ROUTE, SIGNUP_ROUTE } = Constants.PATHS;
 
 const layout = {
   labelCol: { span: 8 },
@@ -85,7 +89,7 @@ function Login() {
           >
             <Input.Password name="password" onChange={onChange} value={account.password} />
           </Form.Item>
-{/* 
+          {/* 
           <Form.Item name="remember" value="checked">
             <Checkbox>Remember me</Checkbox>
           </Form.Item> */}
@@ -104,9 +108,13 @@ function Login() {
             <Button onClick={() => showPopupLogin()} type='link'>Login with Google</Button>
           </div>
         </a>
+
+        <Link to={SIGNUP_ROUTE}>
+          <p>Dùng ngay miễn phí</p>
+        </Link>
       </div>
 
-    </div>
+    </div >
   )
 }
 export default Login;

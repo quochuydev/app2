@@ -55,6 +55,7 @@ const URLS = {
   GET_WARD: 'api/wards/:id',
 
   LOGIN: 'login',
+  SIGNUP: 'signup',
   CHANGE_SHOP: 'change-shop',
 
   GET_USER: 'check-user',

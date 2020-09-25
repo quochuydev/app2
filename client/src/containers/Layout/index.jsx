@@ -17,7 +17,6 @@ import './style.css';
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
 import Constants from '../../utils/constants';
-import Login from '../../views/Admin/Login/index';
 import config from '../../utils/config';
 import Middleware from '../Middleware/index';
 import Alert from '../../views/Components/Alert/index';
