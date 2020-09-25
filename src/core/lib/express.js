@@ -5,8 +5,12 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
+const fs = require('fs');
+const expressLiquid = require('express-liquid');
+
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
+const { errorHandle } = require('./errorHandle');
 
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
@@ -25,6 +29,20 @@ module.exports = (app, db) => {
       res.sendFile(path.resolve('client/build', 'index.html'));
     });
   }
+
+  let options = {
+    includeFile: function (filename, callback) {
+      fs.readFile(filename, 'utf8', callback);
+    },
+    context: expressLiquid.newContext(),
+    customTags: {},
+    traceError: false
+  };
+  console.log(path.resolve('./views'))
+  app.set('views', path.resolve('./views'));
+  app.set('view engine', 'liquid');
+  app.engine('liquid', expressLiquid(options));
+  app.use('/site/', expressLiquid.middleware);
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -47,16 +65,10 @@ module.exports = (app, db) => {
       stringify: false
     })
   }))
+
   const Routes = require(path.resolve('./src/core/routes/routes'))
   Routes(app);
-  app.use(function (error, req, res, next) {
-    if (!error) {
-      return next();
-    }
-    console.error(error);
-    let status = error.statusCode || 400;
-    let result = { message: error.message || 'Server Error!', error: JSON.stringify(error) };
-    result.error = result.error || true;
-    res.status(status).send(result);
-  })
+  const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
+  SiteRoutes(app);
+  app.use(errorHandle)
 }

@@ -8,8 +8,11 @@ autoIncrement.initialize(mongoose.connection);
 
 const ShopSchema = new Schema({
   id: { type: String, default: null },
-  name: { type: String, default: null },
   code: { type: String, default: null },
+  name: { type: String, default: null },
+
+  url: { type: String, default: null },
+  urls: { type: [String], default: [] },
   user_created: {},
 
   woocommerce: {
@@ -43,19 +46,13 @@ const ShopSchema = new Schema({
   google_info: {}
 })
 
-ShopSchema.plugin(autoIncrement.plugin, {
-  model: 'Shop',
-  field: 'id',
-  startAt: 10000,
-  incrementBy: 1
-});
+ShopSchema.plugin(autoIncrement.plugin, { model: 'Shop', field: 'id', startAt: 10000, incrementBy: 1 });
 
 ShopSchema.statics._create = async function (data = {}) {
   let _this = this;
   let id = cache.get('shop_id');
   let result = await _this.create({ ...data, id });
   return result;
-
 }
 
 ShopSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
