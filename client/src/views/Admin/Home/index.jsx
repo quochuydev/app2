@@ -84,10 +84,11 @@ function Home(props) {
     series: [
       {
         data: reportOrdersGrowth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
+      },
+      {
+        data: OrdersGrowthLastmonth.items.map((e, i) => [e._id, e.total_price,]),
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
     ],
   }
@@ -97,17 +98,11 @@ function Home(props) {
     series: [
       {
         data: OrdersGrowthPerMonth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
       {
         data: OrdersGrowthLastmonth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
     ],
   }

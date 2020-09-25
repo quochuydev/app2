@@ -113,6 +113,11 @@ async function signup(req, res, next) {
       if (!email) {
         return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
       }
+      let found_root_user = await UserMD.count({ email, is_root: true });
+      if (found_root_user) {
+        return res.status(400).json({ message: 'Email đã tồn tại' });
+      }
+
       let shop_data = {
         name, code
       }
@@ -147,21 +152,16 @@ async function signup(req, res, next) {
 let login = async (req, res, next) => {
   try {
     let { user_login, password } = req.body;
-
     if (!user_login) {
       throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
-
     let user = await UserMD.findOne({ email: user_login }).lean(true);
-
     if (!user) {
       throw { message: `User này không tồn tại` }
     }
-
     if (!UserMD.authenticate(user, password)) {
       throw { statusCode: 401, message: `Mật khẩu không đúng` }
     }
-
     let user_gen_token = {
       id: user.id,
       email: user.email,
