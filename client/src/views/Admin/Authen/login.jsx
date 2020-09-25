@@ -67,33 +67,15 @@ function Login() {
       }
 
       <div className="login-form">
-        <Form
-          name="basic"
-          onSubmit={onFinish}
-          style={{ marginBottom: 20 }}
-        >
-          <Form.Item
-            {...layout}
-            label="Username"
-            name="email"
-            rules={[{ required: true, message: 'Please input your email!' }]}
-          >
+        <Form name="basic" onSubmit={onFinish} style={{ marginBottom: 20 }} >
+          <Form.Item {...layout} label="Username" name="email"
+            rules={[{ required: true, message: 'Please input your email!' }]}>
             <Input name="email" onChange={onChange} value={account.email} />
           </Form.Item>
-
-          <Form.Item
-            {...layout}
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
+          <Form.Item {...layout} label="Password" name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]} >
             <Input.Password name="password" onChange={onChange} value={account.password} />
           </Form.Item>
-          {/* 
-          <Form.Item name="remember" value="checked">
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item> */}
-
           <Form.Item >
             <Button type="primary" htmlType="submit" className="login-form-button">
               Submit

@@ -10,6 +10,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
+let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -92,25 +93,30 @@ async function checkUser({ body }) {
   return { error: false, user };
 }
 
-
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id } = req.body;
-    if (!(email)) {
-      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'email_required' });
+    let { email, password, is_create_shop, shop_id, username, name, code } = req.body;
+    if (!name) {
+      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'name_required' });
+    }
+
+    let count_shop_by_code = await ShopModel.count({ code });
+    console.log({ code, count_shop_by_code });
+    if (count_shop_by_code) {
+      code = code + String(count_shop_by_code + 1);
     }
 
     if (is_create_shop) {
       let shop_data = {
-        name: email, code: email
+        name, code
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email,
-        shop_id: shop.id
+        email, shop_id: shop.id,
+        password, is_root: true
       }
       let user = await UserMD.create(new_user);
-      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_SHOP_SUCCESS' });
+      return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
     } else {
       if (!shop_id) {
         return res.json({ message: 'Thiếu shop_id' });
@@ -134,13 +140,13 @@ async function signup(req, res, next) {
 
 let login = async (req, res, next) => {
   try {
-    let { email, password } = req.body;
+    let { user_login, password } = req.body;
 
-    if (!email) {
-      throw { message: `Vui lòng nhập 'email!'` }
+    if (!user_login) {
+      throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
 
-    let user = await UserMD.findOne({ email, salt: { $ne: null } }).lean(true);
+    let user = await UserMD.findOne({ $or: [{ email: user_login }, { phone: user_login }] }).lean(true);
 
     if (!user) {
       throw { message: `User này không tồn tại` }

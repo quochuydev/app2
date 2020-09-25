@@ -29,7 +29,10 @@ const apiUrl = `${config.backend_url}/api`;
 let { Option } = Select;
 
 function ProductDetail(props) {
-  const { product, productUpdate, actions, collections, vendors, tags } = props;
+  const {
+    product, productUpdate, actions, collections, vendors, tags,
+    collection, vendor, tag
+  } = props;
   const { id } = useParams();
   let setProduct = actions.setProduct;
   let options = ['Chất liệu', 'Kích thước', 'Màu sắc'];
@@ -330,6 +333,9 @@ function ProductDetail(props) {
     onChangeField('tags', items.join(','))
   }
 
+  const [modalAssertCollection, setModalAssertCollection] = useState(false);
+  const [modalAssertVendor, setModalAssertVendor] = useState(false);
+
   return (
     <div>
       <Form onSubmit={addProduct}>
@@ -388,10 +394,7 @@ function ProductDetail(props) {
                     <Card size="small" title="Hình ảnh sản phẩm">
                       <Upload {...uploadSetting} listType="picture-card"
                         fileList={productUpdate.images ? productUpdate.images.map(e => {
-                          return {
-                            uid: e.id, name: e.filename, status: 'done',
-                            url: e.src,
-                          }
+                          return { uid: e.id, name: e.filename, status: 'done', url: e.src }
                         }) : null}
                         onPreview={(e) => { setPreviewImage(e.url); setPreviewVisible(true); }} onRemove={(e) => { removeImage(e) }} >
                         <div>
@@ -450,6 +453,16 @@ function ProductDetail(props) {
           </Upload>
           : null}
       </Modal>
+
+      <Modal visible={modalAssertCollection}
+        onCancel={() => setModalAssertCollection(false)}>
+        {
+          vendor ? <div>
+            <Input value={vendor.title} />
+            <Button>Submit</Button>
+          </div> : null
+        }
+      </Modal>
     </div >
   )
 }
@@ -458,9 +471,14 @@ const mapStateToProps = state => ({
   products: state.products.get('products'),
   product: state.products.get('product'),
   productUpdate: state.products.get('productUpdate'),
+
   vendors: state.products.get('vendors'),
   collections: state.products.get('collections'),
   tags: state.products.get('tags'),
+
+  vendor: state.products.get('vendor'),
+  collection: state.products.get('collection'),
+  tag: state.products.get('tag'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
