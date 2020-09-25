@@ -22,8 +22,8 @@ function Login() {
   let [account, setAccount] = useState({
     name: '', code: '',
     user_phone: '',
-    email: 'quochuydev1@gmail.com',
-    password: 'quochuydev1@gmail.com',
+    email: '',
+    password: '',
     is_create_shop: true
   });
   let [redirect, setRedirect] = useState(false);

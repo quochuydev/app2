@@ -96,8 +96,9 @@ async function checkUser({ body }) {
 async function signup(req, res, next) {
   try {
     let { email, password, is_create_shop, shop_id, username, name, code } = req.body;
-    if (!name) {
-      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'name_required' });
+
+    if (!password) {
+      return res.status(400).json({ message: 'Nhập mật khẩu' });
     }
 
     let count_shop_by_code = await ShopModel.count({ code });
@@ -106,12 +107,15 @@ async function signup(req, res, next) {
     }
 
     if (is_create_shop) {
+      if (!(name && user_phone)) {
+        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc', code: 'name_required' });
+      }
       let shop_data = {
         name, code
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email, shop_id: shop.id,
+        user_phone, shop_id: shop.id,
         password, is_root: true
       }
       let user = await UserMD.create(new_user);
