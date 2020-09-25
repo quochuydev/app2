@@ -7,14 +7,16 @@ autoIncrement.initialize(mongoose.connection);
 
 let UserSchema = new Schema({
   id: { type: Number, default: null },
-  email: { type: String, lowercase: true, trim: true, default: '' },
   shop_id: { type: Number, default: null },
   is_root: { type: Boolean, default: false },
+
+  phone: { type: String, trim: true, default: '' },
+  email: { type: String, default: null },
+  username: { type: String, default: null },
 
   first_name: { type: String, trim: true, default: '' },
   last_name: { type: String, trim: true, default: '' },
   displayName: { type: String, trim: true },
-  phone: { type: String, trim: true, default: '' },
 
   updated_at: { type: Date },
   created_at: { type: Date, default: Date.now },

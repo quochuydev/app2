@@ -95,7 +95,7 @@ async function checkUser({ body }) {
 
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id, username, name, code } = req.body;
+    let { email, password, is_create_shop, shop_id, username, name, code, phone } = req.body;
 
     if (!password) {
       return res.status(400).json({ message: 'Nhập mật khẩu' });
@@ -107,15 +107,18 @@ async function signup(req, res, next) {
     }
 
     if (is_create_shop) {
-      if (!(name && user_phone)) {
-        return res.status(400).json({ message: 'Thiếu thông tin bắt buộc', code: 'name_required' });
+      if (!name) {
+        return res.status(400).json({ message: 'Thiếu thông tin tên cửa hàng', code: 'name_required' });
+      }
+      if (!email) {
+        return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
       }
       let shop_data = {
         name, code
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        user_phone, shop_id: shop.id,
+        email, phone, username: phone, shop_id: shop.id,
         password, is_root: true
       }
       let user = await UserMD.create(new_user);
@@ -149,7 +152,7 @@ let login = async (req, res, next) => {
       throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
 
-    let user = await UserMD.findOne({ $or: [{ email: user_login }, { phone: user_login }] }).lean(true);
+    let user = await UserMD.findOne({ email: user_login }).lean(true);
 
     if (!user) {
       throw { message: `User này không tồn tại` }

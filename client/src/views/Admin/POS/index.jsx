@@ -512,13 +512,8 @@ function Customer(props) {
           </Col>
         </Form>
       </Row>
-      <Modal
-        title="Chọn biến thể"
-        visible={!!addVariantModal}
-        footer={null}
-        onCancel={() => setAddVariantModal(null)}
-        width={700}
-      >
+      <Modal title="Chọn biến thể" visible={!!addVariantModal}
+        footer={null} onCancel={() => setAddVariantModal(null)} width={700}>
         <Menu>
           {
             addVariantModal ? addVariantModal.map(item => (
@@ -536,12 +531,8 @@ function Customer(props) {
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
         customer={customer} assertCustomer={assertCustomer} />
 
-      <Modal
-        visible={isCreateSuccess}
-        width={600}
-        footer={null}
-        onCancel={() => setIsCreateSuccess(false)}
-      >
+      <Modal visible={isCreateSuccess} width={600} footer={null}
+        onCancel={() => setIsCreateSuccess(false)}>
         {
           orderCreated && orderCreated.id ?
             <Result

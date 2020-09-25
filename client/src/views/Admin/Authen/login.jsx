@@ -18,7 +18,7 @@ const layout = {
 const basedUrl = config.backend_url;
 
 function Login() {
-  let [account, setAccount] = useState({ email: 'quochuydev1@gmail.com', password: 'quochuydev1@gmail.com' });
+  let [account, setAccount] = useState({ user_login: 'quochuydev1@gmail.com', password: 'quochuydev1@gmail.com' });
   let [redirect, setRedirect] = useState(false);
 
   const onFinish = (event) => {
@@ -68,9 +68,9 @@ function Login() {
 
       <div className="login-form">
         <Form name="basic" onSubmit={onFinish} style={{ marginBottom: 20 }} >
-          <Form.Item {...layout} label="Username" name="email"
-            rules={[{ required: true, message: 'Please input your email!' }]}>
-            <Input name="email" onChange={onChange} value={account.email} />
+          <Form.Item {...layout} label="Username" name="user_login"
+            rules={[{ required: true, message: 'Please input your user_login!' }]}>
+            <Input name="user_login" onChange={onChange} value={account.user_login} />
           </Form.Item>
           <Form.Item {...layout} label="Password" name="password"
             rules={[{ required: true, message: 'Please input your password!' }]} >

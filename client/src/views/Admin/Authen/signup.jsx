@@ -21,7 +21,7 @@ const basedUrl = config.backend_url;
 function Login() {
   let [account, setAccount] = useState({
     name: '', code: '',
-    user_phone: '',
+    phone: '',
     email: '',
     password: '',
     is_create_shop: true
@@ -84,8 +84,11 @@ function Login() {
           <Form.Item label="Mã code">
             <Input name="code" onChange={onChange} value={account.code} />
           </Form.Item>
+          <Form.Item label="Email">
+            <Input name="email" onChange={onChange} value={account.email} />
+          </Form.Item>
           <Form.Item label="Số điện thoại">
-            <Input name="user_phone" onChange={onChange} value={account.user_phone} />
+            <Input name="phone" onChange={onChange} value={account.phone} />
           </Form.Item>
           <Form.Item label="Mật khẩu đăng nhập cửa hàng">
             <Input.Password name="password" onChange={onChange} value={account.password} />
