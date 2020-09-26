@@ -72,7 +72,7 @@ function Orders(props) {
       )
     },
     {
-      title: 'In', key: 'print', render: edit => (
+      title: 'In', key: 'print', width: 50, render: edit => (
         <ReactToPrint
           onBeforeGetContent={() => beforePrint(edit)}
           onAfterPrint={() => setIsShowPrint(false)}
@@ -164,12 +164,12 @@ function Orders(props) {
           </Link>
           <Popover placement="topLeft" content={
             <div>
-              <Button className="block" onClick={() => loadOrders()}>
+              <a className="block" onClick={() => loadOrders()}>
                 Xuất excel
-                </Button>
-              <Button className="block" onClick={() => loadOrders()}>
+                </a>
+              <a className="block" onClick={() => loadOrders()}>
                 Xác nhận thanh toán
-                </Button>
+                </a>
             </div>
           } trigger="click">
             <Button icon="swap" size="large" >

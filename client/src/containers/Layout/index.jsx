@@ -131,7 +131,7 @@ function LayoutContainer() {
 
       <Layout style={{ background: '#fff' }}>
         <LeftMenu display={_display(!isMobile)} />
-        <Layout.Content>
+        <Layout.Content style={{padding: '0 5px'}}>
           <PageHeader
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 10 }} size="large" icon="menu"

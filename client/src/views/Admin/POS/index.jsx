@@ -395,7 +395,6 @@ function Customer(props) {
                 </Collapse.Panel>
               </Collapse>
             </div>
-
             <Dropdown overlay={(
               <Menu style={{ height: 150, overflow: 'scroll' }}>
                 {
@@ -453,9 +452,9 @@ function Customer(props) {
                         <p>Ngày sinh: {order.customer.birthday}</p>
                         <p className="ui-title-page">
                           <span>Thông Tin Giao Hàng </span>
-                          <Tag color="blue" className="cursor-pointer">
-                            <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
-                              style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                          <Tag color="blue" className="cursor-pointer"
+                            onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}>
+                            <Icon style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
                               theme="filled" type="edit" /> Sửa
                           </Tag>
                         </p>
