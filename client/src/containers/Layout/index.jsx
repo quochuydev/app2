@@ -134,12 +134,11 @@ function LayoutContainer() {
         <Layout.Content>
           <PageHeader
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
-              style={{ border: 'none', padding: 0 }}
+              style={{ border: 'none', padding: 10 }} size="large" icon="menu"
             >
-              <Icon type="menu" style={{ fontSize: 20, verticalAlign: 'top' }} style={{ padding: 10 }} />
+              {menuName}
             </Button>}
             style={{ padding: 0, display: _display(isMobile && !!token) }}
-            subTitle={menuName}
           >
           </PageHeader>
 
