@@ -109,7 +109,7 @@ async function signup(req, res, next) {
 
     let count_shop_by_code = await ShopModel.count({ code });
     if (count_shop_by_code) {
-      code = code + String(count_shop_by_code + 1);
+      code = `${code}-${String(count_shop_by_code + 1)}`;
     }
 
     if (is_create_shop) {
@@ -180,12 +180,18 @@ let login = async (req, res, next) => {
     if (!user_login) {
       throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
-    let user = await UserMD.findOne({ email: user_login }).lean(true);
-    if (!user) {
+    let user = null;
+    let users = await UserMD.find({ email: user_login }).lean(true);
+    if (!(users && users.length)) {
       throw { message: `User này không tồn tại` }
     }
-    if (!UserMD.authenticate(user, password)) {
-      throw { statusCode: 401, message: `Mật khẩu không đúng` }
+    for (const user_login of users) {
+      if (UserMD.authenticate(user_login, password)) {
+        user = user_login;
+      }
+    }
+    if (!user) {
+      throw { statusCode: 401, message: `Mật khẩu không đúng hoặc Tài khoản không tồn tại` }
     }
     let user_gen_token = {
       id: user.id,

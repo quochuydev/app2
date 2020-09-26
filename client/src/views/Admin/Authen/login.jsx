@@ -92,7 +92,7 @@ function Login() {
           </div>
         </a>
         <Link to={SIGNUP_ROUTE}>
-          <p className="m-t-10 color-red">Dùng ngay miễn phí</p>
+          <p className="m-t-10 color-red underline text-center" style={{ fontSize: 20 }}>Dùng ngay miễn phí</p>
         </Link>
       </div>
 
