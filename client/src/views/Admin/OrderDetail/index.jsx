@@ -139,6 +139,11 @@ function OrderDetailComponent(props) {
     actions.merge({ attributes: order.attributes })
   }
 
+  function removeAttribute(index, e) {
+    order.attributes = order.attributes.filter((e, i) => i != index);
+    actions.merge({ attributes: order.attributes })
+  }
+
   return (
     <div>
       {
@@ -206,12 +211,15 @@ function OrderDetailComponent(props) {
                       </Button></p>
                       {
                         order.attributes ? order.attributes.map((e, i) =>
-                          <Row key={i}>
-                            <Col lg={12}>
+                          <Row key={i} gutter={[10, 5]}>
+                            <Col span={11}>
                               <Input type="text" name="name" value={e.name} onChange={(e) => onChangeAttribute(i, e)} />
                             </Col>
-                            <Col lg={12}>
+                            <Col span={11}>
                               <Input type="text" name="value" value={e.value} onChange={(e) => onChangeAttribute(i, e)} />
+                            </Col>
+                            <Col span={2}>
+                              <Button icon="close" type="danger" onClick={() => removeAttribute(i)}></Button>
                             </Col>
                           </Row>
                         ) : null
