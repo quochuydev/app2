@@ -227,6 +227,10 @@ let Product = {
     let url = compile('api/vendors');
     return await ApiClient.postData(url, null, data);
   },
+  updateVendor: async function (data) {
+    let url = compile('api/vendors/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  },
   loadCollections: async function (query) {
     let url = compile('api/collections');
     return await ApiClient.getData(url, null, query);
@@ -234,6 +238,10 @@ let Product = {
   createCollection: async function (data) {
     let url = compile('api/collections');
     return await ApiClient.postData(url, null, data);
+  },
+  updateCollection: async function (data) {
+    let url = compile('api/collections/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
   },
   loadTags: async function (query) {
     return await ApiClient.getData('api/tags', null, query);

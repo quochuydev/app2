@@ -336,15 +336,39 @@ function ProductDetail(props) {
   const [modalAssertCollection, setModalAssertCollection] = useState(false);
   const [modalAssertVendor, setModalAssertVendor] = useState(false);
 
-  function onModalCollection(collection) {
-    actions.merge({ collection })
+  function onModalCollection(id) {
+    let collection = collections.find(e => e.id == id);
+    actions.merge({ collection });
     setModalAssertCollection(true);
   }
-
-  function assertCollection() {
-
+  
+  function onModalVendor(id) {
+    let vendor = vendors.find(e => e.id == id);
+    actions.merge({ vendor });
+    setModalAssertVendor(true);
   }
 
+  async function assertCollection({ collection }) {
+    try {
+      let result = await AdminServices.Product.updateCollection(collection)
+      message.success(result.message);
+      setModalAssertCollection(false);
+      actions.loadCollections()
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
+
+  async function assertVendor({ vendor }) {
+    try {
+      let result = await AdminServices.Product.updateVendor(vendor)
+      message.success(result.message);
+      setModalAssertVendor(false);
+      actions.loadVendors()
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
   return (
     <div>
       <Form onSubmit={addProduct}>
@@ -371,27 +395,34 @@ function ProductDetail(props) {
                   </Col>
                   <Col xs={24} lg={8}>
                     <Form.Item label={'Nhà sản xuất'}>
-                      <Select name="vendor" value={productUpdate.vendor}
-                        onChange={e => onChangeField('vendor', e)}>
-                        {
-                          vendors.map((e, i) =>
-                            <Option key={i} value={e.id}>{e.title}</Option>
-                          )
-                        }
-                      </Select>
+                      <Input.Group style={{ width: '100%', display: 'flex' }}>
+                        <Select style={{ flex: 'auto' }} onChange={e => onChangeField('vendor', e)} name="vendor" value={productUpdate.vendor}>
+                          {
+                            vendors.map((e, i) =>
+                              <Option key={i} value={e.id}>{e.title}</Option>
+                            )
+                          }
+                        </Select>
+                        <Button type="danger" icon="edit" onClick={e => onModalVendor(productUpdate.vendor)}>
+                        </Button>
+                        <Button type="primary" icon="plus" onClick={e => onModalVendor(productUpdate.vendor)}>
+                        </Button>
+                      </Input.Group>
                     </Form.Item>
                     <Form.Item label={'Nhóm sản phẩm'}>
-                      <Select onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}
-                        addonAfter={<div>
-                          <Icon type="search" onClick={e => onModalCollection(productUpdate.collect)} />
-                          <Icon type="search" onClick={e => onModalCollection(productUpdate.collect)} />
-                        </div>}>
-                        {
-                          collections.map((e, i) =>
-                            <Option key={i} value={e.id}>{e.title}</Option>
-                          )
-                        }
-                      </Select>
+                      <Input.Group style={{ width: '100%', display: 'flex' }}>
+                        <Select style={{ flex: 'auto' }} onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}>
+                          {
+                            collections.map((e, i) =>
+                              <Option key={i} value={e.id}>{e.title}</Option>
+                            )
+                          }
+                        </Select>
+                        <Button type="danger" icon="edit" onClick={e => onModalCollection(productUpdate.collect)}>
+                        </Button>
+                        <Button type="primary" icon="plus" onClick={e => onModalCollection(productUpdate.collect)}>
+                        </Button>
+                      </Input.Group>
                     </Form.Item>
                     <Form.Item label={'Tags'}>
                       <Select mode="tags" name="tags" value={productUpdate.tags ? productUpdate.tags.split(',') : []}
@@ -467,11 +498,25 @@ function ProductDetail(props) {
       </Modal>
 
       <Modal visible={modalAssertCollection}
+        title="Cập nhật loại sản phẩm"
+        onOk={() => { assertCollection({ collection }) }}
         onCancel={() => setModalAssertCollection(false)}>
         {
           collection ? <div>
-            <Input value={collection.title} onChange={e => { }} />
-            <Button onClick={() => { assertCollection() }}>Submit</Button>
+            <Input value={collection.title}
+              onChange={e => { actions.merge({ collection: { ...collection, title: e.target.value } }) }} />
+          </div> : null
+        }
+      </Modal>
+      
+      <Modal visible={modalAssertVendor}
+        title="Cập nhật nhà sản xuất"
+        onOk={() => { assertVendor({ vendor }) }}
+        onCancel={() => setModalAssertVendor(false)}>
+        {
+          vendor ? <div>
+            <Input value={vendor.title}
+              onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
           </div> : null
         }
       </Modal>

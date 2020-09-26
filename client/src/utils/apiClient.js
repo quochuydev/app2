@@ -38,6 +38,9 @@ async function responseHandler(response) {
       error.message = jsonData.message;
       throw error;
     }
+    if(!jsonData.message){
+      jsonData.message = 'Cập nhật thành công'
+    }
     return jsonData;
   } else {
     try {
