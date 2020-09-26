@@ -135,53 +135,59 @@ function Orders(props) {
   return (
     <div>
       <Form>
-        <Row type="flex">
-          <Col lg={4}>
-            <Popover placement="bottomLeft" content={
-              <div>
-                <p>Content</p>
-                <Select value={1} className="block">
-                  <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
-                </Select>
-                <p>Content</p>
-                <Select value={1} className="block">
-                  <Select.Option value={1}>Mới</Select.Option>
-                </Select>
-                <br />
-                <Button>Hủy</Button>
-                <Button type="primary">Thêm điều kiện lọc</Button>
-              </div>
-            } trigger="click">
-              <Button icon="filter" size="large">
-                <span className="hidden-xs">Áp dụng bộ lọc</span>
-              </Button>
-            </Popover>
-          </Col>
-          <Col xs={14} lg={16}>
-            <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
-              prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
-          </Col>
-          <Col xs={6} lg={4}>
-            <Link to={`POS`}>
-              <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
-                <span className="hidden-xs">Tạo đơn hàng</span>
-              </Button>
-            </Link>
-            <Popover placement="topLeft" content={
-              <div>
-                <Button className="block" onClick={() => loadOrders()}>
-                  Xuất excel
+        <Input.Group style={{ width: '100%', display: 'flex' }}>
+          <Popover placement="bottomLeft" content={
+            <div>
+              <p>Content</p>
+              <Select value={1} className="block">
+                <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
+              </Select>
+              <p>Content</p>
+              <Select value={1} className="block">
+                <Select.Option value={1}>Mới</Select.Option>
+              </Select>
+              <br />
+              <Button>Hủy</Button>
+              <Button type="primary">Thêm điều kiện lọc</Button>
+            </div>
+          } trigger="click">
+            <Button icon="filter" size="large">
+              <span className="hidden-xs">Áp dụng bộ lọc</span>
+            </Button>
+          </Popover>
+          <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
+            prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
+          <Link to={`POS`} target="_blank">
+            <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
+              <span className="hidden-xs">Tạo đơn hàng</span>
+            </Button>
+          </Link>
+          <Popover placement="topLeft" content={
+            <div>
+              <Button className="block" onClick={() => loadOrders()}>
+                Xuất excel
                 </Button>
-                <Button className="block" onClick={() => loadOrders()}>
-                  Xác nhận thanh toán
+              <Button className="block" onClick={() => loadOrders()}>
+                Xác nhận thanh toán
                 </Button>
-              </div>
-            } trigger="click">
-              <Button icon="swap" size="large" >
-              </Button>
-            </Popover>
-          </Col>
-        </Row>
+            </div>
+          } trigger="click">
+            <Button icon="swap" size="large" >
+            </Button>
+          </Popover>
+        </Input.Group>
+        <br />
+        {
+          Object.keys(query).map(key =>
+            <Tag closable onClose={e => {
+              e.preventDefault();
+            }}>
+              {
+                query[key] ? <span> {key}: {query[key]} </span> : null
+              }
+            </Tag>)
+        }
+        <br />
         <Row key='1'>
           <Col span={8}>
             <Form.Item label="Mã đơn hàng">
@@ -233,7 +239,7 @@ function Orders(props) {
             }
           </div>
         </div>
-      </Form>
+      </Form >
     </div >
   );
 }

@@ -341,7 +341,7 @@ function ProductDetail(props) {
     actions.merge({ collection });
     setModalAssertCollection(true);
   }
-  
+
   function onModalVendor(id) {
     let vendor = vendors.find(e => e.id == id);
     actions.merge({ vendor });
@@ -503,20 +503,24 @@ function ProductDetail(props) {
         onCancel={() => setModalAssertCollection(false)}>
         {
           collection ? <div>
-            <Input value={collection.title}
-              onChange={e => { actions.merge({ collection: { ...collection, title: e.target.value } }) }} />
+            <Form.Item label={'Tên nhóm'}>
+              <Input value={collection.title}
+                onChange={e => { actions.merge({ collection: { ...collection, title: e.target.value } }) }} />
+            </Form.Item>
           </div> : null
         }
       </Modal>
-      
+
       <Modal visible={modalAssertVendor}
         title="Cập nhật nhà sản xuất"
         onOk={() => { assertVendor({ vendor }) }}
         onCancel={() => setModalAssertVendor(false)}>
         {
           vendor ? <div>
-            <Input value={vendor.title}
-              onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
+            <Form.Item label={'Tên nhà sản xuất'}>
+              <Input value={vendor.title}
+                onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
+            </Form.Item>
           </div> : null
         }
       </Modal>
