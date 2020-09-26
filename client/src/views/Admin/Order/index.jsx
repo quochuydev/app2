@@ -170,23 +170,23 @@ function Orders(props) {
         </Input.Group>
         <br />
         <Row key='1'>
-          <Col span={6}>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Ngày tạo từ">
+              <DatePicker name="created_at_gte" onChange={e => onChangeField('created_at_gte', e)} />
+            </Form.Item>
+          </Col>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Ngày tạo đến">
+              <DatePicker name="created_at_lte" onChange={e => onChangeField('created_at_lte', e)} />
+            </Form.Item>
+          </Col>
+          <Col xs={12} lg={6}>
             <Form.Item label="Khách hàng">
               <Input name="customer_info" onChange={onChange} value={query.customer_info}
                 placeholder="ID khách hàng/Tên khách hàng/Email" />
             </Form.Item>
           </Col>
-          <Col span={6}>
-            <Form.Item label="Ngày tạo từ">
-              <DatePicker name="created_at_gte" onChange={e => onChangeField('created_at_gte', e)} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item label="Ngày tạo đến">
-              <DatePicker name="created_at_lte" onChange={e => onChangeField('created_at_lte', e)} />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
+          <Col xs={12} lg={6}>
             <Form.Item label="Trạng thái thanh toán">
               <Select mode="tags" onChange={items => onChangeField('financial_status_in', items)}
                 placeholder="-- Trạng thái thanh toán --" value={query.financial_status_in}>
