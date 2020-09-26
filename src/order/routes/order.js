@@ -10,7 +10,7 @@ const router = ({ app }) => {
   app.post('/api/order/list', list);
 
   app.post('/api/orders/export', function (req, res, next) {
-    OrderService.export({})
+    OrderService.export({ query: req.body })
       .then(result => res.json(result))
       .catch(error => next(error))
   });

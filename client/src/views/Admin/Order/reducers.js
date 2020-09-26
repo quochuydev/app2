@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import _ from 'lodash';
 
 const initialState = Map({
+  downloadLink: null,
   total: 0,
   orders: [],
   order: {

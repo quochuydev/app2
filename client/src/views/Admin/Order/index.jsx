@@ -29,7 +29,7 @@ let cssStatus = common.cssStatus;
 const { Option } = Select;
 
 function Orders(props) {
-  const { count, actions, orders } = props;
+  const { count, actions, orders, downloadLink } = props;
 
   const columns = [
     {
@@ -88,6 +88,8 @@ function Orders(props) {
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
+  const [isExportModal, setIsExportModal] = useState(false);
+
   let [query, setQuery] = useState({ limit: 10, page: 1 });
 
   let [isShowPrint, setIsShowPrint] = useState(false)
@@ -132,6 +134,14 @@ function Orders(props) {
     setQuery({ ...query, page: e })
   }
 
+  function onExportOrders() {
+    setIsExportModal(true);
+  }
+
+  function exportOrders(query) {
+    actions.exportOrders(query);
+  }
+
   return (
     <div>
       <Form>
@@ -155,8 +165,8 @@ function Orders(props) {
               <span className="hidden-xs">Áp dụng bộ lọc</span>
             </Button>
           </Popover>
-          <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
-            prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
+          <Input size="large" placeholder="Nhập mã đơn hàng/ tên khách hàng" name="type" onChange={onChange}
+            prefix={<Icon type="search" onClick={() => loadOrders()} />} style={{ marginBottom: 1 }} />
           <Link to={`POS`} target="_blank">
             <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
               <span className="hidden-xs">Tạo đơn hàng</span>
@@ -164,7 +174,7 @@ function Orders(props) {
           </Link>
           <Popover placement="topLeft" content={
             <div>
-              <a className="block" onClick={() => loadOrders()}>
+              <a className="block" onClick={() => onExportOrders()}>
                 Xuất excel
                 </a>
               <a className="block" onClick={() => loadOrders()}>
@@ -215,10 +225,10 @@ function Orders(props) {
             <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
             <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
               scroll={{ x: 900 }} />
-          </Col>
-          <Col span={24}>
-            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage}
-              showTotal={total => <span>{total}</span>} />
+            <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
+              showTotal={(total, range) => `${total} đơn hàng`}
+              defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
+            />
           </Col>
         </Row>
         <ModalInfo
@@ -232,6 +242,14 @@ function Orders(props) {
           setIsShowSendMailModal={setIsShowSendMailModal}
         ></ModalMail>
 
+        <Modal
+          title="Export excel"
+          visible={isExportModal}
+          onOk={() => exportOrders()}
+          onCancel={() => setIsExportModal(false)}
+        >
+          <a href={downloadLink}>{downloadLink}</a>
+        </Modal>
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>
           <div ref={componentRef}>
             {
@@ -249,6 +267,7 @@ const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
   count: state.orders.get('count'),
   order: state.orders.get('order'),
+  downloadLink: state.orders.get('downloadLink'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

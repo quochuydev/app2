@@ -332,7 +332,8 @@ function Customer(props) {
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
                       <Select style={{ width: '100%' }}
-                        onChange={e => createCollection(e)}>
+                        onChange={e => createCollection(e)} defaultValue={null}>
+                        <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           collections.map((e, i) =>
                             <Option key={i} value={e.id}>{e.title}</Option>
@@ -342,8 +343,8 @@ function Customer(props) {
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select style={{ width: '100%' }}
-                        onChange={e => createVendor(e)}>
+                      <Select style={{ width: '100%' }} onChange={e => createVendor(e)} defaultValue={null}>
+                        <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           vendors.map((e, i) =>
                             <Option key={i} value={e.id}>{e.title}</Option>

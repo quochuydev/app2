@@ -3,8 +3,8 @@ let moment = require('moment');
 
 const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 
-module.exports = ({ OrderModel, VariantModel, _parse, config }) => async function exportOrders(data) {
-  let { limit, skip, criteria } = _parse(req.body);
+module.exports = ({ OrderModel, VariantModel, _parse, config }) => async function exportOrders({ query }) {
+  let { limit, skip, criteria } = _parse(query);
   let orders = await OrderModel.find(criteria);
 
   const excel = await ExcelLib.init({
