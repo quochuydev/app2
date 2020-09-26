@@ -15,6 +15,8 @@ const ShopSchema = new Schema({
   urls: { type: [String], default: [] },
   user_created: {},
 
+  created_at: { type: Date, default: Date.now },
+
   woocommerce: {
     wp_host: { type: String, default: null },
     consumer_key: { type: String, default: null },

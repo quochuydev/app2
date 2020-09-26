@@ -31,11 +31,15 @@ let auth = async (req, res) => {
     // }
     if (!user) {
       let shop_data = {
-        name: email, code: email, google_info: userAuth
+        name: email, code: email, google_info: userAuth,
+        user_created: {
+          email
+        }
       }
       let new_shop = await ShopModel.create(shop_data);
       let new_user = {
         email,
+        is_root: true,
         shop_id: new_shop.id
       }
       user = await UserMD.create(new_user);
@@ -95,7 +99,8 @@ async function checkUser({ body }) {
 
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id, username, name, code, phone } = req.body;
+    let { email, password, is_create_shop, shop_id,
+      username, name, code, phone } = req.body;
 
     if (!password) {
       return res.status(400).json({ message: 'Nhập mật khẩu' });
@@ -119,12 +124,19 @@ async function signup(req, res, next) {
       }
 
       let shop_data = {
-        name, code
+        name, code, user_created: {
+          email, phone
+        }
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email, phone, username: phone, shop_id: shop.id,
-        password, is_root: true
+        email, phone,
+        username: phone,
+        shop_id: shop.id,
+        first_name: email,
+        last_name: email,
+        password,
+        is_root: true
       }
       let user = await UserMD.create(new_user);
       return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
@@ -138,6 +150,9 @@ async function signup(req, res, next) {
       }
       let new_user = {
         email,
+        phone,
+        first_name: email,
+        last_name: email,
         shop_id
       }
       let user = await UserMD.create(new_user);

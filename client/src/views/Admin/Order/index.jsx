@@ -179,7 +179,7 @@ function Orders(props) {
         <br />
         {
           Object.keys(query).map(key =>
-            <Tag closable onClose={e => {
+            <Tag key={key} closable onClose={e => {
               e.preventDefault();
             }}>
               {
