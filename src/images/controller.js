@@ -7,6 +7,7 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
 const config = require(path.resolve('./src/config/config'));
+const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
 
 const Controller = {}
 
@@ -37,7 +38,11 @@ Controller.createImage = async function ({ file }) {
     } else {
       filename = `${uuid()}.jpg`;
     }
-    data_update.src = `${config.app_host}/images/${filename}`;
+    if (config.file_cloud.active) {
+      data_update.src = await uploadToFlirk({ file })
+    } else {
+      data_update.src = `${config.app_host}/images/${filename}`;
+    }
     data_update.filename = file.originalname ? file.originalname : filename;
   }
 

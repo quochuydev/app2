@@ -11,6 +11,7 @@ const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const config = require(path.resolve('./src/config/config'));
 const { appslug, app_host } = config;
 const { _parse } = require(path.resolve('./src/core/lib/query'));
+const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
 
 let list = async (req, res) => {
   try {
@@ -114,7 +115,7 @@ let update = async ({ body, customer_id }) => {
   return { error: false, customer, message: 'Cập nhật khách hàng thành công' };
 }
 
-async function updateImage({ }) {
+async function updateImage({ file }) {
   let data_update = {
     created_at: new Date(),
     updated_at: new Date(),
@@ -127,7 +128,11 @@ async function updateImage({ }) {
     } else {
       filename = `${uuid()}.jpg`;
     }
-    data_update.src = `${config.app_host}/images/${filename}`;
+    if (config.file_cloud.active) {
+      data_update.src = await uploadToFlirk({ file })
+    } else {
+      data_update.src = `${config.app_host}/images/${filename}`;
+    }
     data_update.filename = file.originalname ? file.originalname : filename;
   }
 

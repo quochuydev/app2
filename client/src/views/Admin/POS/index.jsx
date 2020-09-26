@@ -467,7 +467,7 @@ function Customer(props) {
                   }
                 </Card>
               </Content>
-              <Footer style={{ bottom: 0, padding: 5, color: '#000' }}>
+              <Footer style={{ bottom: 0, padding: 5, color: '#000', background: '#fff', zIndex: 100 }}>
                 <Row>
                   <Col span={9}>
                     <p>Tạm tính</p>
