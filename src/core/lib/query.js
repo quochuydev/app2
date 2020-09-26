@@ -21,22 +21,20 @@ function _parse(body, option = { writeLog: true }) {
     shop_id: cache.get('shop_id'),
     is_deleted: { $in: [null, false] }
   }
-
   if (option.no_check_delete) {
     delete criteria.is_deleted;
   }
   if (option.no_check_shop) {
     delete criteria.shop_id;
   }
-
   for (field in query) {
     _.merge(criteria, formatCriteria(field, query[field]))
   }
   let sort = { created_at: -1 };
-
   if (option.writeLog) {
     console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
   }
+
   return { limit, page, skip, criteria, sort };
 }
 
@@ -51,8 +49,6 @@ function _aggregate({ aggregate }) {
   console.log(JSON.stringify(queryDSL));
   return { queryDSL }
 }
-
-module.exports = { _parse, _aggregate }
 
 function formatCriteria(field, value) {
   if (typeof value == 'string') {
@@ -93,3 +89,18 @@ function formatCriteria(field, value) {
   }
   return { [field]: value }
 }
+
+function xParse(custom) {
+  return (query) => {
+    Object.keys(custom).forEach(key => {
+      if (query[key]) {
+        _.merge(query, custom[key](query[key]))
+      }
+      delete query[key]
+    });
+    return _parse(query);
+  }
+}
+
+
+module.exports = { _parse, _aggregate, xParse }
