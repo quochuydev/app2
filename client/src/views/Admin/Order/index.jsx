@@ -175,14 +175,13 @@ function Orders(props) {
           <Popover placement="topLeft" content={
             <div>
               <a className="block" onClick={() => onExportOrders()}>
-                Xuất excel
-                </a>
+                Xuất excel</a>
               <a className="block" onClick={() => loadOrders()}>
-                Xác nhận thanh toán
-                </a>
+                Xác nhận thanh toán</a>
             </div>
           } trigger="click">
-            <Button icon="swap" size="large" >
+            <Button icon="swap" size="large" type="danger" >
+              <span className="hidden-xs">Tác vụ</span>
             </Button>
           </Popover>
         </Input.Group>
@@ -241,7 +240,6 @@ function Orders(props) {
           isShowSendMailModal={isShowSendMailModal}
           setIsShowSendMailModal={setIsShowSendMailModal}
         ></ModalMail>
-
         <Modal
           title="Export excel"
           visible={isExportModal}

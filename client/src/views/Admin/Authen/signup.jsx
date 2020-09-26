@@ -82,7 +82,7 @@ function Login() {
             <Input name="name" onChange={onChange} value={account.name} autocomplete={false} />
           </Form.Item>
           <Form.Item label="Mã code">
-            <Input name="code" onChange={onChange} value={account.code} />
+            <Input name="code" onChange={onChange} value={account.code} disabled={true} />
           </Form.Item>
           <Form.Item label="Email">
             <Input name="email" onChange={onChange} value={account.email} />

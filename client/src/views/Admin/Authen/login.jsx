@@ -91,9 +91,8 @@ function Login() {
             <Button type='link'>Login with Google</Button>
           </div>
         </a>
-
         <Link to={SIGNUP_ROUTE}>
-          <p>Dùng ngay miễn phí</p>
+          <p className="m-t-10 color-red">Dùng ngay miễn phí</p>
         </Link>
       </div>
 

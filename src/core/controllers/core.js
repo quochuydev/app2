@@ -11,6 +11,7 @@ const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/c
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _is = require(path.resolve('./src/core/share/_is.lib.share.js'))
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -115,9 +116,18 @@ async function signup(req, res, next) {
       if (!name) {
         return res.status(400).json({ message: 'Thiếu thông tin tên cửa hàng', code: 'name_required' });
       }
+      if (!code) {
+        return res.status(400).json({ message: 'Thiếu mã code' });
+      }
+
       if (!email) {
         return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
       }
+
+      if (email && !_is.email(email)) {
+        return res.status(400).json({ message: 'Email không đúng định dạng' });
+      }
+
       let found_root_user = await UserMD.count({ email, is_root: true });
       if (found_root_user) {
         return res.status(400).json({ message: 'Email đã tồn tại' });
