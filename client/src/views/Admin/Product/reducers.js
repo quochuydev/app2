@@ -17,6 +17,10 @@ const initialState = Map({
   vendors: [],
   collections: [],
   tags: [],
+  
+  vendor: null,
+  collection: null,
+  tag: null,
 });
 
 function ProductsReducer(state = initialState, { type, payload }) {

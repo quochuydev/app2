@@ -10,6 +10,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
+let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -92,25 +93,41 @@ async function checkUser({ body }) {
   return { error: false, user };
 }
 
-
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id } = req.body;
-    if (!(email)) {
-      return res.json({ message: 'Thiếu thông tin bắt buộc', code: 'email_required' });
+    let { email, password, is_create_shop, shop_id, username, name, code, phone } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: 'Nhập mật khẩu' });
+    }
+
+    let count_shop_by_code = await ShopModel.count({ code });
+    if (count_shop_by_code) {
+      code = code + String(count_shop_by_code + 1);
     }
 
     if (is_create_shop) {
+      if (!name) {
+        return res.status(400).json({ message: 'Thiếu thông tin tên cửa hàng', code: 'name_required' });
+      }
+      if (!email) {
+        return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
+      }
+      let found_root_user = await UserMD.count({ email, is_root: true });
+      if (found_root_user) {
+        return res.status(400).json({ message: 'Email đã tồn tại' });
+      }
+
       let shop_data = {
-        name: email, code: email
+        name, code
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email,
-        shop_id: shop.id
+        email, phone, username: phone, shop_id: shop.id,
+        password, is_root: true
       }
       let user = await UserMD.create(new_user);
-      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_SHOP_SUCCESS' });
+      return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
     } else {
       if (!shop_id) {
         return res.json({ message: 'Thiếu shop_id' });
@@ -134,22 +151,17 @@ async function signup(req, res, next) {
 
 let login = async (req, res, next) => {
   try {
-    let { email, password } = req.body;
-
-    if (!email) {
-      throw { message: `Vui lòng nhập 'email!'` }
+    let { user_login, password } = req.body;
+    if (!user_login) {
+      throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
-
-    let user = await UserMD.findOne({ email, salt: { $ne: null } }).lean(true);
-
+    let user = await UserMD.findOne({ email: user_login }).lean(true);
     if (!user) {
       throw { message: `User này không tồn tại` }
     }
-
     if (!UserMD.authenticate(user, password)) {
       throw { statusCode: 401, message: `Mật khẩu không đúng` }
     }
-
     let user_gen_token = {
       id: user.id,
       email: user.email,
@@ -161,6 +173,10 @@ let login = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+}
+
+function resetPassword(req, res) {
+
 }
 
 function loginGoogle(req, res) {

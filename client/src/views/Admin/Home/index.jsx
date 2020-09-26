@@ -13,6 +13,7 @@ import * as orderActions from '../Order/actions';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
 import AdminServices from '../../../services/adminServices';
+import assetProvider from '../../../utils/assetProvider';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -83,10 +84,11 @@ function Home(props) {
     series: [
       {
         data: reportOrdersGrowth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
+      },
+      {
+        data: OrdersGrowthLastmonth.items.map((e, i) => [e._id, e.total_price,]),
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
     ],
   }
@@ -96,63 +98,65 @@ function Home(props) {
     series: [
       {
         data: OrdersGrowthPerMonth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
       {
         data: OrdersGrowthLastmonth.items.map((e, i) => [e._id, e.total_price,]),
-        dataGrouping: {
-          forced: true, approximation: 'sum',
-          units: [['day', [1]]]
-        },
+        dataGrouping: { forced: true, approximation: 'sum', units: [['day', [1]]] },
       },
     ],
   }
 
   return (
     <div>
-      <Row gutter={[15, 0]}>
-        <Col xs={12} lg={6}>
-          <Card>
-            <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} suffix="đ"
-              valueStyle={{ color: reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? '#3f8600' : '#cf1322' }}
-              prefix={<Icon type={reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? 'arrow-up' : 'arrow-down'} />}
-            />
-            <Statistic value={reportOrdersGrowth.total} suffix="đơn hàng"
-            />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card>
-            <Statistic title="Tháng trước" value={OrdersGrowthLastmonth.total_price} suffix="đ" />
-            <Statistic value={OrdersGrowthLastmonth.total} suffix="đơn hàng" />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card>
-            <Statistic title="Hôm nay" value={reportOrdersGrowthDay.total_price} suffix="đ"
-              valueStyle={{ color: reportOrdersGrowthDay.total_price > OrdersGrowthLastday.total_price ? '#3f8600' : '#cf1322' }}
-              prefix={<Icon type={reportOrdersGrowthDay.total_price > OrdersGrowthLastday.total_price ? 'arrow-up' : 'arrow-down'} />}
-            />
-            <Statistic value={reportOrdersGrowthDay.total} suffix="đơn hàng"
-            />
-          </Card>
-        </Col>
-        <Col xs={12} lg={6}>
-          <Card>
-            <Statistic title="Hôm qua" value={OrdersGrowthLastday.total_price} suffix="đ" />
-            <Statistic value={OrdersGrowthLastday.total} suffix="đơn hàng" />
-          </Card>
-        </Col>
-        <Col xs={24} lg={12}>
-          <HighchartsReact highcharts={Highcharts} options={options} />
-        </Col>
-        <Col xs={24} lg={12}>
-          <HighchartsReact highcharts={Highcharts} options={options2} />
-        </Col>
-      </Row>
+      <Tabs defaultActiveKey="1">
+        <Tabs.TabPane tab="Tổng quan" key="1">
+          <Row gutter={[15, 0]}>
+            <Col xs={12} lg={6}>
+              <Card>
+                <Statistic title="Tháng này" value={reportOrdersGrowth.total_price} suffix="đ"
+                  valueStyle={{ color: reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? '#3f8600' : '#cf1322' }}
+                  prefix={<Icon type={reportOrdersGrowth.total_price > OrdersGrowthLastmonth.total_price ? 'arrow-up' : 'arrow-down'} />}
+                />
+                <Statistic value={reportOrdersGrowth.total} suffix="đơn hàng"
+                />
+              </Card>
+            </Col>
+            <Col xs={12} lg={6}>
+              <Card>
+                <Statistic title="Tháng trước" value={OrdersGrowthLastmonth.total_price} suffix="đ" />
+                <Statistic value={OrdersGrowthLastmonth.total} suffix="đơn hàng" />
+              </Card>
+            </Col>
+            <Col xs={12} lg={6}>
+              <Card>
+                <Statistic title="Hôm nay" value={reportOrdersGrowthDay.total_price} suffix="đ"
+                  valueStyle={{ color: reportOrdersGrowthDay.total_price > OrdersGrowthLastday.total_price ? '#3f8600' : '#cf1322' }}
+                  prefix={<Icon type={reportOrdersGrowthDay.total_price > OrdersGrowthLastday.total_price ? 'arrow-up' : 'arrow-down'} />}
+                />
+                <Statistic value={reportOrdersGrowthDay.total} suffix="đơn hàng"
+                />
+              </Card>
+            </Col>
+            <Col xs={12} lg={6}>
+              <Card>
+                <Statistic title="Hôm qua" value={OrdersGrowthLastday.total_price} suffix="đ" />
+                <Statistic value={OrdersGrowthLastday.total} suffix="đơn hàng" />
+              </Card>
+            </Col>
+            <Col xs={24} lg={12}>
+              <HighchartsReact highcharts={Highcharts} options={options} />
+            </Col>
+            <Col xs={24} lg={12}>
+              <HighchartsReact highcharts={Highcharts} options={options2} />
+            </Col>
+          </Row>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Tặng tôi 1 ly cafe?" key="2">
+          <p style={{ fontSize: 18 }}>Tặng tôi 1 ly cafe để tiếp tục có động lực nhé</p>
+          <img src={assetProvider.myMomo} style={{ width: '320px' }} />
+        </Tabs.TabPane>
+      </Tabs>
     </div >
   );
 }

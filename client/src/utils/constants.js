@@ -14,6 +14,7 @@ const PRODUCT_DETAIL_ROUTE = `${SITE_ROUTE}/product/:id`;
 const STAFFS_ROUTE = `${SITE_ROUTE}/staffs`;
 const APP_ROUTE = `${SITE_ROUTE}/app`;
 const LOGIN_ROUTE = `${SITE_ROUTE}/login`;
+const SIGNUP_ROUTE = `${SITE_ROUTE}/signup`;
 const LOGIN_GOOGLE_ROUTE = `${SITE_ROUTE}/login-google`;
 const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 
@@ -32,6 +33,7 @@ const PATHS = {
   PRODUCT_DETAIL_ROUTE,
   APP_ROUTE,
   LOGIN_ROUTE,
+  SIGNUP_ROUTE,
   LOGIN_GOOGLE_ROUTE,
   ERROR_ROUTE
 };

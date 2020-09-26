@@ -7,7 +7,7 @@ import OrderDetail from '../Admin/OrderDetail/routes';
 import Staffs from '../Admin/Staffs/routes';
 import App from '../Admin/App/routes';
 import Product from '../Admin/Product/routes';
-import Login from '../Admin/Login/routes';
+import Authen from '../Admin/Authen/routes';
 import ErrorRoute from './ErrorPage/routes';
 
 const routes = [
@@ -20,7 +20,7 @@ const routes = [
   ...Staffs,
   ...App,
   ...Product,
-  ...Login,
+  ...Authen,
   ...ErrorRoute,
 ];
 

@@ -55,6 +55,7 @@ const URLS = {
   GET_WARD: 'api/wards/:id',
 
   LOGIN: 'login',
+  SIGNUP: 'signup',
   CHANGE_SHOP: 'change-shop',
 
   GET_USER: 'check-user',
@@ -226,6 +227,10 @@ let Product = {
     let url = compile('api/vendors');
     return await ApiClient.postData(url, null, data);
   },
+  updateVendor: async function (data) {
+    let url = compile('api/vendors/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  },
   loadCollections: async function (query) {
     let url = compile('api/collections');
     return await ApiClient.getData(url, null, query);
@@ -233,6 +238,10 @@ let Product = {
   createCollection: async function (data) {
     let url = compile('api/collections');
     return await ApiClient.postData(url, null, data);
+  },
+  updateCollection: async function (data) {
+    let url = compile('api/collections/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
   },
   loadTags: async function (query) {
     return await ApiClient.getData('api/tags', null, query);
@@ -244,6 +253,10 @@ let Product = {
 
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
+}
+
+async function signup(data) {
+  return await ApiClient.postData(URLS.SIGNUP, null, data);
 }
 
 async function changeShop(data) {
@@ -283,6 +296,8 @@ async function getWard(id) {
   return await ApiClient.getData(url);
 }
 
+let Core = {}
+
 const Report = {
   search: async function (data) {
     return await ApiClient.postData('api/report/search', null, data);
@@ -297,7 +312,7 @@ export default {
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
-  login, changeShop, getUser,
-  Report, Image, Product, Order, Shop,
+  login, signup, changeShop, getUser,
+  Report, Image, Product, Order, Shop, Core,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

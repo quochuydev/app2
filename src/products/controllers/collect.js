@@ -19,6 +19,16 @@ Controller.createVendor = async function ({ data }) {
   return { vendor };
 }
 
+Controller.updateVendor = async function ({ vendor_id, data }) {
+  let vendor = await VendorModel.findOneAndUpdate({ id: vendor_id }, { $set: data }, { new: true, lean: true });
+  return { vendor };
+}
+
+Controller.updateCollection = async function ({ collection_id, data }) {
+  let collection = await CollectionModel.findOneAndUpdate({ id: collection_id }, { $set: data }, { new: true, lean: true });
+  return { collection };
+}
+
 Controller.listCollections = async function ({ query }) {
   let { criteria } = _parse(query)
   let collections = await CollectionModel._find(criteria);

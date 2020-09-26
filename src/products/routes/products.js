@@ -8,7 +8,7 @@ const { ProductImage } = require('../controllers/product-image');
 const { uploadToDisk, uploadToCloud } = require(path.resolve('./src/core/middlewares/upload'));
 const {
   listVendors, createVendor, listCollections, createCollection,
-  createTag, listTags,
+  createTag, listTags, updateVendor, updateCollection
 } = require('../controllers/collect');
 
 const router = ({ app }) => {
@@ -91,8 +91,20 @@ const router = ({ app }) => {
       .catch(error => next(error));
   });
 
+  app.put('/api/vendors/:id', async function (req, res, next) {
+    updateVendor({ vendor_id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
   app.post('/api/collections', async function (req, res, next) {
     createCollection({ data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error));
+  });
+
+  app.put('/api/collections/:id', async function (req, res, next) {
+    updateCollection({ collection_id: req.params.id, data: req.body })
       .then(result => res.json(result))
       .catch(error => next(error));
   });
