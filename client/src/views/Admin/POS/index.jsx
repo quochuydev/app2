@@ -30,7 +30,9 @@ import './style.css'
 import PrintOrder from './print.jsx';
 import CustomerDetail from './../Customer/detail';
 import common from '../../../utils/common';
+
 let formatMoney = common.formatMoney;
+let formatFulfillmentStatus = common.formatFulfillmentStatus;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -468,7 +470,12 @@ function Customer(props) {
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 5, color: '#000', background: '#fff', zIndex: 100 }}>
-                <Row>
+                <Radio.Group name="fulfillment_status" value={order.fulfillment_status}
+                  onChange={e => setOrder({ fulfillment_status: e.target.value })}>
+                  <Radio value={'delivered'}>{formatFulfillmentStatus('delivered')}</Radio>
+                  <Radio value={'delivering'}>{formatFulfillmentStatus('delivering')}</Radio>
+                </Radio.Group>
+                <Row className="m-t-10">
                   <Col span={9}>
                     <p>Tạm tính</p>
                   </Col>

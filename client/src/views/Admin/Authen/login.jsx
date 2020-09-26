@@ -5,8 +5,8 @@ import { Button, Form, Input, Checkbox, message } from 'antd';
 import AdminServices from '../../../services/adminServices';
 import { Redirect, Link } from 'react-router-dom';
 
-import Constants from '../../../utils/constants';
 import config from '../../../utils/config';
+import Constants from '../../../utils/constants';
 
 const { LOGIN_ROUTE, SIGNUP_ROUTE } = Constants.PATHS;
 

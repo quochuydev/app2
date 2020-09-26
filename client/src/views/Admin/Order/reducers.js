@@ -18,8 +18,9 @@ const initialState = Map({
     total_price: 0,
     total_pay: 0,
 
+    financial_status: 'pending',
+    carrier_cod_status_code: 'codpending',
     gateway_code: 'cod',
-    carrier_cod_status_code: 'codreceipt',
     fulfillment_status: 'delivered',
 
     customer: null,

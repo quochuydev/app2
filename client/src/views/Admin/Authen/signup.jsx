@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import config from '../../../utils/config';
 import './style.css';
 import { Button, Form, Input, Checkbox, message } from 'antd';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import AdminServices from '../../../services/adminServices';
@@ -76,25 +76,30 @@ function Login() {
 
   return (
     <div>
-      <div className="login-form">
+      <div style={{ maxWidth: 400, margin: '60px auto' }}>
         <Form name="basic" onSubmit={onFinish} style={{ marginBottom: 20 }}>
           <Form.Item label="Tên cửa hàng">
-            <Input name="name" onChange={onChange} value={account.name} autocomplete={false} />
+            <Input name="name" onChange={onChange} value={account.name} autocomplete={false}
+              placeholder="Tên cửa hàng" />
           </Form.Item>
           <Form.Item label="Mã code">
-            <Input name="code" onChange={onChange} value={account.code} disabled={true} />
-          </Form.Item>
-          <Form.Item label="Email">
-            <Input name="email" onChange={onChange} value={account.email} />
+            <Input name="code" onChange={onChange} value={account.code} disabled={true}
+              placeholder="Mã cửa hàng" />
           </Form.Item>
           <Form.Item label="Số điện thoại">
-            <Input name="phone" onChange={onChange} value={account.phone} />
+            <Input name="phone" onChange={onChange} value={account.phone}
+              placeholder="Số điện thoại của bạn" />
+          </Form.Item>
+          <Form.Item label="Email">
+            <Input name="email" onChange={onChange} value={account.email}
+              placeholder="Địa chỉ email là tên đăng nhập cửa hàng" />
           </Form.Item>
           <Form.Item label="Mật khẩu đăng nhập cửa hàng">
-            <Input.Password name="password" onChange={onChange} value={account.password} />
+            <Input.Password name="password" onChange={onChange} value={account.password}
+              placeholder="Mật khẩu đăng nhập cửa hàng" />
           </Form.Item>
           <Form.Item >
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button size="large" type="primary" htmlType="submit" className="m-t-10 login-form-button">
               Submit
             </Button>
           </Form.Item>
@@ -108,9 +113,11 @@ function Login() {
             <Button type='link'>Signup with Google</Button>
           </div>
         </a>
+        <Link to={LOGIN_ROUTE}>
+          <p className="m-t-10 underline">Quay lại trang đăng nhập</p>
+        </Link>
       </div>
-
-    </div>
+    </div >
   )
 }
 export default Login;
