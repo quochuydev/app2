@@ -396,7 +396,7 @@ function Customer(props) {
               </Collapse>
             </div>
             <Dropdown overlay={(
-              <Menu style={{ height: 150, overflow: 'scroll' }}>
+              <Menu style={{ height: 225, background: '#fff', overflow: 'scroll' }}>
                 {
                   _.cloneDeep(products).map(item => (
                     <Menu.Item key={item.id}>
