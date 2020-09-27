@@ -126,15 +126,18 @@ const Controller = {
 
 Controller.updateNote = async function ({ order_id, data }) {
   let found_order = await OrderModel._findOne({ id: order_id });
-
+  if (data.attributes && Array.isArray(data.attributes)) {
+    for (const attribute of data.attributes) {
+      if (!(attribute.name && attribute.value)) {
+        throw { message: 'Thiếu thông tin thuộc tính' };
+      }
+    }
+  }
   let order_data = {
     attributes: data.attributes,
     note: data.note,
   }
-
   let order = await assertOrder({ order_id, order: order_data });
-  // let order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
   return { error: false, order, message: 'Cập nhật ghi chú thành công!' };
 }
 
@@ -144,17 +147,13 @@ Controller.pay = async function ({ order_id }) {
   if (found_order.financial_status == 'paid') {
     throw { message: 'Đơn hàng đã thanh toán xong' }
   }
-
   let order_data = {
     total_pay: found_order.total_price
   }
-
   if (order_data.total_pay == found_order.total_price) {
     order_data.financial_status = 'paid';
   }
-
   let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
   return { error: false, order: updated_order, message: 'Cập nhật thanh toán thành công!' };
 }
 
