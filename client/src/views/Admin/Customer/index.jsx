@@ -145,6 +145,10 @@ function Customer(props) {
     console.log(customer)
   }
 
+  function onChangeField(name, e) {
+    setQuery({ ...query, [name]: e })
+  }
+
   return (
     <div>
       <Row key='1'>
@@ -177,8 +181,11 @@ function Customer(props) {
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
-          <Pagination showTotal={total => <span>{total}</span>} defaultCurrent={1} total={count}
-            size="small" name="page" onChange={onChangePage} />
+          <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
+            showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
+            defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
+            onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
+          />
         </Col>
       </Row>
       <Modal

@@ -143,6 +143,10 @@ function Products(props) {
     setQuery({ ...query, page: e })
   }
 
+  function onChangeField(name, e) {
+    setQuery({ ...query, [name]: e })
+  }
+
   return (
     <div className="">
       <Row key='1'>
@@ -174,10 +178,11 @@ function Products(props) {
           <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} scroll={{ x: 1000 }}
             expandedRowRender={record => <Table rowKey='id' columns={subColumns}
               dataSource={record.variants} pagination={false} showHeader={false} />} />
-        </Col>
-        <Col span={24}>
-          <Pagination defaultCurrent={1} pageSize={query.limit} total={count} name="page" onChange={onChangePage}
-            showTotal={total => <span>{total}</span>} />
+          <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
+            showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
+            defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
+            onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
+          />
         </Col>
 
       </Row>

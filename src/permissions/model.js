@@ -12,7 +12,7 @@ let PermissionSchema = new Schema({
   name: { type: String, default: null },
   code: { type: String, default: null },
   note: { type: String, default: null },
-  updated_at: { type: Date },
+  updated_at: { type: Date, default: null },
   created_at: { type: Date, default: Date.now },
 
   active: { type: Boolean, default: false },
