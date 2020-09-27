@@ -91,7 +91,7 @@ function Login() {
             <Button type='link'>Login with Google</Button>
           </div>
         </a>
-        <Link to={SIGNUP_ROUTE}>
+        <Link to={SIGNUP_ROUTE} className="hide">
           <p className="m-t-10 color-red underline text-center" style={{ fontSize: 20 }}>Dùng ngay miễn phí</p>
         </Link>
       </div>
