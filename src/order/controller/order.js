@@ -10,6 +10,8 @@ const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../bu
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { xParse } = require(path.resolve('./src/core/lib/query'));
 
+const assertOrder = assertOrderFactory({ OrderModel })
+
 const list = async (req, res, next) => {
   try {
     let _parse = xParse({
@@ -114,7 +116,8 @@ const update = async ({ order_id, data }) => {
 
   }
 
-  return { error: false };
+  let order = await assertOrder({ order_id, order: data });
+  return { error: false, order, message: 'Cập nhật đơn hàng thành công' };
 }
 
 const Controller = {
@@ -123,14 +126,18 @@ const Controller = {
 
 Controller.updateNote = async function ({ order_id, data }) {
   let found_order = await OrderModel._findOne({ id: order_id });
-
+  if (data.attributes && Array.isArray(data.attributes)) {
+    for (const attribute of data.attributes) {
+      if (!(attribute.name && attribute.value)) {
+        throw { message: 'Thiếu thông tin thuộc tính' };
+      }
+    }
+  }
   let order_data = {
     attributes: data.attributes,
     note: data.note,
   }
-
-  let order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
+  let order = await assertOrder({ order_id, order: order_data });
   return { error: false, order, message: 'Cập nhật ghi chú thành công!' };
 }
 
@@ -140,17 +147,13 @@ Controller.pay = async function ({ order_id }) {
   if (found_order.financial_status == 'paid') {
     throw { message: 'Đơn hàng đã thanh toán xong' }
   }
-
   let order_data = {
     total_pay: found_order.total_price
   }
-
   if (order_data.total_pay == found_order.total_price) {
     order_data.financial_status = 'paid';
   }
-
   let updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order_data);
-
   return { error: false, order: updated_order, message: 'Cập nhật thanh toán thành công!' };
 }
 
@@ -185,5 +188,26 @@ Controller.cancel = async function ({ order_id, data }) {
   return { error: false, order: updated_order, message: 'Hủy đơn thành công!' };
 }
 
+function assertOrderFactory({ OrderModel }) {
+  return async function assertOrder({ order_id, order }) {
+    order_id = order_id ? order_id : order.id;
+    let updated_order = null;
+
+    if (order.total_price == 0) {
+      order.financial_status = 'paid';
+    }
+
+    if (order.gateway_code = 'cod') {
+
+    }
+
+    if (order_id) {
+      updated_order = await OrderModel._findOneAndUpdate({ id: order_id }, order);
+    } else {
+      updated_order = await OrderModel._create(order);
+    }
+    return updated_order
+  }
+}
 
 module.exports = Controller;

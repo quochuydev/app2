@@ -11,7 +11,7 @@ import {
 
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
-  Popover, Statistic, PageHeader, Icon, List, Avatar, Tag,
+  Popover, Statistic, PageHeader, Icon, List, Avatar, Tag, Select,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -25,6 +25,8 @@ let formatFulfillmentStatus = common.formatFulfillmentStatus;
 let formatCodStatus = common.formatCodStatus;
 let textFinancial = common.textFinancial;
 let cssStatus = common.cssStatus;
+
+let { Option } = Select;
 
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
@@ -133,8 +135,6 @@ function OrderDetailComponent(props) {
   }
 
   function onChangeAttribute(index, e) {
-    console.log(index, e.target.name, e.target.value)
-    console.log(order)
     order.attributes[index][e.target.name] = e.target.value;
     actions.merge({ attributes: order.attributes })
   }
@@ -142,6 +142,30 @@ function OrderDetailComponent(props) {
   function removeAttribute(index, e) {
     order.attributes = order.attributes.filter((e, i) => i != index);
     actions.merge({ attributes: order.attributes })
+  }
+
+  async function updateCodeReceipt() {
+    try {
+      let result = await AdminServices.Order.updateOrder({
+        id: order.id,
+        carrier_cod_status_code: 'codreceipt'
+      });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
+  async function updateFulfillmentStatus() {
+    try {
+      let result = await AdminServices.Order.updateOrder({
+        id: order.id, fulfillment_status: order.fulfillment_status
+      });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   return (
@@ -246,8 +270,11 @@ function OrderDetailComponent(props) {
                       <Col span={12}>Còn lại:</Col>
                       <Col span={12} className="text-right">{formatMoney(order.total_price - order.total_pay)}</Col>
 
-                      <Button type="primary" onClick={() => { payOrder(order) }}>
-                        Xác nhận thanh toán</Button>
+                      {
+                        order.financial_status != 'paid' ?
+                          <Button type="primary" onClick={() => { payOrder(order) }}>Xác nhận thanh toán</Button>
+                          : null
+                      }
                     </Col>
                   </Row>
                 </Card>
@@ -266,6 +293,29 @@ function OrderDetailComponent(props) {
                   <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
                   <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
                   <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
+                </Card>
+                <br />
+                <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
+                  <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
+                  <Select value={order.fulfillment_status} className="block" name="fulfillment_status"
+                    onChange={e => actions.merge({ fulfillment_status: e })}>
+                    <Option key={'delivering'} value={'delivering'}>{formatFulfillmentStatus('delivering')}</Option>
+                    <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
+                  </Select>
+                  <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
+
+                  <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
+                  {
+                    order.carrier_cod_status_code != 'codreceipt' ?
+                      <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
+                      : null
+                  }
+                  {
+                    order.carrier_cod_status_code == 'codreceipt' ?
+                      <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
+                      : null
+                  }
+
                 </Card>
               </Col>
             </Row >

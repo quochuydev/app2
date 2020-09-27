@@ -33,7 +33,7 @@ import common from '../../../utils/common';
 
 let formatMoney = common.formatMoney;
 let formatFulfillmentStatus = common.formatFulfillmentStatus;
-let { formatGatewayCode } = common;
+let { formatGatewayCode, textFinancial } = common;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -475,6 +475,13 @@ function Customer(props) {
                   <Radio.Group name="gateway_code" value={order.gateway_code}
                     onChange={e => setOrder({ gateway_code: e.target.value })}>
                     <Radio value={'cod'}>{formatGatewayCode('cod')}</Radio>
+                  </Radio.Group>
+                </Row>
+                <Row className="m-t-10">
+                  <Radio.Group name="financial_status" value={order.financial_status}
+                    onChange={e => setOrder({ financial_status: e.target.value })}>
+                    <Radio value={'paid'}>{textFinancial('paid')}</Radio>
+                    <Radio value={'pending'}>{textFinancial('pending')}</Radio>
                   </Radio.Group>
                 </Row>
                 <Row className="m-t-10">

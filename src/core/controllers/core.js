@@ -109,7 +109,7 @@ async function signup(req, res, next) {
 
     let count_shop_by_code = await ShopModel.count({ code });
     if (count_shop_by_code) {
-      code = `${code}-${String(count_shop_by_code + 1)}`;
+      code = `${code}-${String(Math.ceil(Math.random() * 10000))}`;
     }
 
     if (is_create_shop) {
