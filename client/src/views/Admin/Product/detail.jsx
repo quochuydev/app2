@@ -347,7 +347,7 @@ function ProductDetail(props) {
 
   function onModalVendor(id) {
     if (id) {
-      let vendor = vendors.find(e => e.id == id);
+      let vendor = vendors.find(e => e.title == id);
       actions.merge({ vendor });
     } else {
       actions.merge({ vendor: {} });
@@ -377,7 +377,7 @@ function ProductDetail(props) {
       if (vendor.id) {
         result = await AdminServices.Product.updateVendor(vendor)
       } else {
-        result = await AdminServices.Product.createVendor(vendor)
+        result = await AdminServices.Product.assertVendor(vendor)
       }
       message.success(result.message);
       setModalAssertVendor(false);
@@ -414,9 +414,10 @@ function ProductDetail(props) {
                     <Form.Item label={'Nhà sản xuất'}>
                       <Input.Group style={{ width: '100%', display: 'flex' }}>
                         <Select style={{ flex: 'auto' }} onChange={e => onChangeField('vendor', e)} name="vendor" value={productUpdate.vendor}>
+                          <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                           {
                             vendors.map((e, i) =>
-                              <Option key={i} value={e.id}>{e.title}</Option>
+                              <Option key={e.id} value={e.title}>{e.title}</Option>
                             )
                           }
                         </Select>
@@ -543,7 +544,7 @@ function ProductDetail(props) {
         {
           <div>
             <Form.Item label={'Tên nhà sản xuất'}>
-              <Input value={vendor.title}
+              <Input value={vendor ? vendor.title : null}
                 onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
             </Form.Item>
           </div>

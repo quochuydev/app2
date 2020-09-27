@@ -14,13 +14,31 @@ Controller.listVendors = async function ({ query }) {
   return { vendors }
 }
 
-Controller.createVendor = async function ({ data }) {
-  let vendor = await VendorModel._create(data);
+Controller.assertVendor = async function ({ data }) {
+  if (!data.title) {
+    throw { message: 'Thiếu thông tin' }
+  }
+  let found_vendor = await VendorModel._findOne({ title: data.title });
+  let vendor = null;
+  if (!found_vendor) {
+    vendor = await VendorModel._create(data);
+  } else {
+    vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data }, { new: true, lean: true });
+  }
   return { vendor };
 }
 
 Controller.updateVendor = async function ({ vendor_id, data }) {
-  let vendor = await VendorModel.findOneAndUpdate({ id: vendor_id }, { $set: data }, { new: true, lean: true });
+  if (!data.title) {
+    throw { message: 'Thiếu thông tin' }
+  }
+  let found_vendor = await VendorModel._findOne({ title: data.title });
+  let vendor = null;
+  if (!found_vendor) {
+    vendor = await VendorModel._create(data);
+  } else {
+    vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data }, { new: true, lean: true });
+  }
   return { vendor };
 }
 

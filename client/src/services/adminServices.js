@@ -226,7 +226,7 @@ let Product = {
     let url = compile('api/vendors');
     return await ApiClient.getData(url, null, query);
   },
-  createVendor: async function (data) {
+  assertVendor: async function (data) {
     let url = compile('api/vendors');
     return await ApiClient.postData(url, null, data);
   },

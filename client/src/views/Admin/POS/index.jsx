@@ -303,7 +303,7 @@ function Customer(props) {
     }
   }
 
-  async function createVendor(items) {
+  async function loadProductsByVendor(items) {
     ProductActions.loadProducts({ vendor_in: items });
   }
 
@@ -346,7 +346,7 @@ function Customer(props) {
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select style={{ width: '100%' }} onChange={e => createVendor(e)} defaultValue={null}>
+                      <Select style={{ width: '100%' }} onChange={e => loadProductsByVendor(e)} defaultValue={null}>
                         <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           vendors.map((e, i) =>
