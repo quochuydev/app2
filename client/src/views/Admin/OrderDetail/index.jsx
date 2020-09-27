@@ -11,7 +11,7 @@ import {
 
 import {
   Table, Row, Col, Modal, Card, Button, Input, message,
-  Popover, Statistic, PageHeader, Icon, List, Avatar, Tag,
+  Popover, Statistic, PageHeader, Icon, List, Avatar, Tag, Select,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -25,6 +25,8 @@ let formatFulfillmentStatus = common.formatFulfillmentStatus;
 let formatCodStatus = common.formatCodStatus;
 let textFinancial = common.textFinancial;
 let cssStatus = common.cssStatus;
+
+let { Option } = Select;
 
 function OrderDetailComponent(props) {
   let { match: { params }, actions, order } = props;
@@ -156,6 +158,9 @@ function OrderDetailComponent(props) {
       message.error(error.message);
     }
   }
+  async function updateFulfillmentStatus() {
+
+  }
 
   return (
     <div>
@@ -282,7 +287,17 @@ function OrderDetailComponent(props) {
                 </Card>
                 <br />
                 <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
-                  <p className="ui-title-page m-b-10">Trạng thái thu hộ COD</p>
+                  <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
+                  <Select value={order.fulfillment_status} className="block">
+                    <Option key={1}>Chờ lấy hàng</Option>
+                    <Option key={'delivering'} value={'delivering'}>{formatFulfillmentStatus('delivering')}</Option>
+                    <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
+                    <Option key={4}>Hủy</Option>
+                    <Option key={5}>Không gặp khách</Option>
+                  </Select>
+                  <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
+
+                  <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
                   {
                     order.carrier_cod_status_code == 'codpending' ?
                       <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
