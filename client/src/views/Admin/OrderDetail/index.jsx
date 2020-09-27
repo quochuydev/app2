@@ -144,6 +144,19 @@ function OrderDetailComponent(props) {
     actions.merge({ attributes: order.attributes })
   }
 
+  async function updateCodeReceipt() {
+    try {
+      let result = await AdminServices.Order.updateOrder({
+        id: order.id,
+        carrier_cod_status_code: 'codreceipt'
+      });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
+  }
+
   return (
     <div>
       {
@@ -266,6 +279,21 @@ function OrderDetailComponent(props) {
                   <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
                   <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
                   <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
+                </Card>
+                <br />
+                <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
+                  <p className="ui-title-page m-b-10">Trạng thái thu hộ COD</p>
+                  {
+                    order.carrier_cod_status_code == 'codpending' ?
+                      <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
+                      : null
+                  }
+                  {
+                    order.carrier_cod_status_code == 'codreceipt' ?
+                      <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
+                      : null
+                  }
+
                 </Card>
               </Col>
             </Row >

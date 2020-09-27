@@ -17,7 +17,7 @@ const URLS = {
   GET_ORDER_DETAIL: 'api/order/detail',
   SYNC_ORDERS: 'api/order/sync',
   CREATE_ORDER: 'api/order/create',
-  UPDATE_ORDER: 'api/orders',
+  UPDATE_ORDER: 'api/orders/{id}',
   PAY_ORDER: 'api/orders/{id}/pay',
   UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
   CANCEL_ORDER: 'api/orders/{id}/cancel',
@@ -103,11 +103,6 @@ async function createOrder(data) {
   return await ApiClient.postData(URLS.CREATE_ORDER, null, data);
 }
 
-async function updateOrder(data) {
-  let url = compile(URLS.UPDATE_ORDER, { id: data.id });
-  return await ApiClient.putData(url, null, data);
-}
-
 async function updateNoteOrder(data) {
   let url = compile(URLS.UPDATE_NOTE_ORDER, { id: data.id });
   return await ApiClient.putData(url, null, data);
@@ -125,7 +120,11 @@ let Order = {
   },
   exportOrders: async function (data) {
     return await ApiClient.postData(URLS.EXPORT_ORDERS, null, data);
-  }
+  },
+  updateOrder: async function (data) {
+    let url = compile(URLS.UPDATE_ORDER, { id: data.id });
+    return await ApiClient.putData(url, null, data);
+  },
 }
 
 async function loadStaffs() {
@@ -311,7 +310,7 @@ const Report = {
 export default {
   listCustomers, addCustomer, updateCustomer, syncCustomers, exportCustomer, getCustomer,
   loadOrders, syncOrders,
-  getOrderDetail, createOrder, updateOrder, updateNoteOrder, payOrder,
+  getOrderDetail, createOrder, updateNoteOrder, payOrder,
   loadStaffs, createStaffs, installWoocommerceApp,
   buildLinkHaravanApp, installHaravanApp, buildLinkShopifyApp, installShopifyApp, resetTimeSync, getSetting, updateStatusApp,
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
