@@ -15,6 +15,16 @@ export const ACTIONS = {
   EXPORT_CUSTOMER_FAILED: 'EXPORT_CUSTOMER_FAILED',
 };
 
+export function setCustomer(customer) {
+  return function (dispatch) {
+    dispatch({
+      type: 'REFRESH', payload: {
+        error: false, message: 'Merge success', customer
+      }
+    });
+  }
+}
+
 export function merge(data) {
   return function (dispatch) {
     dispatch({

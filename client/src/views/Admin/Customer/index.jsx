@@ -14,7 +14,6 @@ import 'antd/dist/antd.css';
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
-import CustomerDetail from './detail'
 import AdminServices from './../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;

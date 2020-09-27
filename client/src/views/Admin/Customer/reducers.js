@@ -1,4 +1,5 @@
 import { Map } from 'immutable';
+import _ from 'lodash';
 // import { ACTIONS } from './actions';
 
 const initialState = Map({
@@ -18,6 +19,10 @@ function CustomerReducer(state = initialState, { type, payload }) {
     case 'EXPORT_CUSTOMER_SUCCESS':
     case 'ADD_CUSTOMER_SUCCESS':
       return state.merge({ ...payload });
+    case 'REFRESH':
+      let customer = state.get('customer')
+      customer = _.assign({}, customer, payload.customer);
+      return state.merge({ customer: customer });
     case 'RESET':
       return state.merge({ customer: {} });
     default:

@@ -223,9 +223,9 @@ function Customer(props) {
     console.log(customerUpdate)
     setIsCustomerModal(true);
     if (customerUpdate) {
-      setCustomer(customerUpdate);
+      CustomerActions.merge({ customer: customerUpdate })
     } else {
-      setCustomer({});
+      CustomerActions.merge({ customer: {} })
     }
   }
   function removeCustomer() {
@@ -552,7 +552,7 @@ function Customer(props) {
         </Menu>
       </Modal>
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} assertCustomer={assertCustomer} />
+        assertCustomer={assertCustomer} />
 
       <Modal visible={isCreateSuccess} width={600} footer={null}
         onCancel={() => setIsCreateSuccess(false)}>
