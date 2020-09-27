@@ -264,8 +264,11 @@ function OrderDetailComponent(props) {
                       <Col span={12}>Còn lại:</Col>
                       <Col span={12} className="text-right">{formatMoney(order.total_price - order.total_pay)}</Col>
 
-                      <Button type="primary" onClick={() => { payOrder(order) }}>
-                        Xác nhận thanh toán</Button>
+                      {
+                        order.financial_status != 'paid' ?
+                          <Button type="primary" onClick={() => { payOrder(order) }}>Xác nhận thanh toán</Button>
+                          : null
+                      }
                     </Col>
                   </Row>
                 </Card>
