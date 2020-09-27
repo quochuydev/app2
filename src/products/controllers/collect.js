@@ -21,7 +21,9 @@ Controller.assertVendor = async function ({ data }) {
   let found_vendor = await VendorModel._findOne({ title: data.title });
   let vendor = null;
   if (!found_vendor) {
-    vendor = await VendorModel._create(data);
+    vendor = await VendorModel._create({
+      title: data.title
+    });
   } else {
     vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data }, { new: true, lean: true });
   }
@@ -29,16 +31,7 @@ Controller.assertVendor = async function ({ data }) {
 }
 
 Controller.updateVendor = async function ({ vendor_id, data }) {
-  if (!data.title) {
-    throw { message: 'Thiếu thông tin' }
-  }
-  let found_vendor = await VendorModel._findOne({ title: data.title });
-  let vendor = null;
-  if (!found_vendor) {
-    vendor = await VendorModel._create(data);
-  } else {
-    vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data }, { new: true, lean: true });
-  }
+  let vendor = await VendorModel.findOneAndUpdate({ id: vendor_id }, { $set: data }, { new: true, lean: true });
   return { vendor };
 }
 
@@ -47,15 +40,27 @@ Controller.updateCollection = async function ({ collection_id, data }) {
   return { collection };
 }
 
+Controller.assertCollection = async function ({ data }) {
+  if (!data.title) {
+    throw { message: 'Thiếu thông tin' }
+  }
+  let found_collection = await CollectionModel._findOne({ title: data.title });
+  let collection = null;
+  if (!found_collection) {
+    collection = await CollectionModel._create({
+      title: data.title
+    });
+  } else {
+    collection = await CollectionModel.findOneAndUpdate({ id: found_collection.id }, { $set: data }, { new: true, lean: true });
+  }
+
+  return { collection };
+}
+
 Controller.listCollections = async function ({ query }) {
   let { criteria } = _parse(query)
   let collections = await CollectionModel._find(criteria);
   return { collections }
-}
-
-Controller.createCollection = async function ({ data }) {
-  let collect = await CollectionModel._create(data);
-  return { collect };
 }
 
 Controller.listTags = async function ({ query }) {

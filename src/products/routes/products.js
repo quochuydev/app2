@@ -7,7 +7,7 @@ const VariantController = require('../controllers/variant');
 const { ProductImage } = require('../controllers/product-image');
 const { uploadToDisk, uploadToCloud } = require(path.resolve('./src/core/middlewares/upload'));
 const {
-  listVendors, assertVendor, listCollections, createCollection,
+  listVendors, assertVendor, listCollections, assertCollection,
   createTag, listTags, updateVendor, updateCollection
 } = require('../controllers/collect');
 
@@ -98,7 +98,7 @@ const router = ({ app }) => {
   });
 
   app.post('/api/collections', async function (req, res, next) {
-    createCollection({ data: req.body })
+    assertCollection({ data: req.body })
       .then(result => res.json(result))
       .catch(error => next(error));
   });

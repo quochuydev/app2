@@ -38,6 +38,8 @@ function Products(props) {
         <span>{moment(edit.created_at).format('DD-MM-YYYY hh:mm:ss a')}</span>
       )
     },
+    { title: 'Nhà sản xuất', dataIndex: 'vendor', key: 'vendor' },
+    { title: 'Loại sản phẩm', dataIndex: 'collect', key: 'collect' },
     {
       title: 'Số đơn hàng', key: 'total_orders', render: edit => (
         <Tag color="magenta">{edit.total_orders}</Tag>
@@ -47,7 +49,7 @@ function Products(props) {
       title: 'Option', key: 'option', render: edit => (
         <div>
           <Button type="danger" size="small" onClick={() => deleteProduct(edit.id)}>
-            <Icon type="close"/>
+            <Icon type="close" />
           </Button>
         </div>
       )

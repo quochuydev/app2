@@ -238,7 +238,7 @@ let Product = {
     let url = compile('api/collections');
     return await ApiClient.getData(url, null, query);
   },
-  createCollection: async function (data) {
+  assertCollection: async function (data) {
     let url = compile('api/collections');
     return await ApiClient.postData(url, null, data);
   },

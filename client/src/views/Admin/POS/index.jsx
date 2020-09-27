@@ -307,7 +307,7 @@ function Customer(props) {
     ProductActions.loadProducts({ vendor_in: items });
   }
 
-  async function createCollection(items) {
+  async function loadProductByCollect(items) {
     ProductActions.loadProducts({ collect_in: items });
   }
 
@@ -335,7 +335,7 @@ function Customer(props) {
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
                       <Select style={{ width: '100%' }}
-                        onChange={e => createCollection(e)} defaultValue={null}>
+                        onChange={e => loadProductByCollect(e)} defaultValue={null}>
                         <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           collections.map((e, i) =>

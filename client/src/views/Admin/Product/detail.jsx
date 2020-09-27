@@ -357,12 +357,7 @@ function ProductDetail(props) {
 
   async function assertCollection({ collection }) {
     try {
-      let result = null
-      if (collection.id) {
-        result = await AdminServices.Product.updateCollection(collection)
-      } else {
-        result = await AdminServices.Product.createCollection(collection)
-      }
+      let result = await AdminServices.Product.assertCollection(collection)
       message.success(result.message);
       setModalAssertCollection(false);
       actions.loadCollections()
@@ -373,12 +368,7 @@ function ProductDetail(props) {
 
   async function assertVendor({ vendor }) {
     try {
-      let result = null
-      if (vendor.id) {
-        result = await AdminServices.Product.updateVendor(vendor)
-      } else {
-        result = await AdminServices.Product.assertVendor(vendor)
-      }
+      let result = await AdminServices.Product.assertVendor(vendor)
       message.success(result.message);
       setModalAssertVendor(false);
       actions.loadVendors()
