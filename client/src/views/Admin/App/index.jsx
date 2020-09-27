@@ -64,10 +64,10 @@ function App(props) {
 
   const [buildLinkHaravan, setBuildLinkHaravan] = useState('');
 
-  const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host: 'http://localhost:8080/QH1901' });
+  const [dataWoocommerce, setDataWoocommerce] = useState({ wp_host: '' });
   const [buildLinkWoocommerce, setBuildLinkWoocommerce] = useState('');
 
-  const [dataShopify, setDataShopify] = useState({ shopify_host: 'https://quochuydev1.myshopify.com' });
+  const [dataShopify, setDataShopify] = useState({ shopify_host: '' });
   const [buildLinkShopify, setBuildLinkShopify] = useState('');
 
   const [isShowCreateAdapter, setIsShowCreateAdapter] = useState(false);

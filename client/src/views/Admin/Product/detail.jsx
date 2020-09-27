@@ -322,7 +322,6 @@ function ProductDetail(props) {
   }
 
   async function createTag(items) {
-    console.log(items)
     let title_tags = tags.map(e => e.title);
     for (const item of items) {
       if (!title_tags.includes(item)) {
@@ -337,20 +336,33 @@ function ProductDetail(props) {
   const [modalAssertVendor, setModalAssertVendor] = useState(false);
 
   function onModalCollection(id) {
-    let collection = collections.find(e => e.id == id);
-    actions.merge({ collection });
+    if (id) {
+      let collection = collections.find(e => e.id == id);
+      actions.merge({ collection });
+    } else {
+      actions.merge({ collection: {} });
+    }
     setModalAssertCollection(true);
   }
 
   function onModalVendor(id) {
-    let vendor = vendors.find(e => e.id == id);
-    actions.merge({ vendor });
+    if (id) {
+      let vendor = vendors.find(e => e.id == id);
+      actions.merge({ vendor });
+    } else {
+      actions.merge({ vendor: {} });
+    }
     setModalAssertVendor(true);
   }
 
   async function assertCollection({ collection }) {
     try {
-      let result = await AdminServices.Product.updateCollection(collection)
+      let result = null
+      if (collection.id) {
+        result = await AdminServices.Product.updateCollection(collection)
+      } else {
+        result = await AdminServices.Product.createCollection(collection)
+      }
       message.success(result.message);
       setModalAssertCollection(false);
       actions.loadCollections()
@@ -361,7 +373,12 @@ function ProductDetail(props) {
 
   async function assertVendor({ vendor }) {
     try {
-      let result = await AdminServices.Product.updateVendor(vendor)
+      let result = null
+      if (vendor.id) {
+        result = await AdminServices.Product.updateVendor(vendor)
+      } else {
+        result = await AdminServices.Product.createVendor(vendor)
+      }
       message.success(result.message);
       setModalAssertVendor(false);
       actions.loadVendors()
@@ -403,9 +420,13 @@ function ProductDetail(props) {
                             )
                           }
                         </Select>
-                        <Button type="danger" icon="edit" onClick={e => onModalVendor(productUpdate.vendor)}>
-                        </Button>
-                        <Button type="primary" icon="plus" onClick={e => onModalVendor(productUpdate.vendor)}>
+                        {
+                          !!productUpdate.vendor ?
+                            <Button type="danger" icon="edit" onClick={e => onModalVendor(productUpdate.vendor)}>
+                            </Button>
+                            : null
+                        }
+                        <Button type="primary" icon="plus" onClick={e => onModalVendor()}>
                         </Button>
                       </Input.Group>
                     </Form.Item>
@@ -418,9 +439,13 @@ function ProductDetail(props) {
                             )
                           }
                         </Select>
-                        <Button type="danger" icon="edit" onClick={e => onModalCollection(productUpdate.collect)}>
-                        </Button>
-                        <Button type="primary" icon="plus" onClick={e => onModalCollection(productUpdate.collect)}>
+                        {
+                          !!productUpdate.collect ?
+                            <Button type="danger" icon="edit" onClick={e => onModalCollection(productUpdate.collect)}>
+                            </Button>
+                            : null
+                        }
+                        <Button type="primary" icon="plus" onClick={e => onModalCollection()}>
                         </Button>
                       </Input.Group>
                     </Form.Item>
@@ -502,12 +527,12 @@ function ProductDetail(props) {
         onOk={() => { assertCollection({ collection }) }}
         onCancel={() => setModalAssertCollection(false)}>
         {
-          collection ? <div>
+          <div>
             <Form.Item label={'Tên nhóm'}>
               <Input value={collection.title}
                 onChange={e => { actions.merge({ collection: { ...collection, title: e.target.value } }) }} />
             </Form.Item>
-          </div> : null
+          </div>
         }
       </Modal>
 
@@ -516,12 +541,12 @@ function ProductDetail(props) {
         onOk={() => { assertVendor({ vendor }) }}
         onCancel={() => setModalAssertVendor(false)}>
         {
-          vendor ? <div>
+          <div>
             <Form.Item label={'Tên nhà sản xuất'}>
               <Input value={vendor.title}
                 onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
             </Form.Item>
-          </div> : null
+          </div>
         }
       </Modal>
     </div >

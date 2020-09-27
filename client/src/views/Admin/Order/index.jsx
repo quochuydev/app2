@@ -11,7 +11,7 @@ import NumberFormat from 'react-number-format';
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
   Select, Form, Modal, Radio, Pagination, Tabs,
-  Popover, message,
+  Popover, message, DatePicker
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -27,9 +27,10 @@ let formatFulfillmentStatus = common.formatFulfillmentStatus;
 let cssStatus = common.cssStatus;
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function Orders(props) {
-  const { count, actions, orders } = props;
+  const { count, actions, orders, downloadLink } = props;
 
   const columns = [
     {
@@ -72,7 +73,7 @@ function Orders(props) {
       )
     },
     {
-      title: 'In', key: 'print', render: edit => (
+      title: 'In', key: 'print', width: 50, render: edit => (
         <ReactToPrint
           onBeforeGetContent={() => beforePrint(edit)}
           onAfterPrint={() => setIsShowPrint(false)}
@@ -88,8 +89,9 @@ function Orders(props) {
   const [order, setOrder] = useState({});
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
-
+  const [isExportModal, setIsExportModal] = useState(false);
+  let initQuery = { limit: 10, page: 1 }
+  let [query, setQuery] = useState(initQuery);
   let [isShowPrint, setIsShowPrint] = useState(false)
 
   useEffect(() => {
@@ -120,8 +122,8 @@ function Orders(props) {
     setIsProcessing(false);
   }
 
-  function onChangeType(e) {
-    setQuery({ ...query, type_in: e })
+  function onChangeField(name, e) {
+    setQuery({ ...query, [name]: e })
   }
   function onChange(e) {
     let { name, value } = e.target;
@@ -129,96 +131,80 @@ function Orders(props) {
     setQuery({ ...query, [name]: value })
   }
   function onChangePage(e) {
+    console.log(e)
     setQuery({ ...query, page: e })
+  }
+
+  function onExportOrders() {
+    setIsExportModal(true);
+  }
+
+  function exportOrders(query) {
+    actions.exportOrders(query);
   }
 
   return (
     <div>
       <Form>
         <Input.Group style={{ width: '100%', display: 'flex' }}>
-          <Popover placement="bottomLeft" content={
-            <div>
-              <p>Content</p>
-              <Select value={1} className="block">
-                <Select.Option value={1}>Trạng thái đơn hàng</Select.Option>
-              </Select>
-              <p>Content</p>
-              <Select value={1} className="block">
-                <Select.Option value={1}>Mới</Select.Option>
-              </Select>
-              <br />
-              <Button>Hủy</Button>
-              <Button type="primary">Thêm điều kiện lọc</Button>
-            </div>
-          } trigger="click">
-            <Button icon="filter" size="large">
-              <span className="hidden-xs">Áp dụng bộ lọc</span>
-            </Button>
-          </Popover>
-          <Input size="large" placeholder="Nhập sản phẩm để tìm kiếm" name="type" onChange={onChange}
-            prefix={<Icon type="search" />} style={{ marginBottom: 1 }} />
+          <Button type="primary" icon="reload" onClick={() => setQuery(initQuery)} size="large">
+            <span className="hidden-xs">Bỏ lọc</span>
+          </Button>
+          <Input size="large" placeholder="Nhập mã đơn hàng" name="type" name="number" value={query.number} onChange={onChange}
+            prefix={<Icon type="search" onClick={() => loadOrders()} />} style={{ marginBottom: 1 }} />
           <Link to={`POS`} target="_blank">
             <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
               <span className="hidden-xs">Tạo đơn hàng</span>
             </Button>
           </Link>
-          <Popover placement="topLeft" content={
+          <Popover placement="bottomLeft" content={
             <div>
-              <Button className="block" onClick={() => loadOrders()}>
-                Xuất excel
-                </Button>
-              <Button className="block" onClick={() => loadOrders()}>
-                Xác nhận thanh toán
-                </Button>
+              <Button type="link" className="block" onClick={() => onExportOrders()}>
+                Xuất excel</Button>
             </div>
           } trigger="click">
-            <Button icon="swap" size="large" >
+            <Button icon="swap" size="large" type="danger" >
+              <span className="hidden-xs">Tác vụ</span>
             </Button>
           </Popover>
         </Input.Group>
         <br />
-        {
-          Object.keys(query).map(key =>
-            <Tag closable onClose={e => {
-              e.preventDefault();
-            }}>
-              {
-                query[key] ? <span> {key}: {query[key]} </span> : null
-              }
-            </Tag>)
-        }
-        <br />
         <Row key='1'>
-          <Col span={8}>
-            <Form.Item label="Mã đơn hàng">
-              <Input name="number" onChange={onChange} /></Form.Item>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Ngày tạo từ">
+              <DatePicker name="created_at_gte" onChange={e => onChangeField('created_at_gte', e)} />
+            </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="Commerce">
-              <Select
-                mode="multiple"
-                name="type_in"
-                style={{ width: '100%' }}
-                placeholder="-- Chọn --"
-                onChange={onChangeType}
-              >
-                <Option value='app'>App</Option>
-                <Option value='haravan'>Haravan</Option>
-                <Option value='woocommerce'>Woocommerce</Option>
-                <Option value='shopify'>Shopify</Option>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Ngày tạo đến">
+              <DatePicker name="created_at_lte" onChange={e => onChangeField('created_at_lte', e)} />
+            </Form.Item>
+          </Col>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Khách hàng">
+              <Input name="customer_info" onChange={onChange} value={query.customer_info}
+                placeholder="ID khách hàng/Tên khách hàng/Email" />
+            </Form.Item>
+          </Col>
+          <Col xs={12} lg={6}>
+            <Form.Item label="Trạng thái thanh toán">
+              <Select mode="tags" onChange={items => onChangeField('financial_status_in', items)}
+                placeholder="-- Trạng thái thanh toán --" value={query.financial_status_in}>
+                <Option value={'paid'}>{textFinancial('paid')}</Option>
+                <Option value={'partially_paid'}>{textFinancial('partially_paid')}</Option>
+                <Option value={'pending'}>{textFinancial('pending')}</Option>
               </Select>
             </Form.Item>
           </Col>
-
           <Col span={24}>
-            <Button onClick={() => loadOrders()}>Áp dụng bộ lọc</Button>
             <Button className="hide" onClick={() => syncOrders()}>Đồng bộ đơn hàng</Button>
-            <Table rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
+            <Table className="m-t-10" rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
               scroll={{ x: 900 }} />
-          </Col>
-          <Col span={24}>
-            <Pagination defaultCurrent={1} pageSize={10} total={count} name="page" onChange={onChangePage}
-              showTotal={total => <span>{total}</span>} />
+            <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
+              showTotal={(total, range) => `${total} đơn hàng`} current={query.page}
+              defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
+              onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
+            />
           </Col>
         </Row>
         <ModalInfo
@@ -231,7 +217,14 @@ function Orders(props) {
           isShowSendMailModal={isShowSendMailModal}
           setIsShowSendMailModal={setIsShowSendMailModal}
         ></ModalMail>
-
+        <Modal
+          title="Export excel"
+          visible={isExportModal}
+          onOk={() => exportOrders()}
+          onCancel={() => setIsExportModal(false)}
+        >
+          <a href={downloadLink}>{downloadLink}</a>
+        </Modal>
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>
           <div ref={componentRef}>
             {
@@ -249,6 +242,7 @@ const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
   count: state.orders.get('count'),
   order: state.orders.get('order'),
+  downloadLink: state.orders.get('downloadLink'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

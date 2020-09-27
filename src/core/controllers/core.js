@@ -11,6 +11,7 @@ const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/c
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _is = require(path.resolve('./src/core/share/_is.lib.share.js'))
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -31,11 +32,15 @@ let auth = async (req, res) => {
     // }
     if (!user) {
       let shop_data = {
-        name: email, code: email, google_info: userAuth
+        name: email, code: email, google_info: userAuth,
+        user_created: {
+          email
+        }
       }
       let new_shop = await ShopModel.create(shop_data);
       let new_user = {
         email,
+        is_root: true,
         shop_id: new_shop.id
       }
       user = await UserMD.create(new_user);
@@ -95,7 +100,8 @@ async function checkUser({ body }) {
 
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id, username, name, code, phone } = req.body;
+    let { email, password, is_create_shop, shop_id,
+      username, name, code, phone } = req.body;
 
     if (!password) {
       return res.status(400).json({ message: 'Nhập mật khẩu' });
@@ -103,28 +109,44 @@ async function signup(req, res, next) {
 
     let count_shop_by_code = await ShopModel.count({ code });
     if (count_shop_by_code) {
-      code = code + String(count_shop_by_code + 1);
+      code = `${code}-${String(count_shop_by_code + 1)}`;
     }
 
     if (is_create_shop) {
       if (!name) {
         return res.status(400).json({ message: 'Thiếu thông tin tên cửa hàng', code: 'name_required' });
       }
+      if (!code) {
+        return res.status(400).json({ message: 'Thiếu mã code' });
+      }
+
       if (!email) {
         return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
       }
+
+      if (email && !_is.email(email)) {
+        return res.status(400).json({ message: 'Email không đúng định dạng' });
+      }
+
       let found_root_user = await UserMD.count({ email, is_root: true });
       if (found_root_user) {
         return res.status(400).json({ message: 'Email đã tồn tại' });
       }
 
       let shop_data = {
-        name, code
+        name, code, user_created: {
+          email, phone
+        }
       }
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email, phone, username: phone, shop_id: shop.id,
-        password, is_root: true
+        email, phone,
+        username: phone,
+        shop_id: shop.id,
+        first_name: email,
+        last_name: email,
+        password,
+        is_root: true
       }
       let user = await UserMD.create(new_user);
       return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
@@ -138,6 +160,9 @@ async function signup(req, res, next) {
       }
       let new_user = {
         email,
+        phone,
+        first_name: email,
+        last_name: email,
         shop_id
       }
       let user = await UserMD.create(new_user);
@@ -155,12 +180,18 @@ let login = async (req, res, next) => {
     if (!user_login) {
       throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
     }
-    let user = await UserMD.findOne({ email: user_login }).lean(true);
-    if (!user) {
+    let user = null;
+    let users = await UserMD.find({ email: user_login }).lean(true);
+    if (!(users && users.length)) {
       throw { message: `User này không tồn tại` }
     }
-    if (!UserMD.authenticate(user, password)) {
-      throw { statusCode: 401, message: `Mật khẩu không đúng` }
+    for (const user_login of users) {
+      if (UserMD.authenticate(user_login, password)) {
+        user = user_login;
+      }
+    }
+    if (!user) {
+      throw { statusCode: 401, message: `Mật khẩu không đúng hoặc Tài khoản không tồn tại` }
     }
     let user_gen_token = {
       id: user.id,

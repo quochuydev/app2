@@ -30,7 +30,10 @@ import './style.css'
 import PrintOrder from './print.jsx';
 import CustomerDetail from './../Customer/detail';
 import common from '../../../utils/common';
+
 let formatMoney = common.formatMoney;
+let formatFulfillmentStatus = common.formatFulfillmentStatus;
+let { formatGatewayCode } = common;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -332,7 +335,8 @@ function Customer(props) {
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
                       <Select style={{ width: '100%' }}
-                        onChange={e => createCollection(e)}>
+                        onChange={e => createCollection(e)} defaultValue={null}>
+                        <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           collections.map((e, i) =>
                             <Option key={i} value={e.id}>{e.title}</Option>
@@ -342,8 +346,8 @@ function Customer(props) {
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select style={{ width: '100%' }}
-                        onChange={e => createVendor(e)}>
+                      <Select style={{ width: '100%' }} onChange={e => createVendor(e)} defaultValue={null}>
+                        <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           vendors.map((e, i) =>
                             <Option key={i} value={e.id}>{e.title}</Option>
@@ -395,9 +399,8 @@ function Customer(props) {
                 </Collapse.Panel>
               </Collapse>
             </div>
-
             <Dropdown overlay={(
-              <Menu style={{ height: 150, overflow: 'scroll' }}>
+              <Menu style={{ height: 225, background: '#fff', overflow: 'scroll' }}>
                 {
                   _.cloneDeep(products).map(item => (
                     <Menu.Item key={item.id}>
@@ -421,7 +424,7 @@ function Customer(props) {
           </Col>
           <Col xs={24} lg={8}>
             <Layout>
-              <Content style={{ height: '70vh', marginTop: 9 }}>
+              <Content style={{ height: '60vh', marginTop: 9 }}>
                 <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
                   <p><span>Khách hàng </span>
                     <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
@@ -453,9 +456,9 @@ function Customer(props) {
                         <p>Ngày sinh: {order.customer.birthday}</p>
                         <p className="ui-title-page">
                           <span>Thông Tin Giao Hàng </span>
-                          <Tag color="blue" className="cursor-pointer">
-                            <Icon onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}
-                              style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
+                          <Tag color="blue" className="cursor-pointer"
+                            onClick={() => onShowCustomerModal({ ...order.customer, default_address: order.shipping_address })}>
+                            <Icon style={{ color: '#007bff', display: !!order.shipping_address ? 'inline-block' : 'none' }}
                               theme="filled" type="edit" /> Sửa
                           </Tag>
                         </p>
@@ -467,8 +470,21 @@ function Customer(props) {
                   }
                 </Card>
               </Content>
-              <Footer style={{ bottom: 0, padding: 5, color: '#000' }}>
-                <Row>
+              <Footer style={{ bottom: 0, padding: 5, color: '#000', background: '#fff', zIndex: 100 }}>
+                <Row className="m-t-10">
+                  <Radio.Group name="gateway_code" value={order.gateway_code}
+                    onChange={e => setOrder({ gateway_code: e.target.value })}>
+                    <Radio value={'cod'}>{formatGatewayCode('cod')}</Radio>
+                  </Radio.Group>
+                </Row>
+                <Row className="m-t-10">
+                  <Radio.Group name="fulfillment_status" value={order.fulfillment_status}
+                    onChange={e => setOrder({ fulfillment_status: e.target.value })}>
+                    <Radio value={'delivered'}>{formatFulfillmentStatus('delivered')}</Radio>
+                    <Radio value={'delivering'}>{formatFulfillmentStatus('delivering')}</Radio>
+                  </Radio.Group>
+                </Row>
+                <Row className="m-t-10">
                   <Col span={9}>
                     <p>Tạm tính</p>
                   </Col>

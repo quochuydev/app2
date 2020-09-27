@@ -18,8 +18,8 @@ const initialState = Map({
   collections: [],
   tags: [],
   
-  vendor: null,
-  collection: null,
+  vendor: {},
+  collection: {},
   tag: null,
 });
 

@@ -60,6 +60,17 @@ export function loadOrders(query) {
   }
 }
 
+export function exportOrders(query) {
+  return async (dispatch) => {
+    const data = await AdminServices.Order.exportOrders(query);
+    dispatch({
+      type: ACTIONS.LOAD_ORDERS_SUCCESS, payload: {
+        error: false, message: 'exportOrders.message', ...data
+      }
+    });
+  }
+}
+
 export function getOrderDetail(query) {
   return async (dispatch) => {
     try {

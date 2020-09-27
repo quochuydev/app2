@@ -1,16 +1,26 @@
 const path = require('path');
 const mongoose = require('mongoose');
+const escapeStringRegexp = require('escape-string-regexp');
 
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 
-const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
-const { _parse } = require(path.resolve('./src/core/lib/query'));
 const { syncOrdersHaravan, syncOrdersShopify, syncOrdersWoo } = require('./../business/order');
+const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
+const { xParse } = require(path.resolve('./src/core/lib/query'));
 
-const list = async (req, res) => {
+const list = async (req, res, next) => {
   try {
+    let _parse = xParse({
+      customer_info: value => Object({
+        $or: [
+          { 'customer.email': { $regex: new RegExp(escapeStringRegexp(value), 'i') } },
+          { 'customer.first_name': { $regex: new RegExp(escapeStringRegexp(value), 'i') } },
+          { 'customer.last_name': { $regex: new RegExp(escapeStringRegexp(value), 'i') } }
+        ]
+      })
+    });
     let { limit, skip, criteria } = _parse(req.body);
     let count = await OrderModel.countDocuments(criteria);
     let orders = await OrderModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);

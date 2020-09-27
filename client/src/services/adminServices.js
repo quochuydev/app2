@@ -13,6 +13,7 @@ const URLS = {
   EXPORT_CUSTOMER: 'api/customers/export',
 
   LIST_ORDERS: 'api/order/list',
+  EXPORT_ORDERS: 'api/orders/export',
   GET_ORDER_DETAIL: 'api/order/detail',
   SYNC_ORDERS: 'api/order/sync',
   CREATE_ORDER: 'api/order/create',
@@ -121,6 +122,9 @@ let Order = {
   cancelOrder: async function (data) {
     let url = compile(URLS.CANCEL_ORDER, { id: data.id });
     return await ApiClient.putData(url, null, data);
+  },
+  exportOrders: async function (data) {
+    return await ApiClient.postData(URLS.EXPORT_ORDERS, null, data);
   }
 }
 

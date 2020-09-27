@@ -54,6 +54,9 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.statics.authenticate = function (user, password) {
+  if (!(user.salt && user.password)) {
+    return false;
+  }
   return user.password == hashPassword(user.salt, password);
 }
 
@@ -61,9 +64,6 @@ UserSchema.statics.user_system = {
   id: 1,
   first_name: 'Hệ thống',
   shop_id: cache.get('shop_id')
-}
-UserSchema.statics.authenticate = function (user, password) {
-  return user.password == hashPassword(user.salt, password);
 }
 
 let UserModel = mongoose.model('User', UserSchema);

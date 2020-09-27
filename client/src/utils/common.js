@@ -79,8 +79,16 @@ common.textFinancial = function (code) {
   switch (code) {
     case 'paid':
       return 'Đã thanh toán';
+    case "partially_paid":
+      return "Đã thanh toán một phần";
+    case "pending":
+      return "Chưa thanh toán";
+    case "refunded":
+      return "Đã hoàn tiền";
+    case "voided":
+      return "Đã hủy";
     default:
-      return 'Chưa thanh toán'
+      return ''
   }
 }
 
@@ -90,6 +98,15 @@ common.formatCodStatus = function (code) {
       return "Chưa nhận";
     case 'codreceipt':
       return 'Đã nhận';
+    default:
+      return ''
+  }
+}
+
+common.formatGatewayCode = function (code) {
+  switch (code) {
+    case "cod":
+      return "Thanh toán COD";
     default:
       return ''
   }

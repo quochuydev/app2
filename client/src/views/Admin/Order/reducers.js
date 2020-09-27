@@ -2,6 +2,7 @@ import { Map } from 'immutable';
 import _ from 'lodash';
 
 const initialState = Map({
+  downloadLink: null,
   total: 0,
   orders: [],
   order: {
@@ -17,8 +18,9 @@ const initialState = Map({
     total_price: 0,
     total_pay: 0,
 
-    gateway_code: 'cod',
+    financial_status: 'pending',
     carrier_cod_status_code: 'codreceipt',
+    gateway_code: 'cod',
     fulfillment_status: 'delivered',
 
     customer: null,

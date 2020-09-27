@@ -34,15 +34,13 @@ const App = {
 
         let shops = await ShopModel.find({}).lean(true);
         for (const shop of shops) {
-          console.log('shop_id', shop.id)
           let order_count = await OrderModel.count({ shop_id: shop.id })
-          console.log(`${order_count} Đơn hàng`);
           let product_count = await ProductModel.count({ shop_id: shop.id })
-          console.log(`${product_count} sản phẩm`);
           let customer_count = await CustomerModel.count({ shop_id: shop.id })
-          console.log(`${customer_count} khách hàng`);
+          console.log(`shop [${shop.id}] [code: ${shop.code}] [url: ${shop.url}] [name: ${shop.name}]`);
+          console.log(`${customer_count} khách hàng | ${product_count} sản phẩm | ${order_count} Đơn hàng`);
         }
-        
+
 
       })
       .catch(err => {
