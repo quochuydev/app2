@@ -17,6 +17,8 @@ const ShopSchema = new Schema({
 
   created_at: { type: Date, default: Date.now },
 
+  logo_src: { type: String, default: null },
+
   woocommerce: {
     wp_host: { type: String, default: null },
     consumer_key: { type: String, default: null },
@@ -66,8 +68,8 @@ ShopSchema.statics._findOne = async function (filter = {}, populate = {}, option
 
 ShopSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
   let _this = this;
-  let id = cache.get('shop_id');
-  let data = await _this.findOneAndUpdate({ ...filter, id }, data_update, options);
+  filter.id = cache.get('shop_id');
+  let data = await _this.findOneAndUpdate(filter, data_update, options);
   return data;
 }
 

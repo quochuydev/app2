@@ -268,6 +268,10 @@ async function changeShop(data) {
 let Shop = {
   get: async function () {
     return await ApiClient.getData('api/shop');
+  },
+  update: async function (data) {
+    let url = compile('api/shop/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
   }
 }
 

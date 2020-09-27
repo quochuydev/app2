@@ -6,9 +6,19 @@ const router = ({ app }) => {
     getShop()
       .then(result => res.json(result))
       .catch(error => next(error))
-      
+
     async function getShop() {
-      let shop = await ShopModel._findOne();
+      let shop = await ShopModel._findOne({}, { id: 1, logo_src: 1, name: 1, code: 1, url: 1 });
+      return { shop }
+    }
+  })
+  app.put('/api/shop/:id', function (req, res, next) {
+    updateShop({ id: req.params.id, data: req.body })
+      .then(result => res.json(result))
+      .catch(error => next(error))
+
+    async function updateShop({ id, data }) {
+      let shop = await ShopModel._findOneAndUpdate({}, { $set: data });
       return { shop }
     }
   })
