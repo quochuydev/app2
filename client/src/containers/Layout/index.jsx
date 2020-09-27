@@ -115,7 +115,9 @@ function LayoutContainer({ CoreActions, shop }) {
   };
 
   useEffect(() => {
-    CoreActions.getShop();
+    if (token) {
+      CoreActions.getShop();
+    }
   }, []);
 
   function LeftMenu(props) {
