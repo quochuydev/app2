@@ -18,6 +18,9 @@ const SIGNUP_ROUTE = `${SITE_ROUTE}/signup`;
 const LOGIN_GOOGLE_ROUTE = `${SITE_ROUTE}/login-google`;
 const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 
+const USER_ROUTE = `${SITE_ROUTE}/users`;
+const PERMISSION_ROUTE = `${SITE_ROUTE}/permissions`;
+
 const PATHS = {
   SITE_ROUTE,
   CUSTOMER_ROUTE,
@@ -35,7 +38,9 @@ const PATHS = {
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
   LOGIN_GOOGLE_ROUTE,
-  ERROR_ROUTE
+  ERROR_ROUTE,
+  USER_ROUTE,
+  PERMISSION_ROUTE
 };
 const MENU_DATA = [
   {
@@ -89,6 +94,20 @@ const MENU_DATA = [
     path: APP_ROUTE,
     key: 'app',
     name: 'Ứng dụng',
+    is_open: false,
+    icon: 'appstore'
+  },
+  {
+    path: USER_ROUTE,
+    key: 'user',
+    name: 'Tài khoản',
+    is_open: false,
+    icon: 'appstore'
+  },
+  {
+    path: PERMISSION_ROUTE,
+    key: 'permission',
+    name: 'Nhóm quyền',
     is_open: false,
     icon: 'appstore'
   }
