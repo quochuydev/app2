@@ -103,4 +103,13 @@ common.formatCodStatus = function (code) {
   }
 }
 
+common.formatGatewayCode = function (code) {
+  switch (code) {
+    case "cod":
+      return "Thanh toán COD";
+    default:
+      return ''
+  }
+}
+
 export default common;

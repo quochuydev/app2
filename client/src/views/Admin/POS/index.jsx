@@ -33,6 +33,7 @@ import common from '../../../utils/common';
 
 let formatMoney = common.formatMoney;
 let formatFulfillmentStatus = common.formatFulfillmentStatus;
+let { formatGatewayCode } = common;
 
 const apiUrl = `${config.backend_url}/api`;
 
@@ -423,7 +424,7 @@ function Customer(props) {
           </Col>
           <Col xs={24} lg={8}>
             <Layout>
-              <Content style={{ height: '70vh', marginTop: 9 }}>
+              <Content style={{ height: '60vh', marginTop: 9 }}>
                 <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
                   <p><span>Khách hàng </span>
                     <Tag color="blue" onClick={() => onShowCustomerModal()} className="cursor-pointer">
@@ -470,11 +471,19 @@ function Customer(props) {
                 </Card>
               </Content>
               <Footer style={{ bottom: 0, padding: 5, color: '#000', background: '#fff', zIndex: 100 }}>
-                <Radio.Group name="fulfillment_status" value={order.fulfillment_status}
-                  onChange={e => setOrder({ fulfillment_status: e.target.value })}>
-                  <Radio value={'delivered'}>{formatFulfillmentStatus('delivered')}</Radio>
-                  <Radio value={'delivering'}>{formatFulfillmentStatus('delivering')}</Radio>
-                </Radio.Group>
+                <Row className="m-t-10">
+                  <Radio.Group name="gateway_code" value={order.gateway_code}
+                    onChange={e => setOrder({ gateway_code: e.target.value })}>
+                    <Radio value={'cod'}>{formatGatewayCode('cod')}</Radio>
+                  </Radio.Group>
+                </Row>
+                <Row className="m-t-10">
+                  <Radio.Group name="fulfillment_status" value={order.fulfillment_status}
+                    onChange={e => setOrder({ fulfillment_status: e.target.value })}>
+                    <Radio value={'delivered'}>{formatFulfillmentStatus('delivered')}</Radio>
+                    <Radio value={'delivering'}>{formatFulfillmentStatus('delivering')}</Radio>
+                  </Radio.Group>
+                </Row>
                 <Row className="m-t-10">
                   <Col span={9}>
                     <p>Tạm tính</p>

@@ -90,9 +90,8 @@ function Orders(props) {
   const [isShowInfoModal, setIsShowInfoModal] = useState(false);
   const [isShowSendMailModal, setIsShowSendMailModal] = useState(false);
   const [isExportModal, setIsExportModal] = useState(false);
-
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
-
+  let initQuery = { limit: 10, page: 1 }
+  let [query, setQuery] = useState(initQuery);
   let [isShowPrint, setIsShowPrint] = useState(false)
 
   useEffect(() => {
@@ -132,6 +131,7 @@ function Orders(props) {
     setQuery({ ...query, [name]: value })
   }
   function onChangePage(e) {
+    console.log(e)
     setQuery({ ...query, page: e })
   }
 
@@ -147,7 +147,7 @@ function Orders(props) {
     <div>
       <Form>
         <Input.Group style={{ width: '100%', display: 'flex' }}>
-          <Button type="primary" icon="reload" onClick={() => setQuery({})} size="large">
+          <Button type="primary" icon="reload" onClick={() => setQuery(initQuery)} size="large">
             <span className="hidden-xs">Bỏ lọc</span>
           </Button>
           <Input size="large" placeholder="Nhập mã đơn hàng" name="type" name="number" value={query.number} onChange={onChange}
@@ -201,8 +201,9 @@ function Orders(props) {
             <Table className="m-t-10" rowKey='number' dataSource={orders} columns={columns} pagination={false} size={'small'}
               scroll={{ x: 900 }} />
             <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
-              showTotal={(total, range) => `${total} đơn hàng`}
+              showTotal={(total, range) => `${total} đơn hàng`} current={query.page}
               defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
+              onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
             />
           </Col>
         </Row>
