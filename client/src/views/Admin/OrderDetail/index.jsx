@@ -135,8 +135,6 @@ function OrderDetailComponent(props) {
   }
 
   function onChangeAttribute(index, e) {
-    console.log(index, e.target.name, e.target.value)
-    console.log(order)
     order.attributes[index][e.target.name] = e.target.value;
     actions.merge({ attributes: order.attributes })
   }
@@ -159,7 +157,15 @@ function OrderDetailComponent(props) {
     }
   }
   async function updateFulfillmentStatus() {
-
+    try {
+      let result = await AdminServices.Order.updateOrder({
+        id: order.id, fulfillment_status: order.fulfillment_status
+      });
+      refreshOrder();
+      message.success(result.message);
+    } catch (error) {
+      message.error(error.message);
+    }
   }
 
   return (
@@ -291,18 +297,16 @@ function OrderDetailComponent(props) {
                 <br />
                 <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
                   <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
-                  <Select value={order.fulfillment_status} className="block">
-                    <Option key={1}>Chờ lấy hàng</Option>
+                  <Select value={order.fulfillment_status} className="block" name="fulfillment_status"
+                    onChange={e => actions.merge({ fulfillment_status: e })}>
                     <Option key={'delivering'} value={'delivering'}>{formatFulfillmentStatus('delivering')}</Option>
                     <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
-                    <Option key={4}>Hủy</Option>
-                    <Option key={5}>Không gặp khách</Option>
                   </Select>
                   <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
 
                   <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
                   {
-                    order.carrier_cod_status_code == 'codpending' ?
+                    order.carrier_cod_status_code != 'codreceipt' ?
                       <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
                       : null
                   }
