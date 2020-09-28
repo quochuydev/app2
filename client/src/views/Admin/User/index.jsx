@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, message
+  Form, message, List, Avatar, Card,
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
@@ -20,21 +20,22 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, actions, downloadLink } = props;
+  const { count, users, user, actions, downloadLink } = props;
 
   const columns = [
     {
-      title: 'Number', key: 'number', render: edit => (
-        <Link to={`user/${edit.id}`}>
-          {edit.number}
-        </Link>
+      title: 'id', key: 'id', render: edit => (
+        <a onClick={e => onAssertUser(edit)}>
+          {edit.id}
+        </a>
       )
     },
     {
-      title: 'Tên khách hàng', key: 'name', render: edit => (
+      title: 'Tên', key: 'name', render: edit => (
         <span>{[edit.last_name, edit.first_name].join(' ')}</span>
       )
     },
+    { title: 'Email', dataIndex: 'email', key: 'email', },
     {
       title: 'Số điện thoại', key: 'phone', render: edit => (
         <span>{edit.phone}</span>
@@ -45,7 +46,6 @@ function User(props) {
         <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
       )
     },
-    { title: 'Email', dataIndex: 'email', key: 'email', },
     {
       title: 'Số đơn hàng', key: 'total_orders', render: edit => (
         <Tag color="green">{edit.total_orders}</Tag>
@@ -63,20 +63,9 @@ function User(props) {
     },
   ];
 
-  const expended = edit => (
-    <div>
-      <p style={{ margin: 0 }}>{edit.type}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.first_name : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address1 : null}</p>
-    </div>
-  );
-
   const uploadSetting = {
     multiple: false,
-    action: `${apiUrl}/users/import`,
+    action: `${apiUrl}/users`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -92,29 +81,21 @@ function User(props) {
     },
   };
 
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
+  let initQuery = { limit: 10, page: 1 };
+  let [query, setQuery] = useState(initQuery);
   useEffect(() => {
     actions.loadUsers(query);
   }, [query]);
 
   const [isExportModal, setIsExportModal] = useState(false);
-  const [isImportModal, setIsImportModal] = useState(false);
+  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
-
-  let [user, setUser] = useState({})
 
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   function onLoadUser() {
     actions.listUsers(query);
-  }
-
-  function importUser() {
-    actions.importUser();
-  }
-  function exportUser() {
-    actions.exportUser();
   }
 
   function onChange(e) {
@@ -141,8 +122,29 @@ function User(props) {
     setQuery({ ...query, page: e })
   }
 
-  async function assertUser({ user }) {
+  function onAssertUser(user) {
+    if (user && user.id) {
+      actions.setUser(user)
+    } else {
+      actions.setUser({})
+    }
+    setIsCreateModal(true);
+  }
+
+  async function assertUser() {
     console.log(user)
+    try {
+      let result = null;
+      if (user.id) {
+        result = await AdminServices.User.update(user);
+      } else {
+        result = await AdminServices.User.create(user);
+      }
+      message.success(result.message)
+    } catch (error) {
+      message.error(error.message)
+    }
+    setIsCreateModal(false);
   }
 
   function onChangeField(name, e) {
@@ -152,57 +154,40 @@ function User(props) {
   return (
     <div>
       <Row key='1'>
-        <Col span={8}>
-          <Form.Item label="Mã khách hàng"><Input name="number" onChange={onChange} /></Form.Item>
+        <Col span={6}>
+          <p>Chủ tài khoản</p>
         </Col>
-        <Col span={8}>
-          <Form.Item label="Commerce">
-            <Select
-              mode="multiple"
-              name="type_in"
-              style={{ width: '100%' }}
-              placeholder="-- Chọn --"
-              onChange={onChangeType}
-            >
-              <Option value='app'>App</Option>
-              <Option value='haravan'>Haravan</Option>
-              <Option value='woocommerce'>Woocommerce</Option>
-              <Option value='shopify'>Shopify</Option>
-            </Select>
-          </Form.Item>
+        <Col span={18}>
+          <List.Item.Meta
+            avatar={<Avatar shape="square" size={40} src={'#'} />}
+            title={<p><Link to="/">Quốc Huy</Link></p>}
+            description={'quochuydev1@gmail.com'}
+          />
         </Col>
-        <Col span={24}>
-          <Button onClick={() => onLoadUser(true)}>Áp dụng bộ lọc</Button>
-          <Link to={`user/create`}>
-            <Button>Thêm khách hàng</Button>
-          </Link>
-          <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
-          <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button className="hide" onClick={() => syncUsers(true)}>Đồng bộ khách hàng</Button>
+        <Col span={6}>
+          <p>Danh sách tài khoản</p>
+          <Button icon="plus" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
+        </Col>
+        <Col span={18}>
           <Table rowKey='id' dataSource={users} columns={columns} pagination={false}
-            expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
+            scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
             showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
             defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
             onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
           />
         </Col>
+        <Col span={24}>
+
+        </Col>
       </Row>
       <Modal
-        title="Export excel"
-        visible={isExportModal}
-        onOk={() => exportUser()}
-        onCancel={() => setIsExportModal(false)}
-      >
-        <a href={downloadLink}>{downloadLink}</a>
-      </Modal>
-      <Modal
         title="Import excel"
-        visible={isImportModal}
-        onOk={() => importUser()}
-        onCancel={() => setIsImportModal(false)}
+        visible={isCreateModal}
+        onOk={() => assertUser()}
+        onCancel={() => setIsCreateModal(false)}
       >
-        <Upload.Dragger {...uploadSetting}>
+        <Upload.Dragger {...uploadSetting} className="hide">
           <div style={{ width: '100%' }}>
             <p className="ant-upload-drag-icon">
               <Icon type="inbox" />
@@ -210,6 +195,44 @@ function User(props) {
             <p className="ant-upload-text">Click or drag file to this area to upload</p>
           </div>
         </Upload.Dragger>
+        {
+          <div>
+            <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
+            </Form.Item>
+            <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
+            </Form.Item>
+            <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="email" placeholder="input placeholder" value={user.email} />
+            </Form.Item>
+            <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="phone" placeholder="input placeholder" value={user.phone} />
+            </Form.Item>
+            <Card>
+              <p>Nhóm quyền</p>
+              <Select>
+                <Option key={1} value={1}>Nhóm 1</Option>
+              </Select>
+              <Table rowKey='id' dataSource={user.roles} columns={[
+                {
+                  title: 'Tên nhóm', key: 'name', render: edit => (
+                    <a onClick={e => onAssertUser(edit)}>
+                      {edit.name}
+                    </a>
+                  )
+                },
+                {
+                  title: '', key: 'options', render: edit => (
+                    <a onClick={e => onAssertUser(edit)}>
+                      {edit.id}
+                    </a>
+                  )
+                },
+              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+            </Card>
+          </div>
+        }
       </Modal>
     </div >
   );
