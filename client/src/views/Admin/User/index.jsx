@@ -193,14 +193,14 @@ function User(props) {
         {
           <Row>
             <Col xs={24} lg={12}>
+              <Form.Item label="Email">
+                <Input name="email" placeholder="input placeholder" value={user.email} disabled={true} />
+              </Form.Item>
               <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
                 <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
               </Form.Item>
               <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
                 <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
-              </Form.Item>
-              <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-                <Input name="email" placeholder="input placeholder" value={user.email} />
               </Form.Item>
               <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
                 <Input name="phone" placeholder="input placeholder" value={user.phone} />

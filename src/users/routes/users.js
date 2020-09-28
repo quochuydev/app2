@@ -29,7 +29,7 @@ const router = ({ app }) => {
         phone: data.phone,
         birthday: data.birthday,
       }
-      let user = await UserModel._findOneAndUpdate({ id: user_id }, { $set: data_update }, { lean: true, new: true });
+      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ user });
     })
     .delete(async function (req, res, next) {
