@@ -260,7 +260,16 @@ let User = {
   },
   get: async function (id) {
     return await ApiClient.getData(`api/users/${id}`);
-  }
+  },
+  create: async function (data) {
+    return await ApiClient.postData(`api/users`, null, data);
+  },
+  update: async function (data) {
+    return await ApiClient.putData(`api/users/${data.id}`, null, data);
+  },
+  remove: async function (id) {
+    return await ApiClient.deleteData(`api/users/${id}`);
+  },
 }
 
 let Permission = {
@@ -269,7 +278,16 @@ let Permission = {
   },
   get: async function (id) {
     return await ApiClient.getData(`api/permissions/${id}`);
-  }
+  },
+  create: async function (data) {
+    return await ApiClient.postData(`api/permissions`, null, data);
+  },
+  update: async function (data) {
+    return await ApiClient.putData(`api/permissions/${data.id}`, null, data);
+  },
+  remove: async function (id) {
+    return await ApiClient.deleteData(`api/permissions/${id}`);
+  },
 }
 
 async function login(data) {
