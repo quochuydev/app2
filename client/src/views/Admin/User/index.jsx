@@ -99,7 +99,7 @@ function User(props) {
   }
 
   function onChange(e) {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    actions.setUser({ [e.target.name]: e.target.value });
   }
 
   async function syncUsers() {

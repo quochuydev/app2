@@ -16,6 +16,8 @@ import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
 import AdminServices from './../../../services/adminServices';
 
+import data from './data.json'
+
 const apiUrl = `${config.backend_url}/api`;
 
 function Permission(props) {
@@ -24,31 +26,13 @@ function Permission(props) {
 
   const columns = [
     {
-      title: 'Number', key: 'number', render: edit => (
-        <Link to={`permission/${edit.id}`}>
-          {edit.number}
-        </Link>
+      title: 'id', key: 'id', render: edit => (
+        <div>{edit.id}</div>
       )
     },
     {
-      title: 'Tên khách hàng', key: 'name', render: edit => (
-        <span>{[edit.last_name, edit.first_name].join(' ')}</span>
-      )
-    },
-    {
-      title: 'Số điện thoại', key: 'phone', render: edit => (
-        <span>{edit.phone}</span>
-      )
-    },
-    {
-      title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
-      )
-    },
-    { title: 'Email', dataIndex: 'email', key: 'email', },
-    {
-      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
-        <Tag color="green">{edit.total_orders}</Tag>
+      title: 'Tên', key: 'name', render: edit => (
+        <span>{edit.name}</span>
       )
     },
     {
@@ -152,32 +136,8 @@ function Permission(props) {
   return (
     <div>
       <Row key='1'>
-        <Col span={8}>
-          <Form.Item label="Mã khách hàng"><Input name="number" onChange={onChange} /></Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="Commerce">
-            <Select
-              mode="multiple"
-              name="type_in"
-              style={{ width: '100%' }}
-              placeholder="-- Chọn --"
-              onChange={onChangeType}
-            >
-              <Option value='app'>App</Option>
-              <Option value='haravan'>Haravan</Option>
-              <Option value='woocommerce'>Woocommerce</Option>
-              <Option value='shopify'>Shopify</Option>
-            </Select>
-          </Form.Item>
-        </Col>
         <Col span={24}>
-          <Button onClick={() => onLoadPermission(true)}>Áp dụng bộ lọc</Button>
-          <Link to={`permission/create`}>
-            <Button>Thêm khách hàng</Button>
-          </Link>
-          <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
-          <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
+          <Button>Thêm nhóm quyền</Button>
           <Button className="hide" onClick={() => syncPermissions(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
