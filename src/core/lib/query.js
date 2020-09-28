@@ -4,11 +4,12 @@ const cache = require('memory-cache');
 const _ = require('lodash');
 const escapeStringRegexp = require('escape-string-regexp');
 
-function _parse(body, option = { writeLog: true }) {
-  let { limit, page } = body;
-  if (!limit) { limit = 20 }
-  if (!page) { page = 1 }
+function _parse(body, option = { writeLog: true, maxLimit: 500 }, defaults = { page: 1, limit: 20, fields: '', sort: { created_at: -1 } }) {
+  let { page = 1, limit = 20, fields, sort } = { ...defaults, ...body };
+  page = Number(page);
+  limit = Math.min(Number(limit), option.maxLimit);
   let skip = (page - 1) * limit;
+
   delete body.limit;
   delete body.page;
   if (limit == 9999) {
@@ -30,12 +31,11 @@ function _parse(body, option = { writeLog: true }) {
   for (field in query) {
     _.merge(criteria, formatCriteria(field, query[field]))
   }
-  let sort = { created_at: -1 };
   if (option.writeLog) {
     console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
   }
 
-  return { limit, page, skip, criteria, sort };
+  return { limit, page, skip, criteria, sort, fields };
 }
 
 function _aggregate({ aggregate }) {

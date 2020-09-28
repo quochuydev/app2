@@ -10,8 +10,7 @@ const initialState = Map({
 function UsersReducer(state = initialState, { type, payload }) {
   switch (type) {
     case 'MERGE':
-    case 'LOAD_SUCCESS':
-    case 'LOAD_TAGS_SUCCESS':
+    case 'LOAD_USERS_SUCCESS':
       return state.merge({ ...payload });
     case 'REFRESH_USER':
       let user = state.get('user')

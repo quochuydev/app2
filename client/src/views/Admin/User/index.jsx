@@ -84,8 +84,12 @@ function User(props) {
   let initQuery = { limit: 10, page: 1 };
   let [query, setQuery] = useState(initQuery);
   useEffect(() => {
-    actions.loadUsers(query);
+    onLoadUser();
   }, [query]);
+
+  function onLoadUser() {
+    actions.loadUsers(query);
+  }
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
@@ -94,9 +98,6 @@ function User(props) {
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-  function onLoadUser() {
-    actions.listUsers(query);
-  }
 
   function onChange(e) {
     actions.setUser({ [e.target.name]: e.target.value });
@@ -144,6 +145,7 @@ function User(props) {
     } catch (error) {
       message.error(error.message)
     }
+    onLoadUser()
     setIsCreateModal(false);
   }
 
