@@ -156,7 +156,7 @@ function User(props) {
         </Col>
         <Col span={18}>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={40} src={'#'} />}
+            avatar={<Avatar shape="square" size={50} src={'#'} />}
             title={<p><Link to="/">Quốc Huy</Link></p>}
             description={'quochuydev1@gmail.com'}
           />
@@ -178,10 +178,8 @@ function User(props) {
 
         </Col>
       </Row>
-      <Modal
-        title="Import excel"
-        visible={isCreateModal}
-        onOk={() => assertUser()}
+      <Modal title="Import excel" visible={isCreateModal}
+        onOk={() => assertUser()} width={1000}
         onCancel={() => setIsCreateModal(false)}
       >
         <Upload.Dragger {...uploadSetting} className="hide">
@@ -193,42 +191,46 @@ function User(props) {
           </div>
         </Upload.Dragger>
         {
-          <div>
-            <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-              <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
-            </Form.Item>
-            <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-              <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
-            </Form.Item>
-            <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-              <Input name="email" placeholder="input placeholder" value={user.email} />
-            </Form.Item>
-            <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-              <Input name="phone" placeholder="input placeholder" value={user.phone} />
-            </Form.Item>
-            <Card>
-              <p>Nhóm quyền</p>
-              <Select>
-                <Option key={1} value={1}>Nhóm 1</Option>
-              </Select>
-              <Table rowKey='id' dataSource={user.roles} columns={[
-                {
-                  title: 'Tên nhóm', key: 'name', render: edit => (
-                    <a onClick={e => onAssertUser(edit)}>
-                      {edit.name}
-                    </a>
-                  )
-                },
-                {
-                  title: '', key: 'options', render: edit => (
-                    <a onClick={e => onAssertUser(edit)}>
-                      {edit.id}
-                    </a>
-                  )
-                },
-              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
-            </Card>
-          </div>
+          <Row>
+            <Col xs={24} lg={12}>
+              <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+                <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
+              </Form.Item>
+              <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+                <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
+              </Form.Item>
+              <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+                <Input name="email" placeholder="input placeholder" value={user.email} />
+              </Form.Item>
+              <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+                <Input name="phone" placeholder="input placeholder" value={user.phone} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Card>
+                <p>Nhóm quyền</p>
+                <Select>
+                  <Option key={1} value={1}>Nhóm 1</Option>
+                </Select>
+                <Table rowKey='id' dataSource={user.roles} columns={[
+                  {
+                    title: 'Tên nhóm', key: 'name', render: edit => (
+                      <a onClick={e => onAssertUser(edit)}>
+                        {edit.name}
+                      </a>
+                    )
+                  },
+                  {
+                    title: '', key: 'options', render: edit => (
+                      <a onClick={e => onAssertUser(edit)}>
+                        {edit.id}
+                      </a>
+                    )
+                  },
+                ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+              </Card>
+            </Col>
+          </Row>
         }
       </Modal>
     </div >
