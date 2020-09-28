@@ -1,3 +1,5 @@
+// let UserModel = require(path.resolve('./src/users/nodels/users.js'))
+
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const autoIncrement = require('mongoose-auto-increment');

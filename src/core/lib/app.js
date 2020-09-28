@@ -40,8 +40,6 @@ const App = {
           console.log(`shop [${shop.id}] [code: ${shop.code}] [url: ${shop.url}] [name: ${shop.name}]`);
           console.log(`${customer_count} khách hàng | ${product_count} sản phẩm | ${order_count} Đơn hàng`);
         }
-
-
       })
       .catch(err => {
         console.log(err)

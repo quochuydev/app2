@@ -50,7 +50,7 @@ function CustomerDetail(props) {
       customer.default_address = {};
     }
     customer.default_address[e.target.name] = e.target.value;
-    actions.setCustomer(customer)
+    actions.setCustomer(customer);
   }
 
   function onCustomerChangeField(e, field) {
@@ -62,7 +62,7 @@ function CustomerDetail(props) {
     if (customer.id) {
       customer.id = customer.id;
     }
-    props.assertCustomer({ customer: customer });
+    props.assertCustomer({ customer });
   }
 
   return (
