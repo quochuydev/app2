@@ -226,7 +226,7 @@ let Product = {
     let url = compile('api/vendors');
     return await ApiClient.getData(url, null, query);
   },
-  createVendor: async function (data) {
+  assertVendor: async function (data) {
     let url = compile('api/vendors');
     return await ApiClient.postData(url, null, data);
   },
@@ -238,7 +238,7 @@ let Product = {
     let url = compile('api/collections');
     return await ApiClient.getData(url, null, query);
   },
-  createCollection: async function (data) {
+  assertCollection: async function (data) {
     let url = compile('api/collections');
     return await ApiClient.postData(url, null, data);
   },
@@ -251,6 +251,42 @@ let Product = {
   },
   createTag: async function (data) {
     return await ApiClient.postData('api/tags', null, data);
+  },
+}
+
+let User = {
+  load: async function (query) {
+    return await ApiClient.getData('api/users', null, query);
+  },
+  get: async function (id) {
+    return await ApiClient.getData(`api/users/${id}`);
+  },
+  create: async function (data) {
+    return await ApiClient.postData(`api/users`, null, data);
+  },
+  update: async function (data) {
+    return await ApiClient.putData(`api/users/${data.id}`, null, data);
+  },
+  remove: async function (id) {
+    return await ApiClient.deleteData(`api/users/${id}`);
+  },
+}
+
+let Permission = {
+  load: async function (query) {
+    return await ApiClient.getData('api/permissions', null, query);
+  },
+  get: async function (id) {
+    return await ApiClient.getData(`api/permissions/${id}`);
+  },
+  create: async function (data) {
+    return await ApiClient.postData(`api/permissions`, null, data);
+  },
+  update: async function (data) {
+    return await ApiClient.putData(`api/permissions/${data.id}`, null, data);
+  },
+  remove: async function (id) {
+    return await ApiClient.deleteData(`api/permissions/${id}`);
   },
 }
 
@@ -268,6 +304,10 @@ async function changeShop(data) {
 let Shop = {
   get: async function () {
     return await ApiClient.getData('api/shop');
+  },
+  update: async function (data) {
+    let url = compile('api/shop/{id}', { id: data.id });
+    return await ApiClient.putData(url, null, data);
   }
 }
 
@@ -316,6 +356,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, signup, changeShop, getUser,
-  Report, Image, Product, Order, Shop, Core,
+  Report, Image, Product, Order, Shop, Core, User, Permission,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

@@ -1,0 +1,27 @@
+{
+  "name": "Nhân viên cửa hàng",
+  "code": "user_store",
+  "is_full": false,
+  "roles": [
+    {
+      "active": "order_manager",
+      "action": "write"
+    },
+    {
+      "active": "customer_manager",
+      "action": "write"
+    },
+    {
+      "active": "product_manager",
+      "action": "write"
+    },
+    {
+      "active": "customer_manager",
+      "action": "read"
+    },
+    {
+      "active": "permission_manager",
+      "action": "none"
+    }
+  ]
+}

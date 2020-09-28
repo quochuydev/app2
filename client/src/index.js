@@ -18,6 +18,8 @@ import OrdersReducer from './views/Admin/Order/reducers';
 import ProductsReducer from './views/Admin/Product/reducers';
 import AppReducer from './views/Admin/App/reducers';
 import CoreReducer from './views/Admin/Core/reducers';
+import UserReducer from './views/Admin/User/reducers';
+import PermissionReducer from './views/Admin/Permission/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
@@ -26,6 +28,8 @@ const combinedReducers = combineReducers({
   products: ProductsReducer,
   app: AppReducer,
   core: CoreReducer,
+  users: UserReducer,
+  permissions: PermissionReducer,
 });
 
 const middleware = [thunk];

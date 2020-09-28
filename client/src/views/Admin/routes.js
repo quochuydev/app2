@@ -9,6 +9,8 @@ import App from '../Admin/App/routes';
 import Product from '../Admin/Product/routes';
 import Authen from '../Admin/Authen/routes';
 import ErrorRoute from './ErrorPage/routes';
+import User from './User/routes';
+import Permission from './Permission/routes';
 
 const routes = [
   ...Home,
@@ -22,6 +24,8 @@ const routes = [
   ...Product,
   ...Authen,
   ...ErrorRoute,
+  ...User,
+  ...Permission,
 ];
 
 export default routes;

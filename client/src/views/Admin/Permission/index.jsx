@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as customerActions from './actions';
+import * as permissionActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -18,14 +18,14 @@ import AdminServices from './../../../services/adminServices';
 
 const apiUrl = `${config.backend_url}/api`;
 
-function Customer(props) {
+function Permission(props) {
   const { Option } = Select;
-  const { count, customers, actions, downloadLink } = props;
+  const { count, permissions, actions, downloadLink } = props;
 
   const columns = [
     {
       title: 'Number', key: 'number', render: edit => (
-        <Link to={`customer/${edit.id}`}>
+        <Link to={`permission/${edit.id}`}>
           {edit.number}
         </Link>
       )
@@ -76,7 +76,7 @@ function Customer(props) {
 
   const uploadSetting = {
     multiple: false,
-    action: `${apiUrl}/customers/import`,
+    action: `${apiUrl}/permissions/import`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -94,37 +94,37 @@ function Customer(props) {
 
   let [query, setQuery] = useState({ limit: 10, page: 1 });
   useEffect(() => {
-    actions.listCustomers(query);
+    actions.loadPermissions(query);
   }, [query]);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isImportModal, setIsImportModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
 
-  let [customer, setCustomer] = useState({})
+  let [permission, setPermission] = useState({})
 
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-  function onLoadCustomer() {
-    actions.listCustomers(query);
+  function onLoadPermission() {
+    actions.listPermissions(query);
   }
 
-  function importCustomer() {
-    actions.importCustomer();
+  function importPermission() {
+    actions.importPermission();
   }
-  function exportCustomer() {
-    actions.exportCustomer();
+  function exportPermission() {
+    actions.exportPermission();
   }
 
   function onChange(e) {
-    setCustomer({ ...customer, [e.target.name]: e.target.value });
+    setPermission({ ...permission, [e.target.name]: e.target.value });
   }
 
-  async function syncCustomers() {
+  async function syncPermissions() {
     setIsProcessing(true);
-    await actions.syncCustomers();
-    onLoadCustomer();
+    await actions.syncPermissions();
+    onLoadPermission();
     setIsProcessing(false);
   }
 
@@ -141,8 +141,8 @@ function Customer(props) {
     setQuery({ ...query, page: e })
   }
 
-  async function assertCustomer({ customer }) {
-    console.log(customer)
+  async function assertPermission({ permission }) {
+    console.log(permission)
   }
 
   function onChangeField(name, e) {
@@ -172,14 +172,14 @@ function Customer(props) {
           </Form.Item>
         </Col>
         <Col span={24}>
-          <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Link to={`customer/create`}>
+          <Button onClick={() => onLoadPermission(true)}>Áp dụng bộ lọc</Button>
+          <Link to={`permission/create`}>
             <Button>Thêm khách hàng</Button>
           </Link>
           <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
           <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
-          <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
-          <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
+          <Button className="hide" onClick={() => syncPermissions(true)}>Đồng bộ khách hàng</Button>
+          <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
             showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
@@ -191,7 +191,7 @@ function Customer(props) {
       <Modal
         title="Export excel"
         visible={isExportModal}
-        onOk={() => exportCustomer()}
+        onOk={() => exportPermission()}
         onCancel={() => setIsExportModal(false)}
       >
         <a href={downloadLink}>{downloadLink}</a>
@@ -199,7 +199,7 @@ function Customer(props) {
       <Modal
         title="Import excel"
         visible={isImportModal}
-        onOk={() => importCustomer()}
+        onOk={() => importPermission()}
         onCancel={() => setIsImportModal(false)}
       >
         <Upload.Dragger {...uploadSetting}>
@@ -216,14 +216,14 @@ function Customer(props) {
 }
 
 const mapStateToProps = state => ({
-  customers: state.customers.get('customers'),
-  count: state.customers.get('count'),
-  customer: state.customers.get('customer'),
-  downloadLink: state.customers.get('downloadLink'),
+  permissions: state.permissions.get('permissions'),
+  count: state.permissions.get('count'),
+  permission: state.permissions.get('permission'),
+  downloadLink: state.permissions.get('downloadLink'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(customerActions, dispatch)
+  actions: bindActionCreators(permissionActions, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Customer);
+export default connect(mapStateToProps, mapDispatchToProps)(Permission);

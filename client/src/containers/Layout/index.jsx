@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { bindActionCreators } from 'redux';
+
 import {
   BrowserRouter,
   Switch,
@@ -10,9 +12,12 @@ import {
 } from "react-router-dom";
 import {
   Layout, Menu, Icon, Breadcrumb, Button, Popover,
-  message, List, Drawer, PageHeader, Tag, Dropdown
+  message, List, Drawer, PageHeader, Tag, Dropdown,
+  Modal, Upload,
 } from 'antd';
 import './style.css';
+
+import * as coreActions from '../../views/Admin/Core/actions';
 
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
@@ -22,8 +27,10 @@ import Middleware from '../Middleware/index';
 import Alert from '../../views/Components/Alert/index';
 import AdminServices from '../../services/adminServices';
 import assetProvider from '../../utils/assetProvider';
+import ApiClient from './../../utils/apiClient';
 
 const basedUrl = config.backend_url;
+const apiUrl = `${config.backend_url}/api`;
 
 const { Header, Content, Footer, Sider, } = Layout;
 
@@ -31,7 +38,7 @@ const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-function LayoutContainer() {
+function LayoutContainer({ CoreActions, shop }) {
   const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
   const [isShowDrawer, setIsShowDrawer] = useState(false);
   let menuName = 'Menu'
@@ -74,9 +81,44 @@ function LayoutContainer() {
     })
   }
 
+  let [modalUploadLogo, setModalUploadLogo] = useState(false);
   function changeLogo() {
-
+    setModalUploadLogo(true)
   }
+
+  const uploadSetting = {
+    multiple: false,
+    action: `${apiUrl}/images`,
+    headers: ApiClient.getHeader(),
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onSuccess: async function (result) {
+      console.log(result)
+      if (result && result.image) {
+        await AdminServices.Shop.update({
+          id: shop.id, logo_src: result.image.src
+        });
+      }
+      CoreActions.getShop();
+      setModalUploadLogo(false)
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      CoreActions.getShop();
+    }
+  }, []);
 
   function LeftMenu(props) {
     return (
@@ -97,12 +139,12 @@ function LayoutContainer() {
                   <a onClick={() => changeLogo()}>Đổi logo cửa hàng</a>
                 </List.Item>
                 <List.Item key={'logout'}>
-                  <a onClick={() => logout()}>Đăng xuất</a>
+                  <a onClick={() => logout()}>Đăng xuất </a>
                 </List.Item>
               </List>
             </div>} trigger="click"
             >
-              <img src={assetProvider.puma} style={{ maxWidth: '80px' }} />
+              <img src={shop.logo_src || assetProvider.puma} style={{ maxWidth: '80px' }} />
             </Popover>
 
             <Menu theme="light" mode="inline">
@@ -131,7 +173,7 @@ function LayoutContainer() {
 
       <Layout style={{ background: '#fff' }}>
         <LeftMenu display={_display(!isMobile)} />
-        <Layout.Content style={{padding: '0 5px'}}>
+        <Layout.Content style={{ padding: '0 5px' }}>
           <PageHeader
             title={<Button key="open_menu" onClick={() => setIsShowDrawer(true)}
               style={{ border: 'none', padding: 10 }} size="large" icon="menu"
@@ -149,13 +191,30 @@ function LayoutContainer() {
           </Switch>
         </Layout.Content>
       </Layout>
-
+      <Modal
+        title="Import "
+        visible={modalUploadLogo}
+        onCancel={() => setModalUploadLogo(false)}
+      >
+        <Upload.Dragger {...uploadSetting}>
+          <div style={{ width: '100%' }}>
+            <p className="ant-upload-drag-icon">
+              <Icon type="inbox" />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          </div>
+        </Upload.Dragger>
+      </Modal>
     </BrowserRouter >
   );
 }
 
-const mapStateToProps = (state) => ({
-
+const mapStateToProps = state => ({
+  shop: state.core.get('shop'),
 });
 
-export default connect(mapStateToProps, null)(LayoutContainer);
+const mapDispatchToProps = (dispatch) => ({
+  CoreActions: bindActionCreators(coreActions, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LayoutContainer);

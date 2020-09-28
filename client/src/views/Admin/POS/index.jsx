@@ -223,9 +223,9 @@ function Customer(props) {
     console.log(customerUpdate)
     setIsCustomerModal(true);
     if (customerUpdate) {
-      setCustomer(customerUpdate);
+      CustomerActions.merge({ customer: customerUpdate })
     } else {
-      setCustomer({});
+      CustomerActions.merge({ customer: {} })
     }
   }
   function removeCustomer() {
@@ -303,11 +303,11 @@ function Customer(props) {
     }
   }
 
-  async function createVendor(items) {
+  async function loadProductsByVendor(items) {
     ProductActions.loadProducts({ vendor_in: items });
   }
 
-  async function createCollection(items) {
+  async function loadProductByCollect(items) {
     ProductActions.loadProducts({ collect_in: items });
   }
 
@@ -335,7 +335,7 @@ function Customer(props) {
                     <Col span={8}>
                       <p>Loại sản phẩm</p>
                       <Select style={{ width: '100%' }}
-                        onChange={e => createCollection(e)} defaultValue={null}>
+                        onChange={e => loadProductByCollect(e)} defaultValue={null}>
                         <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           collections.map((e, i) =>
@@ -346,7 +346,7 @@ function Customer(props) {
                     </Col>
                     <Col span={8}>
                       <p>Nhà sản xuất</p>
-                      <Select style={{ width: '100%' }} onChange={e => createVendor(e)} defaultValue={null}>
+                      <Select style={{ width: '100%' }} onChange={e => loadProductsByVendor(e)} defaultValue={null}>
                         <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                         {
                           vendors.map((e, i) =>
@@ -552,7 +552,7 @@ function Customer(props) {
         </Menu>
       </Modal>
       <CustomerDetail visible={isCustomerModal} onCloseModal={() => setIsCustomerModal(false)}
-        customer={customer} assertCustomer={assertCustomer} />
+        assertCustomer={assertCustomer} />
 
       <Modal visible={isCreateSuccess} width={600} footer={null}
         onCancel={() => setIsCreateSuccess(false)}>
