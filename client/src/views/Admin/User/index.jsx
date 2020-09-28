@@ -47,11 +47,6 @@ function User(props) {
       )
     },
     {
-      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
-        <Tag color="green">{edit.total_orders}</Tag>
-      )
-    },
-    {
       title: '', key: 'option',
       render: edit => (
         <span>
@@ -168,7 +163,7 @@ function User(props) {
         </Col>
         <Col span={6}>
           <p>Danh sách tài khoản</p>
-          <Button icon="plus" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
+          <Button icon="plus" type="primary" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
         </Col>
         <Col span={18}>
           <Table rowKey='id' dataSource={users} columns={columns} pagination={false}

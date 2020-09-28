@@ -23,7 +23,13 @@ const router = ({ app }) => {
     .put(async function (req, res, next) {
       let user_id = req.params.id;
       let data = req.body;
-      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data }, { lean: true, new: true });
+      let data_update = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+        birthday: data.birthday,
+      }
+      let user = await UserModel._findOneAndUpdate({ id: user_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ user });
     })
     .delete(async function (req, res, next) {

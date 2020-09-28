@@ -101,7 +101,7 @@ const MENU_DATA = [
     path: USER_ROUTE,
     key: 'user',
     name: 'Tài khoản',
-    is_open: false,
+    is_open: true,
     icon: 'appstore'
   },
   {
