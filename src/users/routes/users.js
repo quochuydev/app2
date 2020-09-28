@@ -8,7 +8,29 @@ const config = require(path.resolve('./src/config/config'));
 const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 const router = ({ app }) => {
-  
+  app.route('/api/users')
+    .get(async function (req, res, next) {
+      let { criteria, limit, skip } = _parse(req.query);
+      let users = await UserModel.find(criteria).limit(limit).skip(skip);
+      res.json({ users });
+    })
+    .post(async function (req, res, next) {
+      let data = req.body;
+      let user = await UserModel.create(data);
+      res.json({ user });
+    })
+  app.route('/api/users/:id')
+    .put(async function (req, res, next) {
+      let user_id = req.params.id;
+      let data = req.body;
+      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data }, { lean: true, new: true });
+      res.json({ user });
+    })
+    .delete(async function (req, res, next) {
+      let user_id = req.params.id;
+      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: { is_deleted: true } }, { lean: true, new: true });
+      res.json({ error: false });
+    })
 }
 
 module.exports = router;

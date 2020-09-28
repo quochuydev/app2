@@ -1,3 +1,5 @@
+// let { PermissionModel } = require(path.resolve('./src/permissions/model.js'))
+
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const autoIncrement = require('mongoose-auto-increment');
