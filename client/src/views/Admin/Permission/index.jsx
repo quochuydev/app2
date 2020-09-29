@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, message, Checkbox, Card,
+  Form, message, Checkbox, Card, Radio,
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
@@ -135,28 +135,51 @@ function Permission(props) {
           />
         </Col>
       </Row>
-      <Modal title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
+      <Modal title="Chi tiết nhóm quyền" visible={true} width={1000}
         onOk={() => assertPermission()} onCancel={() => setIsCreateModal(false)}>
         <Row>
           <Col xs={24} lg={12}>
             <Form.Item label="Mã nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="code" placeholder="input placeholder" value={permission.code} />
             </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
             <Form.Item label="Tên nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="name" placeholder="input placeholder" value={permission.name} />
             </Form.Item>
+          </Col>
+          <Col xs={24} lg={24}>
             <Form.Item label="Ghi chú" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="note" placeholder="input placeholder" value={permission.note} />
             </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Checkbox>Full quyền</Checkbox>
+            <Checkbox value={permission.is_full} className="m-10">Full quyền</Checkbox>
             <Card>
               <p>Nhóm quyền</p>
-              <Table rowKey='id' dataSource={permission.roles} columns={[
+              <Table rowKey='id' dataSource={permission.id ? permission.roles : data.roles} columns={[
                 {
                   title: 'Tên nhóm', key: 'name', render: edit => (
                     <p>{edit.name}</p>
+                  )
+                },
+                {
+                  title: 'Xem và ghi', key: 'action_write', render: edit => (
+                    <Radio.Group onChange={e => { }} value={edit.action}>
+                      <Radio key='write' value={'write'} />
+                    </Radio.Group>
+                  )
+                },
+                {
+                  title: 'Chỉ xem', key: 'action_read', render: edit => (
+                    <Radio.Group onChange={e => { }} value={edit.action}>
+                      <Radio key='read' value={'read'} />
+                    </Radio.Group>
+                  )
+                },
+                {
+                  title: 'Không có quyền', key: 'action_none', render: edit => (
+                    <Radio.Group onChange={e => { }} value={edit.action}>
+                      <Radio key='none' value={'none'} />
+                    </Radio.Group>
                   )
                 },
               ]} pagination={false} scroll={{ x: 1000 }} size="small" />

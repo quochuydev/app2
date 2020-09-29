@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import * as userActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -11,6 +10,10 @@ import {
   Form, message, List, Avatar, Card,
 } from 'antd';
 import 'antd/dist/antd.css';
+
+import * as userActions from './actions';
+import * as PermissionActions from '../Permission/actions';
+
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
@@ -20,7 +23,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, permissions, actions, downloadLink } = props;
+  const { count, users, user, permissions, actions, permissionActions } = props;
 
   const columns = [
     {
@@ -62,6 +65,8 @@ function User(props) {
   function onLoadUser() {
     actions.loadUsers(query);
   }
+
+  permissionActions.loadPermissions(query);
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
@@ -184,7 +189,7 @@ function User(props) {
                 <Option key={null} value={null}>-Chọn nhóm quyền-</Option>
                 {
                   permissions.map((e, i) =>
-                    <Option key={i} value={e.id}>{e.name}</Option>
+                    <Option key={i} value={e.code}>{e.name}</Option>
                   )
                 }
               </Select>
@@ -222,7 +227,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(userActions, dispatch)
+  actions: bindActionCreators(userActions, dispatch),
+  permissionActions: bindActionCreators(PermissionActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

@@ -1,6 +1,7 @@
 let path = require('path')
 let { PermissionModel } = require(path.resolve('./src/permissions/model.js'))
 const { _parse } = require(path.resolve('./src/core/lib/query'));
+let initData = require('./init_permission.json')
 
 module.exports = ({ app }) => {
   app.route('/api/permissions')
@@ -37,6 +38,7 @@ module.exports = ({ app }) => {
         note: data.note,
         roles: data.roles,
       }
+      // data_update.roles = initData.roles
       let count_permissions = await PermissionModel._count({ code: data.code, id: { $ne: permission_id } });
       if (count_permissions) {
         return next({ message: 'Mã quyền này đã tồn tại' })

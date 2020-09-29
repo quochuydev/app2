@@ -33,6 +33,14 @@ body {
   margin-bottom: 10px !important;
 }
 
+.m-10 {
+  margin: 10px !important;
+}
+
+.m-20 {
+  margin: 20px !important;
+}
+
 .m-b-20 {
   margin-bottom: 20px;
 }

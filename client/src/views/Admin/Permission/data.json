@@ -4,22 +4,27 @@
   "is_full": false,
   "roles": [
     {
+      "name": "Quản lí đơn hàng",
       "active": "order_manager",
       "action": "write"
     },
     {
+      "name": "Quản lí khách hàng",
       "active": "customer_manager",
       "action": "write"
     },
     {
+      "name": "Quản lí sản phẩm",
       "active": "product_manager",
       "action": "write"
     },
     {
-      "active": "customer_manager",
+      "name": "Quản lí tài khoản",
+      "active": "user_manager",
       "action": "read"
     },
     {
+      "name": "Quản lí nhóm quyền",
       "active": "permission_manager",
       "action": "none"
     }
