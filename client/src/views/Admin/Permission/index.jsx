@@ -69,7 +69,7 @@ function Permission(props) {
     if (permission && permission.id) {
       actions.setPermission(permission)
     } else {
-      actions.resetPermission({})
+      actions.resetPermission()
     }
     setIsCreateModal(true);
   }
@@ -120,12 +120,19 @@ function Permission(props) {
     setQuery({ ...query, [name]: e })
   }
 
+  function onChangeRole(role, new_action) {
+    let index = permission.roles.findIndex(e => e.active == role.active)
+    if (index != -1) {
+      permission.roles[index].action = new_action;
+      actions.setPermission({ roles: permission.roles })
+    }
+  }
+
   return (
     <div>
       <Row key='1'>
         <Col span={24}>
           <Button type="primary" icon="plus" onClick={() => onAssertPermission()}>Thêm nhóm quyền</Button>
-          <Button className="hide" onClick={() => syncPermissions(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
@@ -152,37 +159,38 @@ function Permission(props) {
             <Form.Item label="Ghi chú" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="note" placeholder="input placeholder" value={permission.note} />
             </Form.Item>
-            <Checkbox value={permission.is_full} className="m-10">Full quyền</Checkbox>
+            <Checkbox checked={permission.is_full} className="m-10">Toàn quyền quản trị</Checkbox>
             <Card>
               <p>Nhóm quyền</p>
-              <Table rowKey='id' dataSource={permission.id ? permission.roles : data.roles} columns={[
-                {
-                  title: 'Tên nhóm', key: 'name', render: edit => (
-                    <p>{edit.name}</p>
-                  )
-                },
-                {
-                  title: 'Xem và ghi', key: 'action_write', render: edit => (
-                    <Radio.Group onChange={e => { }} value={edit.action}>
-                      <Radio key='write' value={'write'} />
-                    </Radio.Group>
-                  )
-                },
-                {
-                  title: 'Chỉ xem', key: 'action_read', render: edit => (
-                    <Radio.Group onChange={e => { }} value={edit.action}>
-                      <Radio key='read' value={'read'} />
-                    </Radio.Group>
-                  )
-                },
-                {
-                  title: 'Không có quyền', key: 'action_none', render: edit => (
-                    <Radio.Group onChange={e => { }} value={edit.action}>
-                      <Radio key='none' value={'none'} />
-                    </Radio.Group>
-                  )
-                },
-              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+              <Table rowKey='active' dataSource={permission.roles}
+                columns={[
+                  {
+                    title: 'Tên nhóm', key: 'name', render: edit => (
+                      <p>{edit.name}</p>
+                    )
+                  },
+                  {
+                    title: 'Xem và ghi', key: 'action_write', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='write' value={'write'} />
+                      </Radio.Group>
+                    )
+                  },
+                  {
+                    title: 'Chỉ xem', key: 'action_read', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='read' value={'read'} />
+                      </Radio.Group>
+                    )
+                  },
+                  {
+                    title: 'Không có quyền', key: 'action_none', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='none' value={'none'} />
+                      </Radio.Group>
+                    )
+                  },
+                ]} pagination={false} scroll={{ x: 1000 }} size="small" />
             </Card>
           </Col>
         </Row>
