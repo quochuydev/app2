@@ -6,8 +6,12 @@ module.exports = ({ app }) => {
   app.route('/api/permissions')
     .get(async function (req, res, next) {
       let { criteria, limit, skip } = _parse(req.query);
-      let permissions = await PermissionModel.find(criteria).limit(limit).skip(skip);
-      res.json({ permissions });
+      let result = { count: 0, permissions: [] }
+      result.count = await PermissionModel.count(criteria);
+      if (result.count) {
+        result.permissions = await PermissionModel.find(criteria).limit(limit).skip(skip);
+      }
+      res.json(result);
     })
     .post(async function (req, res, next) {
       let data = req.body;
@@ -18,6 +22,7 @@ module.exports = ({ app }) => {
       let data_update = {
         code: data.code,
         name: data.name,
+        note: data.note,
       }
       let permission = await PermissionModel._create(data_update);
       res.json({ permission });
@@ -26,7 +31,13 @@ module.exports = ({ app }) => {
     .put(async function (req, res, next) {
       let permission_id = req.params.id;
       let data = req.body;
-      let permission = await PermissionModel.findOneAndUpdate({ id: permission_id }, { $set: data }, { lean: true, new: true });
+      let data_update = {
+        code: data.code,
+        name: data.name,
+        note: data.note,
+        roles: data.roles,
+      }
+      let permission = await PermissionModel.findOneAndUpdate({ id: permission_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ permission });
     })
     .delete(async function (req, res, next) {

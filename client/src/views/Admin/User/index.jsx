@@ -149,7 +149,7 @@ function User(props) {
           <Table rowKey='id' dataSource={users} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
-            showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
+            showTotal={(total, range) => `${total} items`} current={query.page}
             defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
             onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
           />

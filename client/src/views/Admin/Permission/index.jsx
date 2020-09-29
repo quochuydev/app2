@@ -56,8 +56,12 @@ function Permission(props) {
 
   let [query, setQuery] = useState({ limit: 10, page: 1 });
   useEffect(() => {
-    actions.loadPermissions(query);
+    onLoadData();
   }, [query]);
+
+  function onLoadData() {
+    actions.loadPermissions(query);
+  }
 
   const [isCreateModal, setIsCreateModal] = useState(false);
 
@@ -95,8 +99,21 @@ function Permission(props) {
     setQuery({ ...query, page: e })
   }
 
-  async function assertPermission({ permission }) {
+  async function assertPermission() {
     console.log(permission)
+    try {
+      let result = null;
+      if (permission.id) {
+        result = await AdminServices.Permission.update(permission);
+      } else {
+        result = await AdminServices.Permission.create(permission);
+      }
+      message.success(result.message);
+      setIsCreateModal(false);
+    } catch (error) {
+      message.error(error.message)
+    }
+    onLoadData();
   }
 
   function onChangeField(name, e) {
@@ -112,7 +129,7 @@ function Permission(props) {
           <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
-            showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
+            showTotal={(total, range) => `${total} items`} current={query.page}
             defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
             onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
           />
