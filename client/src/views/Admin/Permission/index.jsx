@@ -128,6 +128,11 @@ function Permission(props) {
     }
   }
 
+  function formatRole(active) {
+    let role = data.roles.find(e => e.active == active)
+    return role.name;
+  }
+
   return (
     <div>
       <Row key='1'>
@@ -159,14 +164,16 @@ function Permission(props) {
             <Form.Item label="Ghi chú" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="note" placeholder="input placeholder" value={permission.note} />
             </Form.Item>
-            <Checkbox checked={permission.is_full} className="m-10">Toàn quyền quản trị</Checkbox>
-            <Card>
+            <Checkbox checked={permission.is_full}
+              onChange={e => actions.setPermission({ is_full: e.target.checked })}
+              className="m-10">Toàn quyền quản trị</Checkbox>
+            <Card className={permission.is_full ? 'hide' : 'block'}>
               <p>Nhóm quyền</p>
               <Table rowKey='active' dataSource={permission.roles}
                 columns={[
                   {
                     title: 'Tên nhóm', key: 'name', render: edit => (
-                      <p>{edit.name}</p>
+                      <p>{formatRole(edit.active)}</p>
                     )
                   },
                   {
