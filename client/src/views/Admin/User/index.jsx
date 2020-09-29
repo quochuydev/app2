@@ -20,7 +20,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, actions, downloadLink } = props;
+  const { count, users, user, permissions, actions, downloadLink } = props;
 
   const columns = [
     {
@@ -42,11 +42,6 @@ function User(props) {
       )
     },
     {
-      title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
-      )
-    },
-    {
       title: '', key: 'option',
       render: edit => (
         <span>
@@ -57,24 +52,6 @@ function User(props) {
       ),
     },
   ];
-
-  const uploadSetting = {
-    multiple: false,
-    action: `${apiUrl}/users`,
-    headers: ApiClient.getHeader(),
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
 
   let initQuery = { limit: 10, page: 1 };
   let [query, setQuery] = useState(initQuery);
@@ -122,7 +99,7 @@ function User(props) {
     if (user && user.id) {
       actions.setUser(user)
     } else {
-      actions.setUser({})
+      actions.resetUser({})
     }
     setIsCreateModal(true);
   }
@@ -136,23 +113,27 @@ function User(props) {
       } else {
         result = await AdminServices.User.create(user);
       }
-      message.success(result.message)
+      message.success(result.message);
+      setIsCreateModal(false);
     } catch (error) {
       message.error(error.message)
     }
     onLoadUser()
-    setIsCreateModal(false);
   }
 
   function onChangeField(name, e) {
     setQuery({ ...query, [name]: e })
   }
 
+  function addPermission(e) {
+    console.log(e)
+  }
+
   return (
     <div>
       <Row key='1'>
         <Col span={6}>
-          <p>Chủ tài khoản</p>
+          <p className="ui-title-page">Chủ tài khoản</p>
         </Col>
         <Col span={18}>
           <List.Item.Meta
@@ -162,7 +143,7 @@ function User(props) {
           />
         </Col>
         <Col span={6}>
-          <p>Danh sách tài khoản</p>
+          <p className="ui-title-page">Danh sách tài khoản</p>
           <Button icon="plus" type="primary" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
         </Col>
         <Col span={18}>
@@ -182,56 +163,51 @@ function User(props) {
         onOk={() => assertUser()} width={1000}
         onCancel={() => setIsCreateModal(false)}
       >
-        <Upload.Dragger {...uploadSetting} className="hide">
-          <div style={{ width: '100%' }}>
-            <p className="ant-upload-drag-icon">
-              <Icon type="inbox" />
-            </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          </div>
-        </Upload.Dragger>
-        {
-          <Row>
-            <Col xs={24} lg={12}>
-              <Form.Item label="Email">
-                <Input name="email" placeholder="input placeholder" value={user.email} disabled={true} />
-              </Form.Item>
-              <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-                <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
-              </Form.Item>
-              <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-                <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
-              </Form.Item>
-              <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-                <Input name="phone" placeholder="input placeholder" value={user.phone} />
-              </Form.Item>
-            </Col>
-            <Col xs={24} lg={12}>
-              <Card>
-                <p>Nhóm quyền</p>
-                <Select>
-                  <Option key={1} value={1}>Nhóm 1</Option>
-                </Select>
-                <Table rowKey='id' dataSource={user.roles} columns={[
-                  {
-                    title: 'Tên nhóm', key: 'name', render: edit => (
-                      <a onClick={e => onAssertUser(edit)}>
-                        {edit.name}
-                      </a>
-                    )
-                  },
-                  {
-                    title: '', key: 'options', render: edit => (
-                      <a onClick={e => onAssertUser(edit)}>
-                        {edit.id}
-                      </a>
-                    )
-                  },
-                ]} pagination={false} scroll={{ x: 1000 }} size="small" />
-              </Card>
-            </Col>
-          </Row>
-        }
+        <Row>
+          <Col xs={24} lg={12}>
+            <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="email" placeholder="input placeholder" value={user.email} disabled={!!(user && user.id)} />
+            </Form.Item>
+            <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
+            </Form.Item>
+            <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
+            </Form.Item>
+            <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="phone" placeholder="input placeholder" value={user.phone} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Card>
+              <p>Nhóm quyền</p>
+              <Select onChange={e => addPermission(e)}>
+                <Option key={null} value={null}>-Chọn nhóm quyền-</Option>
+                {
+                  permissions.map((e, i) =>
+                    <Option key={i} value={e.id}>{e.name}</Option>
+                  )
+                }
+              </Select>
+              <Table rowKey='id' dataSource={user.roles} columns={[
+                {
+                  title: 'Tên nhóm', key: 'name', render: edit => (
+                    <a onClick={e => onAssertUser(edit)}>
+                      {edit.name}
+                    </a>
+                  )
+                },
+                {
+                  title: '', key: 'options', render: edit => (
+                    <a onClick={e => onAssertUser(edit)}>
+                      {edit.id}
+                    </a>
+                  )
+                },
+              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+            </Card>
+          </Col>
+        </Row>
       </Modal>
     </div >
   );
@@ -239,6 +215,8 @@ function User(props) {
 
 const mapStateToProps = state => ({
   users: state.users.get('users'),
+  permissions: state.permissions.get('permissions'),
+  permission: state.permissions.get('permission'),
   count: state.users.get('count'),
   user: state.users.get('user'),
   downloadLink: state.users.get('downloadLink'),

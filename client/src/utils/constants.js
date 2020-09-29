@@ -108,7 +108,7 @@ const MENU_DATA = [
     path: PERMISSION_ROUTE,
     key: 'permission',
     name: 'Nhóm quyền',
-    is_open: false,
+    is_open: true,
     icon: 'appstore'
   }
 ]

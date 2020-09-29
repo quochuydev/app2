@@ -16,7 +16,17 @@ const router = ({ app }) => {
     })
     .post(async function (req, res, next) {
       let data = req.body;
-      let user = await UserModel.create(data);
+      let count_user = await UserModel._count({ email: data.email });
+      if (count_user) {
+        return next({ message: 'Email đã tồn tại' })
+      }
+      let data_update = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+      }
+      let user = await UserModel._create(data_update);
       res.json({ user });
     })
   app.route('/api/users/:id')

@@ -11,7 +11,15 @@ module.exports = ({ app }) => {
     })
     .post(async function (req, res, next) {
       let data = req.body;
-      let permission = await PermissionModel.create(data);
+      let count_permissions = await PermissionModel._count({ code: data.code });
+      if (count_permissions) {
+        return next({ message: 'Mã quyền này đã tồn tại' })
+      }
+      let data_update = {
+        code: data.code,
+        name: data.name,
+      }
+      let permission = await PermissionModel._create(data_update);
       res.json({ permission });
     })
   app.route('/api/permissions/:id')
