@@ -10,9 +10,8 @@ autoIncrement.initialize(mongoose.connection);
 let PermissionSchema = new Schema({
   id: { type: Number, default: null },
   shop_id: { type: Number, default: null },
-
-  name: { type: String, default: null },
   code: { type: String, default: null },
+  name: { type: String, default: null },
   note: { type: String, default: null },
   updated_at: { type: Date, default: null },
   created_at: { type: Date, default: Date.now },
@@ -28,6 +27,16 @@ let PermissionSchema = new Schema({
 });
 
 PermissionSchema.plugin(autoIncrement.plugin, { model: 'Permission', field: 'id', startAt: 10000, incrementBy: 1 });
+
+PermissionSchema.statics._count = async function (filter = {}) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  return await this.count(filter);
+}
+
+PermissionSchema.statics._create = async function (data = {}) {
+  data.shop_id = data.shop_id || cache.get('shop_id');
+  return await this.create(data);
+}
 
 let PermissionModel = mongoose.model('Permission', PermissionSchema);
 

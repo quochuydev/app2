@@ -6,7 +6,11 @@ export const ACTIONS = {
 export function getShop() {
   return async function (dispatch) {
     const data = await AdminServices.Shop.get();
-    dispatch({ type: 'LIST', payload: { shop: data.shop } });
+    if (data && data.shop) {
+      dispatch({ type: 'LIST', payload: { shop: data.shop } });
+    } else {
+      dispatch({ type: 'LIST', payload: { shop: {} } });
+    }
   }
 }
 

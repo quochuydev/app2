@@ -28,7 +28,7 @@ function App(props) {
   }
 
   const Toast = {
-    success: (message = '', delay = 3000, icon = 'check-circle') => {
+    success: (message = '', delay = 2500, icon = 'check-circle') => {
       let Message = () => (
         <div>
           <Icon type={icon} theme='filled' /> {message}
@@ -209,7 +209,7 @@ function App(props) {
       </Row >
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={2500}
         hideProgressBar
         newestOnTop={false}
         closeOnClick

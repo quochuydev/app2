@@ -11,19 +11,39 @@ const router = ({ app }) => {
   app.route('/api/users')
     .get(async function (req, res, next) {
       let { criteria, limit, skip } = _parse(req.query);
-      let users = await UserModel.find(criteria).limit(limit).skip(skip);
-      res.json({ users });
+      let result = { count: 0, users: [] }
+      result.count = await UserModel.count(criteria);
+      if (result.count) {
+        result.users = await UserModel.find(criteria).limit(limit).skip(skip);
+      }
+      res.json(result);
     })
     .post(async function (req, res, next) {
       let data = req.body;
-      let user = await UserModel.create(data);
+      let count_user = await UserModel._count({ email: data.email });
+      if (count_user) {
+        return next({ message: 'Email đã tồn tại' })
+      }
+      let data_update = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+      }
+      let user = await UserModel._create(data_update);
       res.json({ user });
     })
   app.route('/api/users/:id')
     .put(async function (req, res, next) {
       let user_id = req.params.id;
       let data = req.body;
-      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data }, { lean: true, new: true });
+      let data_update = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+        birthday: data.birthday,
+      }
+      let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ user });
     })
     .delete(async function (req, res, next) {

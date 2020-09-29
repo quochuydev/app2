@@ -79,7 +79,7 @@ function Login() {
       <div style={{ maxWidth: 400, margin: '60px auto' }}>
         <Form name="basic" onSubmit={onFinish} style={{ marginBottom: 20 }}>
           <Form.Item label="Tên cửa hàng">
-            <Input name="name" onChange={onChange} value={account.name} autocomplete={false}
+            <Input name="name" onChange={onChange} value={account.name} autoComplete='none'
               placeholder="Tên cửa hàng" />
           </Form.Item>
           <Form.Item label="Mã code">

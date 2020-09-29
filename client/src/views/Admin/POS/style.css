@@ -59,12 +59,6 @@ p {
   padding: 0 !important;
 }
 
-.ui-information-title, .ui-title-page {
-	font-weight: 600;
-	text-transform: capitalize;
-	color: #0b3d88;
-}
-
 .ant-card-head-title, .ant-card-head {
   padding: 0;
 }

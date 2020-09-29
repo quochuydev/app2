@@ -101,15 +101,15 @@ const MENU_DATA = [
     path: USER_ROUTE,
     key: 'user',
     name: 'Tài khoản',
-    is_open: false,
-    icon: 'appstore'
+    is_open: true,
+    icon: 'user'
   },
   {
     path: PERMISSION_ROUTE,
     key: 'permission',
     name: 'Nhóm quyền',
-    is_open: false,
-    icon: 'appstore'
+    is_open: true,
+    icon: 'team'
   }
 ]
 

@@ -20,7 +20,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, actions, downloadLink } = props;
+  const { count, users, user, permissions, actions, downloadLink } = props;
 
   const columns = [
     {
@@ -42,16 +42,6 @@ function User(props) {
       )
     },
     {
-      title: 'Ngày sinh', key: 'birthday', render: edit => (
-        <span>{edit.birthday ? moment(edit.birthday).format('DD-MM-YYYY') : null}</span>
-      )
-    },
-    {
-      title: 'Số đơn hàng', key: 'total_orders', render: edit => (
-        <Tag color="green">{edit.total_orders}</Tag>
-      )
-    },
-    {
       title: '', key: 'option',
       render: edit => (
         <span>
@@ -63,29 +53,15 @@ function User(props) {
     },
   ];
 
-  const uploadSetting = {
-    multiple: false,
-    action: `${apiUrl}/users`,
-    headers: ApiClient.getHeader(),
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-  };
-
   let initQuery = { limit: 10, page: 1 };
   let [query, setQuery] = useState(initQuery);
   useEffect(() => {
-    actions.loadUsers(query);
+    onLoadUser();
   }, [query]);
+
+  function onLoadUser() {
+    actions.loadUsers(query);
+  }
 
   const [isExportModal, setIsExportModal] = useState(false);
   const [isCreateModal, setIsCreateModal] = useState(false);
@@ -94,12 +70,8 @@ function User(props) {
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-  function onLoadUser() {
-    actions.listUsers(query);
-  }
-
   function onChange(e) {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    actions.setUser({ [e.target.name]: e.target.value });
   }
 
   async function syncUsers() {
@@ -126,7 +98,7 @@ function User(props) {
     if (user && user.id) {
       actions.setUser(user)
     } else {
-      actions.setUser({})
+      actions.resetUser({})
     }
     setIsCreateModal(true);
   }
@@ -140,39 +112,44 @@ function User(props) {
       } else {
         result = await AdminServices.User.create(user);
       }
-      message.success(result.message)
+      message.success(result.message);
+      setIsCreateModal(false);
     } catch (error) {
       message.error(error.message)
     }
-    setIsCreateModal(false);
+    onLoadUser()
   }
 
   function onChangeField(name, e) {
     setQuery({ ...query, [name]: e })
   }
 
+  function addPermission(e) {
+    console.log(e)
+  }
+
   return (
     <div>
       <Row key='1'>
         <Col span={6}>
-          <p>Chủ tài khoản</p>
+          <p className="ui-title-page">Chủ tài khoản</p>
         </Col>
         <Col span={18}>
           <List.Item.Meta
-            avatar={<Avatar shape="square" size={40} src={'#'} />}
+            avatar={<Avatar shape="square" size={50} src={'#'} />}
             title={<p><Link to="/">Quốc Huy</Link></p>}
             description={'quochuydev1@gmail.com'}
           />
         </Col>
         <Col span={6}>
-          <p>Danh sách tài khoản</p>
-          <Button icon="plus" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
+          <p className="ui-title-page">Danh sách tài khoản</p>
+          <Button icon="plus" type="primary" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
         </Col>
         <Col span={18}>
           <Table rowKey='id' dataSource={users} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
-            showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
+            showTotal={(total, range) => `${total} items`} current={query.page}
             defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
             onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
           />
@@ -181,38 +158,35 @@ function User(props) {
 
         </Col>
       </Row>
-      <Modal
-        title="Import excel"
-        visible={isCreateModal}
-        onOk={() => assertUser()}
+      <Modal title="Chi tiết user" visible={isCreateModal}
+        onOk={() => assertUser()} width={1000}
         onCancel={() => setIsCreateModal(false)}
       >
-        <Upload.Dragger {...uploadSetting} className="hide">
-          <div style={{ width: '100%' }}>
-            <p className="ant-upload-drag-icon">
-              <Icon type="inbox" />
-            </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-          </div>
-        </Upload.Dragger>
-        {
-          <div>
+        <Row>
+          <Col xs={24} lg={12}>
+            <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
+              <Input name="email" placeholder="input placeholder" value={user.email} disabled={!!(user && user.id)} />
+            </Form.Item>
             <Form.Item label="Tên" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
               <Input name="first_name" placeholder="input placeholder" value={user.first_name} />
             </Form.Item>
             <Form.Item label="Họ" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
               <Input name="last_name" placeholder="input placeholder" value={user.last_name} />
             </Form.Item>
-            <Form.Item label="Email" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
-              <Input name="email" placeholder="input placeholder" value={user.email} />
-            </Form.Item>
             <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
               <Input name="phone" placeholder="input placeholder" value={user.phone} />
             </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
             <Card>
               <p>Nhóm quyền</p>
-              <Select>
-                <Option key={1} value={1}>Nhóm 1</Option>
+              <Select onChange={e => addPermission(e)}>
+                <Option key={null} value={null}>-Chọn nhóm quyền-</Option>
+                {
+                  permissions.map((e, i) =>
+                    <Option key={i} value={e.id}>{e.name}</Option>
+                  )
+                }
               </Select>
               <Table rowKey='id' dataSource={user.roles} columns={[
                 {
@@ -231,8 +205,8 @@ function User(props) {
                 },
               ]} pagination={false} scroll={{ x: 1000 }} size="small" />
             </Card>
-          </div>
-        }
+          </Col>
+        </Row>
       </Modal>
     </div >
   );
@@ -240,6 +214,8 @@ function User(props) {
 
 const mapStateToProps = state => ({
   users: state.users.get('users'),
+  permissions: state.permissions.get('permissions'),
+  permission: state.permissions.get('permission'),
   count: state.users.get('count'),
   user: state.users.get('user'),
   downloadLink: state.users.get('downloadLink'),

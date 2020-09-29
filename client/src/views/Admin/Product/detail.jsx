@@ -426,7 +426,7 @@ function ProductDetail(props) {
                         <Select style={{ flex: 'auto' }} onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}>
                           {
                             collections.map((e, i) =>
-                              <Option key={i} value={e.id}>{e.title}</Option>
+                              <Option key={i} value={e.title}>{e.title}</Option>
                             )
                           }
                         </Select>

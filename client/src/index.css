@@ -61,6 +61,12 @@ body {
   min-height: 40px !important;
 }
 
+.ui-information-title, .ui-title-page {
+	font-weight: 600;
+	text-transform: capitalize;
+	color: #0b3d88;
+}
+
 .color-red {
   color: red;
 }

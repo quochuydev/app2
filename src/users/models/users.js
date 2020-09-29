@@ -36,12 +36,17 @@ let UserSchema = new Schema({
   google_info: {}
 });
 
-UserSchema.plugin(autoIncrement.plugin, {
-  model: 'User',
-  field: 'id',
-  startAt: 10000,
-  incrementBy: 1
-});
+UserSchema.plugin(autoIncrement.plugin, { model: 'User', field: 'id', startAt: 10000, incrementBy: 1 });
+
+UserSchema.statics._count = async function (filter = {}) {
+  filter.shop_id = filter.shop_id || cache.get('shop_id');
+  return await this.count(filter);
+}
+
+UserSchema.statics._create = async function (data = {}) {
+  data.shop_id = data.shop_id || cache.get('shop_id');
+  return await this.create(data);
+}
 
 function hashPassword(salt, password) {
   return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64, 'sha1').toString('base64');
