@@ -135,9 +135,8 @@ function Permission(props) {
           />
         </Col>
       </Row>
-      <Modal
-        title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
-        onOk={() => assertPermission()} onCancel={() => onAssertPermission(false)}>
+      <Modal title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
+        onOk={() => assertPermission()} onCancel={() => setIsCreateModal(false)}>
         <Row>
           <Col xs={24} lg={12}>
             <Form.Item label="Mã nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>

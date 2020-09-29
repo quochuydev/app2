@@ -37,6 +37,10 @@ module.exports = ({ app }) => {
         note: data.note,
         roles: data.roles,
       }
+      let count_permissions = await PermissionModel._count({ code: data.code, id: { $ne: permission_id } });
+      if (count_permissions) {
+        return next({ message: 'Mã quyền này đã tồn tại' })
+      }
       let permission = await PermissionModel.findOneAndUpdate({ id: permission_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ permission });
     })
