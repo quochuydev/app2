@@ -70,7 +70,6 @@ function User(props) {
   const [isProcessing, setIsProcessing] = useState(false);
   if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
-
   function onChange(e) {
     actions.setUser({ [e.target.name]: e.target.value });
   }
@@ -159,7 +158,7 @@ function User(props) {
 
         </Col>
       </Row>
-      <Modal title="Import excel" visible={isCreateModal}
+      <Modal title="Chi tiết user" visible={isCreateModal}
         onOk={() => assertUser()} width={1000}
         onCancel={() => setIsCreateModal(false)}
       >

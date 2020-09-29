@@ -22,12 +22,14 @@ const apiUrl = `${config.backend_url}/api`;
 
 function Permission(props) {
   const { Option } = Select;
-  const { count, permissions, permission, actions, downloadLink } = props;
+  const { count, permissions, permission, actions } = props;
 
   const columns = [
     {
       title: 'id', key: 'id', render: edit => (
-        <div>{edit.id}</div>
+        <a onClick={e => onAssertPermission(edit)}>
+          {edit.id}
+        </a>
       )
     },
     {
@@ -89,14 +91,6 @@ function Permission(props) {
     setIsProcessing(false);
   }
 
-  function onChangeType(e) {
-    setQuery({ ...query, type_in: e })
-  }
-  function onChange(e) {
-    let { name, value } = e.target;
-    setQuery({ ...query, [name]: value })
-  }
-
   function onChangePage(e) {
     setQuery({ ...query, page: e })
   }
@@ -125,9 +119,8 @@ function Permission(props) {
         </Col>
       </Row>
       <Modal
-        title="Import excel" visible={isCreateModal} width={1000}
-        onOk={() => assertPermission()}
-        onCancel={() => onAssertPermission(false)}>
+        title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
+        onOk={() => assertPermission()} onCancel={() => onAssertPermission(false)}>
         <Row>
           <Col xs={24} lg={12}>
             <Form.Item label="Mã nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>

@@ -2,7 +2,7 @@ import { Map } from 'immutable';
 import _ from 'lodash';
 
 const initialState = Map({
-  total: 0,
+  count: 0,
   users: [],
   user: {},
 });

@@ -11,8 +11,12 @@ const router = ({ app }) => {
   app.route('/api/users')
     .get(async function (req, res, next) {
       let { criteria, limit, skip } = _parse(req.query);
-      let users = await UserModel.find(criteria).limit(limit).skip(skip);
-      res.json({ users });
+      let result = { count: 0, users: [] }
+      result.count = await UserModel.count(criteria);
+      if (result.count) {
+        result.users = await UserModel.find(criteria).limit(limit).skip(skip);
+      }
+      res.json(result);
     })
     .post(async function (req, res, next) {
       let data = req.body;

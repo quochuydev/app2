@@ -15,12 +15,10 @@ function PermissionsReducer(state = initialState, { type, payload }) {
       return state.merge({ ...payload });
     case 'REFRESH_PERMISSION':
       let permission = state.get('permission')
-      _.merge(permission, payload.permission);
+      permission = _.assign({}, permission, payload.permission);
       return state.merge({ permission });
     case 'RESET_USER':
       return state.merge({ permission: initialState.get('permission') });
-    case 'SEARCH':
-      return state.merge({ searchPermissions: payload.permissions });
     default:
       return state;
   }

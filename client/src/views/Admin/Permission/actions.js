@@ -27,12 +27,6 @@ export function merge(data) {
   }
 }
 
-export function search(data) {
-  return function (dispatch) {
-    dispatch({ type: 'SEARCH', payload: { error: false, message: 'Merge success', ...data } });
-  }
-}
-
 export function loadPermissions(query) {
   return async (dispatch) => {
     const data = await AdminServices.Permission.load(query);
