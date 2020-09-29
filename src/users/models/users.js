@@ -31,7 +31,14 @@ let UserSchema = new Schema({
   is_deleted: { type: Boolean, default: false },
 
   userType: { type: String, default: null },
-  roles: [String],
+  roles: {
+    type: [{
+      id: { type: Number, default: null },
+      code: { type: String, default: null },
+      name: { type: String, default: null },
+    }],
+    default: []
+  },
   text_search: { type: String, default: null },
   google_info: {}
 });

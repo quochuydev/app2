@@ -11,14 +11,12 @@ import {
   Form, message, Checkbox, Card, Radio,
 } from 'antd';
 import 'antd/dist/antd.css';
+
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
 import AdminServices from './../../../services/adminServices';
-
 import data from './data.json'
-
-const apiUrl = `${config.backend_url}/api`;
 
 function Permission(props) {
   const { Option } = Select;
@@ -26,15 +24,10 @@ function Permission(props) {
 
   const columns = [
     {
-      title: 'id', key: 'id', render: edit => (
+      title: 'Mã nhóm', key: 'code', width: 200, render: edit => (
         <a onClick={e => onAssertPermission(edit)}>
-          {edit.id}
+          <span>{edit.code}</span>
         </a>
-      )
-    },
-    {
-      title: 'Mã nhóm', key: 'code', render: edit => (
-        <span>{edit.code}</span>
       )
     },
     {
@@ -43,13 +36,10 @@ function Permission(props) {
       )
     },
     {
-      title: '', key: 'option',
-      render: edit => (
-        <span>
-          <Button type="danger" size="small" onClick={() => { }}>
-            <Icon type="close" />
-          </Button>
-        </span>
+      title: '', key: 'option', render: edit => (
+        <Button type="danger" size="small" onClick={() => { }}>
+          <Icon type="close" />
+        </Button>
       ),
     },
   ];
@@ -79,13 +69,6 @@ function Permission(props) {
 
   function onLoadPermission() {
     actions.listPermissions(query);
-  }
-
-  function importPermission() {
-    actions.importPermission();
-  }
-  function exportPermission() {
-    actions.exportPermission();
   }
 
   async function syncPermissions() {

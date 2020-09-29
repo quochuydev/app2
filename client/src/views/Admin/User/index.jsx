@@ -62,18 +62,15 @@ function User(props) {
     onLoadUser();
   }, [query]);
 
+  useEffect(() => {
+    permissionActions.loadPermissions();
+  }, []);
+
   function onLoadUser() {
     actions.loadUsers(query);
   }
 
-  permissionActions.loadPermissions(query);
-
-  const [isExportModal, setIsExportModal] = useState(false);
-  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
-
-  const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   function onChange(e) {
     actions.setUser({ [e.target.name]: e.target.value });
@@ -86,26 +83,17 @@ function User(props) {
     setIsProcessing(false);
   }
 
-
-  function onChangeType(e) {
-    setQuery({ ...query, type_in: e })
-  }
-  function onChange(e) {
-    let { name, value } = e.target;
-    setQuery({ ...query, [name]: value })
-  }
-
   function onChangePage(e) {
     setQuery({ ...query, page: e })
   }
 
   function onAssertUser(user) {
     if (user && user.id) {
-      actions.setUser(user)
+      actions.setUser(user);
     } else {
-      actions.resetUser({})
+      actions.resetUser();
     }
-    setIsCreateModal(true);
+    setIsShowModal(true);
   }
 
   async function assertUser() {
@@ -118,7 +106,7 @@ function User(props) {
         result = await AdminServices.User.create(user);
       }
       message.success(result.message);
-      setIsCreateModal(false);
+      setIsShowModal(false);
     } catch (error) {
       message.error(error.message)
     }
@@ -129,8 +117,13 @@ function User(props) {
     setQuery({ ...query, [name]: e })
   }
 
-  function addPermission(e) {
-    console.log(e)
+  function addPermission(ids) {
+    let roles = []
+    for (const id of ids) {
+      let role = permissions.find(e => e.id == id)
+      roles.push(role)
+    }
+    actions.setUser({ roles });
   }
 
   return (
@@ -163,9 +156,9 @@ function User(props) {
 
         </Col>
       </Row>
-      <Modal title="Chi tiết user" visible={isCreateModal}
+      <Modal title="Chi tiết user" visible={isShowModal}
         onOk={() => assertUser()} width={1000}
-        onCancel={() => setIsCreateModal(false)}
+        onCancel={() => setIsShowModal(false)}
       >
         <Row>
           <Col xs={24} lg={12}>
@@ -185,30 +178,38 @@ function User(props) {
           <Col xs={24} lg={12}>
             <Card>
               <p>Nhóm quyền</p>
-              <Select onChange={e => addPermission(e)}>
+              <Select className="block" onChange={e => addPermission(e)} mode="multiple"
+                value={user.roles.map(e => e.id)}>
                 <Option key={null} value={null}>-Chọn nhóm quyền-</Option>
                 {
                   permissions.map((e, i) =>
-                    <Option key={i} value={e.code}>{e.name}</Option>
+                    <Option key={i} value={e.id}>{e.name}</Option>
                   )
                 }
               </Select>
               <Table rowKey='id' dataSource={user.roles} columns={[
                 {
-                  title: 'Tên nhóm', key: 'name', render: edit => (
+                  title: 'Mã nhóm', key: 'code', render: edit => (
                     <a onClick={e => onAssertUser(edit)}>
-                      {edit.name}
+                      {edit.code}
                     </a>
                   )
                 },
                 {
-                  title: '', key: 'options', render: edit => (
-                    <a onClick={e => onAssertUser(edit)}>
-                      {edit.id}
-                    </a>
+                  title: 'Tên nhóm', key: 'name', render: edit => (
+                    <p>
+                      {edit.name}
+                    </p>
                   )
                 },
-              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+                {
+                  title: '', key: 'options', render: edit => (
+                    <Button type="danger" size="small" onClick={() => { }}>
+                      <Icon type="close" />
+                    </Button>
+                  )
+                },
+              ]} pagination={false} size="small" />
             </Card>
           </Col>
         </Row>
