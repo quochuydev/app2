@@ -76,13 +76,6 @@ function User(props) {
     actions.setUser({ [e.target.name]: e.target.value });
   }
 
-  async function syncUsers() {
-    setIsProcessing(true);
-    await actions.syncUsers();
-    onLoadUser();
-    setIsProcessing(false);
-  }
-
   function onChangePage(e) {
     setQuery({ ...query, page: e })
   }
