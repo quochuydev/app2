@@ -15,36 +15,59 @@ module.exports = ({ app }) => {
       res.json(result);
     })
     .post(async function (req, res, next) {
-      let data = req.body;
-      let count_permissions = await PermissionModel._count({ code: data.code });
-      if (count_permissions) {
-        return next({ message: 'Mã quyền này đã tồn tại' })
+      createPermission({ data: req.body })
+        .then(result => res.json(result))
+        .catch(error => next(error))
+
+      async function createPermission({ data }) {
+        if (!data.code) {
+          throw { message: 'Vui lòng nhập mã code' }
+        }
+        if (!data.name) {
+          throw { message: 'Vui lòng nhập tên nhóm' }
+        }
+        let count_permissions = await PermissionModel._count({ code: data.code });
+        if (count_permissions) {
+          throw { message: 'Mã quyền này đã tồn tại' }
+        }
+        let data_update = {
+          code: data.code,
+          name: data.name,
+          note: data.note,
+          is_full: data.is_full,
+          roles: data.roles,
+        }
+        let permission = await PermissionModel._create(data_update);
+        return { permission };
       }
-      let data_update = {
-        code: data.code,
-        name: data.name,
-        note: data.note,
-      }
-      let permission = await PermissionModel._create(data_update);
-      res.json({ permission });
     })
   app.route('/api/permissions/:id')
     .put(async function (req, res, next) {
-      let permission_id = req.params.id;
-      let data = req.body;
-      let data_update = {
-        code: data.code,
-        name: data.name,
-        note: data.note,
-        roles: data.roles,
+      updatePermission({ permission_id: req.params.id, data: req.body })
+        .then(result => res.json(result))
+        .catch(error => next(error))
+
+      async function updatePermission({ permission_id, data }) {
+        if (!data.code) {
+          throw { message: 'Vui lòng nhập mã code' }
+        }
+        if (!data.name) {
+          throw { message: 'Vui lòng nhập tên nhóm' }
+        }
+        let count_permissions = await PermissionModel._count({ code: data.code, id: { $ne: permission_id } });
+        if (count_permissions) {
+          throw { message: 'Mã quyền này đã tồn tại' }
+        }
+        let data_update = {
+          code: data.code,
+          name: data.name,
+          note: data.note,
+          is_full: data.is_full,
+          roles: data.roles,
+        }
+        let permission = await PermissionModel.findOneAndUpdate({ id: permission_id }, { $set: data_update }, { lean: true, new: true });
+        return { permission }
       }
-      // data_update.roles = initData.roles
-      let count_permissions = await PermissionModel._count({ code: data.code, id: { $ne: permission_id } });
-      if (count_permissions) {
-        return next({ message: 'Mã quyền này đã tồn tại' })
-      }
-      let permission = await PermissionModel.findOneAndUpdate({ id: permission_id }, { $set: data_update }, { lean: true, new: true });
-      res.json({ permission });
     })
     .delete(async function (req, res, next) {
       let permission_id = req.params.id;

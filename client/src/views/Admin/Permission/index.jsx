@@ -135,7 +135,7 @@ function Permission(props) {
           />
         </Col>
       </Row>
-      <Modal title="Chi tiết nhóm quyền" visible={true} width={1000}
+      <Modal title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
         onOk={() => assertPermission()} onCancel={() => setIsCreateModal(false)}>
         <Row>
           <Col xs={24} lg={12}>
