@@ -29,6 +29,7 @@ const router = ({ app }) => {
         last_name: data.last_name,
         email: data.email,
         phone: data.phone,
+        roles: data.roles,
       }
       let user = await UserModel._create(data_update);
       res.json({ user });
@@ -42,6 +43,7 @@ const router = ({ app }) => {
         last_name: data.last_name,
         phone: data.phone,
         birthday: data.birthday,
+        roles: data.roles,
       }
       let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: data_update }, { lean: true, new: true });
       res.json({ user });

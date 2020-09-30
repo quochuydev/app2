@@ -8,17 +8,15 @@ import { Link } from "react-router-dom";
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, message, Checkbox, Card,
+  Form, message, Checkbox, Card, Radio,
 } from 'antd';
 import 'antd/dist/antd.css';
+
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
 import AdminServices from './../../../services/adminServices';
-
 import data from './data.json'
-
-const apiUrl = `${config.backend_url}/api`;
 
 function Permission(props) {
   const { Option } = Select;
@@ -26,15 +24,10 @@ function Permission(props) {
 
   const columns = [
     {
-      title: 'id', key: 'id', render: edit => (
+      title: 'Mã nhóm', key: 'code', width: 200, render: edit => (
         <a onClick={e => onAssertPermission(edit)}>
-          {edit.id}
+          <span>{edit.code}</span>
         </a>
-      )
-    },
-    {
-      title: 'Mã nhóm', key: 'code', render: edit => (
-        <span>{edit.code}</span>
       )
     },
     {
@@ -43,13 +36,10 @@ function Permission(props) {
       )
     },
     {
-      title: '', key: 'option',
-      render: edit => (
-        <span>
-          <Button type="danger" size="small" onClick={() => { }}>
-            <Icon type="close" />
-          </Button>
-        </span>
+      title: '', key: 'option', render: edit => (
+        <Button type="danger" size="small" onClick={() => { }}>
+          <Icon type="close" />
+        </Button>
       ),
     },
   ];
@@ -69,7 +59,7 @@ function Permission(props) {
     if (permission && permission.id) {
       actions.setPermission(permission)
     } else {
-      actions.resetPermission({})
+      actions.resetPermission()
     }
     setIsCreateModal(true);
   }
@@ -79,13 +69,6 @@ function Permission(props) {
 
   function onLoadPermission() {
     actions.listPermissions(query);
-  }
-
-  function importPermission() {
-    actions.importPermission();
-  }
-  function exportPermission() {
-    actions.exportPermission();
   }
 
   async function syncPermissions() {
@@ -120,12 +103,24 @@ function Permission(props) {
     setQuery({ ...query, [name]: e })
   }
 
+  function onChangeRole(role, new_action) {
+    let index = permission.roles.findIndex(e => e.active == role.active)
+    if (index != -1) {
+      permission.roles[index].action = new_action;
+      actions.setPermission({ roles: permission.roles })
+    }
+  }
+
+  function formatRole(active) {
+    let role = data.roles.find(e => e.active == active)
+    return role.name;
+  }
+
   return (
     <div>
       <Row key='1'>
         <Col span={24}>
           <Button type="primary" icon="plus" onClick={() => onAssertPermission()}>Thêm nhóm quyền</Button>
-          <Button className="hide" onClick={() => syncPermissions(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
@@ -135,32 +130,57 @@ function Permission(props) {
           />
         </Col>
       </Row>
-      <Modal
-        title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
-        onOk={() => assertPermission()} onCancel={() => onAssertPermission(false)}>
+      <Modal title="Chi tiết nhóm quyền" visible={isCreateModal} width={1000}
+        onOk={() => assertPermission()} onCancel={() => setIsCreateModal(false)}>
         <Row>
           <Col xs={24} lg={12}>
             <Form.Item label="Mã nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="code" placeholder="input placeholder" value={permission.code} />
             </Form.Item>
+          </Col>
+          <Col xs={24} lg={12}>
             <Form.Item label="Tên nhóm" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="name" placeholder="input placeholder" value={permission.name} />
             </Form.Item>
+          </Col>
+          <Col xs={24} lg={24}>
             <Form.Item label="Ghi chú" onChange={e => actions.setPermission({ [e.target.name]: e.target.value })}>
               <Input name="note" placeholder="input placeholder" value={permission.note} />
             </Form.Item>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Checkbox>Full quyền</Checkbox>
-            <Card>
+            <Checkbox checked={permission.is_full}
+              onChange={e => actions.setPermission({ is_full: e.target.checked })}
+              className="m-10">Toàn quyền quản trị</Checkbox>
+            <Card className={permission.is_full ? 'hide' : 'block'}>
               <p>Nhóm quyền</p>
-              <Table rowKey='id' dataSource={permission.roles} columns={[
-                {
-                  title: 'Tên nhóm', key: 'name', render: edit => (
-                    <p>{edit.name}</p>
-                  )
-                },
-              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+              <Table rowKey='active' dataSource={permission.roles}
+                columns={[
+                  {
+                    title: 'Tên nhóm', key: 'name', render: edit => (
+                      <p>{formatRole(edit.active)}</p>
+                    )
+                  },
+                  {
+                    title: 'Xem và ghi', key: 'action_write', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='write' value={'write'} />
+                      </Radio.Group>
+                    )
+                  },
+                  {
+                    title: 'Chỉ xem', key: 'action_read', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='read' value={'read'} />
+                      </Radio.Group>
+                    )
+                  },
+                  {
+                    title: 'Không có quyền', key: 'action_none', render: edit => (
+                      <Radio.Group onChange={e => { onChangeRole(edit, e.target.value) }} value={edit.action}>
+                        <Radio key='none' value={'none'} />
+                      </Radio.Group>
+                    )
+                  },
+                ]} pagination={false} scroll={{ x: 1000 }} size="small" />
             </Card>
           </Col>
         </Row>

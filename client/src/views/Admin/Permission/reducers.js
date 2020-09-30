@@ -1,10 +1,13 @@
 import { Map } from 'immutable';
 import _ from 'lodash';
+import data from './data.json'
 
 const initialState = Map({
   count: 0,
   permissions: [],
-  permission: {},
+  permission: {
+    roles: data.roles
+  },
 });
 
 function PermissionsReducer(state = initialState, { type, payload }) {
@@ -14,10 +17,14 @@ function PermissionsReducer(state = initialState, { type, payload }) {
     case 'LOAD_TAGS_SUCCESS':
       return state.merge({ ...payload });
     case 'REFRESH_PERMISSION':
-      let permission = state.get('permission')
+      let permission = state.get('permission');
       permission = _.assign({}, permission, payload.permission);
+      if (!permission.roles.length) {
+        let initPermission = initialState.get('permission');
+        permission.roles = initPermission.roles;
+      }
       return state.merge({ permission });
-    case 'RESET_USER':
+    case 'RESET_PERMISSION':
       return state.merge({ permission: initialState.get('permission') });
     default:
       return state;

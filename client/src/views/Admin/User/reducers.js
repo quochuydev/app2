@@ -4,7 +4,9 @@ import _ from 'lodash';
 const initialState = Map({
   count: 0,
   users: [],
-  user: {},
+  user: {
+    roles: []
+  },
 });
 
 function UsersReducer(state = initialState, { type, payload }) {

@@ -20,7 +20,7 @@ module.exports = (app, db) => {
   //   next();
   // });
   app.use(cors());
-  app.use(logger('tiny'));
+  // app.use(logger('tiny'));
 
   if (process.env.NODE_ENV == 'production') {
     console.log(path.resolve('client/build', 'index.html'))

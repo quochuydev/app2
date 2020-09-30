@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import * as userActions from './actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -11,6 +10,10 @@ import {
   Form, message, List, Avatar, Card,
 } from 'antd';
 import 'antd/dist/antd.css';
+
+import * as userActions from './actions';
+import * as PermissionActions from '../Permission/actions';
+
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
 import ApiClient from './../../../utils/apiClient';
@@ -20,7 +23,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, permissions, actions, downloadLink } = props;
+  const { count, users, user, permissions, actions, permissionActions } = props;
 
   const columns = [
     {
@@ -59,35 +62,18 @@ function User(props) {
     onLoadUser();
   }, [query]);
 
+  useEffect(() => {
+    permissionActions.loadPermissions();
+  }, []);
+
   function onLoadUser() {
     actions.loadUsers(query);
   }
 
-  const [isExportModal, setIsExportModal] = useState(false);
-  const [isCreateModal, setIsCreateModal] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
-
-  const [isProcessing, setIsProcessing] = useState(false);
-  if (isProcessing) { return <LoadingPage isProcessing={isProcessing} />; }
 
   function onChange(e) {
     actions.setUser({ [e.target.name]: e.target.value });
-  }
-
-  async function syncUsers() {
-    setIsProcessing(true);
-    await actions.syncUsers();
-    onLoadUser();
-    setIsProcessing(false);
-  }
-
-
-  function onChangeType(e) {
-    setQuery({ ...query, type_in: e })
-  }
-  function onChange(e) {
-    let { name, value } = e.target;
-    setQuery({ ...query, [name]: value })
   }
 
   function onChangePage(e) {
@@ -96,11 +82,11 @@ function User(props) {
 
   function onAssertUser(user) {
     if (user && user.id) {
-      actions.setUser(user)
+      actions.setUser(user);
     } else {
-      actions.resetUser({})
+      actions.resetUser();
     }
-    setIsCreateModal(true);
+    setIsShowModal(true);
   }
 
   async function assertUser() {
@@ -113,7 +99,7 @@ function User(props) {
         result = await AdminServices.User.create(user);
       }
       message.success(result.message);
-      setIsCreateModal(false);
+      setIsShowModal(false);
     } catch (error) {
       message.error(error.message)
     }
@@ -124,8 +110,13 @@ function User(props) {
     setQuery({ ...query, [name]: e })
   }
 
-  function addPermission(e) {
-    console.log(e)
+  function addPermission(ids) {
+    let roles = []
+    for (const id of ids) {
+      let role = permissions.find(e => e.id == id)
+      roles.push(role)
+    }
+    actions.setUser({ roles });
   }
 
   return (
@@ -158,9 +149,9 @@ function User(props) {
 
         </Col>
       </Row>
-      <Modal title="Chi tiết user" visible={isCreateModal}
+      <Modal title="Chi tiết user" visible={isShowModal}
         onOk={() => assertUser()} width={1000}
-        onCancel={() => setIsCreateModal(false)}
+        onCancel={() => setIsShowModal(false)}
       >
         <Row>
           <Col xs={24} lg={12}>
@@ -180,7 +171,8 @@ function User(props) {
           <Col xs={24} lg={12}>
             <Card>
               <p>Nhóm quyền</p>
-              <Select onChange={e => addPermission(e)}>
+              <Select className="block" onChange={e => addPermission(e)} mode="multiple"
+                value={user.roles.map(e => e.id)}>
                 <Option key={null} value={null}>-Chọn nhóm quyền-</Option>
                 {
                   permissions.map((e, i) =>
@@ -190,20 +182,27 @@ function User(props) {
               </Select>
               <Table rowKey='id' dataSource={user.roles} columns={[
                 {
-                  title: 'Tên nhóm', key: 'name', render: edit => (
+                  title: 'Mã nhóm', key: 'code', render: edit => (
                     <a onClick={e => onAssertUser(edit)}>
-                      {edit.name}
+                      {edit.code}
                     </a>
                   )
                 },
                 {
-                  title: '', key: 'options', render: edit => (
-                    <a onClick={e => onAssertUser(edit)}>
-                      {edit.id}
-                    </a>
+                  title: 'Tên nhóm', key: 'name', render: edit => (
+                    <p>
+                      {edit.name}
+                    </p>
                   )
                 },
-              ]} pagination={false} scroll={{ x: 1000 }} size="small" />
+                {
+                  title: '', key: 'options', render: edit => (
+                    <Button type="danger" size="small" onClick={() => { }}>
+                      <Icon type="close" />
+                    </Button>
+                  )
+                },
+              ]} pagination={false} size="small" />
             </Card>
           </Col>
         </Row>
@@ -222,7 +221,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(userActions, dispatch)
+  actions: bindActionCreators(userActions, dispatch),
+  permissionActions: bindActionCreators(PermissionActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);
