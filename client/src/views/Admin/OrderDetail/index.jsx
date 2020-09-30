@@ -16,6 +16,8 @@ import {
 import 'antd/dist/antd.css';
 
 import * as orderActions from './../Order/actions';
+import * as CustomerActions from './../Customer/actions';
+
 import AdminServices from '../../../services/adminServices';
 import common from '../../../utils/common';
 import PrintOrder from './../POS/print.jsx';
@@ -29,7 +31,7 @@ let cssStatus = common.cssStatus;
 let { Option } = Select;
 
 function OrderDetailComponent(props) {
-  let { match: { params }, actions, order } = props;
+  let { match: { params }, actions, order, customer, customerActions } = props;
   let { orderId } = params
   console.log(orderId);
 
@@ -38,6 +40,12 @@ function OrderDetailComponent(props) {
       refreshOrder()
     }
   }, [])
+
+  useEffect(() => {
+    if (order.customer_id) {
+      customerActions.getCustomer(order.customer_id);
+    }
+  }, [order.customer_id])
 
   function refreshOrder() {
     actions.getOrderDetail(orderId);
@@ -170,165 +178,170 @@ function OrderDetailComponent(props) {
 
   return (
     <div>
-      {
-        !!(order && order.id) ?
-          <div className="p-10">
-            <PageHeader>
-              <Row type="flex">
-                <Col xs={12} lg={4}>
-                  <Statistic type="text" title="Mã đơn hàng" value={order.number}
-                    style={{ marginRight: '35px', }}
-                  />
-                </Col>
-                <Col xs={12} lg={4}>
-                  <Statistic
-                    title={'Ngày tạo'}
-                    value={moment(order.created_at).format('DD/MM/yyyy HH:mm:ss')}
-                    style={{ marginRight: '35px', }}
-                  />
-                </Col>
-                <Col xs={12} lg={6}>
-                  <Statistic
-                    title={'Trạng thái thanh toán'}
-                    value={textFinancial(order.financial_status)}
-                  />
-                </Col>
-                <Col xs={12} lg={6}>
-                  <Statistic
-                    title={'Tình trạng giao hàng'}
-                    value={formatFulfillmentStatus(order.fulfillment_status)}
-                  />
-                </Col>
-                <Col xs={24} lg={4}>
-                  <Popover key={1} placement="topRight" content={
-                    <div style={{}}>
-                      <a className="block" onClick={() => reOrder(order)}>Đặt lại đơn hàng</a>
-                      <a className="block" onClick={() => cancelOrder(order)}>Hủy đơn</a>
-                    </div>
-                  } trigger="click">
-                    <Button icon="plus-circle" size="large" style={{ float: 'right' }} >
-                      Thao tác
+      <div className="p-10">
+        <PageHeader>
+          <Row type="flex">
+            <Col xs={12} lg={4}>
+              <Statistic type="text" title="Mã đơn hàng" value={order.number}
+                style={{ marginRight: '35px', }}
+              />
+            </Col>
+            <Col xs={12} lg={4}>
+              <Statistic
+                title={'Ngày tạo'}
+                value={moment(order.created_at).format('DD/MM/yyyy HH:mm:ss')}
+                style={{ marginRight: '35px', }}
+              />
+            </Col>
+            <Col xs={12} lg={6}>
+              <Statistic
+                title={'Trạng thái thanh toán'}
+                value={textFinancial(order.financial_status)}
+              />
+            </Col>
+            <Col xs={12} lg={6}>
+              <Statistic
+                title={'Tình trạng giao hàng'}
+                value={formatFulfillmentStatus(order.fulfillment_status)}
+              />
+            </Col>
+            <Col xs={24} lg={4}>
+              <Popover key={1} placement="topRight" content={
+                <div style={{}}>
+                  <a className="block" onClick={() => reOrder(order)}>Đặt lại đơn hàng</a>
+                  <a className="block" onClick={() => cancelOrder(order)}>Hủy đơn</a>
+                </div>
+              } trigger="click">
+                <Button icon="plus-circle" size="large" style={{ float: 'right' }} >
+                  Thao tác
                   </Button>
-                  </Popover>
-                  <ReactToPrint
-                    onBeforeGetContent={() => beforePrint()}
-                    onAfterPrint={() => setIsShowPrint(false)}
-                    trigger={() =>
-                      <Button size="large" style={{ float: 'right' }} >
-                        <Icon type="printer" />
-                      </Button>
-                    }
-                    content={() => componentRef.current}
-                  />
+              </Popover>
+              <ReactToPrint
+                onBeforeGetContent={() => beforePrint()}
+                onAfterPrint={() => setIsShowPrint(false)}
+                trigger={() =>
+                  <Button size="large" style={{ float: 'right' }} >
+                    <Icon type="printer" />
+                  </Button>
+                }
+                content={() => componentRef.current}
+              />
+            </Col>
+          </Row>
+        </PageHeader>
+
+        <Row gutter={15}>
+          <Col xs={24} lg={16}>
+            <Table rowKey='variant_id' dataSource={order.line_items} size="small" pagination={false}
+              columns={detailColumns} style={{ minHeight: 250 }} />
+            <Card title={<p className="ui-title-page"></p>}>
+              <Row gutter={[20, 20]}>
+                <Col xs={24} lg={12}>
+                  <p>Thuộc tính <Button icon="plus" size="small" type="primary" onClick={() => { addAttribute() }}>
+                  </Button></p>
+                  {
+                    order.attributes ? order.attributes.map((e, i) =>
+                      <Row key={i} gutter={[10, 5]}>
+                        <Col span={11}>
+                          <Input type="text" name="name" value={e.name} onChange={(e) => onChangeAttribute(i, e)} />
+                        </Col>
+                        <Col span={11}>
+                          <Input type="text" name="value" value={e.value} onChange={(e) => onChangeAttribute(i, e)} />
+                        </Col>
+                        <Col span={2}>
+                          <Button icon="close" type="danger" onClick={() => removeAttribute(i)}></Button>
+                        </Col>
+                      </Row>
+                    ) : null
+                  }
+                  <p>Ghi chú: </p>
+                  <Input type="text" value={order.note} name="note" className="m-b-10"
+                    onChange={e => actions.merge({ note: e.target.value })} />
+                  <Button type="primary" onClick={() => { updateNoteOrder(order) }}>
+                    Cập nhật ghi chú</Button>
+                </Col>
+                <Col xs={24} lg={12}>
+                  <Col span={12}>Giảm giá:</Col>
+                  <Col span={12} className="text-right">{formatMoney(order.total_discounts)}</Col>
+
+                  <Col span={12}>Vận chuyển:</Col>
+                  <Col span={12} className="text-right">{formatMoney(order.custom_total_shipping_price)}</Col>
+
+                  <Col span={12}><strong>Tổng tiền:</strong></Col>
+                  <Col span={12} className="text-right"><strong>{formatMoney(order.total_price)}</strong></Col>
+
+                  <Col span={12}>Đã thanh toán:</Col>
+                  <Col span={12} className="text-right">{formatMoney(order.total_pay)}</Col>
+
+                  <Col span={12}>Còn lại:</Col>
+                  <Col span={12} className="text-right">{formatMoney(order.total_price - order.total_pay)}</Col>
+
+                  {
+                    order.financial_status != 'paid' ?
+                      <Button type="primary" onClick={() => { payOrder(order) }}>Xác nhận thanh toán</Button>
+                      : null
+                  }
                 </Col>
               </Row>
-            </PageHeader>
+            </Card>
+          </Col>
 
-            <Row gutter={15}>
-              <Col xs={24} lg={16}>
-                <Table rowKey='variant_id' dataSource={order.line_items} size="small" pagination={false}
-                  columns={detailColumns} style={{ minHeight: 250 }} />
-                <Card title={<p className="ui-title-page"></p>}>
-                  <Row gutter={[20, 20]}>
-                    <Col xs={24} lg={12}>
-                      <p>Thuộc tính <Button icon="plus" size="small" type="primary" onClick={() => { addAttribute() }}>
-                      </Button></p>
-                      {
-                        order.attributes ? order.attributes.map((e, i) =>
-                          <Row key={i} gutter={[10, 5]}>
-                            <Col span={11}>
-                              <Input type="text" name="name" value={e.name} onChange={(e) => onChangeAttribute(i, e)} />
-                            </Col>
-                            <Col span={11}>
-                              <Input type="text" name="value" value={e.value} onChange={(e) => onChangeAttribute(i, e)} />
-                            </Col>
-                            <Col span={2}>
-                              <Button icon="close" type="danger" onClick={() => removeAttribute(i)}></Button>
-                            </Col>
-                          </Row>
-                        ) : null
-                      }
-                      <p>Ghi chú: </p>
-                      <Input type="text" value={order.note} name="note" className="m-b-10"
-                        onChange={e => actions.merge({ note: e.target.value })} />
-                      <Button type="primary" onClick={() => { updateNoteOrder(order) }}>
-                        Cập nhật ghi chú</Button>
-                    </Col>
-                    <Col xs={24} lg={12}>
-                      <Col span={12}>Giảm giá:</Col>
-                      <Col span={12} className="text-right">{formatMoney(order.total_discounts)}</Col>
+          <Col xs={24} lg={8} >
+            <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
+              <p>Họ tên: <Link to={`../../customer/${customer.id}`} target="_blank">
+                {[customer.last_name, customer.first_name].join(' ')}
+              </Link>
+              </p>
+              <p>Email: {_.get(customer, 'email')}</p>
+              <p>Số điện thoại: {_.get(customer, 'phone')}</p>
+              <p>Địa chỉ: {_.get(customer, 'address1')}</p>
 
-                      <Col span={12}>Vận chuyển:</Col>
-                      <Col span={12} className="text-right">{formatMoney(order.custom_total_shipping_price)}</Col>
+              <p className="ui-title-page">Thông tin đơn hàng</p>
+              <p>Họ tên: <Link to={`../../customer/${order.customer_id}`} target="_blank">
+                {[order.customer.last_name, order.customer.first_name].join(' ')}
+              </Link>
+              </p>
+              <p>Email: {_.get(order, 'customer.email')}</p>
+              <p>Số điện thoại: {_.get(order, 'customer.phone')}</p>
+              <p>Địa chỉ: {_.get(order, 'customer.address1')}</p>
+              <p className="ui-title-page">Thông tin giao hàng</p>
+              <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
+              <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
+              <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
+            </Card>
+            <br />
+            <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
+              <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
+              <Select value={order.fulfillment_status} className="block" name="fulfillment_status"
+                onChange={e => actions.merge({ fulfillment_status: e })}>
+                <Option key={'delivering'} value={'delivering'}>{formatFulfillmentStatus('delivering')}</Option>
+                <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
+              </Select>
+              <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
 
-                      <Col span={12}><strong>Tổng tiền:</strong></Col>
-                      <Col span={12} className="text-right"><strong>{formatMoney(order.total_price)}</strong></Col>
+              <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
+              {
+                order.carrier_cod_status_code != 'codreceipt' ?
+                  <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
+                  : null
+              }
+              {
+                order.carrier_cod_status_code == 'codreceipt' ?
+                  <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
+                  : null
+              }
 
-                      <Col span={12}>Đã thanh toán:</Col>
-                      <Col span={12} className="text-right">{formatMoney(order.total_pay)}</Col>
-
-                      <Col span={12}>Còn lại:</Col>
-                      <Col span={12} className="text-right">{formatMoney(order.total_price - order.total_pay)}</Col>
-
-                      {
-                        order.financial_status != 'paid' ?
-                          <Button type="primary" onClick={() => { payOrder(order) }}>Xác nhận thanh toán</Button>
-                          : null
-                      }
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-
-              <Col xs={24} lg={8} >
-                <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
-                  <p>Họ tên: <Link to={`../../customer/${order.customer_id}`} target="_blank">
-                    {[order.customer.last_name, order.customer.first_name].join(' ')}
-                  </Link>
-                  </p>
-                  <p>Email: {_.get(order, 'customer.email')}</p>
-                  <p>Số điện thoại: {_.get(order, 'customer.phone')}</p>
-                  <p>Địa chỉ: {_.get(order, 'customer.address1')}</p>
-                  <p className="ui-title-page">Thông tin giao hàng</p>
-                  <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
-                  <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
-                  <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
-                </Card>
-                <br />
-                <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
-                  <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
-                  <Select value={order.fulfillment_status} className="block" name="fulfillment_status"
-                    onChange={e => actions.merge({ fulfillment_status: e })}>
-                    <Option key={'delivering'} value={'delivering'}>{formatFulfillmentStatus('delivering')}</Option>
-                    <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
-                  </Select>
-                  <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
-
-                  <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
-                  {
-                    order.carrier_cod_status_code != 'codreceipt' ?
-                      <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
-                      : null
-                  }
-                  {
-                    order.carrier_cod_status_code == 'codreceipt' ?
-                      <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
-                      : null
-                  }
-
-                </Card>
-              </Col>
-            </Row >
-            <div style={{ display: isShowPrint ? 'block' : 'none', zIndex: 10 }}>
-              <div ref={componentRef}>
-                {
-                  (order && order.id) ? <PrintOrder order={order} /> : null
-                }
-              </div>
-            </div>
+            </Card>
+          </Col>
+        </Row >
+        <div style={{ display: isShowPrint ? 'block' : 'none', zIndex: 10 }}>
+          <div ref={componentRef}>
+            {
+              (order && order.id) ? <PrintOrder order={order} /> : null
+            }
           </div>
-          : null
-      }
+        </div>
+      </div>
     </div>
   );
 }
@@ -336,10 +349,12 @@ function OrderDetailComponent(props) {
 const mapStateToProps = state => ({
   orders: state.orders.get('orders'),
   order: state.orders.get('order'),
+  customer: state.customers.get('customer'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(orderActions, dispatch)
+  actions: bindActionCreators(orderActions, dispatch),
+  customerActions: bindActionCreators(CustomerActions, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailComponent);
