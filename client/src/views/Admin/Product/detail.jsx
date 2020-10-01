@@ -424,6 +424,7 @@ function ProductDetail(props) {
                     <Form.Item label={'Nhóm sản phẩm'}>
                       <Input.Group style={{ width: '100%', display: 'flex' }}>
                         <Select style={{ flex: 'auto' }} onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}>
+                          <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                           {
                             collections.map((e, i) =>
                               <Option key={i} value={e.title}>{e.title}</Option>

@@ -147,26 +147,26 @@ function Orders(props) {
     <div>
       <Form>
         <Input.Group style={{ width: '100%', display: 'flex' }}>
-          <Button type="primary" icon="reload" onClick={() => setQuery(initQuery)} size="large">
+          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large">
             <span className="hidden-xs">Bỏ lọc</span>
           </Button>
           <Input size="large" placeholder="Nhập mã đơn hàng" name="type" name="number" value={query.number} onChange={onChange}
             prefix={<Icon type="search" onClick={() => loadOrders()} />} style={{ marginBottom: 1 }} />
-          <Link to={`POS`} target="_blank">
-            <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()}>
-              <span className="hidden-xs">Tạo đơn hàng</span>
-            </Button>
-          </Link>
-          <Popover placement="bottomLeft" content={
+          <Popover placement="bottomRight" content={
             <div>
               <Button type="link" className="block" onClick={() => onExportOrders()}>
                 Xuất excel</Button>
             </div>
           } trigger="click">
-            <Button icon="swap" size="large" type="danger" >
-              <span className="hidden-xs">Tác vụ</span>
+            <Button icon="swap" size="large" type="primary" >
+              <span className="hidden-xs"></span>
             </Button>
           </Popover>
+          <Link to={`POS`} target="_blank">
+            <Button icon="plus-circle" size="large" type="dashed" onClick={() => loadOrders()}>
+              <span className="hidden-xs">Tạo đơn hàng</span>
+            </Button>
+          </Link>
         </Input.Group>
         <br />
         <Row key='1'>

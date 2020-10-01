@@ -12,12 +12,14 @@ const initialState = Map({
     option_2: options[1],
     option_3: options[2],
     variants: [],
-    images: []
+    images: [],
+    vendor: null,
+    collect: null,
   },
   vendors: [],
   collections: [],
   tags: [],
-  
+
   vendor: {},
   collection: {},
   tag: null,

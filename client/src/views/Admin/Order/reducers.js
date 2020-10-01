@@ -6,6 +6,8 @@ const initialState = Map({
   total: 0,
   orders: [],
   order: {
+    customer: {},
+    shipping_address: {},
     attributes: []
   },
   orderCreate: {
