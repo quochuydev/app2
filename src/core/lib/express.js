@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
-const expressLiquid = require('express-liquid');
 const { Liquid } = require('liquidjs')
 
 const config = require(path.resolve('./src/config/config'));
@@ -31,27 +30,10 @@ module.exports = (app, db) => {
     });
   }
 
-  let options = {
-    includeFile: function (filename, callback) {
-      fs.readFile(filename, 'utf8', callback);
-    },
-    context: expressLiquid.newContext(),
-    customTags: {},
-    traceError: false
-  };
-  console.log(path.resolve('./views'));
-
-  // app.set('views', path.resolve('./views'));
-  // app.set('view engine', 'liquid');
-  // app.engine('liquid', expressLiquid(options));
-  // app.use('/site/', expressLiquid.middleware);
-
-  // const engine = new Liquid({ root: __dirname, extname: '.liquid' })
-  // app.engine('liquid', engine.express());
-
   app.engine('liquid', new Liquid().express());
   app.set('views', path.resolve('./views'));
   app.set('view engine', 'liquid');
+  app.use('/site', express.static(path.resolve('./views/site')));
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));

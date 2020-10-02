@@ -2,29 +2,23 @@ let path = require('path')
 const express = require('express');
 
 const routes = (app) => {
-  // app.use('/site/:shop/*', function (req, res, next) {
-  //   try {
-  //     let shop = req.params.shop;
-  //     app.use(`/site/${shop}`, express.static(path.resolve(`views/shops/${shop}/assets`)));
-  //     // console.log(path.resolve('./views'));
-  //     // console.log(path.resolve(`${shop}`))
-  //     // app.use('/site/:shop/*', express.static(path.resolve(`${shop}`)));
-  //     // app.use('/', express.static(path.resolve('client', 'build')));
+  app.use('/site/:shop/*', function (req, res, next) {
+    try {
+      let shop = req.params.shop;
 
-  //     if (!shop) {
-  //       throw { message: 'error' }
-  //     }
-  //     next();
-  //   } catch (error) {
-  //     res.render('404');
-  //   }
-  // });
+      if (!shop) {
+        throw { message: 'error' }
+      }
+      next();
+    } catch (error) {
+      res.render('404');
+    }
+  });
 
   app.get('/site/:shop', function (req, res) {
     let shop = req.params.shop;
-    console.log(path.resolve(`views/shops/${shop}/assets`))
-    app.use(express.static(path.resolve(`views/shops/${shop}/assets`)));
-    res.render(`shops/${shop}/templates/index`, { shop });
+    // res.render(`site/${shop}/templates/index`, { shop });
+    res.render(`index`, { shop });
   });
   app.get('/site/:shop/pages/:page', function (req, res) {
     let shop = req.params.shop;
