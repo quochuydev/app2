@@ -145,15 +145,15 @@ function User(props) {
   return (
     <div>
       <Row key='1'>
-        <Col span={6}>
+        <Col xs={24} lg={6}>
           <p className="ui-title-page">Chủ tài khoản</p>
         </Col>
-        <Col span={18}>
+        <Col xs={24} lg={18}>
           <Card>
             <List.Item.Meta
               avatar={<Avatar style={{ backgroundColor: '#7265e6', verticalAlign: 'middle' }}
                 shape="square" size={50}>{root_user.first_name}</Avatar>}
-              title={<p><Link to="/">{[root_user.first_name, root_user.last_name].join(' ')}</Link></p>}
+              title={<p>{[root_user.first_name, root_user.last_name].join(' ')}</p>}
               description={<p><Icon type="mail" /> {root_user.email}</p>}
             />
           </Card>
