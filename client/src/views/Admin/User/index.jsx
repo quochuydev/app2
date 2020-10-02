@@ -24,7 +24,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, permissions, actions, permissionActions, coreActions, using_user } = props;
+  const { count, users, user, permissions, actions, permissionActions, coreActions, using_user, root_user } = props;
 
   const columns = [
     {
@@ -70,6 +70,7 @@ function User(props) {
 
   useEffect(() => {
     permissionActions.loadPermissions();
+    actions.getRootUser();
   }, []);
 
   function onChangeQuery(e) {
@@ -138,9 +139,9 @@ function User(props) {
           <Card>
             <List.Item.Meta
               avatar={<Avatar style={{ backgroundColor: '#7265e6', verticalAlign: 'middle' }}
-                shape="square" size={50}>{using_user.first_name}</Avatar>}
-              title={<p><Link to="/">{[using_user.first_name, using_user.last_name].join(' ')}</Link></p>}
-              description={<p><Icon type="mail" /> {using_user.email}</p>}
+                shape="square" size={50}>{root_user.first_name}</Avatar>}
+              title={<p><Link to="/">{[root_user.first_name, root_user.last_name].join(' ')}</Link></p>}
+              description={<p><Icon type="mail" /> {root_user.email}</p>}
             />
           </Card>
         </Col>
@@ -227,6 +228,7 @@ const mapStateToProps = state => ({
   user: state.users.get('user'),
   downloadLink: state.users.get('downloadLink'),
   using_user: state.core.get('using_user'),
+  root_user: state.users.get('root_user')
 });
 
 const mapDispatchToProps = (dispatch) => ({

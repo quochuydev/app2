@@ -258,8 +258,8 @@ let User = {
   load: async function (query) {
     return await ApiClient.getData('api/users', null, query);
   },
-  get: async function (id) {
-    return await ApiClient.getData(`api/users/${id}`);
+  get: async function (data) {
+    return await ApiClient.getData(`api/users/${data.id}`, null);
   },
   create: async function (data) {
     return await ApiClient.postData(`api/users`, null, data);

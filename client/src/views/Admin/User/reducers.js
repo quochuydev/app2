@@ -7,6 +7,7 @@ const initialState = Map({
   user: {
     roles: []
   },
+  root_user: {},
 });
 
 function UsersReducer(state = initialState, { type, payload }) {
