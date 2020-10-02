@@ -1,7 +1,11 @@
+let path = require('path')
+const express = require('express');
+
 const routes = (app) => {
   app.use('/site/:shop/*', function (req, res, next) {
     try {
       let shop = req.params.shop;
+
       if (!shop) {
         throw { message: 'error' }
       }
@@ -10,9 +14,11 @@ const routes = (app) => {
       res.render('404');
     }
   });
+
   app.get('/site/:shop', function (req, res) {
     let shop = req.params.shop;
-    res.render(`shops/${shop}/index`);
+    // res.render(`site/${shop}/templates/index`, { shop });
+    res.render(`index`, { shop });
   });
   app.get('/site/:shop/pages/:page', function (req, res) {
     let shop = req.params.shop;

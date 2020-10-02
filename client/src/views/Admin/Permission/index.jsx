@@ -36,6 +36,11 @@ function Permission(props) {
       )
     },
     {
+      title: 'Ngày tạo', key: 'created_at', render: edit => (
+        <span>{moment(edit.created_at).format('DD/MM/yyyy HH:mm')}</span>
+      )
+    },
+    {
       title: '', key: 'option', render: edit => (
         <Button type="danger" size="small" onClick={() => { }}>
           <Icon type="close" />
@@ -53,6 +58,10 @@ function Permission(props) {
     actions.loadPermissions(query);
   }
 
+  function onChangeQuery(e) {
+    setQuery({ ...query, [e.target.name]: e.target.value })
+  }
+  
   const [isCreateModal, setIsCreateModal] = useState(false);
 
   function onAssertPermission(permission) {
@@ -112,16 +121,20 @@ function Permission(props) {
   }
 
   function formatRole(active) {
-    let role = data.roles.find(e => e.active == active)
+    let role = data.roles.find(e => e.active == active);
     return role.name;
   }
 
   return (
     <div>
       <Row key='1'>
-        <Col span={24}>
-          <Button type="primary" icon="plus" onClick={() => onAssertPermission()}>Thêm nhóm quyền</Button>
-          <Table rowKey='id' dataSource={permissions} columns={columns} pagination={false}
+        <Col span={24}><Input.Group style={{ width: '100%', display: 'flex' }}>
+          <Button type="primary" icon="plus" size="large" onClick={() => onAssertPermission()}
+            className="m-r-10">Thêm nhóm quyền</Button>
+          <Input size="large" placeholder="Tìm kiếm..." name="email_like" value={query.email_like} onChange={onChangeQuery}
+            prefix={<Icon type="search" onClick={() => { }} />} style={{ marginBottom: 1 }} />
+        </Input.Group>
+          <Table className="m-t-10" rowKey='id' dataSource={permissions} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
             showTotal={(total, range) => `${total} items`} current={query.page}

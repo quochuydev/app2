@@ -13,7 +13,7 @@ const {
 
 const router = ({ app }) => {
   app.post('/api/products/sync', sync);
-  app.post('/api/products/list', list);
+  app.get('/api/products', list);
 
   app.get('/api/products/:id', function (req, res, next) {
     getProduct({ product_id: req.params.id })

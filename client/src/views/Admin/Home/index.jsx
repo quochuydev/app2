@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import {
   Layout, message, Statistic, Icon, Row, Col, Card, Tabs
 } from 'antd';
+import {
+  Link
+} from "react-router-dom";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { bindActionCreators } from 'redux';
@@ -111,6 +114,7 @@ function Home(props) {
     <div>
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Tổng quan" key="1">
+          <Link to={'/site/imhuy'} target="_blank" className="hide"><Icon type={'eye'} /><span>site/imhuy</span></Link>
           <Row gutter={[15, 0]}>
             <Col xs={12} lg={6}>
               <Card>

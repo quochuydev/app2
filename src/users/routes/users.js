@@ -10,7 +10,8 @@ const { _parse } = require(path.resolve('./src/core/lib/query'));
 const router = ({ app }) => {
   app.route('/api/users')
     .get(async function (req, res, next) {
-      let { criteria, limit, skip } = _parse(req.query);
+      let query = req.query;
+      let { criteria, limit, skip } = _parse(query);
       let result = { count: 0, users: [] }
       result.count = await UserModel.count(criteria);
       if (result.count) {
@@ -30,11 +31,18 @@ const router = ({ app }) => {
         email: data.email,
         phone: data.phone,
         roles: data.roles,
+        password: '@Test123',
       }
       let user = await UserModel._create(data_update);
       res.json({ user });
     })
   app.route('/api/users/:id')
+    .get(async function (req, res, next) {
+      let user_id = req.params.id;
+      let result = { user: null }
+      result.user = await UserModel.findOne({ id: user_id }).lean(true);
+      res.json(result);
+    })
     .put(async function (req, res, next) {
       let user_id = req.params.id;
       let data = req.body;
@@ -51,7 +59,7 @@ const router = ({ app }) => {
     .delete(async function (req, res, next) {
       let user_id = req.params.id;
       let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: { is_deleted: true } }, { lean: true, new: true });
-      res.json({ error: false });
+      res.json({ error: false, message: 'Xóa tài khoản thành công' });
     })
 }
 

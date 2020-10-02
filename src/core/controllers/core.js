@@ -47,6 +47,7 @@ let auth = async (req, res) => {
     }
 
     let user_gen_token = {
+      id: user.id,
       email: user.email,
       shop_id: user.shop_id,
       exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
@@ -68,10 +69,10 @@ async function changeShop({ user, shop_id }) {
 
   cache.put('shop_id', shop_id);
   let user_gen_token = {
-    id: found_user,
+    id: found_user.id,
     email: found_user.email,
     shop_id: found_user.shop_id,
-    exp: (Date.now() + 60 * 60 * 1000) / 1000
+    exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
   }
 
   let userToken = jwt.sign(user_gen_token, hash_token);

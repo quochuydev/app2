@@ -42,7 +42,16 @@ export function loadUsers(query) {
 
 export function getUser(id) {
   return async (dispatch) => {
-    const data = await AdminServices.User.get(id);
+    const data = await AdminServices.User.get({ id });
     dispatch({ type: ACTIONS.LOAD_USERS_SUCCESS, payload: { ...data } });
+  }
+}
+
+export function getRootUser() {
+  return async (dispatch) => {
+    const data = await AdminServices.User.load({ is_root: true });
+    if (data && data.users && data.users.length) {
+      dispatch({ type: ACTIONS.LOAD_USERS_SUCCESS, payload: { root_user: data.users[0] } });
+    }
   }
 }

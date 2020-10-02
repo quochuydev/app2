@@ -5,14 +5,14 @@ import common from '../utils/common';
 const compile = common.compile;
 
 const URLS = {
-  LIST_CUSTOMER: 'api/customers/list',
+  LIST_CUSTOMER: 'api/customers',
   GET_CUSTOMER: 'api/customers',
   ADD_CUSTOMER: 'api/customers/create',
   UPDATE_CUSTOMER: 'api/customers',
   SYNC_CUSTOMER: 'api/customers/sync',
   EXPORT_CUSTOMER: 'api/customers/export',
 
-  LIST_ORDERS: 'api/order/list',
+  LIST_ORDERS: 'api/orders',
   EXPORT_ORDERS: 'api/orders/export',
   GET_ORDER_DETAIL: 'api/order/detail',
   SYNC_ORDERS: 'api/order/sync',
@@ -22,7 +22,7 @@ const URLS = {
   UPDATE_NOTE_ORDER: 'api/orders/{id}/update-note',
   CANCEL_ORDER: 'api/orders/{id}/cancel',
 
-  LIST_PRODUCTS: 'api/products/list',
+  LIST_PRODUCTS: 'api/products',
   GET_PRODUCT: 'api/products',
   CREATE_PRODUCT: 'api/products/create',
   UPDATE_PRODUCT: 'api/products',
@@ -63,7 +63,7 @@ const URLS = {
 }
 
 async function listCustomers(query) {
-  return await ApiClient.postData(URLS.LIST_CUSTOMER, null, query);
+  return await ApiClient.getData(URLS.LIST_CUSTOMER, null, query);
 }
 
 async function getCustomer(id) {
@@ -87,7 +87,7 @@ async function exportCustomer() {
 }
 
 async function loadOrders(query) {
-  return await ApiClient.postData(URLS.LIST_ORDERS, null, query);
+  return await ApiClient.getData(URLS.LIST_ORDERS, null, query);
 }
 
 async function getOrderDetail(id) {
@@ -172,7 +172,7 @@ async function buildLinkMomoOrder(data) {
 }
 
 async function loadProducts(query) {
-  return await ApiClient.postData(URLS.LIST_PRODUCTS, null, query);
+  return await ApiClient.getData(URLS.LIST_PRODUCTS, null, query);
 }
 
 async function getProduct(id) {
@@ -258,8 +258,8 @@ let User = {
   load: async function (query) {
     return await ApiClient.getData('api/users', null, query);
   },
-  get: async function (id) {
-    return await ApiClient.getData(`api/users/${id}`);
+  get: async function (data) {
+    return await ApiClient.getData(`api/users/${data.id}`, null);
   },
   create: async function (data) {
     return await ApiClient.postData(`api/users`, null, data);

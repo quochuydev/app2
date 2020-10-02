@@ -7,7 +7,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   Table, Row, Col, Button, Tag, Icon, Input, Select, Form, Modal, Radio,
-  Upload, message, Pagination, Avatar, List
+  Upload, message, Pagination, Avatar, List, Popover,
 } from 'antd';
 import 'antd/dist/antd.css';
 
@@ -89,7 +89,8 @@ function Products(props) {
     },
   };
 
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
+  let initQuery = { limit: 10, page: 1 }
+  let [query, setQuery] = useState(initQuery);
 
   useEffect(() => {
     actions.loadProducts(query);
@@ -151,30 +152,34 @@ function Products(props) {
     <div className="">
       <Row key='1'>
         <Form>
-          <Col span={8}>
-            <Form.Item label="Mã sản phẩm"><Input name="number" onChange={onChange} /></Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="Commerce">
-              <Select mode="multiple" name="type_in"
-                style={{ width: '100%' }} placeholder="-- Chọn --" onChange={onChangeType}>
-                <Option value='app'>App</Option>
-                <Option value='haravan'>Haravan</Option>
-                <Option value='woocommerce'>Woocommerce</Option>
-                <Option value='shopify'>Shopify</Option>
-              </Select>
-            </Form.Item>
-          </Col>
+          <Input.Group style={{ width: '100%', display: 'flex' }}>
+            <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
+              <span className="hidden-xs">Bỏ lọc</span>
+            </Button>
+            <Link to={`product/create`} target="_blank" className="m-r-10">
+              <Button icon="plus-circle" size="large" type="primary">
+                <span className="hidden-xs">Tạo sản phẩm</span>
+              </Button>
+            </Link>
+            <Input size="large" placeholder="Tên sản phẩm/SKU/barcode" name="type" name="sku_like" value={query.sku_like} onChange={onChange}
+              prefix={<Icon type="search" onClick={() => loadProducts()} />} style={{ marginBottom: 1 }} />
+            <Popover placement="bottomRight" content={
+              <div>
+                <Button type="link" className="block" onClick={() => setIsImportModal(true)}>
+                  Import sản phẩm</Button>
+                <Button type="link" className="block" onClick={() => setIsExportModal(true)}>
+                  Export sản phẩm</Button>
+              </div>
+            } trigger="click">
+              <Button icon="swap" size="large" type="primary" className="m-l-10">
+                <span className="hidden-xs"></span>
+              </Button>
+            </Popover>
+          </Input.Group>
+          <br />
         </Form>
-
         <Col span={24}>
-          <Link to={`product/create`}>
-            <Button>Thêm sản phẩm</Button>
-          </Link>
-          <Button onClick={() => loadProducts()}>Áp dụng bộ lọc</Button>
           <Button className="hide" onClick={() => syncProducts()}>Đồng bộ sản phẩm</Button>
-          <Button onClick={() => setIsImportModal(true)}>Import sản phẩm</Button>
-          <Button onClick={() => setIsExportModal(true)}>Export sản phẩm</Button>
           <Table rowKey='id' dataSource={products} columns={columns} size={'small'} pagination={false} scroll={{ x: 1000 }}
             expandedRowRender={record => <Table rowKey='id' columns={subColumns}
               dataSource={record.variants} pagination={false} showHeader={false} />} />
@@ -184,7 +189,6 @@ function Products(props) {
             onShowSizeChange={(current, size) => { onChangeField('limit', size) }}
           />
         </Col>
-
       </Row>
       <Modal
         title="Import excel"
