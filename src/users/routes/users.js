@@ -35,6 +35,12 @@ const router = ({ app }) => {
       res.json({ user });
     })
   app.route('/api/users/:id')
+    .get(async function (req, res, next) {
+      let user_id = req.params.id;
+      let result = { user: null }
+      result.user = await UserModel.findOne({ id: user_id }).lean(true);
+      res.json(result);
+    })
     .put(async function (req, res, next) {
       let user_id = req.params.id;
       let data = req.body;

@@ -217,12 +217,10 @@ function Orders(props) {
           isShowSendMailModal={isShowSendMailModal}
           setIsShowSendMailModal={setIsShowSendMailModal}
         ></ModalMail>
-        <Modal
-          title="Export excel"
+        <Modal title="Export excel"
           visible={isExportModal}
           onOk={() => exportOrders()}
-          onCancel={() => setIsExportModal(false)}
-        >
+          onCancel={() => setIsExportModal(false)}>
           <a href={downloadLink}>{downloadLink}</a>
         </Modal>
         <div style={{ display: isShowPrint ? 'block' : 'none' }}>

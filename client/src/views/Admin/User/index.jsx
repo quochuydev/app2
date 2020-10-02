@@ -13,6 +13,7 @@ import 'antd/dist/antd.css';
 
 import * as userActions from './actions';
 import * as PermissionActions from '../Permission/actions';
+import * as CoreActions from '../Core/actions';
 
 import config from './../../../utils/config';
 import LoadingPage from '../../Components/Loading/index';
@@ -23,7 +24,7 @@ const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
   const { Option } = Select;
-  const { count, users, user, permissions, actions, permissionActions } = props;
+  const { count, users, user, permissions, actions, permissionActions, coreActions, using_user } = props;
 
   const columns = [
     {
@@ -42,6 +43,11 @@ function User(props) {
     {
       title: 'Số điện thoại', key: 'phone', render: edit => (
         <span>{edit.phone}</span>
+      )
+    },
+    {
+      title: 'Ngày tạo', key: 'created_at', render: edit => (
+        <span>{moment(edit.created_at).format('DD/MM/yyyy HH:mm')}</span>
       )
     },
     {
@@ -65,6 +71,10 @@ function User(props) {
   useEffect(() => {
     permissionActions.loadPermissions();
   }, []);
+
+  function onChangeQuery(e) {
+    setQuery({ ...query, [e.target.name]: e.target.value })
+  }
 
   function onLoadUser() {
     actions.loadUsers(query);
@@ -90,7 +100,6 @@ function User(props) {
   }
 
   async function assertUser() {
-    console.log(user)
     try {
       let result = null;
       if (user.id) {
@@ -126,18 +135,24 @@ function User(props) {
           <p className="ui-title-page">Chủ tài khoản</p>
         </Col>
         <Col span={18}>
-          <List.Item.Meta
-            avatar={<Avatar shape="square" size={50} src={'#'} />}
-            title={<p><Link to="/">Quốc Huy</Link></p>}
-            description={'quochuydev1@gmail.com'}
-          />
+          <Card>
+            <List.Item.Meta
+              avatar={<Avatar style={{ backgroundColor: '#7265e6', verticalAlign: 'middle' }}
+                shape="square" size={50}>{using_user.first_name}</Avatar>}
+              title={<p><Link to="/">{[using_user.first_name, using_user.last_name].join(' ')}</Link></p>}
+              description={<p><Icon type="mail" /> {using_user.email}</p>}
+            />
+          </Card>
         </Col>
-        <Col span={6}>
+        <Col span={24}>
           <p className="ui-title-page">Danh sách tài khoản</p>
-          <Button icon="plus" type="primary" onClick={e => onAssertUser()}>Thêm tài khoản</Button>
-        </Col>
-        <Col span={18}>
-          <Table rowKey='id' dataSource={users} columns={columns} pagination={false}
+          <Input.Group style={{ width: '100%', display: 'flex' }}>
+            <Button icon="plus" type="primary" size="large" onClick={e => onAssertUser()}
+              className="m-r-10">Thêm tài khoản</Button>
+            <Input size="large" placeholder="Tìm kiếm..." name="email_like" value={query.email_like} onChange={onChangeQuery}
+              prefix={<Icon type="search" onClick={() => { }} />} style={{ marginBottom: 1 }} />
+          </Input.Group>
+          <Table className="m-t-10" rowKey='id' dataSource={users} columns={columns} pagination={false}
             scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
             showTotal={(total, range) => `${total} items`} current={query.page}
@@ -195,13 +210,6 @@ function User(props) {
                     </p>
                   )
                 },
-                {
-                  title: '', key: 'options', render: edit => (
-                    <Button type="danger" size="small" onClick={() => { }}>
-                      <Icon type="close" />
-                    </Button>
-                  )
-                },
               ]} pagination={false} size="small" />
             </Card>
           </Col>
@@ -218,11 +226,13 @@ const mapStateToProps = state => ({
   count: state.users.get('count'),
   user: state.users.get('user'),
   downloadLink: state.users.get('downloadLink'),
+  using_user: state.core.get('using_user'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(userActions, dispatch),
   permissionActions: bindActionCreators(PermissionActions, dispatch),
+  coreActions: bindActionCreators(CoreActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(User);

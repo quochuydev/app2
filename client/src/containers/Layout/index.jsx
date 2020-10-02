@@ -18,6 +18,7 @@ import {
 import './style.css';
 
 import * as coreActions from '../../views/Admin/Core/actions';
+import * as UserActions from '../../views/Admin/User/actions';
 
 import RouteList from '../../views/Admin/routes';
 import NoMatch from '../../views/NoMatch/index';
@@ -38,7 +39,7 @@ const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-function LayoutContainer({ CoreActions, shop }) {
+function LayoutContainer({ CoreActions, shop, userActions }) {
   const [alert, setAlert] = useState({ messageSuccess: '', messageFailed: '', showAlert: false, isError: false });
   const [isShowDrawer, setIsShowDrawer] = useState(false);
   let menuName = 'Menu'
@@ -73,6 +74,7 @@ function LayoutContainer({ CoreActions, shop }) {
 
   let user = localStorage.getItem('user');
   user = JSON.parse(user);
+
   function changeShop({ shop_id, user }) {
     AdminServices.changeShop({ user, shop_id }).then(data => {
       window.location.href = data.url;
@@ -103,19 +105,20 @@ function LayoutContainer({ CoreActions, shop }) {
       }
     },
     onSuccess: async function (result) {
-      console.log(result)
       if (result && result.image) {
         await AdminServices.Shop.update({
           id: shop.id, logo_src: result.image.src
         });
       }
       CoreActions.getShop();
-      setModalUploadLogo(false)
+      setModalUploadLogo(false);
     }
   };
 
   useEffect(() => {
     if (token) {
+      console.log(user)
+      CoreActions.usingUser(user.id);
       CoreActions.getShop();
     }
   }, []);
@@ -214,7 +217,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  CoreActions: bindActionCreators(coreActions, dispatch)
+  CoreActions: bindActionCreators(coreActions, dispatch),
+  userActions: bindActionCreators(UserActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LayoutContainer);

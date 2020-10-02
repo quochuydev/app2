@@ -3,6 +3,13 @@ import AdminServices from '../../../services/adminServices';
 export const ACTIONS = {
 };
 
+export function usingUser(id) {
+  return async function (dispatch) {
+    const data = await AdminServices.User.get(id);
+    dispatch({ type: 'LOAD_USING_USER_SUCCESS', payload: { using_user: data.user } });
+  }
+}
+
 export function getShop() {
   return async function (dispatch) {
     const data = await AdminServices.Shop.get();
