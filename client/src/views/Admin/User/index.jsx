@@ -54,9 +54,11 @@ function User(props) {
       title: '', key: 'option',
       render: edit => (
         <span>
-          <Button type="danger" size="small" onClick={() => { }}>
-            <Icon type="close" />
-          </Button>
+          {
+            !edit.is_root ? <Button type="danger" size="small" onClick={() => { removeUser(edit) }}>
+              <Icon type="close" />
+            </Button> : null
+          }
         </span>
       ),
     },
@@ -108,6 +110,17 @@ function User(props) {
       } else {
         result = await AdminServices.User.create(user);
       }
+      message.success(result.message);
+      setIsShowModal(false);
+    } catch (error) {
+      message.error(error.message)
+    }
+    onLoadUser()
+  }
+
+  async function removeUser(user) {
+    try {
+      let result = await AdminServices.User.remove(user.id);
       message.success(result.message);
       setIsShowModal(false);
     } catch (error) {

@@ -57,7 +57,7 @@ const router = ({ app }) => {
     .delete(async function (req, res, next) {
       let user_id = req.params.id;
       let user = await UserModel.findOneAndUpdate({ id: user_id }, { $set: { is_deleted: true } }, { lean: true, new: true });
-      res.json({ error: false });
+      res.json({ error: false, message: 'Xóa tài khoản thành công' });
     })
 }
 

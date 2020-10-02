@@ -14,7 +14,6 @@ const initialState = Map({
   ward: null,
 });
 
-
 function CoreReducer(state = initialState, { type, payload }) {
   switch (type) {
     case 'LIST':
