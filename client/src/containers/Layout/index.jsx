@@ -152,9 +152,6 @@ function LayoutContainer({ CoreActions, shop, userActions }) {
 
             <Menu theme="light" mode="inline">
               {menuItems}
-              <Menu.Item className="hide" key={'sub_site'} style={{ paddingLeft: 0 }}>
-                <Link to={'/site/imhuy'} target="_blank"><Icon type={'plus'} /><span>site/imhuy</span></Link>
-              </Menu.Item>
             </Menu>
           </Sider>
         }
