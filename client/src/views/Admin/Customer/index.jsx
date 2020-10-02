@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import {
   Table, Icon, Row, Col, Button, Modal,
   Input, Select, DatePicker, Upload, Tag, Pagination,
-  Form, message
+  Form, message, Popover,
 } from 'antd';
 import 'antd/dist/antd.css';
 import config from './../../../utils/config';
@@ -92,7 +92,8 @@ function Customer(props) {
     },
   };
 
-  let [query, setQuery] = useState({ limit: 10, page: 1 });
+  let initQuery = { limit: 10, page: 1 };
+  let [query, setQuery] = useState(initQuery);
   useEffect(() => {
     actions.listCustomers(query);
   }, [query]);
@@ -121,10 +122,9 @@ function Customer(props) {
     setCustomer({ ...customer, [e.target.name]: e.target.value });
   }
 
-  async function syncCustomers() {
+  function syncCustomers() {
     setIsProcessing(true);
-    await actions.syncCustomers();
-    onLoadCustomer();
+    actions.syncCustomers();
     setIsProcessing(false);
   }
 
@@ -152,32 +152,32 @@ function Customer(props) {
   return (
     <div>
       <Row key='1'>
-        <Col span={8}>
-          <Form.Item label="Mã khách hàng"><Input name="number" onChange={onChange} /></Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="Commerce">
-            <Select
-              mode="multiple"
-              name="type_in"
-              style={{ width: '100%' }}
-              placeholder="-- Chọn --"
-              onChange={onChangeType}
-            >
-              <Option value='app'>App</Option>
-              <Option value='haravan'>Haravan</Option>
-              <Option value='woocommerce'>Woocommerce</Option>
-              <Option value='shopify'>Shopify</Option>
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Button onClick={() => onLoadCustomer(true)}>Áp dụng bộ lọc</Button>
-          <Link to={`customer/create`}>
-            <Button>Thêm khách hàng</Button>
+        <Input.Group style={{ width: '100%', display: 'flex' }}>
+          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
+            <span className="hidden-xs">Bỏ lọc</span>
+          </Button>
+          <Link to={`customer/create`} target="_blank" className="m-r-10">
+            <Button icon="plus-circle" size="large" type="primary">
+              <span className="hidden-xs">Tạo khách hàng</span>
+            </Button>
           </Link>
-          <Button onClick={() => setIsImportModal(true)}>Import khách hàng</Button>
-          <Button onClick={() => setIsExportModal(true)}>Export khách hàng</Button>
+          <Input size="large" placeholder="Tên khách hàng/email/Sđt" name="type" name="phone_like" value={query.phone_like} onChange={onChange}
+            prefix={<Icon type="search" onClick={() => onLoadCustomer()} />} style={{ marginBottom: 1 }} />
+          <Popover placement="bottomRight" content={
+            <div>
+              <Button type="link" className="block" onClick={() => setIsImportModal(true)}>
+                Import khách hàng</Button>
+              <Button type="link" className="block" onClick={() => setIsExportModal(true)}>
+                Export khách hàng</Button>
+            </div>
+          } trigger="click">
+            <Button icon="swap" size="large" type="primary" className="m-l-10">
+              <span className="hidden-xs"></span>
+            </Button>
+          </Popover>
+        </Input.Group>
+        <br />
+        <Col span={24}>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
             expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
