@@ -335,20 +335,36 @@ function ProductDetail(props) {
   const [modalAssertCollection, setModalAssertCollection] = useState(false);
   const [modalAssertVendor, setModalAssertVendor] = useState(false);
 
-  function onModalCollection(id) {
-    if (id) {
-      let collection = collections.find(e => e.id == id);
-      actions.merge({ collection });
+  function onChangeCollection(e) {
+    actions.merge({ collection: { ...collection, title: e.target.value } })
+  }
+
+  function onChangeVendor(e) {
+    actions.merge({ vendor: { ...vendor, title: e.target.value } })
+  }
+
+  function onModalCollection(title) {
+    if (title) {
+      let collection = collections.find(e => e.title == title);
+      if (collection) {
+        actions.merge({ collection });
+      } else {
+        actions.merge({ collection: { title } });
+      }
     } else {
       actions.merge({ collection: {} });
     }
     setModalAssertCollection(true);
   }
 
-  function onModalVendor(id) {
-    if (id) {
-      let vendor = vendors.find(e => e.title == id);
-      actions.merge({ vendor });
+  function onModalVendor(title) {
+    if (title) {
+      let vendor = vendors.find(e => e.title == title);
+      if (vendor) {
+        actions.merge({ vendor });
+      } else {
+        actions.merge({ vendor: {} });
+      }
     } else {
       actions.merge({ vendor: {} });
     }
@@ -522,7 +538,7 @@ function ProductDetail(props) {
           <div>
             <Form.Item label={'Tên nhóm'}>
               <Input value={collection.title}
-                onChange={e => { actions.merge({ collection: { ...collection, title: e.target.value } }) }} />
+                onChange={onChangeCollection} />
             </Form.Item>
           </div>
         }
@@ -536,7 +552,7 @@ function ProductDetail(props) {
           <div>
             <Form.Item label={'Tên nhà sản xuất'}>
               <Input value={vendor ? vendor.title : null}
-                onChange={e => { actions.merge({ vendor: { ...vendor, title: e.target.value } }) }} />
+                onChange={onChangeVendor} />
             </Form.Item>
           </div>
         }
