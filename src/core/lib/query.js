@@ -2,6 +2,7 @@
 
 const cache = require('memory-cache');
 const _ = require('lodash');
+const moment = require('moment');
 const escapeStringRegexp = require('escape-string-regexp');
 
 function _parse(body, option = { writeLog: true, maxLimit: 500 }, defaults = { page: 1, limit: 20, fields: '', sort: { created_at: -1 } }) {
@@ -32,7 +33,7 @@ function _parse(body, option = { writeLog: true, maxLimit: 500 }, defaults = { p
     _.merge(criteria, formatCriteria(field, query[field]))
   }
   if (option.writeLog) {
-    console.log(JSON.stringify({ limit, page, skip, criteria, sort }))
+    console.log(`[${moment().format('HH:mm:ss')}]`, JSON.stringify({ limit, page, skip, criteria, sort }))
   }
 
   return { limit, page, skip, criteria, sort, fields };
