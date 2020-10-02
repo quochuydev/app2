@@ -7,7 +7,7 @@ const { OrderService } = require(path.resolve('./src/order/services/order-servic
 
 const router = ({ app }) => {
   app.get('/api/order/detail/:id', detail);
-  app.post('/api/order/list', list);
+  app.get('/api/orders', list);
 
   app.post('/api/orders/export', function (req, res, next) {
     OrderService.export({ query: req.body })

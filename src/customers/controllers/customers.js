@@ -15,7 +15,7 @@ const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
 
 let list = async (req, res) => {
   try {
-    let { limit, skip, criteria, sort } = _parse(req.body);
+    let { limit, skip, criteria, sort } = _parse(req.query);
     let count = await CustomerModel._count(criteria);
     let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
     for (const customer of customers) {

@@ -7,7 +7,7 @@ const {
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
 const router = ({ app }) => {
-  app.post('/api/customers/list', list);
+  app.get('/api/customers', list);
   app.post('/api/customers/create', function (req, res, next) {
     create({ body: req.body })
       .then(result => { res.json(result); })
