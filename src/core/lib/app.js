@@ -33,7 +33,7 @@ const App = {
         const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 
         Analyze();
-        async function Analyze({ }) {
+        async function Analyze() {
           let shops = await ShopModel.find({}).lean(true);
           for (const shop of shops) {
             let order_count = await OrderModel.count({ shop_id: shop.id })
