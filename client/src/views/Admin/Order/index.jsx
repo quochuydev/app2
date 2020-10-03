@@ -46,7 +46,7 @@ function Orders(props) {
     },
     {
       title: 'Khách hàng', key: 'customer', render: edit => (
-        <Link to={`customer/${edit.customer_id}`} target="_blank">
+        <Link to={`customer/${edit.customer_id}`}>
           {[edit.customer.last_name, edit.customer.first_name].join(' ')}
         </Link>
       )
@@ -162,7 +162,7 @@ function Orders(props) {
               <span className="hidden-xs"></span>
             </Button>
           </Popover>
-          <Link to={`POS`} target="_blank">
+          <Link to={`POS`}>
             <Button icon="plus-circle" size="large" type="dashed" onClick={() => loadOrders()}>
               <span className="hidden-xs">Tạo đơn hàng</span>
             </Button>

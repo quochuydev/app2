@@ -114,7 +114,6 @@ function Home(props) {
     <div>
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Tổng quan" key="1">
-          <Link to={'/site/imhuy'} target="_blank" className="hide"><Icon type={'eye'} /><span>site/imhuy</span></Link>
           <Row gutter={[15, 0]}>
             <Col xs={12} lg={6}>
               <Card>

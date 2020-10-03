@@ -156,7 +156,7 @@ function Customer(props) {
           <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
             <span className="hidden-xs">Bỏ lọc</span>
           </Button>
-          <Link to={`customer/create`} target="_blank" className="m-r-10">
+          <Link to={`customer/create`} className="m-r-10">
             <Button icon="plus-circle" size="large" type="primary">
               <span className="hidden-xs">Tạo khách hàng</span>
             </Button>
