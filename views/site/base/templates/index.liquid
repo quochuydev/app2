@@ -19,11 +19,8 @@
   <title>
     Spiderum Store {{shop}}
   </title>
-  <base href="http://localhost:3000/site/base/" target="_blank">
+  <base href="{{base_url}}" target="_blank">
   <meta name="description" content="Sách trẻ dành cho người trẻ" />
-  <link rel="canonical" href="https://shop.spiderum.com/" />
-  <link rel="amphtml" href="https://shop.spiderum.com/?view=amp">
-  <link rel="alternate" href="https://shop.spiderum.com/" hreflang="vi-vn" />
   <meta name="keywords" content="Spiderum Store">
   <meta name="robots" content="index,follow,noodp">
   <meta http-equiv="x-dns-prefetch-control" content="on">
@@ -32,10 +29,9 @@
   <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap&subset=vietnamese"
     rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
-  <link href='//theme.hstatic.net/200000123069/1000584388/14/styles-new.css?v=212' rel='stylesheet' type='text/css'
-    media='all' />
-  <script src='//theme.hstatic.net/200000123069/1000584388/14/jquery.min.1.11.0.js?v=212'
-    type='text/javascript'></script>
+  <link rel="stylesheet" type="text/css" href="./assets/css/style-new.css">
+  <script src='./assets/js/jquery.min.1.11.0.js' type='text/javascript'></script>
+
   <script>
     var formatMoney = '{{amount}}₫';
     var template = "index";
@@ -45,23 +41,31 @@
   <meta property="og:image" content="{{settings.banner1}}" />
   <meta property="og:image:secure_url" content="{{settings.banner1}}" />
   <meta property="og:description" content="Sách trẻ dành cho người trẻ" />
-  <meta property="og:url" content="https://shop.spiderum.com/" />
+  <meta property="og:url" content="https://quochuydev.com/" />
   <meta property="og:site_name" content="Spiderum Store" />
   <meta name="description" content="Sách trẻ dành cho người trẻ" />
+
+  <style>
+    .wrapper-home-newsletter.lazyloaded {
+      background-image: url({{settings.banner1}});
+    }
+
+    @media (max-width: 480px) {
+      .wrapper-home-newsletter.lazyloaded {
+        background-image: url({{settings.banner1}});
+      }
+    }
+  </style>
 </head>
 
-<body id="spiderum-store" class="index">
-  <!-- Facebook Pixel Code -->
+<body class="index">
   <div class="main-body  layoutProduct_scroll ">
     <div class="scroller">
       <div class="scroller-inner">
         <div class="promo-bar" id="topbar">
           <div class="container">
             <div id="slideText">
-              <p><a href="https://shop.spiderum.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi"><span>"Người Trong
-                    Muôn Nghề: Ngành IT có gì?"<span> sẽ ra mắt vào ngày 02/08!</a></p>
-              <p><a href="https://shop.spiderum.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi">Nhập mã ''SPIDERUM''
-                  để được giảm ngay 15.000VND cho mỗi cuốn sách "Người Trong Muôn Nghề: Ngành IT có gì?"</a></p>
+              <p><a href="#">Xe tải giá nát</a></p>
             </div>
           </div>
         </div>
@@ -72,10 +76,10 @@
                 <div class="col-md-4 wrap-header-1 hidden-sm hidden-xs"></div>
                 <div class="col-md-4 wrap-header-2 col-sm-6 col-xs-7">
                   <div class="main-header--logo fade-box" itemscope="" itemtype="http://schema.org/Organization">
-                    <a href="https://shop.spiderum.com" itemprop="url">
+                    <a href="#" itemprop="url">
                       <h1 class="logo">
                         <img itemprop="logo" src="{{settings.logo}}" alt="Spiderum Store"
-                          class="img-responsive logoimg lazyload" />
+                          class="img-responsive logoimg lazyload" style="width: 64px; height: 64px;" />
                       </h1>
                     </a>
                   </div>
@@ -131,40 +135,29 @@
                         </li>
                         <li class="has-submenu ">
                           <a href="/collections/all" title="Tủ sách nhện">
-                            Tủ sách nhện
+                            Sản phẩm
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
                           </a>
                           <ul class="list-submenu">
                             <li class="">
-                              <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                title="Người trong muôn nghề: Ngành IT có gì?">
-                                Người trong muôn nghề: Ngành IT có gì?
+                              <a href="#" title="Isuzu">
+                                Isuzu
                               </a>
                             </li>
                             <li class="">
-                              <a href="/products/nguoi-trong-muon-nghe" title="Người trong muôn nghề">
-                                Người trong muôn nghề
-                              </a>
-                            </li>
-                            <li class="">
-                              <a href="/products/du-hoc-ky-van-dam-co-chi" title="Du học ký: vạn dặm có chị?">
-                                Du học ký: vạn dặm có chị?
-                              </a>
-                            </li>
-                            <li class="">
-                              <a href="/products/dam-ba-cai-tuoi-tre" title="Dăm ba cái tuổi trẻ">
-                                Dăm ba cái tuổi trẻ
+                              <a href="#" title="Hino">
+                                Hino
                               </a>
                             </li>
                           </ul>
                         </li>
                         <li class="">
-                          <a href="/blogs/chuyen-nha-nhen" title="Chuyện nhà Nhện">
-                            Chuyện nhà Nhện
+                          <a href="/blogs/test" title="Xưởng thùng">
+                            Xưởng thùng
                           </a>
                         </li>
                         <li class="">
-                          <a href="https://nguoitrongmuonnghe.spiderum.vn/it" title="Dự án mới">
+                          <a href="#" title="Dự án mới">
                             Dự án mới
                           </a>
                         </li>
@@ -187,15 +180,25 @@
             <div class="sliderBanner" id="home-slider">
               <div class="slider-owl owl-carousel owl-theme">
                 <!-- Banener 1 -->
+                <div class="slider-item fade-box">
+                  <div class="slide--image">
+                    <a href="/products/du-hoc-ky-van-dam-co-chi" title="Slide_banner">
+                      <picture>
+                        <source media="(max-width: 767px)" data-srcset="{{settings.banner3}}" />
+                        <img data-src="{{settings.banner3}}" class="lazyload" alt="Slide_banner" />
+                      </picture>
+                    </a>
+                  </div>
+                  <div class="slide--content">
+                    <div class="group-button"> </div>
+                  </div>
+                </div>
                 <div class="slider-item">
                   <div class="slide--image">
-                    <a href="https://shop.spiderum.com/collections/all" title="Slide_banner">
+                    <a href="#" title="Slide_banner">
                       <picture>
-                        <source media="(max-width: 767px)"
-                          srcset="{{settings.banner1}}">
-                        <img
-                          src="https://file.hstatic.net/200000123069/file/artboard-1_2x_ea024b8ec70a431a923a7ff50899915b.jpg"
-                          alt="Slide_banner" />
+                        <source media="(max-width: 767px)" srcset="{{settings.banner1}}">
+                        <img src="{{settings.banner1}}" alt="Slide_banner" />
                       </picture>
                     </a>
                   </div>
@@ -207,11 +210,8 @@
                   <div class="slide--image">
                     <a href="/products/nguoi-trong-muon-nghe" title="Slide_banner">
                       <picture>
-                        <source media="(max-width: 767px)"
-                          data-srcset="https://file.hstatic.net/200000123069/file/android_slider_ntmn_b8da6c5de8ec4cefbbf88717d75c6f93.jpg" />
-                        <img
-                          data-src="https://file.hstatic.net/200000123069/file/slide01_ntmn_89bb60aeb83545d2932982db73d117aa.png"
-                          class="lazyload" alt="Slide_banner" />
+                        <source media="(max-width: 767px)" data-srcset="{{settings.banner2}}" />
+                        <img data-src="{{settings.banner2}}" class="lazyload" alt="Slide_banner" />
                       </picture>
                     </a>
                   </div>
@@ -219,22 +219,7 @@
                     <div class="group-button"> </div>
                   </div>
                 </div>
-                <div class="slider-item fade-box">
-                  <div class="slide--image">
-                    <a href="/products/du-hoc-ky-van-dam-co-chi" title="Slide_banner">
-                      <picture>
-                        <source media="(max-width: 767px)"
-                          data-srcset="https://file.hstatic.net/200000123069/file/android_slider_dhk_ed23a579dce644849fe7751192602166.jpg" />
-                        <img
-                          data-src="https://file.hstatic.net/200000123069/file/slide03_dhk_ae12de380b054b85be8654ce8c028a5e.jpg"
-                          class="lazyload" alt="Slide_banner" />
-                      </picture>
-                    </a>
-                  </div>
-                  <div class="slide--content">
-                    <div class="group-button"> </div>
-                  </div>
-                </div>
+
               </div>
               <div class="slider-circle-scroll">
                 <a class="scroll-downs" href="">
@@ -269,30 +254,18 @@
                             <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
                               title="Người Trong Muôn Nghề: Ngành IT có gì?" class="image-resize">
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book123_minimal_e2ea02c39a17477a8b60a0edc5993c87_medium.jpg"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book123_minimal_e2ea02c39a17477a8b60a0edc5993c87_large.jpg"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book123_minimal_e2ea02c39a17477a8b60a0edc5993c87_grande.jpg" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/book123_minimal_e2ea02c39a17477a8b60a0edc5993c87_grande.jpg"
-                                  class="lazyload" alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
+                                <source data-srcset="{{settings.product1}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product1}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product1}}" />
+                                <img data-src="{{settings.product1}}" class="lazyload"
+                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
                               </picture>
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/mockup-5_5910418df09447018daed37783eb29cc_medium.jpg"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/mockup-5_5910418df09447018daed37783eb29cc_large.jpg"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/mockup-5_5910418df09447018daed37783eb29cc_grande.jpg" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/mockup-5_5910418df09447018daed37783eb29cc_grande.jpg"
-                                  class="lazyload" alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
+                                <source data-srcset="{{settings.product2}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product2}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product2}}" />
+                                <img data-src="{{settings.product2}}" class="lazyload"
+                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
                               </picture>
                             </a>
                             <div class="button-add">
@@ -325,30 +298,16 @@
                             <a href="/products/nguoi-trong-muon-nghe" title="Người trong muôn nghề"
                               class="image-resize">
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book1_ntmn__1__85927643bab14b0ab9a82d4d3791a141_medium.jpg"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book1_ntmn__1__85927643bab14b0ab9a82d4d3791a141_large.jpg"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/book1_ntmn__1__85927643bab14b0ab9a82d4d3791a141_grande.jpg" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/book1_ntmn__1__85927643bab14b0ab9a82d4d3791a141_grande.jpg"
-                                  class="lazyload" alt=" Người trong muôn nghề " />
+                                <source data-srcset="{{settings.product3}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product3}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product3}}" />
+                                <img data-src="{{settings.product3}}" class="lazyload" alt=" Người trong muôn nghề " />
                               </picture>
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/anh_bia_phan_2_d844cea6cb6f411091c847410b9e5efe_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/anh_bia_phan_2_d844cea6cb6f411091c847410b9e5efe_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/anh_bia_phan_2_d844cea6cb6f411091c847410b9e5efe_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/anh_bia_phan_2_d844cea6cb6f411091c847410b9e5efe_grande.png"
-                                  class="lazyload" alt=" Người trong muôn nghề " />
+                                <source data-srcset="{{settings.product4}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product4}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product4}}" />
+                                <img data-src="{{settings.product4}}" class="lazyload" alt=" Người trong muôn nghề " />
                               </picture>
                             </a>
                             <div class="button-add">
@@ -381,31 +340,17 @@
                               title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?"
                               class="image-resize">
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_grande.png"
-                                  class="lazyload"
+                                <source data-srcset="{{settings.product2}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product2}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product2}}" />
+                                <img data-src="{{settings.product2}}" class="lazyload"
                                   alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? " />
                               </picture>
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo_3_3e66dc8da9fd455dabb7dfa24926852f_grande.png"
-                                  class="lazyload"
+                                <source data-srcset="{{settings.product1}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product1}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product1}}" />
+                                <img data-src="{{settings.product1}}" class="lazyload"
                                   alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? " />
                               </picture>
                             </a>
@@ -439,30 +384,18 @@
                             <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-nguoi-trong-muon-nghe"
                               title="Combo sách Dăm ba cái tuổi trẻ + Người trong muôn nghề" class="image-resize">
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_grande.png"
-                                  class="lazyload" alt=" Combo sách Dăm ba cái tuổi trẻ + Người trong muôn nghề " />
+                                <source data-srcset="{{settings.product4}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product4}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product4}}" />
+                                <img data-src="{{settings.product4}}" class="lazyload"
+                                  alt=" Combo sách Dăm ba cái tuổi trẻ + Người trong muôn nghề " />
                               </picture>
                               <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo1_b7a1f264293844698ef96813710a2aac_grande.png"
-                                  class="lazyload" alt=" Combo sách Dăm ba cái tuổi trẻ + Người trong muôn nghề " />
+                                <source data-srcset="{{settings.product3}}" media="(max-width: 500px)" />
+                                <source data-srcset="{{settings.product3}}" media="(max-width: 1024px)" />
+                                <source data-srcset="{{settings.product3}}" />
+                                <img data-src="{{settings.product3}}" class="lazyload"
+                                  alt=" Combo sách Dăm ba cái tuổi trẻ + Người trong muôn nghề " />
                               </picture>
                             </a>
                             <div class="button-add">
@@ -488,121 +421,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="pro-loop animated fadeIn">
-                        <div class="product-block" data-anmation="5">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-12%</span></div>
-                            <a href="/products/combo-bo-sach-nguoi-trong-muon-nghe"
-                              title="Combo bộ sách Người Trong Muôn Nghề" class="image-resize">
-                              <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_grande.png"
-                                  class="lazyload" alt=" Combo bộ sách Người Trong Muôn Nghề " />
-                              </picture>
-                              <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/combo2_17f47f5fd1c64b938f90af4647e15d98_grande.png"
-                                  class="lazyload" alt=" Combo bộ sách Người Trong Muôn Nghề " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1060964219')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1060964219">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/combo-bo-sach-nguoi-trong-muon-nghe"
-                                  title="Combo bộ sách Người Trong Muôn Nghề">Combo bộ sách Người Trong Muôn Nghề</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">299,000₫
-                                  <span class="pro-price-del"><del class="compare-price">338,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="pro-loop animated fadeIn">
-                        <div class="product-block" data-anmation="6">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-21%</span></div>
-                            <a href="/products/combo-3-cuon-dam-ba-cai-tuoi-tre-nguoi-trong-muon-nghe-nguoi-trong-muon-nghe-nganh-it-co-gi"
-                              title="Combo 3 cuốn Dăm Ba Cái Tuổi Trẻ + Người Trong Muôn Nghề + Người Trong Muôn Nghề: Ngành IT có gì?"
-                              class="image-resize">
-                              <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_grande.png"
-                                  class="lazyload"
-                                  alt=" Combo 3 cuốn Dăm Ba Cái Tuổi Trẻ + Người Trong Muôn Nghề + Người Trong Muôn Nghề: Ngành IT có gì? " />
-                              </picture>
-                              <picture>
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_medium.png"
-                                  media="(max-width: 500px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_large.png"
-                                  media="(max-width: 1024px)" />
-                                <source
-                                  data-srcset="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_grande.png" />
-                                <img
-                                  data-src="//product.hstatic.net/200000123069/product/sach_f76acbbc2b4f4ef19018a2820de495e9_grande.png"
-                                  class="lazyload"
-                                  alt=" Combo 3 cuốn Dăm Ba Cái Tuổi Trẻ + Người Trong Muôn Nghề + Người Trong Muôn Nghề: Ngành IT có gì? " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1060964459')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1060964459">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/combo-3-cuon-dam-ba-cai-tuoi-tre-nguoi-trong-muon-nghe-nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                  title="Combo 3 cuốn Dăm Ba Cái Tuổi Trẻ + Người Trong Muôn Nghề + Người Trong Muôn Nghề: Ngành IT có gì?">Combo
-                                  3 cuốn Dăm Ba Cái Tuổi Trẻ + Người Trong Muôn Nghề + Người Trong Muôn Nghề: Ngành IT
-                                  có gì?</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">399,000₫
-                                  <span class="pro-price-del"><del class="compare-price">507,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+
                     </div>
                   </div>
                   <div class="collection-viewall text-center">
@@ -622,14 +441,8 @@
                     <a class="link-banner" href="products/nguoi-trong-muon-nghe-nganh-it-co-gi">
                       <div class="fg-image fade-box">
                         <picture>
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/banner_4688c5f05efb4bae9c38188b8b114a38.jpg"
-                            media="(max-width: 500px)" />
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/banner_4688c5f05efb4bae9c38188b8b114a38.jpg" />
-                          <img
-                            data-src="https://file.hstatic.net/200000123069/file/banner_4688c5f05efb4bae9c38188b8b114a38.jpg"
-                            class="lazyload" alt="slide_01" />
+                          <source data-srcset="{{settings.blog1}}" media="(max-width: 500px)" />
+                          <img data-src="{{settings.blog1}}" class="lazyload" alt="slide_01" />
                         </picture>
                       </div>
                       <figcaption class="caption_banner site-animation">
@@ -642,17 +455,11 @@
                 </div>
                 <div class="col-xs-12 col-sm-4 home-banner-pd">
                   <figure class="block-banner-category">
-                    <a class="link-banner " href="https://spiderum.myharavan.com/products/du-hoc-ky-van-dam-co-chi">
+                    <a class="link-banner " href="#">
                       <div class="fg-image fade-box">
                         <picture>
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/dhk_notext_88b6f78a43374aa08d3f8d728b1b4a1c.jpg"
-                            media="(max-width: 500px)" />
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/dhk_notext_88b6f78a43374aa08d3f8d728b1b4a1c.jpg" />
-                          <img
-                            data-src="https://file.hstatic.net/200000123069/file/dhk_notext_88b6f78a43374aa08d3f8d728b1b4a1c.jpg"
-                            class="lazyload" alt="slide_02" />
+                          <source data-srcset="{{settings.blog2}}" media="(max-width: 500px)" />
+                          <img data-src="{{settings.blog2}}" class="lazyload" alt="slide_02" />
                         </picture>
                       </div>
                       <figcaption class="caption_banner site-animation">
@@ -663,44 +470,19 @@
                     </a>
                   </figure>
                 </div>
-                <div class="col-xs-12 col-sm-4 home-banner-pd">
-                  <figure class="block-banner-category">
-                    <a class="link-banner " href="https://spiderum.myharavan.com/products/nguoi-trong-muon-nghe">
-                      <div class="fg-image fade-box">
-                        <picture>
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/ntmn_notext_9be12b3ec78b4ed19119c2fddcbd8c4e.jpg"
-                            media="(max-width: 500px)" />
-                          <source
-                            data-srcset="https://file.hstatic.net/200000123069/file/ntmn_notext_9be12b3ec78b4ed19119c2fddcbd8c4e.jpg" />
-                          <img
-                            data-src="https://file.hstatic.net/200000123069/file/ntmn_notext_9be12b3ec78b4ed19119c2fddcbd8c4e.jpg"
-                            class="lazyload" alt="slide_03" />
-                        </picture>
-                      </div>
-                      <figcaption class="caption_banner site-animation">
-                        <p></p>
-                        <h2>Người trong muôn nghề</h2>
-                        <p><span class="button">Xem ngay</span></p>
-                      </figcaption>
-                    </a>
-                  </figure>
-                </div>
               </div>
             </div>
           </section>
-          <!-- 5. Nhóm san phẩm 1 -->
-          <!-- 6. Nhóm san phẩm 3 -->
-          <!-- Blog -->
+
           <section class="section wrapper-home-blogs">
             <div class="container">
               <div class="wrapper-heading-home">
                 <div class="site-animation heading">
                   <h2>
-                    <a href="/blogs/chuyen-nha-nhen"> Bài viết mới nhất </a>
+                    <a href="/blogs/test"> Bài viết mới nhất </a>
                   </h2>
                   <div class="view-all hidden">
-                    <a href="/blogs/chuyen-nha-nhen">Xem Thêm</a>
+                    <a href="/blogs/test">Xem Thêm</a>
                   </div>
                 </div>
               </div>
@@ -710,18 +492,12 @@
                     <div class="post_item">
                       <div class="post_featured">
                         <div class="post_thumb fade-box">
-                          <a class="hover_icon" href="/blogs/chuyen-nha-nhen/nguoitrongmuonnghe" title="" Người Trong
-                            Muôn Nghề" - Cẩm nang hướng nghiệp gối đầu giường của người trẻ">
+                          <a class="hover_icon" href="/blogs/test/nguoitrongmuonnghe" title="" Người Trong Muôn Nghề" -
+                            Cẩm nang hướng nghiệp gối đầu giường của người trẻ">
                             <picture>
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/untitled_design_4cf23a4594e44c16bc593176068c7092_large.png"
-                                media="(max-width: 500px)" />
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/untitled_design_4cf23a4594e44c16bc593176068c7092_grande.png" />
-                              <img
-                                data-src="//file.hstatic.net/200000123069/article/untitled_design_4cf23a4594e44c16bc593176068c7092_grande.png"
-                                class="lazyload" alt="" Người Trong Muôn Nghề" - Cẩm nang hướng nghiệp gối đầu giường
-                                của người trẻ" />
+                              <source data-srcset="{{settings.blog1}}" media="(max-width: 500px)" />
+                              <img data-src="{{settings.blog1}}" class="lazyload" alt="" Người Trong Muôn Nghề" - Cẩm
+                                nang hướng nghiệp gối đầu giường của người trẻ" />
                             </picture>
                           </a>
                         </div>
@@ -733,12 +509,12 @@
                           </span>
                         </div>
                         <h3 class="post_title">
-                          <a href="/blogs/chuyen-nha-nhen/nguoitrongmuonnghe">"Người Trong Muôn Nghề" - Cẩm nang hướng
-                            nghiệp gối đầu giường của người trẻ</a>
+                          <a href="#">Một số nguyên nhân cơ bản khiến Cruise Control không hoạt động</a>
                         </h3>
                         <div class="post_descr">
-                          <p>“Kì thực trên mặt đất vốn làm gì có đường, người ta đi mãi thì thành đường thôi.” – Lỗ
-                            TấnThật ra mọi con đường nghề nghiệp trên đời cũng...</p>
+                          <p>Hệ thống kiểm soát hành trình làm giảm căng thẳng và mệt mỏi trên các hành trình dài, nhưng
+                            nếu hệ thống không hoạt động đúng, nó có thể trở nên nguy hiểm. Khi hệ thống Cruise Control
+                            trên xe không hoạt động, 1 trong 9 vấn đề sau đây có thể là nguyên nhân gốc rễ.</p>
                         </div>
                       </div>
                     </div>
@@ -747,17 +523,11 @@
                     <div class="post_item">
                       <div class="post_featured">
                         <div class="post_thumb fade-box">
-                          <a class="hover_icon" href="/blogs/chuyen-nha-nhen/duhocky-vandamcochi" title="" Du học ký:
-                            Vạn dặm có chi?" - Sách này có gì?">
+                          <a class="hover_icon" href="#">
                             <picture>
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/untitled_design__1__227adc7f24a149c5a1af86fda48f7f33_large.png"
-                                media="(max-width: 500px)" />
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/untitled_design__1__227adc7f24a149c5a1af86fda48f7f33_grande.png" />
-                              <img
-                                data-src="//file.hstatic.net/200000123069/article/untitled_design__1__227adc7f24a149c5a1af86fda48f7f33_grande.png"
-                                class="lazyload" alt="" Du học ký: Vạn dặm có chi?" - Sách này có gì?" />
+                              <source data-srcset="{{settings.blog2}}" media="(max-width: 500px)" />
+                              <img data-src="{{settings.blog2}}" class="lazyload" alt="" Du học ký: Vạn dặm có chi?" -
+                                Sách này có gì?" />
                             </picture>
                           </a>
                         </div>
@@ -769,52 +539,17 @@
                           </span>
                         </div>
                         <h3 class="post_title">
-                          <a href="/blogs/chuyen-nha-nhen/duhocky-vandamcochi">"Du học ký: Vạn dặm có chi?" - Sách này
-                            có gì?</a>
+                          <a href="#">Một số nguyên nhân cơ bản khiến Cruise Control không hoạt động</a>
                         </h3>
                         <div class="post_descr">
-                          <p>Theo một thống kê không chính thức, mỗi năm các gia đình Việt Nam đang bỏ ra khoảng 3 - 4
-                            tỷ USD đầu tư cho con cái du học—và...</p>
+                          <p>Hệ thống kiểm soát hành trình làm giảm căng thẳng và mệt mỏi trên các hành trình dài, nhưng
+                            nếu hệ thống không hoạt động đúng, nó có thể trở nên nguy hiểm. Khi hệ thống Cruise Control
+                            trên xe không hoạt động, 1 trong 9 vấn đề sau đây có thể là nguyên nhân gốc rễ.</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4 col-sm-4 col-xs-12 col-post">
-                    <div class="post_item">
-                      <div class="post_featured">
-                        <div class="post_thumb fade-box">
-                          <a class="hover_icon" href="/blogs/chuyen-nha-nhen/dambacaituoitre-nguoitreghegom" title=""
-                            Dăm ba cái tuổi trẻ" - Người trẻ bây giờ có ghê gớm?">
-                            <picture>
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/03_a9faf1bd79f14088883cc6d86d61cf11_large.jpg"
-                                media="(max-width: 500px)" />
-                              <source
-                                data-srcset="//file.hstatic.net/200000123069/article/03_a9faf1bd79f14088883cc6d86d61cf11_grande.jpg" />
-                              <img
-                                data-src="//file.hstatic.net/200000123069/article/03_a9faf1bd79f14088883cc6d86d61cf11_grande.jpg"
-                                class="lazyload" alt="" Dăm ba cái tuổi trẻ" - Người trẻ bây giờ có ghê gớm?" />
-                            </picture>
-                          </a>
-                        </div>
-                      </div>
-                      <div class="post_content">
-                        <div class="post_info">
-                          <span class="post_info_item">
-                            Thứ Ba 25,08,2020
-                          </span>
-                        </div>
-                        <h3 class="post_title">
-                          <a href="/blogs/chuyen-nha-nhen/dambacaituoitre-nguoitreghegom">"Dăm ba cái tuổi trẻ" - Người
-                            trẻ bây giờ có ghê gớm?</a>
-                        </h3>
-                        <div class="post_descr">
-                          <p>Dăm ba cái tuổi trẻ tập hợp gần 30 bài viết xoay quanh những trăn trở quen thuộc của bất kỳ
-                            người trẻ nào: tình yêu, tình bạn, gia đình,...</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -853,17 +588,11 @@
                     <div class="footer-content">
                       <p>Bản quyền của Công Ty Cổ Phần Ahora - Giấy chứng nhận ĐKKD số: 0107886528 do Phòng ĐKKD Sở kế
                         hoạch và đầu tư Tp Hà Nội cấp ngày 14/06/2017</p>
-                      <div class="logo-footer">
-                        <a href="http://online.gov.vn/Home/WebDetails/68674">
-                          <img src="https://file.hara.vn/1000114117/file/logo-bct_5a0bbf4fb2d34c3e88c04df41ad38dc9.png"
-                            alt="Bộ Công Thương">
-                        </a>
-                      </div>
+
                       <div class="social-list"> <a href="https://www.facebook.com/SpiderumBooks/"
                           class="fa fa-facebook"></a>
-                        <a href="http://spiderum.com/" class="fa fa-google"></a> <a
-                          href="https://www.youtube.com/channel/UCRsd_L7wBGdHLhfacuy3QVw" class="fa fa-youtube"></a>
-                        <a href="https://www.instagram.com/spiderum.official/" class="fa fa-skype"></a> </div>
+                        <a href="#" class="fa fa-google"></a> <a href="#" class="fa fa-youtube"></a>
+                        <a href="#" class="fa fa-skype"></a> </div>
                     </div>
                   </div>
                 </div>
@@ -906,10 +635,9 @@
                     </h4>
                     <div class="footer-content toggle-footer">
                       <ul>
-                        <li><span>Địa chỉ:</span> Số 6 ngõ 186 đường Bưởi, Cống Vị, Ba Đình, Hà Nội</li>
-                        <li><span>Điện thoại:</span> (+84) 365.888.233</li>
-                        <li><span>Fax:</span> </li>
-                        <li><span>Mail:</span> contact@spiderum.com</li>
+                        <li><span>Địa chỉ:</span> 1 Võ Công Tồn - Quận Tân Phú - TPHCM</li>
+                        <li><span>Điện thoại:</span> 0382.986.838/li>
+                        <li><span>Mail:</span> quochuy.dev@gmail.com</li>
                       </ul>
                     </div>
                   </div>
@@ -936,8 +664,8 @@
           <div class="main-footer--copyright">
             <div class="container">
               <div class="main-footer--border">
-                <p>Copyright © 2020 <a href="https://shop.spiderum.com"> Spiderum Store</a>. <a target='_blank'
-                    href='https://www.haravan.com'>Powered by Haravan</a></p>
+                <p>Copyright © 2020 <a href="#"> Spiderum Store</a>. <a target='_blank' href='#'>Powered by
+                    quochuydev</a></p>
               </div>
             </div>
           </div>
@@ -1105,8 +833,6 @@
         </div>
       </div>
     </div>
-    <!-- haravan app -->
-    <!-- END - haravan app -->
     <div id="site-nav--mobile" class="site-nav style--sidebar">
       <div id="site-navigation" class="site-nav-container">
         <div class="site-nav-container-last">
@@ -1126,9 +852,9 @@
                     <li class="navi2"><a href="/products/dam-ba-cai-tuoi-tre">Dăm ba cái tuổi trẻ</a></li>
                   </ul>
                 </li>
-                <li class="navi1"><a href="/blogs/chuyen-nha-nhen"><span>Chuyện nhà Nhện</span></a></li>
-                <li class="navi1"><a href="https://nguoitrongmuonnghe.spiderum.vn/it"><span>Dự án mới</span></a></li>
-                <li class="navi1"><a href="/pages/lien-he"><span>Liên hệ</span></a></li>
+                <li class="navi1"><a href="#"><span>Chuyện nhà Nhện</span></a></li>
+                <li class="navi1"><a href="#"><span>Dự án mới</span></a></li>
+                <li class="navi1"><a href="#"><span>Liên hệ</span></a></li>
               </ul>
               <ul class="menu-about">
               </ul>
@@ -1255,6 +981,7 @@
   <script src='./assets/js/lazysizes.min.js' type='text/javascript'></script>
   <script src='./assets/js/scripts.js' type='text/javascript'></script>
   <script src='./assets/js/plugins.js' type='text/javascript'></script>
+
   <script>
     document.documentElement.style.setProperty('--window-height', window.innerHeight + 'px');
     if (document.getElementById('topbar') != null) {

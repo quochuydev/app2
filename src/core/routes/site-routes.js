@@ -1,5 +1,5 @@
 let path = require('path')
-const express = require('express');
+const config = require(path.resolve('./src/config/config'));
 
 const routes = (app) => {
   app.use('/site/:shop/*', function (req, res, next) {
@@ -16,7 +16,10 @@ const routes = (app) => {
     let shop = req.params.shop;
     let settings = require('./settings').current;
     res.render(`site/${shop}/templates/index`, {
-      shop, settings, collections: {
+      base_url: `${config.frontend_site}/base/`,
+      shop,
+      settings,
+      collections: {
         all: {
           products: [{
             images: [{
