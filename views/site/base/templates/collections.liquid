@@ -16,45 +16,26 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="HandheldFriendly" content="true">
   <link rel="shortcut icon" href="{{settings.logo}}" type="image/png" />
-  <title>Store {{shop}} </title>
-  <base href="{{base_url}}" target="_blank">
-  <meta name="description" content="Sách trẻ dành cho người trẻ" />
-  <meta name="keywords" content="Store">
+  <title>
+    Tất cả sản phẩm &ndash; quochuydev Store
+  </title>
+  <meta name="description" content="Tất cả sản phẩm" />
+  <meta name="keywords" content="quochuydev Store">
   <meta name="robots" content="index,follow,noodp">
   <meta http-equiv="x-dns-prefetch-control" content="on">
-  <link rel="dns-prefetch" href="//www.google-analytics.com/">
-  <link rel="dns-prefetch" href="//www.googletagmanager.com/">
   <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap&subset=vietnamese"
     rel="stylesheet">
+  <base href="{{base_url}}" target="_blank">
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/style-new.css">
   <script src='./assets/js/jquery.min.1.11.0.js' type='text/javascript'></script>
   <script>
     var formatMoney = '{{amount}}₫';
-    var template = "index";
+    var template = "collection";
   </script>
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Store" />
-  <meta property="og:image" content="{{settings.banner1}}" />
-  <meta property="og:image:secure_url" content="{{settings.banner1}}" />
-  <meta property="og:description" content="Sách trẻ dành cho người trẻ" />
-  <meta property="og:url" content="https://quochuydev.com/" />
-  <meta property="og:site_name" content="Store" />
-  <meta name="description" content="Sách trẻ dành cho người trẻ" />
-  <style>
-    .wrapper-home-newsletter.lazyloaded {
-      background-image: url({{settings.banner1}});
-    }
-
-    @media (max-width: 480px) {
-      .wrapper-home-newsletter.lazyloaded {
-        background-image: url({{settings.banner1}});
-      }
-    }
-  </style>
 </head>
 
-<body id="Xetaigianat-store" class="collection">
+<body id="quochuydev-store" class="collection">
   <!-- Facebook Pixel Code -->
   <div class="main-body  layoutProduct_scroll ">
     <div class="scroller">
@@ -62,10 +43,10 @@
         <div class="promo-bar" id="topbar">
           <div class="container">
             <div id="slideText">
-              <p><a href="https://shop.Xetaigianat.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi"><span>"Người Trong
+              <p><a href="https://shop.quochuydev.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi"><span>"Người Trong
                     Muôn Nghề: Ngành IT có gì?"<span> sẽ ra mắt vào ngày 02/08!</a></p>
-              <p><a href="https://shop.Xetaigianat.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi">Nhập mã
-                  ''Xetaigianat''
+              <p><a href="https://shop.quochuydev.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi">Nhập mã
+                  ''quochuydev''
                   để được giảm ngay 15.000VND cho mỗi cuốn sách "Người Trong Muôn Nghề: Ngành IT có gì?"</a></p>
             </div>
           </div>
@@ -77,9 +58,9 @@
                 <div class="col-md-4 wrap-header-1 hidden-sm hidden-xs"></div>
                 <div class="col-md-4 wrap-header-2 col-sm-6 col-xs-7">
                   <div class="main-header--logo fade-box" itemscope="" itemtype="http://schema.org/Organization">
-                    <a href="https://shop.Xetaigianat.com" itemprop="url">
-                      <img itemprop="logo" src="{{settings.logo}}" alt="Xetaigianat Store"
-                        class="img-responsive logoimg lazyload" style="width: 64px;height: 64px;" />
+                    <a href="https://shop.quochuydev.com" itemprop="url">
+                      <img itemprop="logo" src="{{settings.logo}}" style="width: 64px; height: 64px;"
+                        alt="quochuydev Store" class="img-responsive logoimg lazyload" />
                     </a>
                   </div>
                 </div>
@@ -132,7 +113,7 @@
                             Trang chủ
                           </a>
                         </li>
-                        <li class="has-submenu ">
+                        <li class="has-submenu active">
                           <a href="/collections/all" title="Tủ sách nhện">
                             Tủ sách nhện
                             <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -149,7 +130,7 @@
                                 Người trong muôn nghề
                               </a>
                             </li>
-                            <li class="active">
+                            <li class="">
                               <a href="/products/du-hoc-ky-van-dam-co-chi" title="Du học ký: vạn dặm có chị?">
                                 Du học ký: vạn dặm có chị?
                               </a>
@@ -167,7 +148,7 @@
                           </a>
                         </li>
                         <li class="">
-                          <a href="https://nguoitrongmuonnghe.Xetaigianat.vn/it" title="Dự án mới">
+                          <a href="https://nguoitrongmuonnghe.quochuydev.vn/it" title="Dự án mới">
                             Dự án mới
                           </a>
                         </li>
@@ -189,6 +170,7 @@
             <div class="main-content">
               <div class="banner-collection-header">
                 <picture>
+                  <source media="(max-width: 480px)" srcset="{{settings.banner1}}">
                   <source media="(min-width: 481px)" srcset="{{settings.banner1}}">
                   <img src="{{settings.banner1}}" alt="Products" />
                 </picture>
@@ -209,8 +191,8 @@
                           <meta itemprop="position" content="2" />
                         </li>
                         <li class="active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                          <span itemprop="item" content="/collections/all"><span itemprop="name">Tất cả sản
-                              phẩm</span></span>
+                          <span itemprop="item" content="https://shop.quochuydev.com/collections/all"><span
+                              itemprop="name">Tất cả sản phẩm</span></span>
                           <meta itemprop="position" content="3" />
                         </li>
                       </ol>
@@ -240,9 +222,9 @@
                                       <div class="layered-content bl-filter filter-brand">
                                         <ul class="check-box-list">
                                           <li>
-                                            <input type="checkbox" id="data-brand-p1" value="Xetaigianat"
-                                              name="brand-filter" data-vendor="(vendor:product**Xetaigianat)" />
-                                            <label for="data-brand-p1">Xetaigianat</label>
+                                            <input type="checkbox" id="data-brand-p1" value="quochuydev"
+                                              name="brand-filter" data-vendor="(vendor:product**quochuydev)" />
+                                            <label for="data-brand-p1">quochuydev</label>
                                           </li>
                                         </ul>
                                       </div>
@@ -495,16 +477,18 @@
                                     title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?"
                                     class="image-resize">
                                     <picture>
-                                      <source srcset="{{settings.product1}}">
-                                      <img class="img-loop"
-                                        alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? "
-                                        src="{{settings.product1}}" />
-                                    </picture>
-                                    <picture>
-                                      <source srcset="{{settings.product2}}">
-                                      <img class="img-loop"
+                                      <source media="(max-width: 767px)" srcset="{{settings.product2}}">
+                                      <source media="(min-width: 768px)" srcset="{{settings.product2}}">
+                                      <img class="img-loop img-hover"
                                         alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? "
                                         src="{{settings.product2}}" />
+                                    </picture>
+                                    <picture>
+                                      <source media="(max-width: 767px)" srcset="{{settings.product1}}">
+                                      <source media="(min-width: 768px)" srcset="{{settings.product1}}">
+                                      <img class="img-loop img-hover"
+                                        alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? "
+                                        src="{{settings.product1}}" />
                                     </picture>
                                   </a>
                                   <div class="button-add">
@@ -545,12 +529,12 @@
             </div> <input type="text" class="hidden" id="coll-handle" value="(collectionid:product>0)" />
           </div>
           <script>
-            quochuydev.queryParams = {};
+            Haravan.queryParams = {};
             if (location.search.length) {
               for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
                 aKeyValue = aCouples[i].split('=');
                 if (aKeyValue.length > 1) {
-                  quochuydev.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
+                  Haravan.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
                 }
               }
             }
@@ -558,7 +542,7 @@
             collFilters.change(function () {
               var newTags = [];
               var newURL = '';
-              delete quochuydev.queryParams.page;
+              delete Haravan.queryParams.page;
               collFilters.each(function () {
                 if (jQuery(this).val()) {
                   newTags.push(jQuery(this).val());
@@ -567,7 +551,7 @@
               if (newTags.length) {
                 newURL += '/' + newTags.join('+');
               }
-              var search = jQuery.param(quochuydev.queryParams);
+              var search = jQuery.param(Haravan.queryParams);
               if (search.length) {
                 newURL += '?' + search;
               }
@@ -576,8 +560,8 @@
             jQuery('.sort-by')
               .val('created-descending')
               .bind('change', function () {
-                quochuydev.queryParams.sort_by = jQuery(this).val();
-                location.search = jQuery.param(quochuydev.queryParams);
+                Haravan.queryParams.sort_by = jQuery(this).val();
+                location.search = jQuery.param(Haravan.queryParams);
               });
           </script>
         </main>
@@ -590,12 +574,19 @@
                   <div class="footer-col footer-block">
                     <h4 class="footer-title"> Giới thiệu</h4>
                     <div class="footer-content">
-                      <p>Hỗ trợ vay mượn ngân hàng</p>
-                      <div class="social-list"> <a href="https://www.facebook.com/XetaigianatBooks/"
+                      <p>Bản quyền của Công Ty Cổ Phần Ahora - Giấy chứng nhận ĐKKD số: 0107886528 do Phòng ĐKKD Sở kế
+                        hoạch và đầu tư Tp Hà Nội cấp ngày 14/06/2017</p>
+                      <div class="logo-footer">
+                        <a href="http://online.gov.vn/Home/WebDetails/68674">
+                          <img src="https://file.hara.vn/1000114117/file/logo-bct_5a0bbf4fb2d34c3e88c04df41ad38dc9.png"
+                            alt="Bộ Công Thương">
+                        </a>
+                      </div>
+                      <div class="social-list"> <a href="https://www.facebook.com/quochuydevBooks/"
                           class="fa fa-facebook"></a>
-                        <a href="http://Xetaigianat.com/" class="fa fa-google"></a> <a
+                        <a href="http://quochuydev.com/" class="fa fa-google"></a> <a
                           href="https://www.youtube.com/channel/UCRsd_L7wBGdHLhfacuy3QVw" class="fa fa-youtube"></a>
-                        <a href="https://www.instagram.com/Xetaigianat.official/" class="fa fa-skype"></a> </div>
+                        <a href="https://www.instagram.com/quochuydev.official/" class="fa fa-skype"></a> </div>
                     </div>
                   </div>
                 </div>
@@ -638,10 +629,10 @@
                     </h4>
                     <div class="footer-content toggle-footer">
                       <ul>
-                        <li><span>Địa chỉ:</span> Võ Công Tồn - Tân Phú - TPHCM</li>
+                        <li><span>Địa chỉ:</span> 01 Võ Công Tồn - Tân Phú</li>
                         <li><span>Điện thoại:</span> 0382986838</li>
                         <li><span>Fax:</span> </li>
-                        <li><span>Mail:</span> contact@Xetaigianat.com</li>
+                        <li><span>Mail:</span> contact@quochuydev.com</li>
                       </ul>
                     </div>
                   </div>
@@ -654,7 +645,7 @@
                     <div class="footer-content">
                       <!-- Facebook widget -->
                       <div class="footer-static-content">
-                        <div class="fb-page" data-href="https://www.facebook.com/XetaigianatBooks/" data-height="300"
+                        <div class="fb-page" data-href="https://www.facebook.com/quochuydevBooks/" data-height="300"
                           data-small-header="false" data-adapt-container-width="true" data-hide-cover="false"
                           data-show-facepile="true" data-show-posts="false"> </div>
                       </div>
@@ -668,8 +659,8 @@
           <div class="main-footer--copyright">
             <div class="container">
               <div class="main-footer--border">
-                <p>Copyright © 2020 <a href=""> Xetaigianat Store</a>. <a target='_blank'
-                    href='https://www.quochuydev.com'>Powered by quochuydev</a></p>
+                <p>Copyright © 2020 <a href="https://shop.quochuydev.com"> quochuydev Store</a>. <a target='_blank'
+                    href='https://www.haravan.com'>Powered by Haravan</a></p>
               </div>
             </div>
           </div>
@@ -836,131 +827,133 @@
           </div>
         </div>
       </div>
-      <div id="site-nav--mobile" class="site-nav style--sidebar">
-        <div id="site-navigation" class="site-nav-container">
-          <div class="site-nav-container-last">
-            <p class="title">Menu</p>
-            <div class="main-navbar">
-              <nav class="primary-menu">
-                <ul class="menu-collection">
-                  <li class="navi1"><a href="/"><span>Trang chủ</span></a></li>
-                  <li class="navi1 has-sub nav-level0">
-                    <a href="/collections/all">Tủ sách nhện</a>
-                    <span class="icon-subnav"><i class="fa fa-angle-down"></i></span>
-                    <ul class=" submenu subnav-children">
-                      <li class="navi2"><a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi">Người trong muôn nghề:
-                          Ngành IT có gì?</a></li>
-                      <li class="navi2"><a href="/products/nguoi-trong-muon-nghe">Người trong muôn nghề</a></li>
-                      <li class="navi2"><a href="/products/du-hoc-ky-van-dam-co-chi">Du học ký: vạn dặm có chị?</a></li>
-                      <li class="navi2"><a href="/products/dam-ba-cai-tuoi-tre">Dăm ba cái tuổi trẻ</a></li>
-                    </ul>
-                  </li>
-                  <li class="navi1"><a href="/blogs/chuyen-nha-nhen"><span>Chuyện nhà Nhện</span></a></li>
-                  <li class="navi1"><a href="https://nguoitrongmuonnghe.Xetaigianat.vn/it"><span>Dự án mới</span></a>
-                  </li>
-                  <li class="navi1"><a href="/pages/lien-he"><span>Liên hệ</span></a></li>
-                </ul>
-                <ul class="menu-about">
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div id="site-cart" class="site-nav-container" tabindex="-1">
-          <div class="site-nav-container-last">
-            <p class="title">Giỏ hàng</p>
-            <div class="cart-view clearfix">
-              <table id="clone-item-cart" class="table-clone-cart">
-                <tr class="item_2 hidden">
-                  <td class="img"><a href="" title=""><img src="" alt="" /></a></td>
-                  <td>
-                    <a class="pro-title-view" href="" title=""></a>
-                    <span class="variant"></span>
-                    <span class="pro-quantity-view"></span>
-                    <span class="pro-price-view"></span>
-                    <span class="remove_link remove-cart">
-                    </span>
-                  </td>
-                </tr>
-              </table>
-              <table id="cart-view">
-                <tr>
-                  <td class="img">
-                    <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi">
-                      <img src="{{settings.product1}}"
-                        alt="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?" />
-                    </a>
-                  </td>
-                  <td>
-                    <a class="pro-title-view"
-                      href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi"
-                      title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?">Combo sách Dăm ba
-                      cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?</a>
-                    <span class="variant"></span>
-                    <span class="pro-quantity-view">1</span>
-                    <span class="pro-price-view">269,100₫</span>
-                    <span class="remove_link remove-cart">
-                      <a href='javascript:void(0);' onclick='deleteCart(1)'><i class='fa fa-times'></i></a>
-                    </span>
-                  </td>
-                </tr>
-              </table>
-              <span class="line"></span>
-              <table class="table-total">
-                <tr>
-                  <td class="text-left">TỔNG TIỀN:</td>
-                  <td class="text-right" id="total-view-cart">811,800₫</td>
-                </tr>
-                <tr>
-                  <td><a href="/cart" class="linktocart button dark">Xem giỏ hàng</a></td>
-                  <td><a href="/checkout" class="linktocheckout button buy-now">Thanh toán</a></td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div id="site-search" class="site-nav-container" tabindex="-1">
-          <div class="site-nav-container-last">
-            <p class="title">Tìm kiếm</p>
-            <div class="search-box wpo-wrapper-search">
-              <form action="/search" class="searchform searchform-categoris ultimate-search">
-                <div class="wpo-search-inner">
-                  <input type="hidden" name="type" value="product" />
-                  <input required id="inputSearchAuto" name="q" maxlength="40" autocomplete="off"
-                    class="searchinput input-search search-input" type="text" size="20"
-                    placeholder="Tìm kiếm sản phẩm...">
-                </div>
-                <button type="submit" class="btn-search btn" id="search-header-btn">
-                  <svg version="1.1" class="svg search" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 27"
-                    style="enable-background:new 0 0 24 27;" xml:space="preserve">
-                    <path
-                      d="M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z">
-                    </path>
-                    <rect x="17" y="17" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)" width="4"
-                      height="8"></rect>
-                  </svg>
-                </button>
-              </form>
-              <div id="ajaxSearchResults" class="smart-search-wrapper ajaxSearchResults" style="display: none">
-                <div class="resultsContent"></div>
-              </div>
-            </div>
-          </div>
-        </div> <button id="site-close-handle" class="site-close-handle" aria-label="Đóng" title="Đóng">
-          <span class="hamburger-menu active" aria-hidden="true"><span class="bar animate"></span></span>
-        </button>
-      </div>
-      <div id="site-overlay" class="site-overlay"></div>
-      <div class="back-to-top hidden">
-        <a href="javascript:void(0);">
-          <div class="btt-back">
-            <span class="btt-label-back">back to top</span>
-            <span class="btt-icon-back"><i class="fa fa-long-arrow-up"></i></span>
-          </div>
-        </a>
-      </div>
     </div>
+    <div id="site-nav--mobile" class="site-nav style--sidebar">
+      <div id="site-navigation" class="site-nav-container">
+        <div class="site-nav-container-last">
+          <p class="title">Menu</p>
+          <div class="main-navbar">
+            <nav class="primary-menu">
+              <ul class="menu-collection">
+                <li class="navi1"><a href="/"><span>Trang chủ</span></a></li>
+                <li class="navi1 has-sub nav-level0">
+                  <a href="/collections/all">Tủ sách nhện</a>
+                  <span class="icon-subnav"><i class="fa fa-angle-down"></i></span>
+                  <ul class=" submenu subnav-children">
+                    <li class="navi2"><a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi">Người trong muôn nghề:
+                        Ngành IT có gì?</a></li>
+                    <li class="navi2"><a href="/products/nguoi-trong-muon-nghe">Người trong muôn nghề</a></li>
+                    <li class="navi2"><a href="/products/du-hoc-ky-van-dam-co-chi">Du học ký: vạn dặm có chị?</a></li>
+                    <li class="navi2"><a href="/products/dam-ba-cai-tuoi-tre">Dăm ba cái tuổi trẻ</a></li>
+                  </ul>
+                </li>
+                <li class="navi1"><a href="/blogs/chuyen-nha-nhen"><span>Chuyện nhà Nhện</span></a></li>
+                <li class="navi1"><a href="https://nguoitrongmuonnghe.quochuydev.vn/it"><span>Dự án mới</span></a></li>
+                <li class="navi1"><a href="/pages/lien-he"><span>Liên hệ</span></a></li>
+              </ul>
+              <ul class="menu-about">
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div id="site-cart" class="site-nav-container" tabindex="-1">
+        <div class="site-nav-container-last">
+          <p class="title">Giỏ hàng</p>
+          <div class="cart-view clearfix">
+            <table id="clone-item-cart" class="table-clone-cart">
+              <tr class="item_2 hidden">
+                <td class="img"><a href="" title=""><img src="" alt="" /></a></td>
+                <td>
+                  <a class="pro-title-view" href="" title=""></a>
+                  <span class="variant"></span>
+                  <span class="pro-quantity-view"></span>
+                  <span class="pro-price-view"></span>
+                  <span class="remove_link remove-cart">
+                  </span>
+                </td>
+              </tr>
+            </table>
+            <table id="cart-view">
+              <tr>
+                <td class="img">
+                  <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi">
+                    <img src="{{settings.product1}}"
+                      alt="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?" />
+                  </a>
+                </td>
+                <td>
+                  <a class="pro-title-view"
+                    href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi"
+                    title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?">Combo sách Dăm ba
+                    cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?</a>
+                  <span class="variant"></span>
+                  <span class="pro-quantity-view">1</span>
+                  <span class="pro-price-view">269,100₫</span>
+                  <span class="remove_link remove-cart">
+                    <a href='javascript:void(0);' onclick='deleteCart(1)'><i class='fa fa-times'></i></a>
+                  </span>
+                </td>
+              </tr>
+
+            </table>
+            <span class="line"></span>
+            <table class="table-total">
+              <tr>
+                <td class="text-left">TỔNG TIỀN:</td>
+                <td class="text-right" id="total-view-cart">811,800₫</td>
+              </tr>
+              <tr>
+                <td><a href="/cart" class="linktocart button dark">Xem giỏ hàng</a></td>
+                <td><a href="/checkout" class="linktocheckout button buy-now">Thanh toán</a></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="site-search" class="site-nav-container" tabindex="-1">
+        <div class="site-nav-container-last">
+          <p class="title">Tìm kiếm</p>
+          <div class="search-box wpo-wrapper-search">
+            <form action="/search" class="searchform searchform-categoris ultimate-search">
+              <div class="wpo-search-inner">
+                <input type="hidden" name="type" value="product" />
+                <input required id="inputSearchAuto" name="q" maxlength="40" autocomplete="off"
+                  class="searchinput input-search search-input" type="text" size="20"
+                  placeholder="Tìm kiếm sản phẩm...">
+              </div>
+              <button type="submit" class="btn-search btn" id="search-header-btn">
+                <svg version="1.1" class="svg search" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 27"
+                  style="enable-background:new 0 0 24 27;" xml:space="preserve">
+                  <path
+                    d="M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z">
+                  </path>
+                  <rect x="17" y="17" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)" width="4"
+                    height="8"></rect>
+                </svg>
+              </button>
+            </form>
+            <div id="ajaxSearchResults" class="smart-search-wrapper ajaxSearchResults" style="display: none">
+              <div class="resultsContent"></div>
+            </div>
+          </div>
+        </div>
+      </div> <button id="site-close-handle" class="site-close-handle" aria-label="Đóng" title="Đóng">
+        <span class="hamburger-menu active" aria-hidden="true"><span class="bar animate"></span></span>
+      </button>
+    </div>
+    <div id="site-overlay" class="site-overlay"></div>
+    <div class="back-to-top hidden">
+      <a href="javascript:void(0);">
+        <div class="btt-back">
+          <span class="btt-label-back">back to top</span>
+          <span class="btt-icon-back"><i class="fa fa-long-arrow-up"></i></span>
+        </div>
+      </a>
+    </div>
+  </div>
+
 </body>
 <footer>
   <script src='./assets/js/option_selection.js' type='text/javascript'></script>
@@ -976,3 +969,5 @@
     else { document.documentElement.style.setProperty('--topbar-height', 0 + 'px'); }
   </script>
 </footer>
+
+</html>

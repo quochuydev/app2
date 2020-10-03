@@ -68,6 +68,7 @@ const routes = (app) => {
     let settings = require('./settings').current;
     let product = { title: `this is title ${handle}` }
     res.render(`site/${code}/templates/products`, {
+      amount: 0,
       product,
       settings,
       base_url: `${config.frontend_site}/base/`,

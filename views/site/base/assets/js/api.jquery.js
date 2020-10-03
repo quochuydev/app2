@@ -102,7 +102,8 @@ Haravan.formatMoney = function (cents, format) {
   function addCommas(moneyString) {
     return moneyString.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + Haravan.format.thousands);
   }
-  switch (formatString.match(patt)[1]) {
+
+  switch (formatString.match(patt) && formatString.match(patt)[1]) {
     case 'amount':
       value = addCommas(floatToString(cents, Haravan.format.numberdecimal));
       break;
@@ -136,7 +137,7 @@ Haravan.addItem = function (variant_id, quantity, callback) {
   var quantity = quantity || 1;
   var params = {
     type: 'POST',
-    url: '/cart/add.js',
+    url: 'cart/add.js',
     data: 'quantity=' + quantity + '&id=' + variant_id,
     dataType: 'json',
     success: function (line_item) {
@@ -157,7 +158,7 @@ Haravan.addItem = function (variant_id, quantity, callback) {
 Haravan.addItemFromForm = function (form_id, callback) {
   var params = {
     type: 'POST',
-    url: '/cart/add.js',
+    url: 'cart/add.js',
     data: jQuery('#' + form_id).serialize(),
     dataType: 'json',
     success: function (line_item) {
@@ -189,7 +190,7 @@ Haravan.getCart = function (callback) {
 Haravan.getCartShippingRatesForDestination = function (shipping_address, callback) {
   var params = {
     type: 'GET',
-    url: '/cart/shipping_rates.json',
+    url: 'cart/shipping_rates.json',
     data: Haravan.param({ 'shipping_address': shipping_address }),
     dataType: 'json',
     success: function (response) {
@@ -222,7 +223,7 @@ Haravan.getProduct = function (handle, callback) {
 Haravan.changeItem = function (variant_id, quantity, callback) {
   var params = {
     type: 'POST',
-    url: '/cart/change.js',
+    url: 'cart/change.js',
     data: 'quantity=' + quantity + '&id=' + variant_id,
     dataType: 'json',
     success: function (cart) {
@@ -243,7 +244,7 @@ Haravan.changeItem = function (variant_id, quantity, callback) {
 Haravan.removeItem = function (variant_id, callback) {
   var params = {
     type: 'POST',
-    url: '/cart/change.js',
+    url: 'cart/change.js',
     data: 'quantity=0&id=' + variant_id,
     dataType: 'json',
     success: function (cart) {
@@ -264,7 +265,7 @@ Haravan.removeItem = function (variant_id, callback) {
 Haravan.clear = function (callback) {
   var params = {
     type: 'POST',
-    url: '/cart/clear.js',
+    url: 'cart/clear.js',
     data: '',
     dataType: 'json',
     success: function (cart) {
@@ -285,7 +286,7 @@ Haravan.clear = function (callback) {
 Haravan.updateCartFromForm = function (form_id, callback) {
   var params = {
     type: 'POST',
-    url: '/cart/update.js',
+    url: 'cart/update.js',
     data: jQuery('#' + form_id).serialize(),
     dataType: 'json',
     success: function (cart) {
@@ -324,7 +325,7 @@ Haravan.updateCartAttributes = function (attributes, callback) {
   }
   var params = {
     type: 'POST',
-    url: '/cart/update.js',
+    url: 'cart/update.js',
     data: data,
     dataType: 'json',
     success: function (cart) {
@@ -348,7 +349,7 @@ Haravan.updateCartAttributes = function (attributes, callback) {
 Haravan.updateCartNote = function (note, callback) {
   var params = {
     type: 'POST',
-    url: '/cart/update.js',
+    url: 'cart/update.js',
     data: 'note=' + attributeToString(note),
     dataType: 'json',
     success: function (cart) {
