@@ -140,7 +140,6 @@ function User(props) {
         let role = permissions.find(e => e.id == id)
         roles.push(role)
       }
-
     }
     actions.setUser({ roles });
   }
