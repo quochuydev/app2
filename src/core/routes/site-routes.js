@@ -1,24 +1,41 @@
 let path = require('path')
 const config = require(path.resolve('./src/config/config'));
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+const cache = require('memory-cache');
+const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 
 const routes = (app) => {
-  app.use('/site/:shop/*', function (req, res, next) {
+  app.use('/site/:code/*', async function (req, res, next) {
     try {
-      let shop = req.params.shop;
-      if (!shop) { throw { message: 'error' } }
+      let code = req.params.code;
+      if (!code) {
+        throw { message: 'error' }
+      }
+
+      if (!cache.get(code)) {
+        let shop_found = await ShopModel.findOne({ code }).lean(true);
+        if (shop_found && shop_found.code && shop_found.id) {
+          cache.put(code, shop_found.id);
+        } else {
+          throw { message: 'error' }
+        }
+      }
+      req.shop_id = cache.get(code);
+
       next();
     } catch (error) {
       res.render('404');
     }
   });
 
-  app.get('/site/:shop', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code', async function (req, res) {
+    let shop_id = req.shop_id;
+    let products = await ProductModel.find({ shop_id }, { id: 1 }).lean(true);
     let settings = require('./settings').current;
-    res.render(`site/${shop}/templates/index`, {
+    res.render(`site/base/templates/index`, {
       base_url: `${config.frontend_site}/base/`,
-      shop,
       settings,
+      products: JSON.stringify(products),
       collections: {
         all: {
           products: [{
@@ -47,32 +64,32 @@ const routes = (app) => {
       }
     });
   });
-  app.get('/site/:shop/pages/:page', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/pages/:page', function (req, res) {
+    let code = req.params.code;
     let page = req.params.page;
     res.render(`shops/${shop}/pages`)
   });
-  app.get('/site/:shop/products/:handle', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/products/:handle', function (req, res) {
+    let code = req.params.code;
     let handle = req.params.handle;
     let product = { title: `this is title ${handle}` }
     res.render(`site/${shop}/templates/products`, { product })
   });
-  app.get('/site/:shop/collections/:type', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/collections/:type', function (req, res) {
+    let code = req.params.code;
     let type = req.params.type;
     res.render(`site/${shop}/templates/collections`)
   });
-  app.get('/site/:shop/cart', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/cart', function (req, res) {
+    let code = req.params.code;
     res.render(`site/${shop}/templates/cart`)
   });
-  app.get('/site/:shop/cart', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/cart', function (req, res) {
+    let code = req.params.code;
     res.render(`shops/${shop}/cart`)
   });
-  app.get('/site/:shop/checkouts/:checkout_token', function (req, res) {
-    let shop = req.params.shop;
+  app.get('/site/:code/checkouts/:checkout_token', function (req, res) {
+    let code = req.params.code;
     res.render(`shops/${shop}/checkouts`)
   });
 }
