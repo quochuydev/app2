@@ -12,8 +12,10 @@ const routes = (app) => {
         throw { message: 'error' }
       }
 
+      console.log('cache.get(code)', cache.get(code))
       if (!cache.get(code)) {
         let shop_found = await ShopModel.findOne({ code }).lean(true);
+        console.log({ shop_found })
         if (shop_found && shop_found.code && shop_found.id) {
           cache.put(code, shop_found.id);
         } else {
@@ -31,6 +33,8 @@ const routes = (app) => {
   app.get('/site/:code', async function (req, res) {
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }, { id: 1 }).lean(true);
+    console.log({ shop_id, products })
+
     let settings = require('./settings').current;
     res.render(`site/base/templates/index`, {
       base_url: `${config.frontend_site}/base/`,
