@@ -31,7 +31,7 @@ module.exports = (app, db) => {
   }
 
   app.engine('liquid', new Liquid().express());
-  app.set('views', path.resolve('./views'));
+  app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
   app.use('/site', express.static(path.resolve('./views/site')));
 
