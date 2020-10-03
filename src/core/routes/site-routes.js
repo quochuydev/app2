@@ -6,6 +6,10 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 
 const routes = (app) => {
   app.use('/site/:code/*', async function (req, res, next) {
+    await SiteMiddleware(req, res, next)
+  });
+
+  async function SiteMiddleware(req, res, next) {
     try {
       let code = req.params.code;
       if (!code) {
@@ -28,9 +32,9 @@ const routes = (app) => {
     } catch (error) {
       res.render('404');
     }
-  });
+  }
 
-  app.get('/site/:code', async function (req, res) {
+  app.get('/site/:code', SiteMiddleware, async function (req, res) {
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }, { id: 1 }).lean(true);
     console.log({ shop_id, products })
