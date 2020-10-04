@@ -57,7 +57,7 @@ function Customer(props) {
         <div>
           <List.Item.Meta
             avatar={<Avatar shape="square" size={45} src={_.get(item, 'image.src', null)} />}
-            title={<Link to={`product/${item.product_id}`} target="_blank">
+            title={<Link to={`product/${item.product_id}`}>
               {[item.title, item.variant_title].join(' - ')}
             </Link>}
             description={[item.sku, item.barcode].join(' - ')}
@@ -324,7 +324,7 @@ function Customer(props) {
               <Collapse defaultActiveKey={['1']} onChange={() => { }}>
                 <Collapse.Panel key="1" isActive={false} header={<p>
                   <span>Danh sách sản phẩm </span>
-                  <Link to={`product/create`} target="_blank">
+                  <Link to={`product/create`}>
                     <Tag color="blue" className="cursor-pointer">
                       <Icon style={{ color: '#007bff' }}
                         theme="filled" type="plus-circle" /> Thêm
@@ -448,7 +448,7 @@ function Customer(props) {
                         }>
                         <p className="hide">id: {order.customer.id}</p>
                         <p><span>Họ tên: </span>
-                          <Link to={`customer/${order.customer.id}`} target="_blank">
+                          <Link to={`customer/${order.customer.id}`}>
                             {order.customer.last_name} {order.customer.first_name}</Link>
                         </p>
                         <p>Email: {order.customer.email}</p>

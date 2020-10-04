@@ -136,8 +136,10 @@ function User(props) {
   function addPermission(ids) {
     let roles = []
     for (const id of ids) {
-      let role = permissions.find(e => e.id == id)
-      roles.push(role)
+      if (id) {
+        let role = permissions.find(e => e.id == id)
+        roles.push(role)
+      }
     }
     actions.setUser({ roles });
   }

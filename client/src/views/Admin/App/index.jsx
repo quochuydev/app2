@@ -131,7 +131,7 @@ function App(props) {
             </Item>
             <Item>
               Woocommerce App
-            <Button target="_blank" onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button>
+            <Button onClick={() => setIsShowWoocommerceAppModal(true)}>Install</Button>
               {setting && setting.woocommerce && setting.woocommerce.wp_host
                 ?
                 <p>
@@ -143,7 +143,7 @@ function App(props) {
             </Item>
             <Item>
               Shopify App
-           <Button target="_blank" onClick={() => setIsShowShopifyAppModal(true)}>Install</Button>
+           <Button onClick={() => setIsShowShopifyAppModal(true)}>Install</Button>
               {setting && setting.shopify && setting.shopify.shopify_host
                 ?
                 <p>
@@ -154,13 +154,13 @@ function App(props) {
                 : null
               }
             </Item>
-            <Item>Reset thời gian sync <Button target="_blank" onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
+            <Item>Reset thời gian sync <Button onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
           </List>
           {/* <List header={<div>Adapter</div>} bordered>
-          <Item><Button target="_blank" onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
+          <Item><Button onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
         </List>
         <List header={<div>Danh sách Webhook</div>} bordered>
-          <Item><Button target="_blank" onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
+          <Item><Button onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
         </List> */}
         </Col>
 
