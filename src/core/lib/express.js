@@ -33,6 +33,7 @@ module.exports = (app, db) => {
   app.engine('liquid', new Liquid({
     extname: ".liquid",
     root: ["views/site"]
+    // ENOENT: Failed to lookup
     // views => {% include './site/base/templates/products' %}
     // views/site => {% include './base/templates/products' %}
   }).express());

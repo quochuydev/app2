@@ -16,7 +16,6 @@ const routes = (app) => {
       if (!code) {
         throw { message: 'error' }
       }
-      console.log('cache.get(code)', cache.get(code))
       if (!cache.get(code)) {
         let shop_found = await ShopModel.findOne({ code }).lean(true);
         if (shop_found && shop_found.code && shop_found.id) {
@@ -40,7 +39,7 @@ const routes = (app) => {
 
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
-      base_url: `${config.frontend_site}/base/`,
+      base_url: `${config.frontend_site}/${code}/`,
       settings,
       products: JSON.stringify(products),
       collections: {
@@ -68,10 +67,11 @@ const routes = (app) => {
     let settings = require('./settings').current;
     let product = { title: `this is title ${handle}` }
     res.render(`site/${code}/templates/products`, {
+      code,
       amount: 0,
       product,
       settings,
-      base_url: `${config.frontend_site}/base/`,
+      base_url: `${config.frontend_site}/${code}/`,
     })
   });
   app.get('/site/:code/collections/:type', function (req, res) {
@@ -79,13 +79,19 @@ const routes = (app) => {
     let type = req.params.type;
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/collections`, {
+      code,
       settings,
-      base_url: `${config.frontend_site}/base/`,
+      base_url: `${config.frontend_site}/${code}/`,
     })
   });
   app.get('/site/:code/cart', function (req, res) {
     let code = req.params.code;
-    res.render(`site/${code}/templates/cart`)
+    let settings = require('./settings').current;
+    res.render(`site/${code}/templates/cart`, {
+      code,
+      settings,
+      base_url: `${config.frontend_site}/${code}/`,
+    });
   });
   app.get('/site/:code/cart.js', function (req, res) {
     let code = req.params.code;
