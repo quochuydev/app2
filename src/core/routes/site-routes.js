@@ -40,6 +40,7 @@ const routes = (app) => {
 
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
+      code,
       base_url: `${config.frontend_site}/${code}/`,
       settings,
       products,
@@ -71,7 +72,7 @@ const routes = (app) => {
     if (!shop_id) {
       throw { message: 'Đã có lỗi xảy ra' }
     }
-    let product = await VariantModel.findOne({ shop_id, handle })
+    let product = await ProductModel.findOne({ shop_id, handle })
     res.render(`site/${code}/templates/products`, {
       code,
       amount: 0,
