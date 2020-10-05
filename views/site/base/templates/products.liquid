@@ -175,38 +175,26 @@
                       <div class="product-gallery">
                         <div class="product-gallery__thumbs-container hidden-sm hidden-xs">
                           <div class="product-gallery__thumbs thumb-fix">
+                            {% for image in product.images %}
                             <div class="product-gallery__thumb active">
                               <a class="product-gallery__thumb-placeholder" href="javascript:"
-                                data-image="{{settings.product1}}" data-zoom-image="{{settings.product1}}">
-                                <img alt="{{product.title}}" data-image="{{settings.product1}}"
-                                  src="{{settings.product1}}">
+                                data-image="{{image.src}}" data-zoom-image="{{image.src}}">
+                                <img alt="{{product.title}}" data-image="{{image.src}}" src="{{image.src}}">
                               </a>
                             </div>
-                            <div class="product-gallery__thumb ">
-                              <a class="product-gallery__thumb-placeholder" href="javascript:"
-                                data-image="{{settings.product1}}" data-zoom-image="{{settings.product1}}">
-                                <img alt="{{product.title}}" data-image="{{settings.product1}}"
-                                  src="{{settings.product1}}">
-                              </a>
-                            </div>
-                            <div class="product-gallery__thumb ">
-                              <a class="product-gallery__thumb-placeholder" href="javascript:"
-                                data-image="{{settings.product1}}" data-zoom-image="{{settings.product1}}">
-                                <img alt="{{product.title}}" data-image="{{settings.product1}}"
-                                  src="{{settings.product1}}">
-                              </a>
-                            </div>
+                            {% endfor %}
                           </div>
                         </div>
                         <div class="product-image-detail box__product-gallery scroll">
                           <ul id="sliderproduct" class="site-box-content slide_product clearfix hidden-lg hidden-md">
                             <li class="product-gallery-item gallery-item">
-                              <img class="product-image-feature" src="{{settings.product1}}" alt="{{product.title}}">
+                              <img class="product-image-feature" src="{{product.images[0].src}}"
+                                alt="{{product.title}}">
                             </li>
                           </ul>
                           <div class="hidden-sm hidden-xs">
-                            <img class="product-image-feature product-image-feature-trigger" src="{{settings.product1}}"
-                              alt="{{product.title}}">
+                            <img class="product-image-feature product-image-feature-trigger"
+                              src="{{product.images[0].src}}" alt="{{product.title}}">
                           </div>
                           <div class="product-image__button">
                             <div id="product-zoom-in" class="product-zoom icon-pr-fix " aria-label="Zoom in"
