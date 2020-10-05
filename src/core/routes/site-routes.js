@@ -4,6 +4,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const cache = require('memory-cache');
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
+const { CartModel } = require(path.resolve('./src/cart/model.js'));
 
 const routes = (app) => {
   app.use('/site/:code/*', async function (req, res, next) {
@@ -34,14 +35,14 @@ const routes = (app) => {
   app.get('/site/:code', SiteMiddleware, async function (req, res) {
     let code = req.params.code;
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }, { id: 1 }).lean(true);
+    let products = await ProductModel.find({ shop_id }).lean(true);
     console.log({ shop_id, products })
 
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
       base_url: `${config.frontend_site}/${code}/`,
       settings,
-      products: JSON.stringify(products),
+      products,
       collections: {
         all: {
           products: []
@@ -61,11 +62,16 @@ const routes = (app) => {
     let settings = require('./settings').current;
     res.render(`shops/${code}/pages`)
   });
-  app.get('/site/:code/products/:handle', function (req, res) {
+  app.get('/site/:code/products/:handle', async function (req, res) {
     let code = req.params.code;
     let handle = req.params.handle;
+    let shop_id = req.shop_id;
+
     let settings = require('./settings').current;
-    let product = { title: `this is title ${handle}` }
+    if (!shop_id) {
+      throw { message: 'Đã có lỗi xảy ra' }
+    }
+    let product = await VariantModel.findOne({ shop_id, handle })
     res.render(`site/${code}/templates/products`, {
       code,
       amount: 0,
@@ -93,6 +99,7 @@ const routes = (app) => {
       base_url: `${config.frontend_site}/${code}/`,
     });
   });
+
   app.get('/site/:code/cart.js', function (req, res) {
     let code = req.params.code;
     res.json({
