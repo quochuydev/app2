@@ -81,13 +81,16 @@ const routes = (app) => {
       base_url: `${config.frontend_site}/${code}/`,
     })
   });
-  app.get('/site/:code/collections/:type', function (req, res) {
+  app.get('/site/:code/collections/:type', async function (req, res) {
     let code = req.params.code;
     let type = req.params.type;
+    let shop_id = req.shop_id;
+    let products = await ProductModel.find({ shop_id }).lean(true);
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,
+      products,
       base_url: `${config.frontend_site}/${code}/`,
     })
   });

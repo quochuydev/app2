@@ -354,52 +354,47 @@
                         </div>
                         <div class="row filter-here">
                           <div class="content-product-list product-list filter clearfix">
-                            <div class=" col-md-4  col-sm-4 col-xs-6 pro-loop">
+                            {% for product in products %}
+                            <div class=" col-md-4 col-sm-4 col-xs-6 pro-loop">
                               <div class="product-block product-resize" data-anmation="1">
                                 <div class="product-img">
-                                  <div class="product-sale"><span>-12%</span></div> <a
-                                    href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                    title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?"
-                                    class="image-resize">
+                                  <div class="product-sale">
+                                    <span>-12%</span>
+                                  </div>
+                                  <a href="products/{{product.handle}}" title="{{product.title}}" class="image-resize">
+                                    {% for image in product.images %}
                                     <picture>
-                                      <source media="(max-width: 767px)" srcset="{{settings.product2}}">
-                                      <source media="(min-width: 768px)" srcset="{{settings.product2}}">
-                                      <img class="img-loop img-hover"
-                                        alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? "
-                                        src="{{settings.product2}}" />
+                                      <source media="(max-width: 767px)" srcset="{{image.src}}"/>
+                                      <source media="(min-width: 768px)" srcset="{{image.src}}"/>
+                                      <img class="img-loop img-hover" alt="{{product.title}}" src="{{image.src}}" />
                                     </picture>
-                                    <picture>
-                                      <source media="(max-width: 767px)" srcset="{{settings.product1}}">
-                                      <source media="(min-width: 768px)" srcset="{{settings.product1}}">
-                                      <img class="img-loop img-hover"
-                                        alt=" Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì? "
-                                        src="{{settings.product1}}" />
-                                    </picture>
+                                    {% endfor %}
                                   </a>
                                   <div class="button-add">
                                     <button type="submit" title="Mua ngay" class="action"
-                                      onclick="buy_now('1060964574')">Mua ngay</button>
+                                      onclick="buy_now('{{product.variants[0].id}}')">Mua ngay</button>
                                     <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                      data-variantid="1060964574">Thêm vào giỏ</button>
+                                      data-variantid="{{product.variants[0].id}}">Thêm vào giỏ</button>
                                   </div>
                                 </div>
                                 <div class="product-detail clearfix">
                                   <div class="box-pro-detail">
                                     <h3 class="pro-name">
-                                      <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                        title="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?">
-                                        Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?
+                                      <a href="/products/{{product.handle}}" title="{{product.title}}">
+                                        {{product.title}}
                                       </a>
                                     </h3>
                                     <div class="box-pro-prices">
-                                      <p class="pro-price highlight">299,000₫
-                                        <span class="pro-price-del"><del class="compare-price">338,000₫</del></span>
+                                      <p class="pro-price highlight">{{product.variants[0].price}}
+                                        <span class="pro-price-del"><del
+                                            class="compare-price">{{product.variants[0].price_original}}</del></span>
                                       </p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
+                            {% endfor %}
                           </div>
                           <div class="sortpagibar pagi clearfix text-center">
                             <div id="pagination" class="clearfix">
@@ -414,6 +409,7 @@
             </div> <input type="text" class="hidden" id="coll-handle" value="(collectionid:product>0)" />
           </div>
           <script>
+            var Haravan = {}
             Haravan.queryParams = {};
             if (location.search.length) {
               for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
