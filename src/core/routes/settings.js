@@ -17,5 +17,6 @@ module.exports = {
     product2: `${config.frontend_site}/base/assets/img/product2.jpg`,
     product3: `${config.frontend_site}/base/assets/img/product3.jpg`,
     product4: `${config.frontend_site}/base/assets/img/product4.jpg`,
+    ic_close: `${config.frontend_site}/base/assets/img/ic_close.jpg`,
   }
 }

@@ -30,7 +30,14 @@ module.exports = (app, db) => {
     });
   }
 
-  app.engine('liquid', new Liquid().express());
+  app.engine('liquid', new Liquid({
+    extname: ".liquid",
+    root: ["views/site"]
+    // ENOENT: Failed to lookup
+    // views => {% include './site/base/templates/products' %}
+    // views/site => {% include './base/templates/products' %}
+  }).express());
+
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
   app.use('/site', express.static(path.resolve('./views/site')));
