@@ -48,6 +48,8 @@ module.exports = (app, db) => {
       if (shop_found && shop_found.code && shop_found.id) {
         code = shop_found.code;
         cache.put(shop_found.code, shop_found.id);
+      } else {
+        code = 'base';
       }
       console.log('shop_found 1', shop_found);
     }
