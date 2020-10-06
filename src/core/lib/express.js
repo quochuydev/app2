@@ -54,7 +54,8 @@ module.exports = (app, db) => {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
-          console.log('shop_found 1', shop_found);
+          cache.put(domain, shop_found.code);
+          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), req.url);
         } else {
           code = 'base';
         }
