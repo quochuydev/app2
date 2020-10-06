@@ -44,12 +44,16 @@ module.exports = (app, db) => {
     let code = domain == 'localhost' ? 'base' : null;
 
     if (!code) {
-      let shop_found = await ShopModel.findOne({ domain }).lean(true);
-      if (shop_found && shop_found.code && shop_found.id) {
-        code = shop_found.code;
-        console.log('shop_found 1', shop_found);
+      if (!cache.get(domain)) {
+        let shop_found = await ShopModel.findOne({ domain }).lean(true);
+        if (shop_found && shop_found.code && shop_found.id) {
+          code = shop_found.code;
+          console.log('shop_found 1', shop_found);
+        } else {
+          code = 'base';
+        }
       } else {
-        code = 'base';
+        code = cache.get(domain);
       }
     }
 
