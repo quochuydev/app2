@@ -66,7 +66,8 @@ module.exports = (app, db) => {
     }
 
     req.shop_id = cache.get(code);
-    app.use('/', express.static(path.resolve(`./views/site/${code}`)));
+    app.use('/', express.static(path.resolve(`./views/site/base`)));
+    // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
     next();
   })
 
