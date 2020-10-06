@@ -29,7 +29,6 @@ const routes = (app) => {
         }
       }
       req.shop_id = cache.get(code);
-      console.log('site shop_id', req.shop_id);
       next();
     } catch (error) {
       res.render('404');
@@ -139,6 +138,8 @@ const routes = (app) => {
   });
 
   app.get('/cart.js', function (req, res) {
+    console.log(req.host);
+
     res.json({
       "attributes": {}, "token": "f1020d8b4d7c4845b7b9fe5318678a15",
       "item_count": 3, "items": [{
