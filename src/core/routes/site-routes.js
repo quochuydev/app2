@@ -5,8 +5,9 @@ const cache = require('memory-cache');
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/model.js'));
+
 let code = 'base';
-let base_url = `${config.frontend_site}/`;
+let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = (app) => {
@@ -16,8 +17,9 @@ const routes = (app) => {
 
   async function SiteMiddleware(req, res, next) {
     try {
-      let code = req.params.code = 'base';
-
+      // req.host == 'localhost'
+      // let code = req.host == 'localhost' ? 'base' : req.host;
+      
       if (!code) {
         throw { message: 'error' }
       }
@@ -37,8 +39,6 @@ const routes = (app) => {
   }
 
   app.get('/', SiteMiddleware, async function (req, res) {
-    // req.host == 'localhost'
-    // let code = req.host == 'localhost' ? 'base' : req.host;
     console.log(req.host);
 
     let code = 'base';
@@ -65,7 +65,6 @@ const routes = (app) => {
   });
 
   app.get('/pages/:page', function (req, res) {
-    let code = req.params.code;
     let page = req.params.page;
     res.render(`shops/${code}/pages`)
   });
@@ -106,6 +105,7 @@ const routes = (app) => {
       base_url,
     });
   });
+
   app.get('/checkouts/:checkout_token', function (req, res) {
     res.render(`site/${code}/templates/checkouts`, {
       code,
@@ -154,4 +154,5 @@ const routes = (app) => {
     })
   });
 }
+
 module.exports = routes;
