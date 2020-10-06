@@ -18,9 +18,6 @@ const routes = (app) => {
 
   async function SiteMiddleware(req, res, next) {
     try {
-      // req.host == 'localhost'
-      // let code = req.host == 'localhost' ? 'base' : req.host;
-      
       if (!code) {
         throw { message: 'error' }
       }
@@ -38,7 +35,7 @@ const routes = (app) => {
       res.render('404');
     }
   }
-  // SiteMiddleware
+
   app.get('/', async function (req, res) {
     console.log(req.host);
 

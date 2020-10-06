@@ -17,7 +17,6 @@ const ShopSchema = new Schema({
   user_created: {},
 
   created_at: { type: Date, default: Date.now },
-
   logo_src: { type: String, default: null },
 
   woocommerce: {
