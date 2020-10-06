@@ -8,6 +8,10 @@
 <!--<![endif]-->
 
 {% include '{{code}}/templates/head' %}
+<script>
+  var formatMoney = '{{amount}}₫';
+  var template = "product";
+</script>
 
 <body id="Xetaigianat-store" class="product-style-03">
   <!-- Facebook Pixel Code -->
@@ -181,7 +185,7 @@
                               {% for image in product.images %}
                               <picture>
                                 <source data-srcset="{{image.src}}" />
-                                <img data-src="{{image.src}}" class="lazyload" alt="{{product.title}}" />
+                                <img data-src="{{image.src}}" class="lazyload" alt="{{product.title}}"/>
                               </picture>
                               {% endfor %}
                             </a>

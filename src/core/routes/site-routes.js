@@ -5,9 +5,11 @@ const cache = require('memory-cache');
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/model.js'));
+let code = 'base';
+let base_url = `${config.frontend_site}/`;
 
 const routes = (app) => {
-  app.use('/site/:code/*', async function (req, res, next) {
+  app.use('/*', async function (req, res, next) {
     await SiteMiddleware(req, res, next)
   });
 
@@ -27,6 +29,7 @@ const routes = (app) => {
         }
       }
       req.shop_id = cache.get(code);
+      console.log('site shop_id', req.shop_id);
       next();
     } catch (error) {
       res.render('404');
@@ -45,7 +48,7 @@ const routes = (app) => {
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
       code,
-      base_url: `${config.frontend_site}/`,
+      base_url,
       settings,
       products,
       collections: {
@@ -71,7 +74,7 @@ const routes = (app) => {
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
       code,
-      base_url: `${config.frontend_site}/${code}/`,
+      base_url,
       settings,
       products,
       collections: {
@@ -93,8 +96,7 @@ const routes = (app) => {
     let settings = require('./settings').current;
     res.render(`shops/${code}/pages`)
   });
-  app.get('/site/:code/products/:handle', async function (req, res) {
-    let code = req.params.code;
+  app.get('/products/:handle', async function (req, res) {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
 
@@ -111,11 +113,10 @@ const routes = (app) => {
       product,
       products,
       settings,
-      base_url: `${config.frontend_site}/${code}/`,
+      base_url,
     })
   });
-  app.get('/site/:code/collections/:type', async function (req, res) {
-    let code = req.params.code;
+  app.get('/collections/:type', async function (req, res) {
     let type = req.params.type;
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }).lean(true);
@@ -124,21 +125,20 @@ const routes = (app) => {
       code,
       settings,
       products,
-      base_url: `${config.frontend_site}/${code}/`,
+      base_url,
     })
   });
-  app.get('/site/:code/cart', function (req, res) {
+  app.get('/cart', function (req, res) {
     let code = req.params.code;
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/cart`, {
       code,
       settings,
-      base_url: `${config.frontend_site}/${code}/`,
+      base_url,
     });
   });
 
-  app.get('/site/:code/cart.js', function (req, res) {
-    let code = req.params.code;
+  app.get('/cart.js', function (req, res) {
     res.json({
       "attributes": {}, "token": "f1020d8b4d7c4845b7b9fe5318678a15",
       "item_count": 3, "items": [{
@@ -160,8 +160,7 @@ const routes = (app) => {
       "requires_shipping": false
     })
   });
-  app.post('/site/:code/cart/add.js', function (req, res) {
-    let code = req.params.code;
+  app.post('/cart/add.js', function (req, res) {
     res.json({
       "id": 1058285656,
       "title": "v4", "price": 40000000,
