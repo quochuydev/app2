@@ -40,7 +40,8 @@ module.exports = (app, db) => {
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
-  app.use('/site', express.static(path.resolve('./views/site')));
+  // app.use('/site', express.static(path.resolve('./views/site')));
+  app.use('/', express.static(path.resolve('./views/site')));
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));

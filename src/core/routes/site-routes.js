@@ -32,6 +32,34 @@ const routes = (app) => {
     }
   }
 
+  
+  app.get('/', async function (req, res) {
+    // req.host == 'localhost'
+    let code = 'base';
+    let shop_id = req.shop_id;
+    let products = await ProductModel.find({ shop_id }).lean(true);
+    console.log({ shop_id, products })
+
+    let settings = require('./settings').current;
+    res.render(`site/${code}/templates/index`, {
+      code,
+      base_url: `${config.frontend_site}/${code}/`,
+      settings,
+      products,
+      collections: {
+        all: {
+          products: []
+        },
+        frontpage: {
+          products: []
+        },
+        onsale: {
+          products: []
+        },
+      }
+    });
+  });
+
   app.get('/site/:code', SiteMiddleware, async function (req, res) {
     let code = req.params.code;
     let shop_id = req.shop_id;
