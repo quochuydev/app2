@@ -8,6 +8,10 @@
 <!--<![endif]-->
 
 {% include '{{code}}/templates/head' %}
+<script>
+  var formatMoney = '{{amount}}₫';
+  var template = "product";
+</script>
 
 <body id="Xetaigianat-store" class="product-style-03">
   <!-- Facebook Pixel Code -->
@@ -107,9 +111,13 @@
                         <h1>{{product.title}}</h1>
                       </div>
                       <div class="product-price" id="price-preview"> <span class="pro-sale">-10% </span> <span
-                          class="pro-price">152,000₫</span> <del>169,000₫</del> </div>
+                          class="pro-price">{{product.variants[0].price}}</span>
+                        <del>{{product.variants[0].price_original}}</del> </div>
                       <div class="product-taggia">
-                        <b>Tác giả: </b>Nhóm tác giả Xetaigianat
+                        <b>Nhà sản xuất: </b> {{product.vendor}}
+                      </div>
+                      <div class="product-taggia">
+                        <b>Nhóm sản phẩm: </b> {{product.collect}}
                       </div>
                       <div class="product-desc">
                         <p>{{product.body_html}}</p>

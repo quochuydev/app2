@@ -17,7 +17,7 @@
         <div class="promo-bar" id="topbar">
           <div class="container">
             <div id="slideText">
-              <p><a href="https://shop.quochuydev.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi">
+              <p><a href="{{base_url}}/products/nguoi-trong-muon-nghe-nganh-it-co-gi">
                   <span>Người Trong<span></a></p>
             </div>
           </div>
@@ -29,7 +29,7 @@
                 <div class="col-md-4 wrap-header-1 hidden-sm hidden-xs"></div>
                 <div class="col-md-4 wrap-header-2 col-sm-6 col-xs-7">
                   <div class="main-header--logo fade-box" itemscope="" itemtype="http://schema.org/Organization">
-                    <a href="https://shop.quochuydev.com" itemprop="url">
+                    <a href="{{base_url}}" itemprop="url">
                       <img itemprop="logo" src="{{settings.logo}}" alt="quochuydev Store"
                         class="img-responsive logoimg lazyload" style="width: 64px;height: 64px;" />
                     </a>
@@ -91,9 +91,8 @@
                           </a>
                           <ul class="list-submenu">
                             <li class="">
-                              <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                title="Người trong muôn nghề: Ngành IT có gì?">
-                                Người trong muôn nghề: Ngành IT có gì?
+                              <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi" title="{{product.title}}">
+                                {{product.title}}
                               </a>
                             </li>
                             <li class="">
@@ -149,7 +148,7 @@
                           <meta itemprop="position" content="1" />
                         </li>
                         <li class="active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                          <span itemprop="item" content="https://shop.quochuydev.com/cart"><span itemprop="name">Giỏ
+                          <span itemprop="item" content="{{base_url}}/cart"><span itemprop="name">Giỏ
                               hàng
                               (4)</span></span>
                           <meta itemprop="position" content="2" />
@@ -175,18 +174,15 @@
                                 <div class="item line-item line-item-container" data-variant-id="1060964574">
                                   <div class="left">
                                     <div class="item-img">
-                                      <a
-                                        href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi">
-                                        <img src="{{settings.product1}}"
-                                          alt="Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?" />
+                                      <a href="/products/{{product.handle}}">
+                                        <img src="{{settings.product1}}" alt="{{product.title}}" />
                                       </a>
                                     </div>
                                   </div>
                                   <div class="right">
                                     <div class="item-info">
-                                      <a
-                                        href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-nguoi-trong-muon-nghe-nganh-it-co-gi">
-                                        <h3>Combo sách Dăm ba cái tuổi trẻ và Người trong muôn nghề: Ngành IT có gì?
+                                      <a href="/products/{{product.handle}}">
+                                        <h3>{{product.title}}
                                         </h3>
                                         <div class="item-desc"> </div>
                                       </a>
@@ -261,17 +257,17 @@
                               <div class="product-block" data-anmation="1">
                                 <div class="product-img fade-box">
                                   <div class="product-sale"><span>-10%</span></div>
-                                  <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                    title="Người Trong Muôn Nghề: Ngành IT có gì?" class="image-resize">
+                                  <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi" title="{{product.title}}"
+                                    class="image-resize">
                                     <picture>
                                       <source data-srcset="{{settings.product1}}" />
                                       <img data-src="{{settings.product1}}" class="lazyload"
-                                        alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
+                                        alt=" {{product.title}} " />
                                     </picture>
                                     <picture>
                                       <source data-srcset="{{settings.product2}}" />
                                       <img data-src="{{settings.product2}}" class="lazyload"
-                                        alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
+                                        alt=" {{product.title}} " />
                                     </picture>
                                   </a>
                                 </div>
@@ -279,7 +275,7 @@
                                   <div class="box-pro-detail">
                                     <h3 class="pro-name">
                                       <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                        title="Người Trong Muôn Nghề: Ngành IT có gì?">Người Trong Muôn Nghề: Ngành IT
+                                        title="{{product.title}}">Người Trong Muôn Nghề: Ngành IT
                                         có gì?</a>
                                     </h3>
                                     <div class="box-pro-prices">
@@ -589,7 +585,7 @@
           <div class="main-footer--copyright">
             <div class="container">
               <div class="main-footer--border">
-                <p>Copyright © 2020 <a href="https://shop.quochuydev.com"> quochuydev Store</a>. <a target='_blank'
+                <p>Copyright © 2020 <a href="{{base_url}}"> quochuydev Store</a>. <a target='_blank'
                     href='https://www.haravan.com'>Powered by Haravan</a></p>
               </div>
             </div>

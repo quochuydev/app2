@@ -11,12 +11,12 @@ const ShopSchema = new Schema({
   code: { type: String, default: null },
   name: { type: String, default: null },
 
+  domain: { type: String, default: null },
   url: { type: String, default: null },
   urls: { type: [String], default: [] },
   user_created: {},
 
   created_at: { type: Date, default: Date.now },
-
   logo_src: { type: String, default: null },
 
   woocommerce: {

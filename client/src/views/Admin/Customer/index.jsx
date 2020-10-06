@@ -153,14 +153,14 @@ function Customer(props) {
     <div>
       <Row key='1'>
         <Input.Group style={{ width: '100%', display: 'flex' }}>
-          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
-            <span className="hidden-xs">Bỏ lọc</span>
-          </Button>
           <Link to={`customer/create`} className="m-r-10">
             <Button icon="plus-circle" size="large" type="primary">
               <span className="hidden-xs">Tạo khách hàng</span>
             </Button>
           </Link>
+          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
+            <span className="hidden-xs">Bỏ lọc</span>
+          </Button>
           <Input size="large" placeholder="Tên khách hàng/email/Sđt" name="type" name="phone_like" value={query.phone_like} onChange={onChange}
             prefix={<Icon type="search" onClick={() => onLoadCustomer()} />} style={{ marginBottom: 1 }} />
           <Popover placement="bottomRight" content={

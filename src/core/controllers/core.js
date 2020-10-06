@@ -186,9 +186,9 @@ let login = async (req, res, next) => {
     if (!(users && users.length)) {
       throw { message: `User này không tồn tại` }
     }
-    for (const user_login of users) {
-      if (UserMD.authenticate(user_login, password)) {
-        user = user_login;
+    for (const user_found of users) {
+      if (UserMD.authenticate(user_found, password)) {
+        user = user_found;
       }
     }
     if (!user) {

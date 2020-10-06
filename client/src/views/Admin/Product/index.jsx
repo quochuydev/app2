@@ -153,14 +153,14 @@ function Products(props) {
       <Row key='1'>
         <Form>
           <Input.Group style={{ width: '100%', display: 'flex' }}>
-            <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
-              <span className="hidden-xs">Bỏ lọc</span>
-            </Button>
             <Link to={`product/create`} className="m-r-10">
               <Button icon="plus-circle" size="large" type="primary">
                 <span className="hidden-xs">Tạo sản phẩm</span>
               </Button>
             </Link>
+            <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
+              <span className="hidden-xs">Bỏ lọc</span>
+            </Button>
             <Input size="large" placeholder="Tên sản phẩm/SKU/barcode" name="type" name="sku_like" value={query.sku_like} onChange={onChange}
               prefix={<Icon type="search" onClick={() => loadProducts()} />} style={{ marginBottom: 1 }} />
             <Popover placement="bottomRight" content={

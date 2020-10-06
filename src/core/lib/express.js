@@ -12,6 +12,9 @@ const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { errorHandle } = require('./errorHandle');
 
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+const cache = require('memory-cache');
+
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
   //   res.header('Access-Control-Allow-Origin', '*');
@@ -21,14 +24,6 @@ module.exports = (app, db) => {
   // });
   app.use(cors());
   // app.use(logger('tiny'));
-
-  if (process.env.NODE_ENV == 'production') {
-    console.log(path.resolve('client/build', 'index.html'))
-    app.use('/', express.static(path.resolve('client', 'build')));
-    app.get('/admin/*', (req, res) => {
-      res.sendFile(path.resolve('client/build', 'index.html'));
-    });
-  }
 
   app.engine('liquid', new Liquid({
     extname: ".liquid",
@@ -40,7 +35,57 @@ module.exports = (app, db) => {
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
-  app.use('/site', express.static(path.resolve('./views/site')));
+
+  app.use('/', async (req, res, next) => {
+    if (req.url.includes('/admin')) {
+      return next();
+    }
+    if (req.url.includes('/images')) {
+      return next();
+    }
+    if (req.url.includes('/assets')) {
+      return next();
+    }
+    let domain = req.host;
+    let code = domain == 'localhost' ? 'base' : null;
+
+    if (!code) {
+      if (!cache.get(domain)) {
+        let shop_found = await ShopModel.findOne({ domain }).lean(true);
+        if (shop_found && shop_found.code && shop_found.id) {
+          code = shop_found.code;
+          cache.put(domain, shop_found.code);
+          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), req.url);
+        } else {
+          code = 'base';
+        }
+      } else {
+        code = cache.get(domain);
+      }
+    }
+
+    if (!cache.get(code)) {
+      let shop_found = await ShopModel.findOne({ code }).lean(true);
+      if (shop_found && shop_found.code && shop_found.id) {
+        cache.put(code, shop_found.id);
+      }
+      console.log('shop_found 2', shop_found);
+    }
+
+    req.shop_id = cache.get(code);
+    app.use('/', express.static(path.resolve(`./views/site/base`)));
+    // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
+    next();
+  })
+
+  const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
+  SiteRoutes(app);
+
+  console.log(path.resolve('client', 'build'));
+  app.use('/', express.static(path.resolve('client', 'build')))
+  app.get('/admin/*', (req, res) => {
+    res.sendFile(path.resolve('client/build', 'index.html'));
+  });
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -53,7 +98,7 @@ module.exports = (app, db) => {
     rolling: true,
     saveUninitialized: true,
     cookie: {
-      maxAge: 30 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: false
     },
@@ -66,7 +111,5 @@ module.exports = (app, db) => {
 
   const Routes = require(path.resolve('./src/core/routes/routes'))
   Routes(app);
-  const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
-  SiteRoutes(app);
   app.use(errorHandle)
 }
