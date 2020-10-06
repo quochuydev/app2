@@ -147,7 +147,12 @@ function Orders(props) {
     <div>
       <Form>
         <Input.Group style={{ width: '100%', display: 'flex' }}>
-          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large">
+          <Link to={`POS`}>
+            <Button icon="plus-circle" size="large" type="primary" onClick={() => loadOrders()} className="m-r-10">
+              <span className="hidden-xs">Tạo đơn hàng</span>
+            </Button>
+          </Link>
+          <Button type="dashed" icon="reload" onClick={() => setQuery(initQuery)} size="large" className="m-r-10">
             <span className="hidden-xs">Bỏ lọc</span>
           </Button>
           <Input size="large" placeholder="Nhập mã đơn hàng" name="type" name="number" value={query.number} onChange={onChange}
@@ -158,15 +163,10 @@ function Orders(props) {
                 Xuất excel</Button>
             </div>
           } trigger="click">
-            <Button icon="swap" size="large" type="primary" >
+            <Button icon="swap" size="large" type="primary" className="m-l-10">
               <span className="hidden-xs"></span>
             </Button>
           </Popover>
-          <Link to={`POS`}>
-            <Button icon="plus-circle" size="large" type="dashed" onClick={() => loadOrders()}>
-              <span className="hidden-xs">Tạo đơn hàng</span>
-            </Button>
-          </Link>
         </Input.Group>
         <br />
         <Row key='1'>

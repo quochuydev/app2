@@ -31,7 +31,6 @@ const routes = (app) => {
       res.render('404');
     }
   }
-
   
   app.get('/', async function (req, res) {
     // req.host == 'localhost'

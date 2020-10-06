@@ -24,10 +24,8 @@ module.exports = (app, db) => {
 
   if (process.env.NODE_ENV == 'production') {
     console.log(path.resolve('client/build', 'index.html'))
-    app.use('/', express.static(path.resolve('client', 'build')));
-    app.get('/admin/*', (req, res) => {
-      res.sendFile(path.resolve('client/build', 'index.html'));
-    });
+    // app.use('/', express.static(path.resolve('client', 'build')));
+
   }
 
   app.engine('liquid', new Liquid({
@@ -41,7 +39,16 @@ module.exports = (app, db) => {
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
   // app.use('/site', express.static(path.resolve('./views/site')));
+  // app.use('/', [express.static(path.resolve('client', 'build')), express.static(path.resolve('./views/site'))]);
+
   app.use('/', express.static(path.resolve('./views/site')));
+  const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
+  SiteRoutes(app);
+
+  app.use('/admin/', express.static(path.resolve('client', 'build')));
+  app.get('/admin/*', (req, res) => {
+    res.sendFile(path.resolve('client/build', 'index.html'));
+  });
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -67,7 +74,5 @@ module.exports = (app, db) => {
 
   const Routes = require(path.resolve('./src/core/routes/routes'))
   Routes(app);
-  const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
-  SiteRoutes(app);
   app.use(errorHandle)
 }
