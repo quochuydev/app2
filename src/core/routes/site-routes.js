@@ -72,11 +72,14 @@ const routes = (app) => {
     if (!shop_id) {
       throw { message: 'Đã có lỗi xảy ra' }
     }
-    let product = await ProductModel.findOne({ shop_id, handle })
+    let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
+    let products = await ProductModel.find({ shop_id }).lean(true);
+
     res.render(`site/${code}/templates/products`, {
       code,
       amount: 0,
       product,
+      products,
       settings,
       base_url: `${config.frontend_site}/${code}/`,
     })

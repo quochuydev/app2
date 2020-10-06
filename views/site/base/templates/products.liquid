@@ -172,89 +172,45 @@
                       <h2>Sản phẩm liên quan</h2>
                     </div>
                     <div class="content-product-list row">
+                      {% for product in products %}
                       <div class="col-md-3 col-sm-6 col-xs-6 pro-loop">
                         <div class="product-block" data-anmation="1">
                           <div class="product-img fade-box">
                             <div class="product-sale"><span>-10%</span></div>
-                            <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                              title="Người Trong Muôn Nghề: Ngành IT có gì?" class="image-resize">
+                            <a href="products/{{product.handle}}" title="{{product.title}}" class="image-resize">
+                              {% for image in product.images %}
                               <picture>
-                                <source data-srcset="{{settings.product1}}" />
-                                <img data-src="{{settings.product1}}" class="lazyload"
-                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
+                                <source data-srcset="{{image.src}}" />
+                                <img data-src="{{image.src}}" class="lazyload" alt="{{product.title}}" />
                               </picture>
-                              <picture>
-                                <source data-srcset="{{settings.product2}}" />
-                                <img data-src="{{settings.product2}}" class="lazyload"
-                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
-                              </picture>
+                              {% endfor %}
                             </a>
                             <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1058030689')">Mua
+                              <button type="submit" title="Mua ngay" class="action"
+                                onclick="buy_now('{{product.variants[0].id}}')">Mua
                                 ngay</button>
                               <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1058030689">Thêm vào giỏ</button>
+                                data-variantid="{{product.variants[0].id}}">Thêm vào giỏ</button>
                             </div>
                           </div>
                           <div class="product-detail clearfix">
                             <div class="box-pro-detail">
                               <h3 class="pro-name">
-                                <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                  title="Người Trong Muôn Nghề: Ngành IT có gì?">Người Trong Muôn Nghề: Ngành IT
-                                  có
-                                  gì?</a>
+                                <a href="products/{{product.handle}}">
+                                  {{product.title}}</a>
                               </h3>
                               <div class="box-pro-prices">
-                                <p class="pro-price highlight">152,000₫
-                                  <span class="pro-price-del"><del class="compare-price">169,000₫</del></span>
+                                <p class="pro-price highlight">{{product.variants[0].price}}
+                                  <span class="pro-price-del">
+                                    <div class="compare-price">{{product.variants[0].price_original}}</div>
+                                  </span>
                                 </p>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-3 col-sm-6 col-xs-6 pro-loop">
-                        <div class="product-block" data-anmation="1">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-10%</span></div>
-                            <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                              title="Người Trong Muôn Nghề: Ngành IT có gì?" class="image-resize">
-                              <picture>
-                                <source data-srcset="{{settings.product1}}" />
-                                <img data-src="{{settings.product1}}" class="lazyload"
-                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
-                              </picture>
-                              <picture>
-                                <source data-srcset="{{settings.product2}}" />
-                                <img data-src="{{settings.product2}}" class="lazyload"
-                                  alt=" Người Trong Muôn Nghề: Ngành IT có gì? " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1058030689')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1058030689">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/nguoi-trong-muon-nghe-nganh-it-co-gi"
-                                  title="Người Trong Muôn Nghề: Ngành IT có gì?">Người Trong Muôn Nghề: Ngành IT
-                                  có
-                                  gì?</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">152,000₫
-                                  <span class="pro-price-del"><del class="compare-price">169,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- product3 -->
+                      {% endfor %}
                     </div>
                   </div>
                 </div>
