@@ -43,7 +43,7 @@ function Middleware(props) {
         window.location.href = `${redirect_route}/`;
       }
       if (path == '/') {
-        window.location.href = `${redirect_route}/`;
+        // window.location.href = `${redirect_route}/`;
       }
     }
   }
