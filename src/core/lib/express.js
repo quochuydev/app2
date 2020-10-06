@@ -12,6 +12,9 @@ const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { errorHandle } = require('./errorHandle');
 
+const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+const cache = require('memory-cache');
+
 module.exports = (app, db) => {
   // app.use('/*', function (req, res, next) {
   //   res.header('Access-Control-Allow-Origin', '*');
@@ -33,12 +36,36 @@ module.exports = (app, db) => {
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
 
-  app.use('/', (req, res, next) => {
-    // req.host == 'localhost'
-    let code = 'base';
+  app.use('/', async (req, res, next) => {
+    if (req.url.includes('/admin')) {
+      return next();
+    }
+    let domain = req.host;
+    let code = domain == 'localhost' ? 'base' : null;
+
+    if (!code) {
+      let shop_found = await ShopModel.findOne({ domain }).lean(true);
+      if (shop_found && shop_found.code && shop_found.id) {
+        code = shop_found.code;
+        cache.put(shop_found.code, shop_found.id);
+      }
+      console.log('shop_found 1', shop_found);
+    }
+
+    if (!cache.get(code)) {
+      let shop_found = await ShopModel.findOne({ code }).lean(true);
+      if (shop_found && shop_found.code && shop_found.id) {
+        cache.put(code, shop_found.id);
+      } else {
+        throw { message: 'error' }
+      }
+      console.log('shop_found 2', shop_found);
+    }
+
+    req.shop_id = cache.get(code);
     app.use('/', express.static(path.resolve(`./views/site/${code}`)));
-    next()
-  });
+    next();
+  })
 
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes(app);
