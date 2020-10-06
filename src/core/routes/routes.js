@@ -4,11 +4,9 @@ const { Middleware } = require('../middlewares/core');
 const config = require(path.resolve('./src/config/config'));
 
 const routes = (app) => {
-  // app.get('/', (req, res) => { res.send({ message: 'this is backend.' }); });
-
-  // app.get('/admin', (req, res, next) => {
-  //   res.redirect(`${config.frontend_admin}/`);
-  // });
+  app.get('/admin', (req, res, next) => {
+    res.redirect(`${config.backend_admin}/`);
+  });
 
   app.get('/auth', auth);
   app.post('/login', login);

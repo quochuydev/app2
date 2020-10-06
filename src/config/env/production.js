@@ -17,6 +17,7 @@ module.exports = {
   // webhook_haravan_url: `${process.env.APP_HOST}/webhook/haravan`,
   frontend_site: `${process.env.APP_HOST}/site`,
   frontend_admin: `${process.env.APP_HOST}/admin`,
+  backend_admin: `${process.env.APP_HOST}/admin`,
 
   cron: {
     job1: '*/60 * * * * *'

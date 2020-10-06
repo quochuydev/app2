@@ -45,7 +45,8 @@ module.exports = (app, db) => {
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes(app);
 
-  app.use('/admin/', express.static(path.resolve('client', 'build')));
+  console.log(path.resolve('client', 'build'))
+  app.use('/', express.static(path.resolve('client', 'build')));
   app.get('/admin/*', (req, res) => {
     res.sendFile(path.resolve('client/build', 'index.html'));
   });
