@@ -37,16 +37,18 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
 
   app.use('/', async (req, res, next) => {
-    if (req.url.includes('/admin')) {
-      return next();
-    }
-    if (req.url.includes('/images')) {
-      return next();
-    }
-    if (req.url.includes('/assets')) {
-      return next();
-    }
     let domain = req.host;
+    let url = req.url;
+
+    if (url.includes('/admin')) {
+      return next();
+    }
+    if (url.includes('/images')) {
+      return next();
+    }
+    if (url.includes('/assets')) {
+      return next();
+    }
     let code = domain == 'localhost' ? 'base' : null;
 
     if (!code) {
@@ -55,7 +57,7 @@ module.exports = (app, db) => {
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
           cache.put(domain, shop_found.code);
-          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), req.url);
+          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), url);
         } else {
           code = 'base';
         }
