@@ -7,56 +7,11 @@
 <html amp class="no-js" lang="vi">
 <!--<![endif]-->
 
-<head>
-  <meta charset="utf-8" />
-  <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1' /><![endif]-->
-  <!--[if lt IE 9]><script src="//hsta tic.net/0/0/global/design/theme-default/html5shiv.js"></script><![endif]-->
-  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-  <meta name="revisit-after" content="1 day" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="HandheldFriendly" content="true">
-  <link rel="shortcut icon" href="{{settings.logo}}" type="image/png" />
-  <title>Store {{shop}} </title>
-  <base href="{{base_url}}" target="_blank">
-  <meta name="description" content="Sách trẻ dành cho người trẻ" />
-  <meta name="keywords" content="Store">
-  <meta name="robots" content="index,follow,noodp">
-  <meta http-equiv="x-dns-prefetch-control" content="on">
-  <link rel="dns-prefetch" href="//www.google-analytics.com/">
-  <link rel="dns-prefetch" href="//www.googletagmanager.com/">
-  <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap&subset=vietnamese"
-    rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
-  <link rel="stylesheet" type="text/css" href="./assets/css/style-new.css">
-  <script src='./assets/js/jquery.min.1.11.0.js' type='text/javascript'></script>
-
-  <script>
-    var formatMoney = '{{amount}}₫';
-    var template = "index";
-  </script>
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Store" />
-  <meta property="og:image" content="{{settings.banner1}}" />
-  <meta property="og:image:secure_url" content="{{settings.banner1}}" />
-  <meta property="og:description" content="Sách trẻ dành cho người trẻ" />
-  <meta property="og:url" content="https://quochuydev.com/" />
-  <meta property="og:site_name" content="Store" />
-  <meta name="description" content="Sách trẻ dành cho người trẻ" />
-
-  <style>
-    .wrapper-home-newsletter.lazyloaded {
-      background-image: url({{settings.banner1}});
-    }
-
-    @media (max-width: 480px) {
-      .wrapper-home-newsletter.lazyloaded {
-        background-image: url({{settings.banner1}});
-      }
-    }
-  </style>
-</head>
-
-<!-- {{products}} -->
+{% include '{{code}}/templates/head' %}
+<script>
+  var formatMoney = '{{amount}}₫';
+  var template = "index";
+</script>
 
 <body class="index">
   <div class="main-body  layoutProduct_scroll ">
@@ -70,111 +25,7 @@
             </div>
           </div>
         </div>
-        <header class="main-header">
-          <div class="wrapper-header  header-transparent " id='themes-header'>
-            <div class="container">
-              <div class="header-middle row-flex flex-flow-header">
-                <div class="col-md-4 wrap-header-1 hidden-sm hidden-xs"></div>
-                <div class="col-md-4 wrap-header-2 col-sm-6 col-xs-7">
-                  <div class="main-header--logo fade-box" itemscope="" itemtype="http://schema.org/Organization">
-                    <a href="#" itemprop="url">
-                      <h1 class="logo">
-                        <img itemprop="logo" src="{{settings.logo}}" class="img-responsive logoimg lazyload"
-                          style="width: 64px; height: 64px;" />
-                      </h1>
-                    </a>
-                  </div>
-                </div>
-                <div class="col-md-4 wrap-header-3 col-sm-6 col-xs-5">
-                  <div class="main-header--action row-flex">
-                    <div class="action-acc"> </div>
-                    <div class="action--search" id="site-search-handle">
-                      <a href="/search">
-                        <svg class="svg-search" xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
-                          viewBox="0 0 451 451" style="enable-background:new 0 0 451 451;" xml:space="preserve">
-                          <g>
-                            <path
-                              d="M447.05,428l-109.6-109.6c29.4-33.8,47.2-77.9,47.2-126.1C384.65,86.2,298.35,0,192.35,0C86.25,0,0.05,86.3,0.05,192.3   s86.3,192.3,192.3,192.3c48.2,0,92.3-17.8,126.1-47.2L428.05,447c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4   C452.25,441.8,452.25,433.2,447.05,428z M26.95,192.3c0-91.2,74.2-165.3,165.3-165.3c91.2,0,165.3,74.2,165.3,165.3   s-74.1,165.4-165.3,165.4C101.15,357.7,26.95,283.5,26.95,192.3z">
-                            </path>
-                          </g>
-                        </svg>
-                      </a>
-                    </div>
-                    <div class="action-cart" id="site-cart-handle">
-                      <a href="/cart">
-                        <span class="cart-menu" aria-hidden="true">
-                          <svg class="svg-cart" xmlns="http://www.w3.org/2000/svg" height="456pt"
-                            viewBox="0 -13 456.75885 456" width="456pt">
-                            <path
-                              d="m150.355469 322.332031c-30.046875 0-54.402344 24.355469-54.402344 54.402344 0 30.042969 24.355469 54.398437 54.402344 54.398437 30.042969 0 54.398437-24.355468 54.398437-54.398437-.03125-30.03125-24.367187-54.371094-54.398437-54.402344zm0 88.800781c-19 0-34.402344-15.402343-34.402344-34.398437 0-19 15.402344-34.402344 34.402344-34.402344 18.996093 0 34.398437 15.402344 34.398437 34.402344 0 18.996094-15.402344 34.398437-34.398437 34.398437zm0 0">
-                            </path>
-                            <path
-                              d="m446.855469 94.035156h-353.101563l-7.199218-40.300781c-4.4375-24.808594-23.882813-44.214844-48.699219-48.601563l-26.101563-4.597656c-5.441406-.96875-10.632812 2.660156-11.601562 8.097656-.964844 5.441407 2.660156 10.632813 8.101562 11.601563l26.199219 4.597656c16.53125 2.929688 29.472656 15.871094 32.402344 32.402344l35.398437 199.699219c4.179688 23.894531 24.941406 41.324218 49.199219 41.300781h210c22.0625.066406 41.546875-14.375 47.902344-35.5l47-155.800781c.871093-3.039063.320312-6.3125-1.5-8.898438-1.902344-2.503906-4.859375-3.980468-8-4zm-56.601563 162.796875c-3.773437 12.6875-15.464844 21.367188-28.699218 21.300781h-210c-14.566407.039063-27.035157-10.441406-29.5-24.800781l-24.699219-139.398437h336.097656zm0 0">
-                            </path>
-                            <path
-                              d="m360.355469 322.332031c-30.046875 0-54.402344 24.355469-54.402344 54.402344 0 30.042969 24.355469 54.398437 54.402344 54.398437 30.042969 0 54.398437-24.355468 54.398437-54.398437-.03125-30.03125-24.367187-54.371094-54.398437-54.402344zm0 88.800781c-19 0-34.402344-15.402343-34.402344-34.398437 0-19 15.402344-34.402344 34.402344-34.402344 18.996093 0 34.398437 15.402344 34.398437 34.402344 0 18.996094-15.402344 34.398437-34.398437 34.398437zm0 0">
-                            </path>
-                          </svg>
-                          <span class="count-holder"><span class="count">(3)</span></span>
-                        </span>
-                      </a>
-                    </div>
-                    <div class="action--bar hamburger-menu hidden-lg hidden-md" id="site-menu-handle">
-                      <span class="bar"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-12 wrap-header-4 hidden-sm hidden-xs">
-                  <div class="main-header--menu">
-                    <nav class="navbar-mainmenu">
-                      <ul class="list-mainmenu">
-                        <li class="active">
-                          <a href="/" title="Trang chủ">
-                            Trang chủ
-                          </a>
-                        </li>
-                        <li class="has-submenu ">
-                          <a href="/collections/all" title="Tủ sách nhện">
-                            Sản phẩm
-                            <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                          </a>
-                          <ul class="list-submenu">
-                            <li class="">
-                              <a href="#" title="Isuzu">
-                                Isuzu
-                              </a>
-                            </li>
-                            <li class="">
-                              <a href="#" title="Hino">
-                                Hino
-                              </a>
-                            </li>
-                          </ul>
-                        </li>
-                        <li class="">
-                          <a href="/blogs/test" title="Xưởng thùng">
-                            Xưởng thùng
-                          </a>
-                        </li>
-                        <li class="">
-                          <a href="#" title="Dự án mới">
-                            Dự án mới
-                          </a>
-                        </li>
-                        <li class="">
-                          <a href="/pages/lien-he" title="Liên hệ">
-                            Liên hệ
-                          </a>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+        {% include '{{code}}/templates/header' %}
         <main class="mainContent-theme  mainContent-index	">
           <!-- 1. Slide -->
           <section class="section-slider">
@@ -235,7 +86,6 @@
               </div>
             </div>
           </section>
-          <!-- 2. Nhom tabs collection -->
           <section class="section wrapper-hometabs-collection">
             <div class="container">
               <div class="wrapper-heading-home">
@@ -251,32 +101,28 @@
                 <div class="tab-item active" id="tab1" data-get="true">
                   <div class="listProduct-carousel--overflow">
                     <div class="product-carousel carousel-index-owlnav carousel-tabs product-lists noCarousel-overflow">
+                      {% for product in products %}
                       <div class="pro-loop animated fadeIn">
                         <div class="product-block" data-anmation="1">
                           <div class="product-img fade-box">
                             <div class="product-sale"><span>-10%</span></div>
-                            <a href="/products/xe-tai-hino-nganh-it-co-gi" title="Xe tải Hino: Ngành IT có gì?"
+                            <a href="products/{{product.handle}}" title="Xe tải Hino: Ngành IT có gì?"
                               class="image-resize">
                               <picture>
-                                <source data-srcset="{{settings.product1}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product1}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product1}}" />
-                                <img data-src="{{settings.product1}}" class="lazyload"
-                                  alt=" Xe tải Hino: Ngành IT có gì? " />
+                                <source data-srcset="{{product.images[0].src}}" />
+                                <img data-src="{{product.images[0].src}}" class="lazyload" alt="{{product.title}}" />
                               </picture>
                               <picture>
-                                <source data-srcset="{{settings.product2}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product2}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product2}}" />
-                                <img data-src="{{settings.product2}}" class="lazyload"
-                                  alt=" Xe tải Hino: Ngành IT có gì? " />
+                                <source data-srcset="{{product.images[1].src}}" />
+                                <img data-src="{{product.images[1].src}}" class="lazyload" alt="{{product.title}}" />
                               </picture>
                             </a>
                             <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1058030689')">Mua
+                              <button type="submit" title="Mua ngay" class="action"
+                                onclick="buy_now('{{product.variants[0].id}}')">Mua
                                 ngay</button>
                               <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1058030689">Thêm vào giỏ</button>
+                                data-variantid="{{product.variants[0].id}}">Thêm vào giỏ</button>
                             </div>
                           </div>
                           <div class="product-detail clearfix">
@@ -295,147 +141,17 @@
                           </div>
                         </div>
                       </div>
-                      <div class="pro-loop animated fadeIn">
-                        <div class="product-block" data-anmation="2">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-10%</span></div>
-                            <a href="/products/xe-tai-hino" title="Xe tải Hino" class="image-resize">
-                              <picture>
-                                <source data-srcset="{{settings.product3}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product3}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product3}}" />
-                                <img data-src="{{settings.product3}}" class="lazyload" alt=" Xe tải Hino " />
-                              </picture>
-                              <picture>
-                                <source data-srcset="{{settings.product4}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product4}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product4}}" />
-                                <img data-src="{{settings.product4}}" class="lazyload" alt=" Xe tải Hino " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1056608910')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1056608910">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/xe-tai-hino" title="Xe tải Hino">Người trong muôn
-                                  nghề</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">152,000₫
-                                  <span class="pro-price-del"><del class="compare-price">169,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="pro-loop animated fadeIn">
-                        <div class="product-block" data-anmation="3">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-12%</span></div>
-                            <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-xe-tai-hino-nganh-it-co-gi"
-                              title="Combo sách Dăm ba cái tuổi trẻ và Xe tải Hino: Ngành IT có gì?"
-                              class="image-resize">
-                              <picture>
-                                <source data-srcset="{{settings.product2}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product2}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product2}}" />
-                                <img data-src="{{settings.product2}}" class="lazyload"
-                                  alt=" Combo sách Dăm ba cái tuổi trẻ và Xe tải Hino: Ngành IT có gì? " />
-                              </picture>
-                              <picture>
-                                <source data-srcset="{{settings.product1}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product1}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product1}}" />
-                                <img data-src="{{settings.product1}}" class="lazyload"
-                                  alt=" Combo sách Dăm ba cái tuổi trẻ và Xe tải Hino: Ngành IT có gì? " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1060964574')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1060964574">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-va-xe-tai-hino-nganh-it-co-gi"
-                                  title="Combo sách Dăm ba cái tuổi trẻ và Xe tải Hino: Ngành IT có gì?">Combo
-                                  sách Dăm ba cái tuổi trẻ và Xe tải Hino: Ngành IT có gì?</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">299,000₫
-                                  <span class="pro-price-del"><del class="compare-price">338,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="pro-loop animated fadeIn">
-                        <div class="product-block" data-anmation="4">
-                          <div class="product-img fade-box">
-                            <div class="product-sale"><span>-12%</span></div>
-                            <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-xe-tai-hino"
-                              title="Combo sách Dăm ba cái tuổi trẻ + Xe tải Hino" class="image-resize">
-                              <picture>
-                                <source data-srcset="{{settings.product4}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product4}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product4}}" />
-                                <img data-src="{{settings.product4}}" class="lazyload"
-                                  alt=" Combo sách Dăm ba cái tuổi trẻ + Xe tải Hino " />
-                              </picture>
-                              <picture>
-                                <source data-srcset="{{settings.product3}}" media="(max-width: 500px)" />
-                                <source data-srcset="{{settings.product3}}" media="(max-width: 1024px)" />
-                                <source data-srcset="{{settings.product3}}" />
-                                <img data-src="{{settings.product3}}" class="lazyload"
-                                  alt=" Combo sách Dăm ba cái tuổi trẻ + Xe tải Hino " />
-                              </picture>
-                            </a>
-                            <div class="button-add">
-                              <button type="submit" title="Mua ngay" class="action" onclick="buy_now('1060963709')">Mua
-                                ngay</button>
-                              <button type="submit" title="Thêm vào giỏ" class="action add-to-cart"
-                                data-variantid="1060963709">Thêm vào giỏ</button>
-                            </div>
-                          </div>
-                          <div class="product-detail clearfix">
-                            <div class="box-pro-detail">
-                              <h3 class="pro-name">
-                                <a href="/products/combo-sach-dam-ba-cai-tuoi-tre-xe-tai-hino"
-                                  title="Combo sách Dăm ba cái tuổi trẻ + Xe tải Hino">Combo sách Dăm ba cái
-                                  tuổi trẻ + Xe tải Hino</a>
-                              </h3>
-                              <div class="box-pro-prices">
-                                <p class="pro-price highlight">299,000₫
-                                  <span class="pro-price-del"><del class="compare-price">338,000₫</del></span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
+                      {% endfor %}
                     </div>
                   </div>
                   <div class="collection-viewall text-center">
                     <a class="button link-collection" href="/collections/hot-products">Xem thêm sản phẩm</a>
                   </div>
                 </div>
-                <!-- tabs ajax -->
               </div>
             </div>
-          </section><!-- 3. Nhóm san phẩm 1 -->
-          <!-- 4. Nhóm banner -->
+          </section>
+          <!-- {% include '{{code}}/templates/demo/loop-product' %} -->
           <section class="section no-border wrapper-home-banner">
             <div class="container-fluid">
               <div class="row">

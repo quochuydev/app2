@@ -1,15 +1,13 @@
 <header class="main-header">
-  <div class="wrapper-header  header-transparent " id='themes-header'>
+  <div class="wrapper-header " id='themes-header'>
     <div class="container">
       <div class="header-middle row-flex flex-flow-header">
         <div class="col-md-4 wrap-header-1 hidden-sm hidden-xs"></div>
         <div class="col-md-4 wrap-header-2 col-sm-6 col-xs-7">
           <div class="main-header--logo fade-box" itemscope="" itemtype="http://schema.org/Organization">
-            <a href="#" itemprop="url">
-              <h1 class="logo">
-                <img itemprop="logo" src="{{settings.logo}}" class="img-responsive logoimg lazyload"
-                  style="width: 64px; height: 64px;" />
-              </h1>
+            <a href="https://shop.quochuydev.com" itemprop="url">
+              <img itemprop="logo" src="{{settings.logo}}" style="width: 64px; height: 64px;" alt="quochuydev Store"
+                class="img-responsive logoimg lazyload" />
             </a>
           </div>
         </div>
@@ -44,7 +42,7 @@
                       d="m360.355469 322.332031c-30.046875 0-54.402344 24.355469-54.402344 54.402344 0 30.042969 24.355469 54.398437 54.402344 54.398437 30.042969 0 54.398437-24.355468 54.398437-54.398437-.03125-30.03125-24.367187-54.371094-54.398437-54.402344zm0 88.800781c-19 0-34.402344-15.402343-34.402344-34.398437 0-19 15.402344-34.402344 34.402344-34.402344 18.996093 0 34.398437 15.402344 34.398437 34.402344 0 18.996094-15.402344 34.398437-34.398437 34.398437zm0 0">
                     </path>
                   </svg>
-                  <span class="count-holder"><span class="count">(3)</span></span>
+                  <span class="count-holder"><span class="count">(4)</span></span>
                 </span>
               </a>
             </div>
@@ -57,37 +55,32 @@
           <div class="main-header--menu">
             <nav class="navbar-mainmenu">
               <ul class="list-mainmenu">
-                <li class="active">
-                  <a href="/" title="Trang chủ">
+                <li class="">
+                  <a href="{{base_url}}" title="Trang chủ">
                     Trang chủ
                   </a>
                 </li>
-                <li class="has-submenu ">
-                  <a href="collections/all" title="Tủ sách nhện">
+                <li class="has-submenu active">
+                  <a href="{{base_url}}collections/all" title="Tủ sách nhện">
                     Sản phẩm
                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
                   </a>
                   <ul class="list-submenu">
                     <li class="">
-                      <a href="#" title="Isuzu">
-                        Isuzu
+                      <a href="{{base_url}}collections/all" title="Người trong muôn nghề: Ngành IT có gì?">
+                        Hino
                       </a>
                     </li>
                     <li class="">
-                      <a href="#" title="Hino">
-                        Hino
+                      <a href="{{base_url}}collections/all" title="Người trong muôn nghề">
+                        Isuzu
                       </a>
                     </li>
                   </ul>
                 </li>
                 <li class="">
-                  <a href="/blogs/test" title="Xưởng thùng">
-                    Xưởng thùng
-                  </a>
-                </li>
-                <li class="">
-                  <a href="#" title="Dự án mới">
-                    Dự án mới
+                  <a href="/blogs" title="Tin tức">
+                    Tin tức
                   </a>
                 </li>
                 <li class="">

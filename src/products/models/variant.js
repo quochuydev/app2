@@ -12,6 +12,7 @@ const VariantSchema = new Schema({
   id: { type: Number, default: null },
   product_id: { type: Number, default: null },
   price: { type: Number, default: 0 },
+  price_original: { type: Number, default: 0 },
   compare_at_price: { type: Number, default: 0 },
   sku: { type: String, default: null },
   barcode: { type: String, default: null },
