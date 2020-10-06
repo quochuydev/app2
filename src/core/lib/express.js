@@ -47,19 +47,16 @@ module.exports = (app, db) => {
       let shop_found = await ShopModel.findOne({ domain }).lean(true);
       if (shop_found && shop_found.code && shop_found.id) {
         code = shop_found.code;
-        cache.put(shop_found.code, shop_found.id);
+        console.log('shop_found 1', shop_found);
       } else {
         code = 'base';
       }
-      console.log('shop_found 1', shop_found);
     }
 
     if (!cache.get(code)) {
       let shop_found = await ShopModel.findOne({ code }).lean(true);
       if (shop_found && shop_found.code && shop_found.id) {
         cache.put(code, shop_found.id);
-      } else {
-        throw { message: 'error' }
       }
       console.log('shop_found 2', shop_found);
     }
