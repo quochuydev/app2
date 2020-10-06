@@ -40,6 +40,12 @@ module.exports = (app, db) => {
     if (req.url.includes('/admin')) {
       return next();
     }
+    if (req.url.includes('/images')) {
+      return next();
+    }
+    if (req.url.includes('/assets')) {
+      return next();
+    }
     let domain = req.host;
     let code = domain == 'localhost' ? 'base' : null;
 

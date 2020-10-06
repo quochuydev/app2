@@ -12,7 +12,8 @@ let settings = require('./settings').current;
 
 const routes = (app) => {
   app.use('/*', async function (req, res, next) {
-    await SiteMiddleware(req, res, next)
+    // await SiteMiddleware(req, res, next)
+    next()
   });
 
   async function SiteMiddleware(req, res, next) {
@@ -37,8 +38,8 @@ const routes = (app) => {
       res.render('404');
     }
   }
-
-  app.get('/', SiteMiddleware, async function (req, res) {
+  // SiteMiddleware
+  app.get('/', async function (req, res) {
     console.log(req.host);
 
     let code = 'base';
