@@ -27,7 +27,9 @@ const App = {
         console.log('connect mongo success');
         Express(app, db);
         Cron();
-        Analyze();
+        if (process.env.NODE_ENV == 'production') {
+          Analyze();
+        }
       })
       .catch(err => {
         console.log(err)

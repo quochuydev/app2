@@ -13,7 +13,8 @@ const routes = (app) => {
 
   async function SiteMiddleware(req, res, next) {
     try {
-      let code = req.params.code;
+      let code = req.params.code = 'base';
+
       if (!code) {
         throw { message: 'error' }
       }
@@ -31,18 +32,20 @@ const routes = (app) => {
       res.render('404');
     }
   }
-  
-  app.get('/', async function (req, res) {
+
+  app.get('/', SiteMiddleware, async function (req, res) {
     // req.host == 'localhost'
+    // let code = req.host == 'localhost' ? 'base' : req.host;
+    console.log(req.host);
+
     let code = 'base';
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }).lean(true);
-    console.log({ shop_id, products })
 
     let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
       code,
-      base_url: `${config.frontend_site}/${code}/`,
+      base_url: `${config.frontend_site}/`,
       settings,
       products,
       collections: {

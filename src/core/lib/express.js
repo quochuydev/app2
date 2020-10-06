@@ -22,12 +22,6 @@ module.exports = (app, db) => {
   app.use(cors());
   // app.use(logger('tiny'));
 
-  if (process.env.NODE_ENV == 'production') {
-    console.log(path.resolve('client/build', 'index.html'))
-    // app.use('/', express.static(path.resolve('client', 'build')));
-
-  }
-
   app.engine('liquid', new Liquid({
     extname: ".liquid",
     root: ["views/site"]
@@ -38,15 +32,19 @@ module.exports = (app, db) => {
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
-  // app.use('/site', express.static(path.resolve('./views/site')));
-  // app.use('/', [express.static(path.resolve('client', 'build')), express.static(path.resolve('./views/site'))]);
 
-  app.use('/', express.static(path.resolve('./views/site')));
+  app.use('/', (req, res, next) => {
+    // req.host == 'localhost'
+    let code = 'base';
+    app.use('/', express.static(path.resolve(`./views/site/${code}`)));
+    next()
+  });
+
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes(app);
 
-  console.log(path.resolve('client', 'build'))
-  app.use('/', express.static(path.resolve('client', 'build')));
+  console.log(path.resolve('client', 'build'));
+  app.use('/', express.static(path.resolve('client', 'build')))
   app.get('/admin/*', (req, res) => {
     res.sendFile(path.resolve('client/build', 'index.html'));
   });

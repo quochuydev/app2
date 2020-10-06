@@ -15,7 +15,7 @@ module.exports = {
 
   app_host: process.env.APP_HOST,
   // webhook_haravan_url: `${process.env.APP_HOST}/webhook/haravan`,
-  frontend_site: `${process.env.APP_HOST}/site`,
+  frontend_site: `${process.env.APP_HOST}`,
   frontend_admin: `${process.env.APP_HOST}/admin`,
   backend_admin: `${process.env.APP_HOST}/admin`,
 
