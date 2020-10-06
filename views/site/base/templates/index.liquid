@@ -106,8 +106,7 @@
                         <div class="product-block" data-anmation="1">
                           <div class="product-img fade-box">
                             <div class="product-sale"><span>-10%</span></div>
-                            <a href="products/{{product.handle}}" title="Xe tải Hino: Ngành IT có gì?"
-                              class="image-resize">
+                            <a href="products/{{product.handle}}" title="{{product.title}}" class="image-resize">
                               <picture>
                                 <source data-srcset="{{product.images[0].src}}" />
                                 <img data-src="{{product.images[0].src}}" class="lazyload" alt="{{product.title}}" />
@@ -128,9 +127,7 @@
                           <div class="product-detail clearfix">
                             <div class="box-pro-detail">
                               <h3 class="pro-name">
-                                <a href="/products/xe-tai-hino-nganh-it-co-gi" title="Xe tải Hino: Ngành IT có gì?">Xe
-                                  tải Hino: Ngành IT có
-                                  gì?</a>
+                                <a href="/products/xe-tai-hino-nganh-it-co-gi" title="{{product.title}}">{{product.title}}</a>
                               </h3>
                               <div class="box-pro-prices">
                                 <p class="pro-price highlight">152,000₫
@@ -166,7 +163,7 @@
                       </div>
                       <figcaption class="caption_banner site-animation">
                         <p></p>
-                        <h2>Xe tải Hino: Ngành IT có gì?</h2>
+                        <h2>{{product.title}}</h2>
                         <p><span class="button">Xem ngay</span></p>
                       </figcaption>
                     </a>
@@ -211,12 +208,10 @@
                     <div class="post_item">
                       <div class="post_featured">
                         <div class="post_thumb fade-box">
-                          <a class="hover_icon" href="/blogs/test/nguoitrongmuonnghe" title="" Xe tải Hino" - Cẩm nang
-                            hướng nghiệp gối đầu giường của người trẻ">
+                          <a class="hover_icon" href="/blogs/test/nguoitrongmuonnghe" title="">
                             <picture>
                               <source data-srcset="{{settings.blog1}}" media="(max-width: 500px)" />
-                              <img data-src="{{settings.blog1}}" class="lazyload" alt="" Xe tải Hino" - Cẩm nang hướng
-                                nghiệp gối đầu giường của người trẻ" />
+                              <img data-src="{{settings.blog1}}" class="lazyload" alt="" />
                             </picture>
                           </a>
                         </div>
@@ -561,11 +556,8 @@
                   <a href="/collections/all">Tủ sách nhện</a>
                   <span class="icon-subnav"><i class="fa fa-angle-down"></i></span>
                   <ul class=" submenu subnav-children">
-                    <li class="navi2"><a href="/products/xe-tai-hino-nganh-it-co-gi">Xe tải Hino:
-                        Ngành IT có gì?</a></li>
-                    <li class="navi2"><a href="/products/xe-tai-hino">Xe tải Hino</a></li>
-                    <li class="navi2"><a href="/products/du-hoc-ky-van-dam-co-chi">Du học ký: vạn dặm có chị?</a></li>
-                    <li class="navi2"><a href="/products/dam-ba-cai-tuoi-tre">Dăm ba cái tuổi trẻ</a></li>
+                    <li class="navi2"><a href="/products/xe-tai-hino-nganh-it-co-gi">{{product.title}}</a></li>
+                    <li class="navi2"><a href="/products/xe-tai-hino">{{product.title}}</a></li>
                   </ul>
                 </li>
                 <li class="navi1"><a href="#"><span>Chuyện nhà Nhện</span></a></li>
@@ -599,11 +591,11 @@
               <tr>
                 <td class="img">
                   <a href="/products/xe-tai-hino">
-                    <img src="{{settings.product1}}" alt="Xe tải Hino" />
+                    <img src="{{settings.product1}}" alt="{{product.title}}" />
                   </a>
                 </td>
                 <td>
-                  <a class="pro-title-view" href="/products/xe-tai-hino" title="Xe tải Hino">
+                  <a class="pro-title-view" href="/products/xe-tai-hino" title="{{product.title}}">
                     xe tai Hino</a>
                   <span class="variant"></span>
                   <span class="pro-quantity-view">2</span>
@@ -673,4 +665,5 @@
 </body>
 
 {% include '{{code}}/templates/footer' %}
+
 </html>
