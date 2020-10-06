@@ -7,6 +7,7 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 const { CartModel } = require(path.resolve('./src/cart/model.js'));
 let code = 'base';
 let base_url = `${config.frontend_site}/`;
+let settings = require('./settings').current;
 
 const routes = (app) => {
   app.use('/*', async function (req, res, next) {
@@ -44,7 +45,6 @@ const routes = (app) => {
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }).lean(true);
 
-    let settings = require('./settings').current;
     res.render(`site/${code}/templates/index`, {
       code,
       base_url,
@@ -64,42 +64,15 @@ const routes = (app) => {
     });
   });
 
-  app.get('/site/:code', SiteMiddleware, async function (req, res) {
-    let code = req.params.code;
-    let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }).lean(true);
-    console.log({ shop_id, products })
-
-    let settings = require('./settings').current;
-    res.render(`site/${code}/templates/index`, {
-      code,
-      base_url,
-      settings,
-      products,
-      collections: {
-        all: {
-          products: []
-        },
-        frontpage: {
-          products: []
-        },
-        onsale: {
-          products: []
-        },
-      }
-    });
-  });
-  app.get('/site/:code/pages/:page', function (req, res) {
+  app.get('/pages/:page', function (req, res) {
     let code = req.params.code;
     let page = req.params.page;
-    let settings = require('./settings').current;
     res.render(`shops/${code}/pages`)
   });
   app.get('/products/:handle', async function (req, res) {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
 
-    let settings = require('./settings').current;
     if (!shop_id) {
       throw { message: 'Đã có lỗi xảy ra' }
     }
@@ -119,7 +92,6 @@ const routes = (app) => {
     let type = req.params.type;
     let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }).lean(true);
-    let settings = require('./settings').current;
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,
@@ -128,9 +100,14 @@ const routes = (app) => {
     })
   });
   app.get('/cart', function (req, res) {
-    let code = req.params.code;
-    let settings = require('./settings').current;
     res.render(`site/${code}/templates/cart`, {
+      code,
+      settings,
+      base_url,
+    });
+  });
+  app.get('/checkouts/:checkout_token', function (req, res) {
+    res.render(`site/${code}/templates/checkouts`, {
       code,
       settings,
       base_url,
@@ -175,10 +152,6 @@ const routes = (app) => {
       "product_description": "mota", "variant_title": "v4", "variant_options": ["H\u1ED3ng", "Cotton", "Free size"],
       "promotionref": null, "promotionby": []
     })
-  });
-  app.get('/site/:code/checkouts/:checkout_token', function (req, res) {
-    let code = req.params.code;
-    res.render(`shops/${shop}/checkouts`)
   });
 }
 module.exports = routes;
