@@ -49,6 +49,8 @@ module.exports = (app, db) => {
     if (url.includes('/assets')) {
       return next();
     }
+    console.log(req)
+
     let code = domain == 'localhost' ? 'base' : null;
 
     if (!code) {
