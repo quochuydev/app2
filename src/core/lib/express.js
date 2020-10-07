@@ -50,7 +50,7 @@ module.exports = (app, db) => {
     console.log({ code, domain })
 
     if (!code) {
-      if (!cache.get(domain)) {
+      if (domain && !cache.get(domain)) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
