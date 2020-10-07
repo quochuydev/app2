@@ -41,26 +41,27 @@ module.exports = (app, db) => {
     let domain = req.host;
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
+    let code = domain == 'localhost' ? 'base' : null;
 
     if (url.includes('/admin')) {
       return next();
     }
-
-    let code = domain == 'localhost' ? 'base' : null;
-    console.log({ code, domain })
-
     if (!code) {
-      if (domain && !cache.get(domain)) {
-        let shop_found = await ShopModel.findOne({ domain }).lean(true);
-        if (shop_found && shop_found.code && shop_found.id) {
-          code = shop_found.code;
-          cache.put(domain, shop_found.code);
-          console.log('phải put cach và found shop khi url=', req.url)
+      if (domain) {
+        if (!cache.get(domain)) {
+          let shop_found = await ShopModel.findOne({ domain }).lean(true);
+          if (shop_found && shop_found.code && shop_found.id) {
+            code = shop_found.code;
+            cache.put(domain, shop_found.code);
+            console.log('phải put cach và found shop khi url=', req.url)
+          } else {
+            code = 'base';
+          }
         } else {
-          code = 'base';
+          code = cache.get(domain);
         }
       } else {
-        code = cache.get(domain);
+        code = 'base';
       }
     }
 
