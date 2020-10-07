@@ -21,7 +21,7 @@
         <div class="promo-bar" id="topbar">
           <div class="container">
             <div id="slideText">
-              <p><a href="https://shop.Xetaigianat.com/products/nguoi-trong-muon-nghe-nganh-it-co-gi">
+              <p><a href="products/nguoi-trong-muon-nghe-nganh-it-co-gi">
                   Người Trong</a></p>
             </div>
           </div>
@@ -39,13 +39,13 @@
                         <meta itemprop="position" content="1" />
                       </li>
                       <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                        <a href="https://shop.Xetaigianat.com/collections/tu-sach-nhen" target="_self" itemprop="item">
+                        <a href="collections/tu-sach-nhen" target="_self" itemprop="item">
                           <span itemprop="name">Tủ sách nhện</span>
                         </a>
                         <meta itemprop="position" content="2" />
                       </li>
                       <li class="active" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                        <span itemprop="item" content="https://shop.Xetaigianat.com/products/du-hoc-ky-van-dam-co-chi">
+                        <span itemprop="item" content="products/du-hoc-ky-van-dam-co-chi">
                           <span itemprop="name">{{product.title}}</span>
                         </span>
                         <meta itemprop="position" content="3" />
@@ -185,7 +185,7 @@
                         <div class="product-block" data-anmation="1">
                           <div class="product-img fade-box">
                             <div class="product-sale"><span>-10%</span></div>
-                            <a href="products/{{product.handle}}" title="{{product.title}}" class="image-resize">
+                            <a href="/products/{{product.handle}}" title="{{product.title}}" class="image-resize">
                               {% for image in product.images %}
                               <picture>
                                 <source data-srcset="{{image.src}}" />
@@ -239,7 +239,7 @@
                 var quantity = $('#quantity').val();
                 var params = {
                   type: 'POST',
-                  url: 'cart/add.js',
+                  url: '/cart/add.js',
                   async: false,
                   data: 'quantity=' + quantity + '&id=' + id,
                   dataType: 'json',

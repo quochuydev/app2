@@ -18,7 +18,7 @@ if (window.template.indexOf('product') > -1) {
 			}
 			var params = {
 				type: 'POST',
-				url: 'cart/add.js',
+				url: '/cart/add.js',
 				async: true,
 				data: 'quantity=' + quantity + '&id=' + id,
 				dataType: 'json',
@@ -70,7 +70,7 @@ function getCartModal() {
 	var cart = null;
 	jQuery('#cartform').hide();
 	jQuery('#myCart #exampleModalLabel').text("Giỏ hàng");
-	jQuery.getJSON('cart.js', function (cart, textStatus) {
+	jQuery.getJSON('/cart.js', function (cart, textStatus) {
 		if (cart) {
 			jQuery('#cartform').show();
 			//jQuery('.line-item:not(.original)').remove();
@@ -195,7 +195,7 @@ var buy_now = function (id) {
 	var quantity = 1;
 	var params = {
 		type: 'POST',
-		url: 'cart/add.js',
+		url: '/cart/add.js',
 		data: 'quantity=' + quantity + '&id=' + id,
 		dataType: 'json',
 		success: function (line_item) {
@@ -221,7 +221,7 @@ $(document).on('click', '.add-to-cart', function () {
 	var variant_id = $(this).attr('data-variantid');
 	var params = {
 		type: 'POST',
-		url: 'cart/add.js',
+		url: '/cart/add.js',
 		async: true,
 		data: 'quantity=' + min_qty + '&id=' + variant_id,
 		dataType: 'json',
@@ -270,7 +270,7 @@ function fixHeightProduct(data_parent, data_target, data_image) {
 }
 jQuery(document).ready(function () {
 	// Get number item for cart header
-	$.get('cart.js').done(function (cart) {
+	$.get('/cart.js').done(function (cart) {
 		$('.cart-menu .count').html('(' + cart.item_count + ')');
 	});
 	// Image Product Loaded fix height

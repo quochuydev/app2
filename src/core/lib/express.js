@@ -37,30 +37,31 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
 
   app.use('/', async (req, res, next) => {
-    if (req.url.includes('/admin')) {
-      return next();
-    }
-    if (req.url.includes('/images')) {
-      return next();
-    }
-    if (req.url.includes('/assets')) {
-      return next();
-    }
+    let url = req.url;
     let domain = req.host;
+    domain = domain.replace('https://', '');
+    domain = domain.replace('http://', '');
     let code = domain == 'localhost' ? 'base' : null;
 
+    if (url.includes('/admin')) {
+      return next();
+    }
     if (!code) {
-      if (!cache.get(domain)) {
-        let shop_found = await ShopModel.findOne({ domain }).lean(true);
-        if (shop_found && shop_found.code && shop_found.id) {
-          code = shop_found.code;
-          cache.put(domain, shop_found.code);
-          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), req.url);
+      if (domain) {
+        if (!cache.get(domain)) {
+          let shop_found = await ShopModel.findOne({ domain }).lean(true);
+          if (shop_found && shop_found.code && shop_found.id) {
+            code = shop_found.code;
+            cache.put(domain, shop_found.code);
+            console.log('phải put cach và found shop khi url=', req.url)
+          } else {
+            code = 'base';
+          }
         } else {
-          code = 'base';
+          code = cache.get(domain);
         }
       } else {
-        code = cache.get(domain);
+        code = 'base';
       }
     }
 
@@ -69,7 +70,6 @@ module.exports = (app, db) => {
       if (shop_found && shop_found.code && shop_found.id) {
         cache.put(code, shop_found.id);
       }
-      console.log('shop_found 2', shop_found);
     }
 
     req.shop_id = cache.get(code);

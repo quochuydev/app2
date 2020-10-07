@@ -137,7 +137,7 @@ Haravan.addItem = function (variant_id, quantity, callback) {
   var quantity = quantity || 1;
   var params = {
     type: 'POST',
-    url: 'cart/add.js',
+    url: '/cart/add.js',
     data: 'quantity=' + quantity + '&id=' + variant_id,
     dataType: 'json',
     success: function (line_item) {
@@ -158,7 +158,7 @@ Haravan.addItem = function (variant_id, quantity, callback) {
 Haravan.addItemFromForm = function (form_id, callback) {
   var params = {
     type: 'POST',
-    url: 'cart/add.js',
+    url: '/cart/add.js',
     data: jQuery('#' + form_id).serialize(),
     dataType: 'json',
     success: function (line_item) {
@@ -177,7 +177,7 @@ Haravan.addItemFromForm = function (form_id, callback) {
 };
 
 Haravan.getCart = function (callback) {
-  jQuery.getJSON('cart.js', function (cart, textStatus) {
+  jQuery.getJSON('/cart.js', function (cart, textStatus) {
     if ((typeof callback) === 'function') {
       callback(cart);
     }

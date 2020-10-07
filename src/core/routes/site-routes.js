@@ -1,7 +1,9 @@
-let path = require('path')
+const path = require('path')
+const cache = require('memory-cache');
+const uuid = require('uuid').v4;
+
 const config = require(path.resolve('./src/config/config'));
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
-const cache = require('memory-cache');
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/model.js'));
@@ -11,11 +13,6 @@ let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = (app) => {
-  app.use('/*', async function (req, res, next) {
-    // await SiteMiddleware(req, res, next)
-    next()
-  });
-
   async function SiteMiddleware(req, res, next) {
     try {
       if (!code) {
@@ -37,15 +34,12 @@ const routes = (app) => {
   }
 
   app.get('/', async function (req, res) {
-    console.log(req.host);
+    let shop_id = req.shop_id;
 
     let code = 'base';
-    let shop_id = req.shop_id;
     let products = await ProductModel.find({ shop_id }).lean(true);
-
-    res.render(`site/${code}/templates/index`, {
+    let result = {
       code,
-      base_url,
       settings,
       products,
       collections: {
@@ -59,8 +53,15 @@ const routes = (app) => {
           products: []
         },
       }
-    });
+    }
+    setBaseUrl({ result, domain: req.host });
+    res.render(`site/${code}/templates/index`, result);
   });
+
+  function setBaseUrl({ result, domain }) {
+    result.base_url = !!domain ? domain : config.frontend_site;
+    return result;
+  }
 
   app.get('/pages/:page', function (req, res) {
     let page = req.params.page;
@@ -70,20 +71,15 @@ const routes = (app) => {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
 
-    if (!shop_id) {
-      throw { message: 'Đã có lỗi xảy ra' }
-    }
     let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
     let products = await ProductModel.find({ shop_id }).lean(true);
 
-    res.render(`site/${code}/templates/products`, {
-      code,
-      amount: 0,
-      product,
-      products,
-      settings,
-      base_url,
-    })
+    let result = {
+      code, amount: 0,
+      product, products, settings
+    }
+    setBaseUrl({ result, domain: req.host });
+    res.render(`site/${code}/templates/products`, result)
   });
   app.get('/collections/:type', async function (req, res) {
     let type = req.params.type;
@@ -113,8 +109,6 @@ const routes = (app) => {
   });
 
   app.get('/cart.js', function (req, res) {
-    console.log(req.host);
-
     res.json({
       "attributes": {}, "token": "f1020d8b4d7c4845b7b9fe5318678a15",
       "item_count": 3, "items": [{
