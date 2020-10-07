@@ -37,7 +37,12 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
 
   app.use('/', async (req, res, next) => {
-    let domain = req.host;
+    // let domain = req.host;
+    let domain = req.headers.referer;
+    domain = domain.replace('https://', '');
+    domain = domain.replace('http://', '');
+    domain = domain.replace('/', '');
+
     let url = req.url;
 
     if (url.includes('/admin')) {
@@ -49,9 +54,8 @@ module.exports = (app, db) => {
     if (url.includes('/assets')) {
       return next();
     }
-    console.log(req)
-
     let code = domain == 'localhost' ? 'base' : null;
+    console.log({ code, domain })
 
     if (!code) {
       if (!cache.get(domain)) {
