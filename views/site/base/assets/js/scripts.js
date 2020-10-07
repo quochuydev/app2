@@ -18,7 +18,7 @@ if (window.template.indexOf('product') > -1) {
 			}
 			var params = {
 				type: 'POST',
-				url: 'cart/add.js',
+				url: '/cart/add.js',
 				async: true,
 				data: 'quantity=' + quantity + '&id=' + id,
 				dataType: 'json',
@@ -195,7 +195,7 @@ var buy_now = function (id) {
 	var quantity = 1;
 	var params = {
 		type: 'POST',
-		url: 'cart/add.js',
+		url: '/cart/add.js',
 		data: 'quantity=' + quantity + '&id=' + id,
 		dataType: 'json',
 		success: function (line_item) {
@@ -221,7 +221,7 @@ $(document).on('click', '.add-to-cart', function () {
 	var variant_id = $(this).attr('data-variantid');
 	var params = {
 		type: 'POST',
-		url: 'cart/add.js',
+		url: '/cart/add.js',
 		async: true,
 		data: 'quantity=' + min_qty + '&id=' + variant_id,
 		dataType: 'json',
