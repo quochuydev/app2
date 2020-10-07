@@ -68,7 +68,7 @@ module.exports = (app, db) => {
       } else {
         code = cache.get(domain);
       }
-      console.log('round1: ', code, cache.get(code))
+      console.log('round1:', code, cache.get(code))
     }
 
     if (!cache.get(code)) {
@@ -79,7 +79,7 @@ module.exports = (app, db) => {
       console.log('shop_found 2', shop_found);
     }
 
-    console.log('round2: ', code, cache.get(code))
+    console.log('round2:', code, cache.get(code))
     req.shop_id = cache.get(code);
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));

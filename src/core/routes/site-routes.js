@@ -37,10 +37,9 @@ const routes = (app) => {
   }
 
   app.get('/', async function (req, res) {
-    console.log(req.host);
-
     let code = 'base';
     let shop_id = req.shop_id;
+    console.log('products', shop_id)
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     res.render(`site/${code}/templates/index`, {
@@ -113,8 +112,6 @@ const routes = (app) => {
   });
 
   app.get('/cart.js', function (req, res) {
-    console.log(req.host);
-
     res.json({
       "attributes": {}, "token": "f1020d8b4d7c4845b7b9fe5318678a15",
       "item_count": 3, "items": [{
