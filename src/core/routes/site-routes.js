@@ -39,9 +39,9 @@ const routes = (app) => {
   }
 
   app.get('/', async function (req, res) {
-    let code = 'base';
     let shop_id = req.shop_id;
-    console.log('products', shop_id)
+
+    let code = 'base';
     let products = await ProductModel.find({ shop_id }).lean(true);
     let result = {
       code,
@@ -59,6 +59,7 @@ const routes = (app) => {
         },
       }
     }
+    console.log(req.host, req.host, req.host)
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/index`, result);
   });
