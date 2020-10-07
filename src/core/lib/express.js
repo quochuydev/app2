@@ -37,7 +37,6 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
 
   app.use('/', async (req, res, next) => {
-    // let domain = req.host;
     let domain = req.headers && req.headers.origin ? req.headers.origin : '';
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
@@ -69,6 +68,7 @@ module.exports = (app, db) => {
       } else {
         code = cache.get(domain);
       }
+      console.log('round1: ', code, cache.get(code))
     }
 
     if (!cache.get(code)) {
@@ -79,6 +79,7 @@ module.exports = (app, db) => {
       console.log('shop_found 2', shop_found);
     }
 
+    console.log('round2: ', code, cache.get(code))
     req.shop_id = cache.get(code);
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
