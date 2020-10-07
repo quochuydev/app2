@@ -55,6 +55,7 @@ module.exports = (app, db) => {
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
           cache.put(domain, shop_found.code);
+          console.log('phải put cach và found shop khi url=', req.url)
         } else {
           code = 'base';
         }
