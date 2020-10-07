@@ -13,11 +13,6 @@ let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = (app) => {
-  app.use('/*', async function (req, res, next) {
-    // await SiteMiddleware(req, res, next)
-    next()
-  });
-
   async function SiteMiddleware(req, res, next) {
     try {
       if (!code) {
@@ -59,7 +54,6 @@ const routes = (app) => {
         },
       }
     }
-    console.log(req.host, req.host, req.host)
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/index`, result);
   });

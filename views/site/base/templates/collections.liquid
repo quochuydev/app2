@@ -707,19 +707,5 @@
   </div>
 
 </body>
-<footer>
-  <script src='./assets/js/option_selection.js' type='text/javascript'></script>
-  <script src='./assets/js/api.jquery.js' type='text/javascript'></script>
-  <script src='./assets/js/lazysizes.min.js' type='text/javascript'></script>
-  <script src='./assets/js/scripts.js' type='text/javascript'></script>
-  <script src='./assets/js/plugins.js' type='text/javascript'></script>
-  <script>
-    document.documentElement.style.setProperty('--window-height', window.innerHeight + 'px');
-    if (document.getElementById('topbar') != null) {
-      document.documentElement.style.setProperty('--topbar-height', document.getElementById('topbar').offsetHeight + 'px');
-    }
-    else { document.documentElement.style.setProperty('--topbar-height', 0 + 'px'); }
-  </script>
-</footer>
-
+{% include '{{code}}/templates/footer' %}
 </html>
