@@ -55,14 +55,12 @@ module.exports = (app, db) => {
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
           cache.put(domain, shop_found.code);
-          console.log('shop_found 1', shop_found.code, shop_found.domain, shop_found.id, 'cache domain: ', cache.get(domain), url);
         } else {
           code = 'base';
         }
       } else {
         code = cache.get(domain);
       }
-      console.log('round1:', code, cache.get(code))
     }
 
     if (!cache.get(code)) {
@@ -70,12 +68,9 @@ module.exports = (app, db) => {
       if (shop_found && shop_found.code && shop_found.id) {
         cache.put(code, shop_found.id);
       }
-      console.log('shop_found 2', shop_found);
     }
 
     req.shop_id = cache.get(code);
-    console.log('round2:', code, req.shop_id);
-
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
     next();
