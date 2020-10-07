@@ -70,7 +70,7 @@ function getCartModal() {
 	var cart = null;
 	jQuery('#cartform').hide();
 	jQuery('#myCart #exampleModalLabel').text("Giỏ hàng");
-	jQuery.getJSON('cart.js', function (cart, textStatus) {
+	jQuery.getJSON('/cart.js', function (cart, textStatus) {
 		if (cart) {
 			jQuery('#cartform').show();
 			//jQuery('.line-item:not(.original)').remove();
@@ -270,7 +270,7 @@ function fixHeightProduct(data_parent, data_target, data_image) {
 }
 jQuery(document).ready(function () {
 	// Get number item for cart header
-	$.get('cart.js').done(function (cart) {
+	$.get('/cart.js').done(function (cart) {
 		$('.cart-menu .count').html('(' + cart.item_count + ')');
 	});
 	// Image Product Loaded fix height
