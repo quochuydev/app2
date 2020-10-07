@@ -37,21 +37,15 @@ module.exports = (app, db) => {
   app.set('view engine', 'liquid');
 
   app.use('/', async (req, res, next) => {
+    let url = req.url;
     let domain = req.headers && req.headers.origin ? req.headers.origin : '';
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
 
-    let url = req.url;
-
     if (url.includes('/admin')) {
       return next();
     }
-    if (url.includes('/images')) {
-      return next();
-    }
-    if (url.includes('/assets')) {
-      return next();
-    }
+
     let code = domain == 'localhost' ? 'base' : null;
     console.log({ code, domain })
 
@@ -79,8 +73,9 @@ module.exports = (app, db) => {
       console.log('shop_found 2', shop_found);
     }
 
-    console.log('round2:', code, cache.get(code))
     req.shop_id = cache.get(code);
+    console.log('round2:', code, req.shop_id);
+    
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
     next();
