@@ -38,7 +38,7 @@ module.exports = (app, db) => {
 
   app.use('/', async (req, res, next) => {
     let url = req.url;
-    let domain = req.headers && req.headers.origin ? req.headers.origin : '';
+    let domain = req.host;
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
 
@@ -75,7 +75,7 @@ module.exports = (app, db) => {
 
     req.shop_id = cache.get(code);
     console.log('round2:', code, req.shop_id);
-    
+
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
     next();
