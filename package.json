@@ -56,7 +56,7 @@
     "server": "node server",
     "test": "cd server/src/core/lib && node event",
     "start": "npm run server",
-    "dev": "concurrently \"npm run server\" \"npm run client-test\"",
+    "dev": "concurrently \"npm run server\" \"npm run client-test\""
   },
   "repository": {
     "type": "git",

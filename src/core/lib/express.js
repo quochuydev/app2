@@ -38,10 +38,9 @@ module.exports = (app, db) => {
 
   app.use('/', async (req, res, next) => {
     // let domain = req.host;
-    let domain = req.headers & req.headers.referer ? req.headers.referer : '';
+    let domain = req.headers && req.headers.origin ? req.headers.origin : '';
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
-    domain = domain.replace('/', '');
 
     let url = req.url;
 
