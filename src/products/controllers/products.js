@@ -12,6 +12,7 @@ const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const config = require(path.resolve('./src/config/config'));
 const { ERR } = require(path.resolve('./src/core/lib/error.js'));
+let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 const {
   makeDataProduct, makeDataVariant, makeDataVariants

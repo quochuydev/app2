@@ -20,7 +20,8 @@ function SiteMiddleware({ app }) {
     }
 
     if (!cache.get(domain)) {
-      if (!req.url.includes('/assets') && !req.url.includes('/images')) {
+      // console.log(['/assets', '/images', '/static'].forEach(e => req.url.includes(e)))
+      if (!req.url.includes('/assets') && !req.url.includes('/images') && !req.url.includes('/static')) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
         console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
         if (shop_found && shop_found.code && shop_found.id) {

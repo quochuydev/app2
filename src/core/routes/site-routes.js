@@ -123,6 +123,9 @@ const routes = ({ app }) => {
     } else {
       let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
       let product = await ProductModel.findOne({ id: variant.product_id }).lean(true);
+      if (!product) {
+        return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
+      }
       let item = {
         id: variant.id,
         variant_id: variant.id,

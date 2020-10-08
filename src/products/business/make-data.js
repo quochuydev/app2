@@ -1,8 +1,14 @@
 // const { makeDataProduct, makeDataVariant, makeDataVariants } = require(path.resolve('./src/products/business/make-data.js'));
+let _ = require('lodash');
+let path = require('path');
+let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 function makeDataProduct(item) {
+  let handle = _do.removeAscent(item.title);
+  handle = _.kebabCase(handle, ' ', '-');
   let product = {
     title: item.title,
+    handle: handle,
     body_html: item.body_html,
     tags: item.tags,
     tags_array: item.tags ? item.tags.split(',') : [],
@@ -46,11 +52,12 @@ function makeDataVariants(items) {
 }
 
 function makeDataVariant(item) {
+  let variant_title = _do.joinS([item.option1, item.option2, item.option3], ' / ');
   let variant = {
     sku: item.sku,
     barcode: item.barcode,
     taxable: item.taxable,
-    title: [item.option1, item.option2, item.option3].join(' / '),
+    title: variant_title,
     option1: item.option1,
     option2: item.option2,
     option3: item.option3,

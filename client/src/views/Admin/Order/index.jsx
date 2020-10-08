@@ -39,7 +39,7 @@ function Orders(props) {
         <div>
           <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
           <Tooltip placement="right" title={edit.note}>
-            <Icon className="m-l-10" type="book" />
+            {!!edit.note ? <Icon className="m-l-10" type="book" /> : null}
           </Tooltip>
         </div>
       ),
