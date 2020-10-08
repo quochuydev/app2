@@ -156,7 +156,12 @@ function ProductDetail(props) {
   ];
 
   function onProductChange(e) {
-    setProduct({ [e.target.name]: e.target.value });
+    let data = { [e.target.name]: e.target.value }
+    if (['title', 'handle'].includes(e.target.name)) {
+      let handle = common.removeAscent(e.target.value);
+      data.handle = _.kebabCase(handle, ' ', '-');
+    }
+    setProduct(data);
   }
 
   function onChangeField(name, value) {
@@ -410,7 +415,7 @@ function ProductDetail(props) {
                     {
                       !!(shop && shop.domain) ?
                         <Form.Item label="url" onChange={e => onProductChange(e)}>
-                          <Input addonBefore={`${shop.domain}/products/`} value={productUpdate.handle} />
+                          <Input name="handle" addonBefore={`${shop.domain}/products/`} value={productUpdate.handle} />
                         </Form.Item>
                         : null
                     }
