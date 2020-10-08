@@ -8,7 +8,7 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 
-let code = 'base';
+let code = '1000';
 let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
