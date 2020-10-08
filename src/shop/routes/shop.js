@@ -8,7 +8,7 @@ const router = ({ app }) => {
       .catch(error => next(error))
 
     async function getShop() {
-      let shop = await ShopModel._findOne({}, { id: 1, logo_src: 1, name: 1, code: 1, url: 1 });
+      let shop = await ShopModel._findOne({}, { id: 1, logo_src: 1, name: 1, code: 1, url: 1, domain: 1 });
       return { shop }
     }
   })
