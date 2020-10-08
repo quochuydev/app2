@@ -125,7 +125,9 @@
                       <form id="add-item-form" action="cart/add" method="post" class="variants clearfix">
                         <div class="select clearfix" style="display:none">
                           <select id="product-select" name="id" style="display:none;">
-                            <option value="1056615187">Default Title - 152,000₫</option>
+                            {% for variant in product.variants %}
+                            <option value="{{variant.id}}">{{variant.title}} - {{variant.price}}</option>
+                            {% endfor %}
                           </select>
                         </div>
                         <div class="select-swatch clearfix"> </div>

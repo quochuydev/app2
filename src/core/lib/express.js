@@ -3,7 +3,8 @@ const path = require('path');
 const cors = require('cors');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const session = require('express-session')
+const session = require('express-session');
+const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
 const { Liquid } = require('liquidjs')
@@ -23,6 +24,9 @@ module.exports = (app, db) => {
   //   next();
   // });
   app.use(cors());
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+  app.use(cookieParser())
   // app.use(logger('tiny'));
 
   app.engine('liquid', new Liquid({
@@ -41,6 +45,10 @@ module.exports = (app, db) => {
     let domain = req.host;
     domain = domain.replace('https://', '');
     domain = domain.replace('http://', '');
+    if (req.query.domain) {
+      domain = req.query.domain;
+    }
+
     let code = domain == 'localhost' ? 'base' : null;
 
     if (url.includes('/admin')) {
@@ -86,9 +94,6 @@ module.exports = (app, db) => {
   app.get('/admin/*', (req, res) => {
     res.sendFile(path.resolve('client/build', 'index.html'));
   });
-
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
   app.use(session({
     name: config.appslug,
