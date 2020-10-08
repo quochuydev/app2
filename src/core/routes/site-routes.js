@@ -12,7 +12,7 @@ let code = 'base';
 let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
-const routes = (app) => {
+const routes = ({ app }) => {
 
   app.get('/', async function (req, res) {
     let shop_id = req.shop_id;

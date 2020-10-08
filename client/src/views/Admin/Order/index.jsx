@@ -11,7 +11,7 @@ import NumberFormat from 'react-number-format';
 import {
   Table, Row, Col, Button, Tag, Icon, Input,
   Select, Form, Modal, Radio, Pagination, Tabs,
-  Popover, message, DatePicker
+  Popover, message, DatePicker, Tooltip
 } from 'antd';
 import 'antd/dist/antd.css';
 import LoadingPage from '../../Components/Loading/index';
@@ -36,7 +36,12 @@ function Orders(props) {
     {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
-        <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
+        <div>
+          <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
+          <Tooltip placement="right" title={edit.note}>
+            <Icon className="m-l-10" type="book" />
+          </Tooltip>
+        </div>
       ),
     },
     {

@@ -45,7 +45,7 @@ module.exports = (app, db) => {
   app.use('/', SiteMiddleware);
 
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
-  SiteRoutes(app);
+  SiteRoutes({ app });
 
   console.log(path.resolve('client', 'build'));
   app.use('/', express.static(path.resolve('client', 'build')))
