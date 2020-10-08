@@ -19,17 +19,15 @@ function SiteMiddleware({ app }) {
       return next();
     }
 
-    if (domain != 'localhost') {
-      if (!cache.get(domain)) {
-        let shop_found = await ShopModel.findOne({ domain }).lean(true);
-        if (shop_found && shop_found.code && shop_found.id) {
-          code = shop_found.code;
-          cache.put(domain, shop_found.code);
-          console.log('phải found shop và put cache khi url=', req.url)
-        }
-      } else {
-        code = cache.get(domain);
+    if (!cache.get(domain)) {
+      let shop_found = await ShopModel.findOne({ domain }).lean(true);
+      if (shop_found && shop_found.code && shop_found.id) {
+        code = shop_found.code;
+        cache.put(domain, shop_found.code);
+        console.log('phải found shop và put cache khi url=', req.url, 'req.host=', host)
       }
+    } else {
+      code = cache.get(domain);
     }
 
     if (!cache.get(code)) {
