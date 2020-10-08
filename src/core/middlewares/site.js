@@ -20,12 +20,14 @@ function SiteMiddleware({ app }) {
     }
 
     if (!cache.get(domain)) {
-      let shop_found = await ShopModel.findOne({ domain }).lean(true);
-      if (shop_found && shop_found.code && shop_found.id) {
-        code = shop_found.code;
-        cache.put(domain, shop_found.code);
-        console.log('phải found shop và put cache khi url=', req.url, 'req.host=', host)
+      if (!req.url.includes('/assets') && !req.url.includes('/images')) {
+        let shop_found = await ShopModel.findOne({ domain }).lean(true);
+        console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
+        if (shop_found && shop_found.code && shop_found.id) {
+          code = shop_found.code;
+        }
       }
+      cache.put(domain, code);
     } else {
       code = cache.get(domain);
     }
