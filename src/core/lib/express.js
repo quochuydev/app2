@@ -49,28 +49,22 @@ module.exports = (app, db) => {
     if (req.query.domain) {
       domain = req.query.domain;
     }
-
-    let code = domain == 'localhost' ? 'base' : null;
+    let code = 'base';
 
     if (url.includes('/admin')) {
       return next();
     }
-    if (!code) {
-      if (domain) {
-        if (!cache.get(domain)) {
-          let shop_found = await ShopModel.findOne({ domain }).lean(true);
-          if (shop_found && shop_found.code && shop_found.id) {
-            code = shop_found.code;
-            cache.put(domain, shop_found.code);
-            console.log('phải found shop và put cache khi url=', req.url)
-          } else {
-            code = 'base';
-          }
-        } else {
-          code = cache.get(domain);
+
+    if (domain != 'localhost') {
+      if (!cache.get(domain)) {
+        let shop_found = await ShopModel.findOne({ domain }).lean(true);
+        if (shop_found && shop_found.code && shop_found.id) {
+          code = shop_found.code;
+          cache.put(domain, shop_found.code);
+          console.log('phải found shop và put cache khi url=', req.url)
         }
       } else {
-        code = 'base';
+        code = cache.get(domain);
       }
     }
 
