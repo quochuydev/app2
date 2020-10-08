@@ -89,17 +89,29 @@ const routes = ({ app }) => {
     });
   });
 
+  app.get('/set-domain', function (req, res) {
+    if (!req.query.domain) {
+      return res.json({ error: true })
+    }
+    res.cookie('domain', req.query.domain, { maxAge: 1000 * 60 * 60 * 8, httpOnly: true });
+    res.json({ error: false })
+  })
+
   app.get('/cart.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
-    console.log(req.shop_id, req.host, cart_token)
+    let shop_id = req.shop_id;
+
+    console.log(req.shop_id, req.host, cart_token);
+
 
     if (!cart_token) {
       cart_token = uuid();
     }
-    let cart = await CartModel.findOne({ token: cart_token }).lean(true);
+    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
     if (!cart) {
       cart = await CartModel.create({
         token: cart_token,
+        shop_id
       })
       cart = cart.toJSON();
     }
@@ -111,11 +123,13 @@ const routes = ({ app }) => {
   });
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
+    let shop_id = req.shop_id;
+
     let data = req.body;
     let variant_id = Number(data.id);
     let quantity = Number(data.quantity);
 
-    let cart = await CartModel.findOne({ token: cart_token }).lean(true);
+    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
     let index = cart.items.findIndex(e => e.variant_id == variant_id);
     if (index != -1) {
       cart.items[index].quantity = quantity;
@@ -157,7 +171,8 @@ const routes = ({ app }) => {
       cart.items.push(item);
     }
 
-    let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
+    delete cart._id;
+    let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token, shop_id }, { $set: cart }, { lean: true, new: true });
     let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
     res.cookie('cart_token', cart_token, { maxAge: 900000, httpOnly: true });

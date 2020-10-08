@@ -4,6 +4,16 @@ const path = require('path');
 
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
+function isValidRoute({ url }) {
+  let out_of_scopes = ['/assets', '/images', '/static', '/api']
+  for (const e of out_of_scopes) {
+    if (url.includes(e)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function SiteMiddleware({ app }) {
   return async function (req, res, next) {
     let url = req.url;
@@ -13,23 +23,17 @@ function SiteMiddleware({ app }) {
     if (req.query.domain) {
       domain = req.query.domain;
     }
+    if (req.cookies.domain) {
+      domain = req.cookies.domain;
+    }
     let code = 'base';
 
     if (url.includes('/admin')) {
       return next();
     }
 
-    function isValidRoute({ url }) {
-      let out_of_scopes = ['/assets', '/images', '/static', '/api']
-      for (const e of out_of_scopes) {
-        if (url.includes(e)) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    if (!cache.get(domain)) {
+    let code_by_domain = cache.get(domain)
+    if (!code_by_domain) {
       if (isValidRoute({ url: req.url })) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
         console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
@@ -39,17 +43,18 @@ function SiteMiddleware({ app }) {
       }
       cache.put(domain, code);
     } else {
-      code = cache.get(domain);
-    }
-
-    if (!cache.get(code)) {
-      let shop_found = await ShopModel.findOne({ code }).lean(true);
-      if (shop_found && shop_found.code && shop_found.id) {
-        cache.put(code, shop_found);
-      }
+      code = code_by_domain;
     }
 
     let shop = cache.get(code);
+    if (!shop) {
+      let shop_found = await ShopModel.findOne({ code }).lean(true);
+      if (shop_found && shop_found.code && shop_found.id) {
+        cache.put(code, shop_found);
+        shop = shop_found;
+      }
+    }
+
     req.shop_id = shop.id;
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));

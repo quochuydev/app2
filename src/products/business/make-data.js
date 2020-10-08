@@ -8,7 +8,7 @@ function makeDataProduct(item) {
   handle = _.kebabCase(handle, ' ', '-');
   let product = {
     title: item.title,
-    handle: handle,
+    handle: item.handle ? item.handle : handle,
     body_html: item.body_html,
     tags: item.tags,
     tags_array: item.tags ? item.tags.split(',') : [],
