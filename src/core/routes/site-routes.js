@@ -7,7 +7,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
-const { CartItemModel } = require(path.resolve('./src/products/models/cart-item.js'));
+const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 
 let code = '1000';
 let base_url = `${config.frontend_site}`;
