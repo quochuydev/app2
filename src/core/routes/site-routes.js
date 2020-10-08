@@ -1,4 +1,5 @@
 const path = require('path')
+const _ = require('lodash')
 const cache = require('memory-cache');
 const uuid = require('uuid').v4;
 
@@ -124,7 +125,7 @@ const routes = ({ app }) => {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
     res.cookie('cart_token', cart.token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
-    res.json(cart);
+    res.status(200).json(cart);
   });
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
