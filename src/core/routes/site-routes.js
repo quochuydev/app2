@@ -7,6 +7,7 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
+const { CartItemModel } = require(path.resolve('./src/products/models/cart-item.js'));
 
 let code = '1000';
 let base_url = `${config.frontend_site}`;
@@ -101,81 +102,93 @@ const routes = ({ app }) => {
     let cart_token = req.cookies.cart_token;
     let shop_id = req.shop_id;
 
-    console.log(req.shop_id, req.host, cart_token);
-
-
+    let cart = null;
     if (!cart_token) {
-      cart_token = uuid();
-    }
-    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
-    if (!cart) {
       cart = await CartModel.create({
-        token: cart_token,
+        token: uuid(),
         shop_id
       })
       cart = cart.toJSON();
+    } else {
+      cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      if (!cart) {
+        cart = await CartModel.create({
+          token: uuid(),
+          shop_id
+        })
+        cart = cart.toJSON();
+      }
     }
+
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    res.cookie('cart_token', cart_token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
+    res.cookie('cart_token', cart.token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
     res.json(cart);
   });
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let shop_id = req.shop_id;
 
-    let data = req.body;
-    let variant_id = Number(data.id);
-    let quantity = Number(data.quantity);
+    try {
+      let data = req.body;
 
-    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
-    let index = cart.items.findIndex(e => e.variant_id == variant_id);
-    if (index != -1) {
-      cart.items[index].quantity = quantity;
-    } else {
-      let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
-      if (!variant) {
-        return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_VARIANT' });
+      let variant_id = Number(data.id);
+      let quantity = Number(data.quantity);
+
+      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      let index = cart.items.findIndex(e => e.variant_id == variant_id);
+      if (index != -1) {
+        cart.items[index].quantity = quantity;
+      } else {
+        let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
+        if (!variant) {
+          return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_VARIANT' });
+        }
+        let product = await ProductModel.findOne({ id: variant.product_id }).lean(true);
+        if (!product) {
+          return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
+        }
+        let item = {
+          id: variant.id,
+          variant_id: variant.id,
+          variant_title: variant.title,
+          product_id: variant.product_id,
+          title: product.title,
+          price: variant.price,
+          line_price: variant.line_price,
+          price_original: variant.price_original,
+          line_price_orginal: variant.line_price_orginal,
+          quantity: quantity,
+          sku: variant.sku,
+          grams: variant.grams,
+          properties: variant.properties,
+          gift_card: variant.gift_card,
+          image: variant.image ? variant.image.src : null,
+          requires_shipping: variant.requires_shipping,
+          not_allow_promotion: variant.not_allow_promotion,
+          barcode: variant.barcode,
+          url: `/products/${product.handle}`,
+          handle: product.handle,
+          product_title: product.title,
+          product_description: product.body_html,
+          vendor: product.vendor,
+          variant_options: [variant.option1, variant.option2, variant.option3]
+        }
+        cart.items.push(item);
+        let cart_item = _.cloneDeep(item);
+        cart_item.cart_id = cart.id;
+        let new_cart_item = await CartItemModel.create(cart_item);
       }
-      let product = await ProductModel.findOne({ id: variant.product_id }).lean(true);
-      if (!product) {
-        return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
-      }
-      let item = {
-        id: variant.id,
-        variant_id: variant.id,
-        variant_title: variant.title,
-        product_id: variant.product_id,
-        title: product.title,
-        price: variant.price,
-        line_price: variant.line_price,
-        price_original: variant.price_original,
-        line_price_orginal: variant.line_price_orginal,
-        quantity: quantity,
-        sku: variant.sku,
-        grams: variant.grams,
-        properties: variant.properties,
-        gift_card: variant.gift_card,
-        image: variant.image ? variant.image.src : null,
-        requires_shipping: variant.requires_shipping,
-        not_allow_promotion: variant.not_allow_promotion,
-        barcode: variant.barcode,
-        url: `/products/${product.handle}`,
-        handle: product.handle,
-        product_title: product.title,
-        product_description: product.body_html,
-        vendor: product.vendor,
-        variant_options: [variant.option1, variant.option2, variant.option3]
-      }
-      cart.items.push(item);
+
+      delete cart._id;
+      let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token, shop_id }, { $set: cart }, { lean: true, new: true });
+      let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
+
+      res.json(cart_item);
+    } catch (error) {
+      return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
     }
-
-    delete cart._id;
-    let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token, shop_id }, { $set: cart }, { lean: true, new: true });
-    let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
-
-    res.json(cart_item);
   });
   app.post('/cart/update.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
@@ -198,6 +211,22 @@ const routes = ({ app }) => {
     cart.note = note;
 
     res.json(cart);
+  });
+
+  app.post('/cart/change.js', async function (req, res) {
+    let cart_token = req.cookies.cart_token;
+    let data = req.body;
+
+    let quantity = data.quantity;
+    let line = Number(data.line);
+
+    let cart = await CartModel.findOne({ token: cart_token }).lean(true);
+    if (!cart) {
+      throw { message: 'Đã có lỗi xảy ra!' }
+    }
+    cart.items.filter((e, i) => i != line);
+    let update_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
+    res.json(update_cart);
   });
 }
 
