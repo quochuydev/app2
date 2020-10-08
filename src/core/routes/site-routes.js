@@ -93,7 +93,7 @@ const routes = ({ app }) => {
     if (!req.query.domain) {
       return res.json({ error: true })
     }
-    res.cookie('domain', req.query.domain, { maxAge: 1000 * 60 * 60 * 8, httpOnly: true });
+    res.cookie('domain', req.query.domain, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
     res.json({ error: false })
   })
 
@@ -118,7 +118,7 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    res.cookie('cart_token', cart_token, { maxAge: 1000 * 60 * 60 * 8, httpOnly: true });
+    res.cookie('cart_token', cart_token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
     res.json(cart);
   });
   app.post('/cart/add.js', async function (req, res) {
@@ -175,7 +175,6 @@ const routes = ({ app }) => {
     let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token, shop_id }, { $set: cart }, { lean: true, new: true });
     let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
-    res.cookie('cart_token', cart_token, { maxAge: 900000, httpOnly: true });
     res.json(cart_item);
   });
   app.post('/cart/update.js', async function (req, res) {
@@ -198,7 +197,6 @@ const routes = ({ app }) => {
     cart.item_count = item_count;
     cart.note = note;
 
-    res.cookie('cart_token', cart_token, { maxAge: 900000, httpOnly: true });
     res.json(cart);
   });
 }
