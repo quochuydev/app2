@@ -19,9 +19,18 @@ function SiteMiddleware({ app }) {
       return next();
     }
 
+    function isValidRoute({ url }) {
+      let out_of_scopes = ['/assets', '/images', '/static', '/api']
+      for (const e of out_of_scopes) {
+        if (url.includes(e)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     if (!cache.get(domain)) {
-      // console.log(['/assets', '/images', '/static'].forEach(e => req.url.includes(e)))
-      if (!req.url.includes('/assets') && !req.url.includes('/images') && !req.url.includes('/static')) {
+      if (isValidRoute({ url: req.url })) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
         console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
         if (shop_found && shop_found.code && shop_found.id) {
