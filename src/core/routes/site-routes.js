@@ -91,6 +91,8 @@ const routes = ({ app }) => {
 
   app.get('/cart.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
+    console.log(req.shop_id, req.host, cart_token)
+
     if (!cart_token) {
       cart_token = uuid();
     }

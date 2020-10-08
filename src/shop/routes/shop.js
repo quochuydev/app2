@@ -5,7 +5,7 @@ const router = ({ app }) => {
   app.get('/api/shop', function (req, res, next) {
     getShop()
       .then(result => res.json(result))
-      .catch(error => next(error))
+      .catch(error => next(error));
 
     async function getShop() {
       let shop = await ShopModel._findOne({}, { id: 1, logo_src: 1, name: 1, code: 1, url: 1, domain: 1 });
