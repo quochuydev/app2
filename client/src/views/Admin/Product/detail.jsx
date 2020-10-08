@@ -414,7 +414,7 @@ function ProductDetail(props) {
                     </Form.Item>
                     {
                       !!(shop && shop.domain) ?
-                        <Form.Item label="url" onChange={e => onProductChange(e)}>
+                        <Form.Item label="" onChange={e => onProductChange(e)}>
                           <Input name="handle" addonBefore={`${shop.domain}/products/`} value={productUpdate.handle} />
                         </Form.Item>
                         : null

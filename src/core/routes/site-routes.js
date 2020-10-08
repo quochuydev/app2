@@ -13,11 +13,8 @@ let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = ({ app }) => {
-
   app.get('/', async function (req, res) {
     let shop_id = req.shop_id;
-
-    let code = 'base';
     let products = await ProductModel.find({ shop_id }).lean(true);
     let result = {
       code,
@@ -122,6 +119,9 @@ const routes = ({ app }) => {
       cart.items[index].quantity = quantity;
     } else {
       let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
+      if (!variant) {
+        return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_VARIANT' });
+      }
       let product = await ProductModel.findOne({ id: variant.product_id }).lean(true);
       if (!product) {
         return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
