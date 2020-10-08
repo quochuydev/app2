@@ -13,25 +13,6 @@ let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = (app) => {
-  async function SiteMiddleware(req, res, next) {
-    try {
-      if (!code) {
-        throw { message: 'error' }
-      }
-      if (!cache.get(code)) {
-        let shop_found = await ShopModel.findOne({ code }).lean(true);
-        if (shop_found && shop_found.code && shop_found.id) {
-          cache.put(code, shop_found.id);
-        } else {
-          throw { message: 'error' }
-        }
-      }
-      req.shop_id = cache.get(code);
-      next();
-    } catch (error) {
-      res.render('404');
-    }
-  }
 
   app.get('/', async function (req, res) {
     let shop_id = req.shop_id;

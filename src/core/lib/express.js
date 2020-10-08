@@ -23,6 +23,7 @@ module.exports = (app, db) => {
   //   res.header('Access-Control-Allow-Headers', '*');
   //   next();
   // });
+  cache.clear();
   app.use(cors());
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -61,7 +62,7 @@ module.exports = (app, db) => {
           if (shop_found && shop_found.code && shop_found.id) {
             code = shop_found.code;
             cache.put(domain, shop_found.code);
-            console.log('phải put cach và found shop khi url=', req.url)
+            console.log('phải found shop và put cache khi url=', req.url)
           } else {
             code = 'base';
           }
@@ -76,11 +77,12 @@ module.exports = (app, db) => {
     if (!cache.get(code)) {
       let shop_found = await ShopModel.findOne({ code }).lean(true);
       if (shop_found && shop_found.code && shop_found.id) {
-        cache.put(code, shop_found.id);
+        cache.put(code, shop_found);
       }
     }
 
-    req.shop_id = cache.get(code);
+    let shop = cache.get(code)
+    req.shop_id = shop.id;
     app.use('/', express.static(path.resolve(`./views/site/base`)));
     // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
     next();
