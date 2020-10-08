@@ -151,7 +151,6 @@ const routes = ({ app }) => {
           return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
         }
         let item = {
-          id: variant.id,
           variant_id: variant.id,
           variant_title: variant.title,
           product_id: variant.product_id,
@@ -188,6 +187,7 @@ const routes = ({ app }) => {
 
       res.json(cart_item);
     } catch (error) {
+      console.log(error)
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
     }
   });
