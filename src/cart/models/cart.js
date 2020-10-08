@@ -1,5 +1,5 @@
 /*
-const { CartModel } = require(path.resolve('./src/products/models/variant.js'));
+const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 */
 
 const mongoose = require('mongoose');
