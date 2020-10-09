@@ -288,7 +288,7 @@
 				replaceElement.push('.order-summary-sections');
 				replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line-table-footer');
 				replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line.total-line-redeem');
-				replaceElement.push('.order-summary-section.order-summary-section-redeem.redeem-login-section'); 
+				replaceElement.push('.order-summary-section.order-summary-section-redeem.redeem-login-section');
 				replaceElement.push('#section-shipping-rate');
 			} if (!$(formData) || $(formData).length == 0) {
 				window.location.reload();
@@ -374,10 +374,10 @@
 			}); return false;
 		};
 		function funcSetEvent() {
-			var effectControlFieldClass = '.field input, .field select, .field textarea'; 
+			var effectControlFieldClass = '.field input, .field select, .field textarea';
 			$('body').on('focus', effectControlFieldClass, function () {
-					funcFieldFocus($(this), true);
-				})
+				funcFieldFocus($(this), true);
+			})
 				.on('blur', effectControlFieldClass, function () {
 					funcFieldFocus($(this), false);
 					funcFieldHasValue($(this), true);
@@ -721,9 +721,6 @@
 			</div>
 			<div class="main">
 				<div class="main-header">
-					<a href="/" class="logo">
-						<h1 class="logo-text"> Store</h1>
-					</a>
 					<ul class="breadcrumb">
 						<li class="breadcrumb-item">
 							<a href="/cart">Giỏ hàng</a>
@@ -741,13 +738,8 @@
 									<h2 class="section-title">Thông tin giao hàng</h2>
 								</div>
 								<div class="section-content section-customer-information "> <input name="utf8" type="hidden" value="✓">
-									<div class="inventory_location_data"> <input name="inventory_location_id" type="hidden"
-											value="638163" /> </div>
-									<p class="section-content-text">
-										Bạn đã có tài khoản?
-										<a href="/account/login?urlredirect=%2Fcheckouts%2Fbb117345f586486fb8cb3908e20b1ee8%3Fstep%3D1">Đăng
-											nhập</a>
-									</p>
+									<div class="inventory_location_data">
+										<input name="inventory_location_id" type="hidden" value="638163" /> </div>
 									<div class="fieldset">
 										<div class="field   field-show-floating-label">
 											<div class="field-input-wrapper">
@@ -855,21 +847,6 @@
 														<span class="radio-label-primary">Nhận tại cửa hàng</span>
 													</label>
 												</div>
-												<div id="form_update_location_customer_pick_at_location"
-													class="radio-wrapper content-box-row content-box-row-padding content-box-row-secondary "
-													for="customer_pick_at_location_true">
-													<input name="utf8" type="hidden" value="✓">
-													<div class="field field-half ">
-														<div class="field-input-wrapper field-input-wrapper-select">
-															<label class="field-label" for="inventory_location_province">Tỉnh / thành</label>
-															<select class="field-input" id="inventory_location_province"
-																name="inventory_location_province">
-																<option data-code="null" value="null" selected>Lọc tỉnh / thành</option>
-																<option data-code="HC" value="50">Hồ Chí Minh</option>
-															</select>
-														</div>
-													</div>
-												</div>
 											</div>
 										</form>
 									</div>
@@ -890,50 +867,9 @@
 										</div>
 									</div>
 								</div>
-								<div id="change_pick_location_or_shipping">
-									<div class="inventory_location">
-										<div class="section-header">
-											<h2 class="section-title">Chi nhánh còn hàng</h2>
-										</div>
-										<div class="section-content">
-											<div class="content-box ">
-												<div class="content-box-row row_inventory_location row_inventory_location_638163">
-													<div class="radio-wrapper">
-														<label for="inventory_location_id_638163" class="radio-label">
-															<div class="radio-input">
-																<input id="inventory_location_id_638163" class="input-radio" type="radio"
-																	name="inventory_location_id" value="638163" checked />
-															</div>
-															<span class="radio-label-primary">
-																<strong>CH1 - Địa điểm mặc định:</strong> quochuydev1, Quận 1, Hồ Chí Minh </span>
-														</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 							</div>
 						</div>
-						<div class="step-footer">
-							<form id="form_next_step" accept-charset="UTF-8" method="post">
-								<input name="utf8" type="hidden" value="✓">
-								<button type="submit" class="step-footer-continue-btn btn">
-									<span class="btn-content">Tiếp tục đến phương thức thanh toán</span>
-									<i class="btn-spinner icon icon-button-spinner"></i>
-								</button>
-							</form>
-							<a class="step-footer-previous-link" href="/cart">
-								<svg class="previous-link-icon icon-chevron icon" xmlns="http://www.w3.org/2000/svg" width="6.7"
-									height="11.3" viewBox="0 0 6.7 11.3">
-									<path d="M6.7 1.1l-1-1.1-4.6 4.6-1.1 1.1 1.1 1 4.6 4.6 1-1-4.6-4.6z"></path>
-								</svg>
-								Giỏ hàng
-							</a>
-						</div>
 					</div>
-				</div>
-				<div class="step-sections " step="2">
 					<div id="section-payment-method" class="section">
 						<div class="section-header">
 							<h2 class="section-title">Phương thức thanh toán</h2>
@@ -956,15 +892,6 @@
 												value="1001964075" />
 										</div>
 										<span class="radio-label-primary">Chuyển khoản qua ngân hàng</span>
-									</label>
-								</div>
-								<div class="radio-wrapper content-box-row">
-									<label class="radio-label" for="payment_method_id_1002519084">
-										<div class="radio-input">
-											<input id="payment_method_id_1002519084" class="input-radio" name="payment_method_id" type="radio"
-												value="1002519084" />
-										</div>
-										<span class="radio-label-primary">Thanh toán online qua ví MoMo</span>
 									</label>
 								</div>
 							</div>
