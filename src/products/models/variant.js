@@ -11,6 +11,7 @@ const cache = require('memory-cache');
 const VariantSchema = new Schema({
   id: { type: Number, default: null },
   product_id: { type: Number, default: null },
+  product_title: { type: String, default: null },
   price: { type: Number, default: 0 },
   price_original: { type: Number, default: 0 },
   compare_at_price: { type: Number, default: 0 },
@@ -20,6 +21,7 @@ const VariantSchema = new Schema({
   option1: { type: String, default: null },
   option2: { type: String, default: null },
   option3: { type: String, default: null },
+  handle: { type: String, default: null },
   image: {
     id: { type: Number, default: null },
     src: { type: String, default: null },

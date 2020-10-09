@@ -1,5 +1,5 @@
 /*
-const { CartModel } = require(path.resolve('./src/products/models/variant.js'));
+const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 */
 
 const mongoose = require('mongoose');
@@ -15,17 +15,17 @@ const CartSchema = new Schema({
     value: { type: String, default: null },
   },
   token: { type: String, default: null },
-  item_count: { type: Number, default: null },
+  item_count: { type: Number, default: 0 },
   items: [{
     id: { type: Number, default: null },
     title: { type: String, default: null },
-    price: { type: Number, default: null },
-    line_price: { type: Number, default: null },
-    price_original: { type: Number, default: null },
-    line_price_orginal: { type: Number, default: null },
+    price: { type: Number, default: 0 },
+    line_price: { type: Number, default: 0 },
+    price_original: { type: Number, default: 0 },
+    line_price_orginal: { type: Number, default: 0 },
     quantity: { type: Number, default: null },
     sku: { type: String, default: null },
-    grams: { type: Number, default: null },
+    grams: { type: Number, default: 0 },
     vendor: { type: String, default: null },
     properties: {
       name: { type: String, default: null },
@@ -47,12 +47,13 @@ const CartSchema = new Schema({
     promotionref: { type: String, default: null },
     promotionby: [],
   }],
-  total_price: { type: Number, default: null },
-  total_weight: { type: Number, default: null },
+  total_price: { type: Number, default: 0 },
+  total_weight: { type: Number, default: 0 },
   note: { type: String, default: null },
   location_id: { type: Number, default: null },
   customer_id: { type: Number, default: null },
   requires_shipping: { type: Boolean, default: false },
+
   is_deleted: { type: Boolean, default: false },
   shop_id: { type: Number, default: null },
   created_at: { type: Date, default: Date.now },

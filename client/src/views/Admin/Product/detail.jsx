@@ -31,7 +31,7 @@ let { Option } = Select;
 function ProductDetail(props) {
   const {
     product, productUpdate, actions, collections, vendors, tags,
-    collection, vendor, tag
+    collection, vendor, tag, shop,
   } = props;
   const { id } = useParams();
   let setProduct = actions.setProduct;
@@ -156,7 +156,12 @@ function ProductDetail(props) {
   ];
 
   function onProductChange(e) {
-    setProduct({ [e.target.name]: e.target.value });
+    let data = { [e.target.name]: e.target.value }
+    if (['title', 'handle'].includes(e.target.name)) {
+      let handle = common.removeAscent(e.target.value);
+      data.handle = _.kebabCase(handle, ' ', '-');
+    }
+    setProduct(data);
   }
 
   function onChangeField(name, value) {
@@ -407,6 +412,13 @@ function ProductDetail(props) {
                     <Form.Item label="Tên sản phẩm" onChange={e => onProductChange(e)}>
                       <Input name="title" placeholder="input placeholder" value={productUpdate.title} />
                     </Form.Item>
+                    {
+                      !!(shop && shop.domain) ?
+                        <Form.Item label="" onChange={e => onProductChange(e)}>
+                          <Input name="handle" addonBefore={`${shop.domain}/products/`} value={productUpdate.handle} />
+                        </Form.Item>
+                        : null
+                    }
                     <CKEditor activeClass="p10 m-r-10" content={productUpdate.body_html}
                       name="body_html" events={{
                         "change": function (evt) {
@@ -573,6 +585,8 @@ const mapStateToProps = state => ({
   vendor: state.products.get('vendor'),
   collection: state.products.get('collection'),
   tag: state.products.get('tag'),
+
+  shop: state.core.get('shop'),
 });
 
 const mapDispatchToProps = (dispatch) => ({

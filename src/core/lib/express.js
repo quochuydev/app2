@@ -3,7 +3,8 @@ const path = require('path');
 const cors = require('cors');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const session = require('express-session')
+const session = require('express-session');
+const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
 const { Liquid } = require('liquidjs')
@@ -22,7 +23,11 @@ module.exports = (app, db) => {
   //   res.header('Access-Control-Allow-Headers', '*');
   //   next();
   // });
+  cache.clear();
   app.use(cors());
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+  app.use(cookieParser())
   // app.use(logger('tiny'));
 
   app.engine('liquid', new Liquid({
@@ -36,59 +41,17 @@ module.exports = (app, db) => {
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
 
-  app.use('/', async (req, res, next) => {
-    let url = req.url;
-    let domain = req.host;
-    domain = domain.replace('https://', '');
-    domain = domain.replace('http://', '');
-    let code = domain == 'localhost' ? 'base' : null;
-
-    if (url.includes('/admin')) {
-      return next();
-    }
-    if (!code) {
-      if (domain) {
-        if (!cache.get(domain)) {
-          let shop_found = await ShopModel.findOne({ domain }).lean(true);
-          if (shop_found && shop_found.code && shop_found.id) {
-            code = shop_found.code;
-            cache.put(domain, shop_found.code);
-            console.log('phải put cach và found shop khi url=', req.url)
-          } else {
-            code = 'base';
-          }
-        } else {
-          code = cache.get(domain);
-        }
-      } else {
-        code = 'base';
-      }
-    }
-
-    if (!cache.get(code)) {
-      let shop_found = await ShopModel.findOne({ code }).lean(true);
-      if (shop_found && shop_found.code && shop_found.id) {
-        cache.put(code, shop_found.id);
-      }
-    }
-
-    req.shop_id = cache.get(code);
-    app.use('/', express.static(path.resolve(`./views/site/base`)));
-    // app.use('/', express.static(path.resolve(`./views/site/${code}`)));
-    next();
-  })
+  let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app });
+  app.use('/', SiteMiddleware);
 
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
-  SiteRoutes(app);
+  SiteRoutes({ app });
 
   console.log(path.resolve('client', 'build'));
   app.use('/', express.static(path.resolve('client', 'build')))
   app.get('/admin/*', (req, res) => {
     res.sendFile(path.resolve('client/build', 'index.html'));
   });
-
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
   app.use(session({
     name: config.appslug,

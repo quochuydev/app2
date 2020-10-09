@@ -34,6 +34,7 @@ if (window.template.indexOf('product') > -1) {
 					$('.addtocart-modal').removeClass('clicked_buy');
 				},
 				error: function (XMLHttpRequest, textStatus) {
+					console.log(textStatus)
 					alert('Sản phẩm bạn vừa mua đã vượt quá tồn kho');
 				}
 			};
@@ -130,7 +131,8 @@ function clone_item(product, i) {
 	if (product.image == null) {
 		item_product.find('img').attr('src', '//theme.hstatic.net/200000123069/1000584388/14/no_image.jpg?v=212').attr('alt', product.url);
 	} else {
-		item_product.find('img').attr('src', Haravan.resizeImage(product.image, 'small')).attr('alt', product.url);
+		// item_product.find('img').attr('src', Haravan.resizeImage(product.image, 'small')).attr('alt', product.url);
+		item_product.find('img').attr('src', product.image).attr('alt', product.url);
 	}
 	item_product.find('a:not(.remove-cart)').attr('href', product.url).attr('title', product.title);
 	item_product.find('.pro-title-view').html(product.title);
@@ -264,6 +266,7 @@ function fixHeightProduct(data_parent, data_target, data_image) {
 	if (box_height > 0) {
 		jQuery($(boxtarget)).height(box_height);
 	}
+	console.log({ boxtarget, box_image, box_height })
 	try {
 		fixheightcallback();
 	} catch (ex) { }
