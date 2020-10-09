@@ -18,5 +18,8 @@ module.exports = {
     product3: `${config.frontend_site}/assets/img/product3.jpg`,
     product4: `${config.frontend_site}/assets/img/product4.jpg`,
     ic_close: `${config.frontend_site}/assets/img/ic_close.jpg`,
-  }
+  },
+  blogs: [
+    
+  ]
 }

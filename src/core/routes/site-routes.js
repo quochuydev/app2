@@ -2,6 +2,7 @@ const path = require('path')
 const _ = require('lodash')
 const cache = require('memory-cache');
 const uuid = require('uuid').v4;
+const request = require('request');
 
 const config = require(path.resolve('./src/config/config'));
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
@@ -46,6 +47,13 @@ const routes = ({ app }) => {
   app.get('/pages', function (req, res) {
     res.render(`shops/${code}/pages`)
   });
+
+  app.get('/blogs', function (req, res) {
+    res.render(`site/${code}/templates/blogs`, {
+      blogs: []
+    })
+  });
+
   app.get('/pages/:page', function (req, res) {
     let page_handle = req.params.page;
     res.render(`shops/${code}/pages`)
@@ -64,6 +72,7 @@ const routes = ({ app }) => {
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/products`, result)
   });
+
   app.get('/collections/:type', async function (req, res) {
     let type = req.params.type;
     let shop_id = req.shop_id;
@@ -75,6 +84,7 @@ const routes = ({ app }) => {
       base_url,
     })
   });
+  
   app.get('/cart', function (req, res) {
     res.render(`site/${code}/templates/cart`, {
       code,
@@ -109,6 +119,7 @@ const routes = ({ app }) => {
     }
     res.status(200).json(cart);
   });
+
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let shop_id = req.shop_id;
@@ -191,6 +202,7 @@ const routes = ({ app }) => {
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
     }
   });
+  
   app.post('/cart/update.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let data = req.body;
@@ -225,7 +237,9 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    cart.items = cart.items.filter((e, i) => (i + 1) != line);
+    if (quantity == 0) {
+      cart.items = cart.items.filter((e, i) => (i + 1) != line);
+    }
     let update_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
     res.json(update_cart);
   });
