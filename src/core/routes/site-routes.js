@@ -62,6 +62,9 @@ const routes = ({ app }) => {
     let shop_id = req.shop_id;
 
     let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
+    if (!product) {
+      return res.render('404');
+    }
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     let result = {
