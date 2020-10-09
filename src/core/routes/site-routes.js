@@ -199,6 +199,13 @@ const routes = ({ app }) => {
 
       function calculateCart({ cart }) {
         console.log(cart);
+        cart.total_price = 0;
+        cart.item_count = 0;
+        for (let i = 0; i < cart.items.length; i++) {
+          const item = cart.items[i];
+          cart.item_count += item.quantity;
+          cart.total_price += item.line_price;
+        }
         return cart;
       }
 
