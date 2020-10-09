@@ -109,11 +109,8 @@ function App(props) {
               {
                 (setting && setting.haravan && setting.haravan.shop) ?
                   <div>
-                    {
-                      <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
-                        <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
-                      </p>
-                    }
+                    {setting.haravan.shop}
+                    <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
                   </div>
                   : <div>Không có shop haravan</div>
               }
@@ -144,19 +141,17 @@ function App(props) {
               }
             </Item>
             <Item>Reset thời gian sync <Button onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
+          </List>
+          <List header={<div>Adapter</div>} bordered>
+            {/* <Item><Button onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item> */}
             <Table key='_id' dataSource={adapters} columns={[
-              { key: '_id', render: item => { return item._id } }
+              { key: '_id', title: 'ID', render: item => { return item._id } },
+              { key: 'user', title: 'User', render: item => { return _.get(item, 'auth.user', null) } },
+              { key: 'password', title: 'Password', render: item => { return _.get(item, 'auth.password', null) } },
             ]}></Table>
           </List>
-          {/* <List header={<div>Adapter</div>} bordered>
-          <Item><Button onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
-        </List>
-        <List header={<div>Danh sách Webhook</div>} bordered>
-          <Item><Button onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
-        </List> */}
         </Col>
       </Row >
-
       <Modal
         title="Haravan App"
         visible={isShowHaravanAppModal}
