@@ -100,6 +100,15 @@ const routes = ({ app }) => {
     });
   });
 
+  app.get('/checkout', function (req, res) {
+    let cart_token = req.cookies.cart_token;
+    if (cart_token) {
+      res.redirect(`/checkouts/${cart_token}`);
+    } else {
+      res.redirect(`/`);
+    }
+  });
+
   app.get('/set-domain', function (req, res) {
     if (!req.query.domain) {
       return res.json({ error: true })
