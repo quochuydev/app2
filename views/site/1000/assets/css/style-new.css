@@ -6920,7 +6920,7 @@ span.text {
     float: left
   }
   .list-productRelated .pro-loop-title .product-resize, .list-productRelated .pro-loop-title .wrap-collection-title.image-resize {
-    height: initial!important
+    height: initial!important;
   }
   .list-productRelated .wrap-collection-title.image-resize {
     padding-bottom: 45px;

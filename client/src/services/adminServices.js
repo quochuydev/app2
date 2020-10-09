@@ -339,7 +339,11 @@ async function getWard(id) {
   return await ApiClient.getData(url);
 }
 
-let Core = {}
+let Core = {
+  loadAdapters: async function(){
+    return await ApiClient.getData('api/adapters', null, null);
+  }
+}
 
 const Report = {
   search: async function (data) {

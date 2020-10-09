@@ -2,6 +2,7 @@ const path = require('path');
 const { auth, login, loginGoogle, logout, signup, changeShop, checkUser } = require('../controllers/core');
 const { Middleware } = require('../middlewares/core');
 const config = require(path.resolve('./src/config/config'));
+const { AuthenticationAdapterModel } = require(path.resolve('./src/core/models/adapter.js'));
 
 const routes = (app) => {
   app.get('/admin', (req, res, next) => {
@@ -26,6 +27,17 @@ const routes = (app) => {
   });
 
   app.use('/api/*', Middleware);
+
+  app.get('/api/adapters', async function (res, res, next) {
+    loadAdapters({})
+      .then(result => res.json(result))
+      .catch(error => next(error))
+    async function loadAdapters({ }) {
+      let adapters = await AuthenticationAdapterModel._find();
+      return { adapters }
+    }
+  });
+
 
   require(path.resolve('./src/download/routes/download'))({ app });
   require(path.resolve('./src/customers/routes/customers'))({ app });

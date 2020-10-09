@@ -18,7 +18,7 @@ const layout = {
 const basedUrl = config.backend_url;
 
 function Login() {
-  let [account, setAccount] = useState({ user_login: 'quochuydev1@gmail.com', password: 'Quochuydev548!' });
+  let [account, setAccount] = useState({ user_login: 'quochuydev1@gmail.com', password: 'quochuydev1@gmail.com' });
   let [redirect, setRedirect] = useState(false);
 
   const onFinish = (event) => {

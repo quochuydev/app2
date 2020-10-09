@@ -266,7 +266,7 @@ function fixHeightProduct(data_parent, data_target, data_image) {
 	if (box_height > 0) {
 		jQuery($(boxtarget)).height(box_height);
 	}
-	console.log({ boxtarget, box_image, box_height })
+	console.log({ box_image, box_height })
 	try {
 		fixheightcallback();
 	} catch (ex) { }

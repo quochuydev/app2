@@ -9,4 +9,13 @@ class ERR extends Error {
   }
 }
 
-module.exports = { ERR }
+class ERR_SITE extends ERR {
+  constructor(props) {
+    super();
+    if (props) { Object.assign(this, props) }
+
+    this.code = 'SITE';
+  }
+}
+
+module.exports = { ERR, ERR_SITE }

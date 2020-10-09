@@ -119,12 +119,9 @@
                       <div class="product-taggia">
                         <b>Nhóm sản phẩm: </b> {{product.collect}}
                       </div>
-                      <div class="product-desc">
-                        <p>{{product.body_html}}</p>
-                      </div>
                       <form id="add-item-form" action="cart/add" method="post" class="variants clearfix">
-                        <div class="select clearfix" style="display:none">
-                          <select id="product-select" name="id" style="display:none;">
+                        <div class="select clearfix">
+                          <select id="product-select" name="id">
                             {% for variant in product.variants %}
                             <option value="{{variant.id}}">{{variant.title}} - {{variant.price}}</option>
                             {% endfor %}
@@ -141,7 +138,7 @@
                           <div class="wrap-addcart clearfix">
                             <div class="row-flex"> <button type="button" id="add-to-cart"
                                 class=" add-to-cartProduct button btn-addtocart addtocart-modal " name="add">
-                                <span> Thêm vào giỏ </span>
+                                <span>Thêm vào giỏ</span>
                               </button>
                               <button type="button" id="buy-now" class="buy-now button   ">
                                 <span>Mua ngay</span>
@@ -184,7 +181,7 @@
                     <div class="content-product-list row">
                       {% for product in products %}
                       <div class="col-md-3 col-sm-6 col-xs-6 pro-loop">
-                        <div class="product-block" data-anmation="1">
+                        <div class="product-block product-resize" data-anmation="1">
                           <div class="product-img fade-box">
                             <div class="product-sale"><span>-10%</span></div>
                             <a href="/products/{{product.handle}}" title="{{product.title}}" class="image-resize">

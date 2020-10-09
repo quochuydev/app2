@@ -4,19 +4,18 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
-  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox
+  Row, Col, Button, List, Input, Select, Modal, Form, Icon, Checkbox, message, Table
 } from 'antd';
-import { ToastContainer, toast } from 'react-toastify';
 
 import 'antd/dist/antd.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 import LoadingPage from '../../Components/Loading/index';
+import * as CoreActions from '../Core/actions';
 
 const { Item } = List;
 
 function App(props) {
-  const { actions, url, url_haravan, url_shopify, setting } = props;
+  const { actions, url, url_haravan, url_shopify, setting, adapters, coreActions } = props;
 
   let cssStatus = (status) => {
     switch (status) {
@@ -27,22 +26,12 @@ function App(props) {
     }
   }
 
-  const Toast = {
-    success: (message = '', delay = 2500, icon = 'check-circle') => {
-      let Message = () => (
-        <div>
-          <Icon type={icon} theme='filled' /> {message}
-        </div>
-      )
-      toast.success(<Message />, {
-        position: "top-right", autoClose: delay, hideProgressBar: true,
-        closeOnClick: true, pauseOnHover: true, draggable: false, progress: undefined,
-      });
-    }
-  }
-
   useEffect(() => {
     actions.getSetting();
+  }, [])
+
+  useEffect(() => {
+    coreActions.loadAdapters();
   }, [])
 
   useEffect(() => {
@@ -97,7 +86,7 @@ function App(props) {
 
   async function resetTimeSync() {
     await actions.resetTimeSync();
-    Toast.success('Cập nhật thành công!');
+    message.success('Cập nhật thành công!');
     setIsShowResetAppModal(false);
   }
 
@@ -106,7 +95,7 @@ function App(props) {
 
   async function updateStatusApp({ type, _id, status }) {
     await actions.updateStatusApp({ type, _id, status });
-    Toast.success('Cập nhật thành công!');
+    message.success('Cập nhật thành công!');
   }
 
   return (
@@ -120,11 +109,8 @@ function App(props) {
               {
                 (setting && setting.haravan && setting.haravan.shop) ?
                   <div>
-                    {
-                      <p>[{setting.haravan.shop_id}] - {setting.haravan.shop}
-                        <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
-                      </p>
-                    }
+                    {setting.haravan.shop}
+                    <Button onClick={() => updateStatusApp({ type: 'haravan', _id: setting.haravan._id })}><Icon style={{ color: cssStatus(setting.haravan.status) }} type="check-circle" /></Button>
                   </div>
                   : <div>Không có shop haravan</div>
               }
@@ -156,68 +142,57 @@ function App(props) {
             </Item>
             <Item>Reset thời gian sync <Button onClick={() => setIsShowResetAppModal(true)}>Reset</Button></Item>
           </List>
-          {/* <List header={<div>Adapter</div>} bordered>
-          <Item><Button onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item>
-        </List>
-        <List header={<div>Danh sách Webhook</div>} bordered>
-          <Item><Button onClick={() => setIsShowCreateWebhook(true)}>Thêm mới</Button></Item>
-        </List> */}
+          <List header={<div>Adapter</div>} bordered>
+            {/* <Item><Button onClick={() => setIsShowCreateAdapter(true)}>Thêm mới</Button></Item> */}
+            <Table key='_id' dataSource={adapters} columns={[
+              { key: '_id', title: 'ID', render: item => { return item._id } },
+              { key: 'user', title: 'User', render: item => { return _.get(item, 'auth.user', null) } },
+              { key: 'password', title: 'Password', render: item => { return _.get(item, 'auth.password', null) } },
+            ]}></Table>
+          </List>
         </Col>
-
-        <Modal
-          title="Haravan App"
-          visible={isShowHaravanAppModal}
-          onOk={() => buildLinkHaravanApp()}
-          onCancel={() => setIsShowHaravanAppModal(false)}
-        >
-          <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
-        </Modal>
-        <Modal
-          title="Woocommerce App"
-          visible={isShowWoocommerceAppModal}
-          onOk={() => installWoocommerceApp()}
-          onCancel={() => setIsShowWoocommerceAppModal(false)}
-        >
-          <Form>
-            <Form.Item label="Shop URL">
-              <Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />
-            </Form.Item>
-          </Form>
-          <a href={buildLinkWoocommerce}>{buildLinkWoocommerce}</a>
-        </Modal>
-        <Modal
-          title="Shopify App"
-          visible={isShowShopifyAppModal}
-          onOk={() => buildLinkShopifyApp()}
-          onCancel={() => setIsShowShopifyAppModal(false)}
-        >
-          <Form>
-            <Form.Item label="Shop URL">
-              <Input name="shopify_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataShopify.shopify_host} />
-            </Form.Item>
-          </Form>
-          <a href={buildLinkShopify}>{buildLinkShopify}</a>
-        </Modal>
-        <Modal
-          title="Reset time sync"
-          visible={isShowResetAppModal}
-          onOk={() => resetTimeSync()}
-          onCancel={() => setIsShowResetAppModal(false)}
-        >
-        </Modal>
-
       </Row >
-      <ToastContainer
-        position="top-right"
-        autoClose={2500}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={false}
-        pauseOnHover
-      />
+      <Modal
+        title="Haravan App"
+        visible={isShowHaravanAppModal}
+        onOk={() => buildLinkHaravanApp()}
+        onCancel={() => setIsShowHaravanAppModal(false)}
+      >
+        <a href={buildLinkHaravan}>{buildLinkHaravan}</a>
+      </Modal>
+      <Modal
+        title="Woocommerce App"
+        visible={isShowWoocommerceAppModal}
+        onOk={() => installWoocommerceApp()}
+        onCancel={() => setIsShowWoocommerceAppModal(false)}
+      >
+        <Form>
+          <Form.Item label="Shop URL">
+            <Input name="wp_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataWoocommerce.wp_host} />
+          </Form.Item>
+        </Form>
+        <a href={buildLinkWoocommerce}>{buildLinkWoocommerce}</a>
+      </Modal>
+      <Modal
+        title="Shopify App"
+        visible={isShowShopifyAppModal}
+        onOk={() => buildLinkShopifyApp()}
+        onCancel={() => setIsShowShopifyAppModal(false)}
+      >
+        <Form>
+          <Form.Item label="Shop URL">
+            <Input name="shopify_host" onChange={onChange} style={{ width: '100%' }} defaultValue={dataShopify.shopify_host} />
+          </Form.Item>
+        </Form>
+        <a href={buildLinkShopify}>{buildLinkShopify}</a>
+      </Modal>
+      <Modal
+        title="Reset time sync"
+        visible={isShowResetAppModal}
+        onOk={() => resetTimeSync()}
+        onCancel={() => setIsShowResetAppModal(false)}
+      >
+      </Modal>
     </div >
   );
 }
@@ -226,11 +201,13 @@ const mapStateToProps = state => ({
   url: state.app.get('url'),
   url_haravan: state.app.get('url_haravan'),
   url_shopify: state.app.get('url_shopify'),
-  setting: state.app.get('setting')
+  setting: state.app.get('setting'),
+  adapters: state.core.get('adapters'),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(appActions, dispatch)
+  actions: bindActionCreators(appActions, dispatch),
+  coreActions: bindActionCreators(CoreActions, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

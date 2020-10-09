@@ -2,6 +2,7 @@ const path = require('path')
 const _ = require('lodash')
 const cache = require('memory-cache');
 const uuid = require('uuid').v4;
+const request = require('request');
 
 const config = require(path.resolve('./src/config/config'));
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
@@ -11,7 +12,6 @@ const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 
 let code = '1000';
-let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = ({ app }) => {
@@ -46,6 +46,13 @@ const routes = ({ app }) => {
   app.get('/pages', function (req, res) {
     res.render(`shops/${code}/pages`)
   });
+
+  app.get('/blogs', function (req, res) {
+    res.render(`site/${code}/templates/blogs`, {
+      blogs: []
+    })
+  });
+
   app.get('/pages/:page', function (req, res) {
     let page_handle = req.params.page;
     res.render(`shops/${code}/pages`)
@@ -55,6 +62,9 @@ const routes = ({ app }) => {
     let shop_id = req.shop_id;
 
     let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
+    if (!product) {
+      return res.render('404');
+    }
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     let result = {
@@ -64,6 +74,7 @@ const routes = ({ app }) => {
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/products`, result)
   });
+
   app.get('/collections/:type', async function (req, res) {
     let type = req.params.type;
     let shop_id = req.shop_id;
@@ -72,14 +83,13 @@ const routes = ({ app }) => {
       code,
       settings,
       products,
-      base_url,
     })
   });
+
   app.get('/cart', function (req, res) {
     res.render(`site/${code}/templates/cart`, {
       code,
       settings,
-      base_url,
     });
   });
 
@@ -87,7 +97,6 @@ const routes = ({ app }) => {
     res.render(`site/${code}/templates/checkouts`, {
       code,
       settings,
-      base_url,
     });
   });
 
@@ -109,15 +118,15 @@ const routes = ({ app }) => {
     }
     res.status(200).json(cart);
   });
+
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let shop_id = req.shop_id;
+    let data = req.body;
 
     try {
-      let data = req.body;
-
-      let variant_id = Number(data.id);
-      let quantity = Number(data.quantity);
+      let variant_id = !isNaN(Number(data.id)) ? Number(data.id) : 0;
+      let quantity = !isNaN(Number(data.quantity)) ? Number(data.quantity) : 0;
 
       let cart = null;
       if (!cart_token) {
@@ -141,6 +150,7 @@ const routes = ({ app }) => {
       let index = cart.items.findIndex(e => e.variant_id == variant_id);
       if (index != -1) {
         cart.items[index].quantity += quantity;
+        calculateLine({ item: cart.items[index] });
       } else {
         let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
         if (!variant) {
@@ -150,15 +160,14 @@ const routes = ({ app }) => {
         if (!product) {
           return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
         }
+
         let item = {
           variant_id: variant.id,
           variant_title: variant.title,
           product_id: variant.product_id,
           title: product.title,
           price: variant.price,
-          line_price: variant.line_price,
           price_original: variant.price_original,
-          line_price_orginal: variant.line_price_orginal,
           quantity: quantity,
           sku: variant.sku,
           grams: variant.grams,
@@ -175,22 +184,36 @@ const routes = ({ app }) => {
           vendor: product.vendor,
           variant_options: [variant.option1, variant.option2, variant.option3]
         }
+        calculateLine({ item });
         cart.items.push(item);
         let cart_item = _.cloneDeep(item);
         cart_item.cart_id = cart.id;
         let new_cart_item = await CartItemModel.create(cart_item);
       }
-
+      calculateCart({ cart })
       delete cart._id;
       let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token, shop_id }, { $set: cart }, { lean: true, new: true });
       let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
       res.json(cart_item);
+
+      function calculateCart({ cart }) {
+        console.log(cart);
+        return cart;
+      }
+
+      function calculateLine({ item }) {
+        console.log(item);
+        item.line_price = item.price * item.quantity;
+        item.line_price_orginal = item.price_original * item.quantity;
+        return item;
+      }
     } catch (error) {
       console.log(error)
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
     }
   });
+
   app.post('/cart/update.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let data = req.body;
@@ -225,7 +248,9 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    cart.items = cart.items.filter((e, i) => (i + 1) != line);
+    if (quantity == 0) {
+      cart.items = cart.items.filter((e, i) => (i + 1) != line);
+    }
     let update_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
     res.json(update_cart);
   });

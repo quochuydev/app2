@@ -1,0 +1,14 @@
+@COOKIES = cart-token=6a78292d-2225-4b23-8b92-ff1c75c29fea
+
+GET http://localhost:3000/cart.js
+
+###
+
+POST http://localhost:3000/cart/add.js
+Cookie: {{COOKIES}}
+Content-Type: application/json
+
+{
+"quantity": 1,
+"id": 10400
+}
