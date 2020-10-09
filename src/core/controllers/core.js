@@ -64,7 +64,7 @@ async function changeShop({ user, shop_id }) {
   let result = {};
   let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
   if (!found_user) {
-    throw { message: 'Không thể chuyển cửa hàng' }
+    throw { message: 'Không thể chuyển cửa hàng', code: 'USER_NOT_FOUND' }
   }
 
   cache.put('shop_id', shop_id);
