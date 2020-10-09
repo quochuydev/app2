@@ -103,28 +103,10 @@ const routes = ({ app }) => {
     let cart_token = req.cookies.cart_token;
     let shop_id = req.shop_id;
 
-    let cart = null;
-    if (!cart_token) {
-      cart = await CartModel.create({
-        token: uuid(),
-        shop_id
-      })
-      cart = cart.toJSON();
-    } else {
-      cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
-      if (!cart) {
-        cart = await CartModel.create({
-          token: uuid(),
-          shop_id
-        })
-        cart = cart.toJSON();
-      }
-    }
-
+    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
     if (!cart) {
-      throw { message: 'Đã có lỗi xảy ra!' }
+      cart = {}
     }
-    res.cookie('cart_token', cart.token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
     res.status(200).json(cart);
   });
   app.post('/cart/add.js', async function (req, res) {
@@ -137,10 +119,28 @@ const routes = ({ app }) => {
       let variant_id = Number(data.id);
       let quantity = Number(data.quantity);
 
-      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      let cart = null;
+      if (!cart_token) {
+        cart = await CartModel.create({
+          token: uuid(),
+          shop_id
+        })
+        cart = cart.toJSON();
+      } else {
+        cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+        if (!cart) {
+          cart = await CartModel.create({
+            token: uuid(),
+            shop_id
+          })
+          cart = cart.toJSON();
+        }
+      }
+      res.cookie('cart_token', cart.token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
+
       let index = cart.items.findIndex(e => e.variant_id == variant_id);
       if (index != -1) {
-        cart.items[index].quantity = quantity;
+        cart.items[index].quantity += quantity;
       } else {
         let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
         if (!variant) {
@@ -182,7 +182,7 @@ const routes = ({ app }) => {
       }
 
       delete cart._id;
-      let updated_cart = await CartModel.findOneAndUpdate({ token: cart_token, shop_id }, { $set: cart }, { lean: true, new: true });
+      let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token, shop_id }, { $set: cart }, { lean: true, new: true });
       let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
       res.json(cart_item);
@@ -225,7 +225,7 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    cart.items.filter((e, i) => i != line);
+    cart.items = cart.items.filter((e, i) => (i + 1) != line);
     let update_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
     res.json(update_cart);
   });
