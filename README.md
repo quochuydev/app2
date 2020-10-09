@@ -12,4 +12,4 @@ posdlc.herokuapp.com/site/{shop_code}
 
 example: 
 
-https://posdlc.herokuapp.com/site/base
+https://posdlc.herokuapp.com
