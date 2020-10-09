@@ -47,3 +47,12 @@ export function listWards(query) {
     });
   }
 }
+
+export function loadAdapters() {
+  return async function (dispatch) {
+    const data = await AdminServices.Core.loadAdapters();
+    dispatch({
+      type: 'LIST', payload: { adapters: data.adapters }
+    });
+  }
+}

@@ -12,6 +12,9 @@ const initialState = Map({
   district: null,
   wards: [],
   ward: null,
+
+  adapters: [],
+  adapter: null,
 });
 
 function CoreReducer(state = initialState, { type, payload }) {
