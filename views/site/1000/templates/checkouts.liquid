@@ -4,7 +4,7 @@
 <head>
 	<link rel="shortcut icon" href="//theme.hstatic.net/200000123069/1000584388/14/favicon.png?v=212" type="image/png" />
 	<title>
-		 Store - Thanh toán đơn hàng
+		Store - Thanh toán đơn hàng
 	</title>
 	<meta name="description" content=" Store - Thanh to&#225;n đơn h&#224;ng" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/checkouts.css">
@@ -403,14 +403,16 @@
 				}); $('body')
 					.on('change', '#form_update_shipping_method input:radio', function () {
 						$('#form_update_shipping_method .content-box-row.content-box-row-secondary').addClass('hidden'); var id = $(this).attr('id'); if (id) {
-							var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']')						if (sub && sub.length > 0) {
+							var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']');
+							if (sub && sub.length > 0) {
 								$(sub).removeClass('hidden');
 							}
 						}
 					}); $('body')
 						.on('change', '#section-payment-method input:radio', function () {
 							$('#section-payment-method .content-box-row.content-box-row-secondary').addClass('hidden'); var id = $(this).attr('id'); if (id) {
-								var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']')						if (sub && sub.length > 0) {
+								var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']')
+								if (sub && sub.length > 0) {
 									$(sub).removeClass('hidden');
 								}
 							}
@@ -639,7 +641,7 @@
 											<td class="product-description">
 												<span class="product-description-name order-summary-emphasis">Người Trong Muôn Nghề: Ngành IT có
 													gì?</span> <span class="product-description-variant order-summary-small-text">
-													Default Title / Nhóm tác giả  / NXB Thế Giới
+													Default Title / Nhóm tác giả / NXB Thế Giới
 												</span> </td>
 											<td class="product-quantity visually-hidden">1</td>
 											<td class="product-price">

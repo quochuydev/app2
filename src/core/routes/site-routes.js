@@ -93,12 +93,16 @@ const routes = ({ app }) => {
     });
   });
 
-  app.get('/checkouts/:checkout_token', function (req, res) {
-    res.render(`site/${code}/templates/checkouts`, {
-      code,
-      settings,
-    });
-  });
+  app.route('/checkouts/:checkout_token')
+    .get(function (req, res) {
+      res.render(`site/${code}/templates/checkouts`, {
+        code,
+        settings,
+      });
+    })
+    .post(function (req, res) {
+      res.json(req.body);
+    })
 
   app.get('/checkout', function (req, res) {
     let cart_token = req.cookies.cart_token;
