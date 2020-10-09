@@ -27,9 +27,11 @@ Mongoose.connect()
 
 async function importWard() {
   await ProductModel.find({}).cursor().eachAsync(async doc => {
-    let handle = _do.removeAscent(doc.title)
-    handle = _.kebabCase(handle, ' ', '-');
-    await ProductModel.update({ id: doc.id }, { $set: { handle } })
+    for (let i = 0; i < doc.variants.length; i++) {
+      doc.variants[i].price_original = 0;
+      doc.variants[i].product_id = doc.id;
+    }
+    await ProductModel.update({ id: doc.id }, { $set: { variants: doc.variants } })
     console.log(doc.id, doc.handle, doc.title);
   }, { parallel: 10 });
 }

@@ -12,7 +12,6 @@ const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 
 let code = '1000';
-let base_url = `${config.frontend_site}`;
 let settings = require('./settings').current;
 
 const routes = ({ app }) => {
@@ -81,7 +80,6 @@ const routes = ({ app }) => {
       code,
       settings,
       products,
-      base_url,
     })
   });
 
@@ -89,7 +87,6 @@ const routes = ({ app }) => {
     res.render(`site/${code}/templates/cart`, {
       code,
       settings,
-      base_url,
     });
   });
 
@@ -97,7 +94,6 @@ const routes = ({ app }) => {
     res.render(`site/${code}/templates/checkouts`, {
       code,
       settings,
-      base_url,
     });
   });
 
@@ -168,7 +164,7 @@ const routes = ({ app }) => {
           product_id: variant.product_id,
           title: product.title,
           price: variant.price,
-          line_price: variant.line_price,
+          price_original: variant.price_original,
           quantity: quantity,
           sku: variant.sku,
           grams: variant.grams,
