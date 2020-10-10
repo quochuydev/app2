@@ -127,6 +127,7 @@ const routes = ({ app }) => {
           email: data.checkout_user.email
         };
         create_data.note = data.note;
+
         if (data.billing_address) {
           create_data.billing_address = {
             address1: data.billing_address.address1,
@@ -137,20 +138,30 @@ const routes = ({ app }) => {
             email: data.checkout_user.email,
           }
         }
+
+        create_data.fulfillment_status = 'pending';
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
         } else {
-          create_data.financial_status = 'pending';
-          create_data.fulfillment_status = 'pending';
           create_data.shipping_address = {
+            phone: data.billing_address.phone,
+            address1: data.billing_address.address1,
             province_code: customer_shipping_province,
             district_code: customer_shipping_district,
           };
         }
 
+        create_data.gateway_code = data.payment_method_id;
+        create_data.financial_status = 'pending';
+        if (create_data.gateway_code == 'cod') {
+          create_data.carrier_cod_status_code = 'codpending';
+        } else {
+
+        }
+
         create_data.line_items = cart.items.map(e => {
           return Object({
-            image:  e.image,
+            image: e.image,
             product_id: e.product_id,
             title: e.title,
             variant_id: e.id,

@@ -300,9 +300,14 @@
 			try {
 				var listparameters = new URLSearchParams($(formData).serialize());
 				var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
-				if (provincetmp != '') listparameters.set('customer_shipping_province', provincetmp); var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
-				if (districttmp != '') listparameters.set('customer_shipping_district', districttmp); var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
-				if (wardtmp != '') listparameters.set('customer_shipping_ward', wardtmp); listparameters.delete('selected_customer_shipping_province');
+				if (provincetmp != '') listparameters.set('customer_shipping_province', provincetmp);
+				var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+				if (districttmp != '') listparameters.set('customer_shipping_district', districttmp);
+				var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
+				if (wardtmp != '') listparameters.set('customer_shipping_ward', wardtmp);
+				var payment_method_id = $('body').find('input[name$="payment_method_id"]').val();
+				if (payment_method_id != '') listparameters.set('payment_method_id', payment_method_id);
+				listparameters.delete('selected_customer_shipping_province');
 				listparameters.delete('selected_customer_shipping_district');
 				listparameters.delete('selected_customer_shipping_ward');
 				inputurl = listparameters.toString();
@@ -313,7 +318,8 @@
 				var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
 				if (districttmp != '' && listparameters.customer_shipping_district) listparameters.customer_shipping_district = districttmp;
 				var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
-				if (wardtmp != '' && listparameters.customer_shipping_ward) listparameters.customer_shipping_ward = wardtmp; delete listparameters.selected_customer_shipping_province;
+				if (wardtmp != '' && listparameters.customer_shipping_ward) listparameters.customer_shipping_ward = wardtmp;
+				delete listparameters.selected_customer_shipping_province;
 				delete listparameters.selected_customer_shipping_district;
 				delete listparameters.selected_customer_shipping_ward; var listObject = '';
 				for (var key in listparameters) {
@@ -884,19 +890,19 @@
 						<div class="section-content">
 							<div class="content-box">
 								<div class="radio-wrapper content-box-row">
-									<label class="radio-label" for="payment_method_id_1001964072">
+									<label class="radio-label" for="payment_method_id_cod">
 										<div class="radio-input">
-											<input id="payment_method_id_1001964072" class="input-radio" name="payment_method_id" type="radio"
-												value="1001964072" checked />
+											<input id="payment_method_id_cod" class="input-radio" name="payment_method_id" type="radio"
+												value="cod" checked />
 										</div>
 										<span class="radio-label-primary">Thanh toán khi giao hàng (COD)</span>
 									</label>
 								</div>
 								<div class="radio-wrapper content-box-row">
-									<label class="radio-label" for="payment_method_id_1001964075">
+									<label class="radio-label" for="payment_method_id_bankdeposit">
 										<div class="radio-input">
-											<input id="payment_method_id_1001964075" class="input-radio" name="payment_method_id" type="radio"
-												value="1001964075" />
+											<input id="payment_method_id_bankdeposit" class="input-radio" name="payment_method_id"
+												type="radio" value="bankdeposit" />
 										</div>
 										<span class="radio-label-primary">Chuyển khoản qua ngân hàng</span>
 									</label>
