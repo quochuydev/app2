@@ -12,6 +12,7 @@ const CustomersSchema = new Schema({
   number: { type: Number, default: null },
   code: { type: String, default: null },
   type: { type: String, default: null },
+  
   id: { type: Number, default: null },
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],

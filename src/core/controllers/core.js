@@ -12,6 +12,7 @@ let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 let _is = require(path.resolve('./src/core/share/_is.lib.share.js'))
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
 const scopes = ['email', 'profile', 'openid'];
@@ -44,6 +45,13 @@ let auth = async (req, res) => {
         shop_id: new_shop.id
       }
       user = await UserMD.create(new_user);
+
+      let guest_customer = {
+        shop_id: new_shop.id,
+        first_name: 'Khách hàng lẻ',
+        type: 'GUEST',
+      }
+      await CustomerModel.create(guest_customer);
     }
 
     let user_gen_token = {

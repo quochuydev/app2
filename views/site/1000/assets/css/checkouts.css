@@ -1520,6 +1520,6 @@ margin-top: 0px !important;
 margin-bottom: 5px;
 }
 
-.hidden {
+.hidden, .hide {
 display: none !important;
 }

@@ -294,15 +294,19 @@ function OrderDetailComponent(props) {
             <p>Email: {_.get(customer, 'email')}</p>
             <p>Số điện thoại: {_.get(customer, 'phone')}</p>
             <p>Địa chỉ: {_.get(customer, 'address1')}</p>
-
             <p className="ui-title-page">Thông tin đơn hàng</p>
-            <p>Họ tên: <Link to={`../../customer/${order.customer_id}`}>
-              {[order.customer.last_name, order.customer.first_name].join(' ')}
-            </Link>
+            <p>Họ tên:
+              {
+                order.customer_id ?
+                  <Link to={`../../customer/${order.customer_id}`}>
+                    {[_.get(order, 'billing_address.last_name'), _.get(order, 'billing_address.first_name')].join(' ')}
+                  </Link>
+                  : [_.get(order, 'billing_address.last_name'), _.get(order, 'billing_address.first_name')].join(' ')
+              }
             </p>
-            <p>Email: {_.get(order, 'customer.email')}</p>
-            <p>Số điện thoại: {_.get(order, 'customer.phone')}</p>
-            <p>Địa chỉ: {_.get(order, 'customer.address1')}</p>
+            <p>Email: {_.get(order, 'billing_address.email')}</p>
+            <p>Số điện thoại: {_.get(order, 'billing_address.phone')}</p>
+            <p>Địa chỉ: {_.get(order, 'billing_address.address1')}</p>
           </Card>
           <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
             <p className="ui-title-page">Thông tin giao hàng</p>

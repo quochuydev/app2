@@ -13,5 +13,6 @@ const config = require(path.resolve('./src/config/config'));
 let OrderService = {}
 let di = { ERR, OrderModel, OrderService, VariantModel, CustomerModel, _parse, config }
 OrderService.export = require('./activities/order.export')(di)
+OrderService.create = require('./activities/order.create.js')(di)
 
 module.exports = { OrderService }

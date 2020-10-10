@@ -75,7 +75,7 @@ const OrderSchema = new Schema({
     product_id: { type: Number, default: null },
     title: { type: String, default: null },
     sku: { type: String, default: null },
-    name: { type: String, default: null },
+    barcode: { type: String, default: null },
     variant_id: { type: Number, default: null },
     variant_title: { type: String, default: null },
     quantity: { type: Number, default: null },
@@ -96,9 +96,9 @@ const OrderSchema = new Schema({
   total_pay: { type: Number, default: 0 },
   total_refund: { type: Number, default: 0 },
 
-  carrier_cod_status_code: { type: String, default: null },
-  financial_status: { type: String, default: null },
-  fulfillment_status: { type: String, default: null },
+  carrier_cod_status_code: { type: String, default: null }, // codpending/codreceipt
+  financial_status: { type: String, default: null }, // paid/pending
+  fulfillment_status: { type: String, default: null }, //pending/delivered
   gateway_code: { type: String, default: null },
   fulfillments: [],
   transactions: [],
@@ -121,6 +121,7 @@ const OrderSchema = new Schema({
 
   is_deleted: { type: Boolean, default: false },
   deleted_at: { type: Date, default: null },
+  token: { type: String, default: null },
 
   shop_id: { type: Number, default: null },
   detail: { type: Schema.Types.Mixed },
