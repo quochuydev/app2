@@ -15,7 +15,6 @@ const CartSchema = new Schema({
     value: { type: String, default: null },
   },
   token: { type: String, default: null },
-  item_count: { type: Number, default: 0 },
   items: [{
     id: { type: Number, default: null },
     title: { type: String, default: null },
@@ -47,6 +46,7 @@ const CartSchema = new Schema({
     promotionref: { type: String, default: null },
     promotionby: [],
   }],
+  item_count: { type: Number, default: 0 },
   total_price: { type: Number, default: 0 },
   total_weight: { type: Number, default: 0 },
   note: { type: String, default: null },
