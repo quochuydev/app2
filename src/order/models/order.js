@@ -119,6 +119,8 @@ const OrderSchema = new Schema({
   cancel_reason: { type: String, default: null },
   cancel_note: { type: String, default: null },
 
+  refunds: [],
+
   is_deleted: { type: Boolean, default: false },
   deleted_at: { type: Date, default: null },
   token: { type: String, default: null },

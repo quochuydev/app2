@@ -12,6 +12,7 @@ const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 let code = '1000';
 let settings = require('./settings').current;
@@ -59,14 +60,30 @@ const routes = ({ app }) => {
     let page_handle = req.params.page;
     res.render(`shops/${code}/pages`)
   });
+
   app.get('/products/:handle', async function (req, res) {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
+
+    if (!handle) {
+      return res.render('404');
+    }
+
+    let is_json_data = false;
+    if (_.endsWith(handle, '.json')) {
+      handle = handle.split('.json')[0];
+      is_json_data = true;
+    }
 
     let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
     if (!product) {
       return res.render('404');
     }
+
+    if (is_json_data) {
+      return res.json(product);
+    }
+
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     let result = {
@@ -88,12 +105,31 @@ const routes = ({ app }) => {
     })
   });
 
-  app.get('/cart', function (req, res) {
-    res.render(`site/${code}/templates/cart`, {
-      code,
-      settings,
+  app.route('/cart')
+    .get(async function (req, res) {
+      let cart_token = req.cookies.cart_token;
+      let shop_id = req.shop_id;
+      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      if (!cart) {
+        cart = {
+          item_count: 0,
+        }
+      }
+      res.render(`site/${code}/templates/cart`, {
+        amount: '{{amount}}',
+        cart,
+        code,
+        settings,
+      });
+    })
+    .post(function (req, res) {
+      let cart_token = req.cookies.cart_token;
+      if (cart_token) {
+        return res.redirect(`/checkouts/${cart_token}`);
+      } else {
+        return res.redirect(`/`);
+      }
     });
-  });
 
   app.route('/checkouts/:checkout_token')
     .get(function (req, res) {
@@ -124,32 +160,47 @@ const routes = ({ app }) => {
         }
         let create_data = {
           shop_id,
-          email: data.checkout_user.email
+          billing_address: {},
+          customer: {}
         };
         create_data.note = data.note;
 
-        if (data.billing_address) {
-          create_data.billing_address = {
-            address1: data.billing_address.address1,
-            province_code: data.billing_address.city[0],
-            district_code: data.billing_address.city[1],
-            first_name: data.billing_address.full_name,
-            phone: data.billing_address.phone,
-            email: data.checkout_user.email,
+        if (data.checkout_user.email) {
+          create_data.email = data.checkout_user.email;
+          let found_customer = await CustomerModel.findOne({ email: data.checkout_user.email, shop_id }).lean(true);
+          if (found_customer) {
+            create_data.customer_id = found_customer.id;
+            create_data.customer.address1 = found_customer.address1;
+            create_data.customer.province_code = found_customer.province_code;
+            create_data.customer.district_code = found_customer.district_code;
+            create_data.customer.district_code = found_customer.ward_code;
+            create_data.customer.first_name = found_customer.first_name;
+            create_data.customer.last_name = found_customer.last_name;
+            create_data.customer.phone = found_customer.phone;
+            create_data.customer.email = found_customer.email;
           }
         }
 
-        create_data.fulfillment_status = 'pending';
-        
+        if (data.billing_address) {
+          create_data.billing_address.address1 = data.billing_address.address1;
+          create_data.billing_address.province_code = data.billing_address.city[0];
+          create_data.billing_address.district_code = data.billing_address.city[1];
+          create_data.billing_address.first_name = data.billing_address.full_name;
+          create_data.billing_address.phone = data.billing_address.phone;
+          create_data.billing_address.email = data.checkout_user.email;
+        }
+
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
+          create_data.fulfillment_status = 'waiting_customer';
         } else {
           create_data.shipping_address = {
             phone: data.billing_address.phone,
             address1: data.billing_address.address1,
-            province_code: customer_shipping_province,
-            district_code: customer_shipping_district,
+            province_code: data.customer_shipping_province,
+            district_code: data.customer_shipping_district,
           };
+          create_data.fulfillment_status = 'pending';
         }
 
         create_data.gateway_code = data.payment_method_id;
@@ -230,7 +281,9 @@ const routes = ({ app }) => {
 
     let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
     if (!cart) {
-      cart = {}
+      cart = {
+        item_count: 0,
+      }
     }
     res.status(200).json(cart);
   });
@@ -311,24 +364,12 @@ const routes = ({ app }) => {
       let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token, shop_id }, { $set: cart }, { lean: true, new: true });
       let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
-      res.json(cart_item);
-
-      function calculateCart({ cart }) {
-        cart.total_price = 0;
-        cart.item_count = 0;
-        for (let i = 0; i < cart.items.length; i++) {
-          const item = cart.items[i];
-          cart.item_count += item.quantity;
-          cart.total_price += item.line_price;
-        }
-        return cart;
-      }
-
-      function calculateLine({ item }) {
-        item.line_price = item.price * item.quantity;
-        item.line_price_orginal = item.price_original * item.quantity;
-        return item;
-      }
+      res.json({
+        cart_item,
+        message: 'Cập nhật giỏ hàng',
+        status: cart_item.total_price,
+        description: 'Thành công'
+      });
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
@@ -346,14 +387,13 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    let item_count = 0;
-    for (let i = 0; i < cart.items.length; i++) {
-      const item = cart.items[i];
-      cart.items[i].quantity = updates[i];
-      item_count += cart.items[i].quantity;
-    }
-    cart.item_count = item_count;
+
     cart.note = note;
+    for (let i = 0; i < cart.items.length; i++) {
+      cart.items[i].quantity = updates[i];
+      calculateLine({ item: cart.items[i] });
+    }
+    calculateCart({ cart });
 
     res.json(cart);
   });
@@ -378,3 +418,20 @@ const routes = ({ app }) => {
 }
 
 module.exports = routes;
+
+function calculateCart({ cart }) {
+  cart.total_price = 0;
+  cart.item_count = 0;
+  for (let i = 0; i < cart.items.length; i++) {
+    const item = cart.items[i];
+    cart.item_count += item.quantity;
+    cart.total_price += item.line_price;
+  }
+  return cart;
+}
+
+function calculateLine({ item }) {
+  item.line_price = item.price * item.quantity;
+  item.line_price_orginal = item.price_original * item.quantity;
+  return item;
+}

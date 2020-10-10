@@ -72,6 +72,8 @@ common.formatFulfillmentStatus = function (code) {
       return 'Đang giao hàng';
     case 'pending':
       return 'Chưa giao hàng';
+    case 'waiting_customer':
+      return 'Chờ khách lấy hàng';
     default:
       return ''
   }
