@@ -140,6 +140,7 @@ const routes = ({ app }) => {
         }
 
         create_data.fulfillment_status = 'pending';
+        
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
         } else {
@@ -153,6 +154,7 @@ const routes = ({ app }) => {
 
         create_data.gateway_code = data.payment_method_id;
         create_data.financial_status = 'pending';
+
         if (create_data.gateway_code == 'cod') {
           create_data.carrier_cod_status_code = 'codpending';
         } else {
@@ -312,7 +314,6 @@ const routes = ({ app }) => {
       res.json(cart_item);
 
       function calculateCart({ cart }) {
-        console.log(cart);
         cart.total_price = 0;
         cart.item_count = 0;
         for (let i = 0; i < cart.items.length; i++) {
@@ -324,13 +325,12 @@ const routes = ({ app }) => {
       }
 
       function calculateLine({ item }) {
-        console.log(item);
         item.line_price = item.price * item.quantity;
         item.line_price_orginal = item.price_original * item.quantity;
         return item;
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
     }
   });
