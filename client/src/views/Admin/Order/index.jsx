@@ -37,7 +37,7 @@ function Orders(props) {
       title: 'Mã đơn hàng', key: 'edit',
       render: edit => (
         <div>
-          <Link to={`order/detail/${edit.number}`}>{edit.number}</Link>
+          <Link to={`orders/${edit.number}`}>{edit.number}</Link>
           <Tooltip placement="right" title={edit.note}>
             {!!edit.note ? <Icon className="m-l-10" type="book" /> : null}
           </Tooltip>

@@ -6,7 +6,7 @@ let Controller = require('./../controller/order');
 const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
 
 const router = ({ app }) => {
-  app.get('/api/order/detail/:id', detail);
+  app.get('/api/orders/:id', detail);
   app.get('/api/orders', list);
 
   app.post('/api/orders/export', function (req, res, next) {

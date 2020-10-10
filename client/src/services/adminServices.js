@@ -14,7 +14,7 @@ const URLS = {
 
   LIST_ORDERS: 'api/orders',
   EXPORT_ORDERS: 'api/orders/export',
-  GET_ORDER_DETAIL: 'api/order/detail',
+  GET_ORDER_DETAIL: 'api/orders',
   SYNC_ORDERS: 'api/order/sync',
   CREATE_ORDER: 'api/order/create',
   UPDATE_ORDER: 'api/orders/{id}',

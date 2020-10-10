@@ -32,7 +32,7 @@ const list = async (req, res, next) => {
   }
 }
 
-const detail = async (req, res) => {
+const detail = async (req, res, next) => {
   try {
     let number = req.params.id;
     let order = await OrderModel.findOne({ number }).lean(true);
