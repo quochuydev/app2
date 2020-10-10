@@ -70,6 +70,8 @@ common.formatFulfillmentStatus = function (code) {
       return 'Đã giao hàng';
     case 'delivering':
       return 'Đang giao hàng';
+    case 'pending':
+      return 'Chờ xử lý';
     default:
       return ''
   }
@@ -107,6 +109,8 @@ common.formatGatewayCode = function (code) {
   switch (code) {
     case "cod":
       return "Thanh toán COD";
+    case "bankdeposit":
+      return "Chuyển Khoản";
     default:
       return ''
   }

@@ -138,13 +138,29 @@ const routes = ({ app }) => {
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
         } else {
+          create_data.financial_status = 'pending';
+          create_data.fulfillment_status = 'pending';
           create_data.shipping_address = {
             province_code: customer_shipping_province,
             district_code: customer_shipping_district,
           };
         }
 
-        create_data.line_items = cart.items.map(e => { return e });
+        create_data.line_items = cart.items.map(e => {
+          return Object({
+            image:  e.image,
+            product_id: e.product_id,
+            title: e.title,
+            variant_id: e.id,
+            variant_title: e.title,
+            sku: e.sku,
+            barcode: e.barcode,
+            price: e.price,
+            price_original: e.price_original,
+            quantity: e.quantity,
+            total: e.line_price,
+          })
+        });
         create_data.token = cart.token;
         create_data.total_price = cart.total_price;
         create_data.total_items = cart.item_count;
@@ -258,7 +274,7 @@ const routes = ({ app }) => {
           grams: variant.grams,
           properties: variant.properties,
           gift_card: variant.gift_card,
-          image: variant.image ? variant.image.src : null,
+          image: variant.image,
           requires_shipping: variant.requires_shipping,
           not_allow_promotion: variant.not_allow_promotion,
           barcode: variant.barcode,

@@ -34,7 +34,11 @@ const CartSchema = new Schema({
     product_id: { type: Number, default: null },
     gift_card: { type: Boolean, default: null },
     url: { type: String, default: null },
-    image: { type: String, default: null },
+    image: {
+      id: { type: Number, default: null },
+      filename: { type: String, default: null },
+      src: { type: String, default: null },
+    },
     handle: { type: String, default: null },
     requires_shipping: { type: Boolean, default: null },
     not_allow_promotion: { type: Boolean, default: null },
