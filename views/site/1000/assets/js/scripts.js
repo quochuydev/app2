@@ -130,10 +130,10 @@ function getCartModal() {
 //clone item cart
 function clone_item(product, i) {
 	var item_product = jQuery('#clone-item-cart').find('.item_2');
-	if (product.image == null) {
-		item_product.find('img').attr('src', '//theme.hstatic.net/200000123069/1000584388/14/no_image.jpg?v=212').attr('alt', product.url);
-	} else {
+	if (product.image && product.image.src) {
 		item_product.find('img').attr('src', product.image.src).attr('alt', product.url);
+	} else {
+		item_product.find('img').attr('src', '//theme.hstatic.net/200000123069/1000584388/14/no_image.jpg?v=212').attr('alt', product.url);
 	}
 	item_product.find('a:not(.remove-cart)').attr('href', product.url).attr('title', product.title);
 	item_product.find('.pro-title-view').html(product.title);
