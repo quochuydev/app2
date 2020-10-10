@@ -65,10 +65,25 @@ const routes = ({ app }) => {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
 
+    if (!handle) {
+      return res.render('404');
+    }
+
+    let is_json_data = false;
+    if (_.endsWith(handle, '.json')) {
+      handle = handle.split('.json')[0];
+      is_json_data = true;
+    }
+
     let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
     if (!product) {
       return res.render('404');
     }
+
+    if (is_json_data) {
+      return res.json(product);
+    }
+
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     let result = {
