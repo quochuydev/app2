@@ -121,6 +121,7 @@ const OrderSchema = new Schema({
 
   is_deleted: { type: Boolean, default: false },
   deleted_at: { type: Date, default: null },
+  token: { type: String, default: null },
 
   shop_id: { type: Number, default: null },
   detail: { type: Schema.Types.Mixed },

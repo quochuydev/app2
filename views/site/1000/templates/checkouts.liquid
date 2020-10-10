@@ -309,8 +309,10 @@
 			} catch (err) {				// Older Browser URLSearchParams not support
 				var listparameters = parseQueryString($(formData).serialize());
 				var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
-				if (provincetmp != '' && listparameters.customer_shipping_province) listparameters.customer_shipping_province = provincetmp; var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
-				if (districttmp != '' && listparameters.customer_shipping_district) listparameters.customer_shipping_district = districttmp; var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
+				if (provincetmp != '' && listparameters.customer_shipping_province) listparameters.customer_shipping_province = provincetmp;
+				var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+				if (districttmp != '' && listparameters.customer_shipping_district) listparameters.customer_shipping_district = districttmp;
+				var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
 				if (wardtmp != '' && listparameters.customer_shipping_ward) listparameters.customer_shipping_ward = wardtmp; delete listparameters.selected_customer_shipping_province;
 				delete listparameters.selected_customer_shipping_district;
 				delete listparameters.selected_customer_shipping_ward; var listObject = '';
@@ -320,9 +322,13 @@
 				inputurl = listObject.substring(1);
 			}
 			$.ajax({
-				type: 'GET',
+				type: 'POST',
 				url: window.location.origin + window.location.pathname + '?' + inputurl + encodeURI('&form_name=' + formId),
 				success: function (html) {
+					console.log(html)
+					if (html && html.token) {
+						window.location = `/orders/${html.token}`;
+					}
 					if ($(html).attr('id') == 'redirect-url') {
 						window.location = $(html).val();
 					} else {

@@ -10,6 +10,8 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
+const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
+const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
 
 let code = '1000';
 let settings = require('./settings').current;
@@ -95,13 +97,65 @@ const routes = ({ app }) => {
 
   app.route('/checkouts/:checkout_token')
     .get(function (req, res) {
+      let cart_token = req.cookies.cart_token;
+      let checkout_token = req.params.checkout_token;
+      if (cart_token != checkout_token) {
+        if (cart_token) {
+          return res.redirect(`/checkouts/${cart_token}`);
+        } else {
+          return res.redirect(`/`);
+        }
+      }
       res.render(`site/${code}/templates/checkouts`, {
         code,
         settings,
       });
     })
-    .post(function (req, res) {
-      res.json(req.body);
+    .post(async function (req, res) {
+      try {
+        let cart_token = req.cookies.cart_token;
+        let shop_id = req.shop_id;
+        let data = req.query;
+
+        let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+        if (!cart) {
+          throw { message: 'error' }
+        }
+        let create_data = {
+          shop_id,
+          email: data.checkout_user.email
+        };
+        create_data.note = data.note;
+        if (data.billing_address) {
+          create_data.billing_address = {
+            address1: data.billing_address.address1,
+            province_code: data.billing_address.city[0],
+            district_code: data.billing_address.city[1],
+            first_name: data.billing_address.full_name,
+            phone: data.billing_address.phone,
+          }
+        }
+        if (data.customer_pick_at_location == 'true') {
+          create_data.shipping_address = null;
+        } else {
+          create_data.shipping_address = {
+            province_code: customer_shipping_province,
+            district_code: customer_shipping_district,
+          };
+        }
+
+        create_data.line_items = cart.items.map(e => { return e });
+        create_data.token = cart.token;
+        create_data.total_price = cart.total_price;
+        create_data.total_items = cart.item_count;
+
+        let result = await OrderService.create({ data: create_data });
+        res.clearCookie('cart_token');
+        res.json(result)
+      } catch (error) {
+        console.log(error)
+        res.status(400).json(error);
+      }
     })
 
   app.get('/checkout', function (req, res) {
@@ -113,12 +167,30 @@ const routes = ({ app }) => {
     }
   });
 
+  app.get('/orders/:token', async function (req, res) {
+    try {
+      let token = req.params.token;
+      let order = await OrderModel.findOne({ token }).lean(true);
+      if (!order) {
+        throw { message: `Đơn hàng không tồn tại ${token}` }
+      }
+      res.json(order);
+    } catch (error) {
+      res.render('404');
+    }
+  });
+
   app.get('/set-domain', function (req, res) {
     if (!req.query.domain) {
       return res.json({ error: true })
     }
     res.cookie('domain', req.query.domain, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
-    res.json({ error: false })
+    res.redirect('/');
+  })
+
+  app.get('/clear-domain', function (req, res) {
+    res.clearCookie('domain');
+    res.redirect('/');
   })
 
   app.get('/cart.js', async function (req, res) {
