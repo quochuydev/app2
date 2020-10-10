@@ -116,6 +116,7 @@ const routes = ({ app }) => {
         let cart_token = req.cookies.cart_token;
         let shop_id = req.shop_id;
         let data = req.query;
+        // return res.json(data);
 
         let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
         if (!cart) {
@@ -133,6 +134,7 @@ const routes = ({ app }) => {
             district_code: data.billing_address.city[1],
             first_name: data.billing_address.full_name,
             phone: data.billing_address.phone,
+            email: data.checkout_user.email,
           }
         }
         if (data.customer_pick_at_location == 'true') {
