@@ -12,6 +12,7 @@ const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
+const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 let code = '1000';
 let settings = require('./settings').current;
@@ -144,25 +145,39 @@ const routes = ({ app }) => {
         }
         let create_data = {
           shop_id,
-          email: data.checkout_user.email
+          billing_address: {},
+          customer: {}
         };
         create_data.note = data.note;
 
-        if (data.billing_address) {
-          create_data.billing_address = {
-            address1: data.billing_address.address1,
-            province_code: data.billing_address.city[0],
-            district_code: data.billing_address.city[1],
-            first_name: data.billing_address.full_name,
-            phone: data.billing_address.phone,
-            email: data.checkout_user.email,
+        if (data.checkout_user.email) {
+          create_data.email = data.checkout_user.email;
+          let found_customer = await CustomerModel.findOne({ email: data.checkout_user.email, shop_id }).lean(true);
+          if (found_customer) {
+            create_data.customer_id = found_customer.id;
+            create_data.customer.address1 = found_customer.address1;
+            create_data.customer.province_code = found_customer.province_code;
+            create_data.customer.district_code = found_customer.district_code;
+            create_data.customer.district_code = found_customer.ward_code;
+            create_data.customer.first_name = found_customer.first_name;
+            create_data.customer.last_name = found_customer.last_name;
+            create_data.customer.phone = found_customer.phone;
+            create_data.customer.email = found_customer.email;
           }
         }
 
-        create_data.fulfillment_status = 'pending';
+        if (data.billing_address) {
+          create_data.billing_address.address1 = data.billing_address.address1;
+          create_data.billing_address.province_code = data.billing_address.city[0];
+          create_data.billing_address.district_code = data.billing_address.city[1];
+          create_data.billing_address.first_name = data.billing_address.full_name;
+          create_data.billing_address.phone = data.billing_address.phone;
+          create_data.billing_address.email = data.checkout_user.email;
+        }
 
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
+          create_data.fulfillment_status = 'waiting_customer';
         } else {
           create_data.shipping_address = {
             phone: data.billing_address.phone,
@@ -170,6 +185,7 @@ const routes = ({ app }) => {
             province_code: customer_shipping_province,
             district_code: customer_shipping_district,
           };
+          create_data.fulfillment_status = 'pending';
         }
 
         create_data.gateway_code = data.payment_method_id;
