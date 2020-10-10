@@ -3,7 +3,7 @@ var timeOut_modalCart;
 var viewout = true;
 var check_show_modal = true;
 console.log(window.template)
-if (window.template.indexOf('product') > -1) {
+if (window.template && window.template.indexOf('product') > -1) {
 	// Add a product and show modal cart
 	var add_item_show_modalCart = function (id, link_checkout) {
 		if (check_show_modal) {
@@ -331,7 +331,7 @@ function smoothScroll(a, b) {
 	}, b);
 }
 jQuery(document).ready(function () {
-	if (template.indexOf('index') > -1) {
+	if (template && template.indexOf('index') > -1) {
 		// slideText top
 		if ($("#slideText p").length > 1) {
 			jQuery(function () {

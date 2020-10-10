@@ -59,6 +59,7 @@ const routes = ({ app }) => {
     let page_handle = req.params.page;
     res.render(`shops/${code}/pages`)
   });
+
   app.get('/products/:handle', async function (req, res) {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
@@ -88,12 +89,31 @@ const routes = ({ app }) => {
     })
   });
 
-  app.get('/cart', function (req, res) {
-    res.render(`site/${code}/templates/cart`, {
-      code,
-      settings,
+  app.route('/cart')
+    .get(async function (req, res) {
+      let cart_token = req.cookies.cart_token;
+      let shop_id = req.shop_id;
+      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      if (!cart) {
+        cart = {
+          item_count: 0,
+        }
+      }
+      res.render(`site/${code}/templates/cart`, {
+        amount: '{{amount}}',
+        cart,
+        code,
+        settings,
+      });
+    })
+    .post(function (req, res) {
+      let cart_token = req.cookies.cart_token;
+      if (cart_token) {
+        return res.redirect(`/checkouts/${cart_token}`);
+      } else {
+        return res.redirect(`/`);
+      }
     });
-  });
 
   app.route('/checkouts/:checkout_token')
     .get(function (req, res) {
@@ -140,7 +160,7 @@ const routes = ({ app }) => {
         }
 
         create_data.fulfillment_status = 'pending';
-        
+
         if (data.customer_pick_at_location == 'true') {
           create_data.shipping_address = null;
         } else {
@@ -230,7 +250,9 @@ const routes = ({ app }) => {
 
     let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
     if (!cart) {
-      cart = {}
+      cart = {
+        item_count: 0,
+      }
     }
     res.status(200).json(cart);
   });
@@ -311,24 +333,12 @@ const routes = ({ app }) => {
       let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token, shop_id }, { $set: cart }, { lean: true, new: true });
       let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
-      res.json(cart_item);
-
-      function calculateCart({ cart }) {
-        cart.total_price = 0;
-        cart.item_count = 0;
-        for (let i = 0; i < cart.items.length; i++) {
-          const item = cart.items[i];
-          cart.item_count += item.quantity;
-          cart.total_price += item.line_price;
-        }
-        return cart;
-      }
-
-      function calculateLine({ item }) {
-        item.line_price = item.price * item.quantity;
-        item.line_price_orginal = item.price_original * item.quantity;
-        return item;
-      }
+      res.json({
+        cart_item,
+        message: 'Cập nhật giỏ hàng',
+        status: cart_item.total_price,
+        description: 'Thành công'
+      });
     } catch (error) {
       console.log(error);
       return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
@@ -346,14 +356,13 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
-    let item_count = 0;
-    for (let i = 0; i < cart.items.length; i++) {
-      const item = cart.items[i];
-      cart.items[i].quantity = updates[i];
-      item_count += cart.items[i].quantity;
-    }
-    cart.item_count = item_count;
+
     cart.note = note;
+    for (let i = 0; i < cart.items.length; i++) {
+      cart.items[i].quantity = updates[i];
+      calculateLine({ item: cart.items[i] });
+    }
+    calculateCart({ cart });
 
     res.json(cart);
   });
@@ -378,3 +387,20 @@ const routes = ({ app }) => {
 }
 
 module.exports = routes;
+
+function calculateCart({ cart }) {
+  cart.total_price = 0;
+  cart.item_count = 0;
+  for (let i = 0; i < cart.items.length; i++) {
+    const item = cart.items[i];
+    cart.item_count += item.quantity;
+    cart.total_price += item.line_price;
+  }
+  return cart;
+}
+
+function calculateLine({ item }) {
+  item.line_price = item.price * item.quantity;
+  item.line_price_orginal = item.price_original * item.quantity;
+  return item;
+}
