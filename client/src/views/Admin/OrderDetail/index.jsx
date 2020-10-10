@@ -320,12 +320,12 @@ function OrderDetailComponent(props) {
                   <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
                 </div>
             }
-            <p className="ui-title-page m-t-20">Phương thức thanh toán</p>
+            <p className="ui-title-page">Phương thức thanh toán</p>
             <p>{common.formatGatewayCode(order.gateway_code)}</p>
             {
               order.gateway_code == 'code' ?
                 <div>
-                  <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
+                  <p className="ui-title-page">Trạng thái thu hộ COD</p>
                   {
                     order.carrier_cod_status_code != 'codreceipt' ?
                       <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>

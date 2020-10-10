@@ -197,8 +197,8 @@ const routes = ({ app }) => {
           create_data.shipping_address = {
             phone: data.billing_address.phone,
             address1: data.billing_address.address1,
-            province_code: customer_shipping_province,
-            district_code: customer_shipping_district,
+            province_code: data.customer_shipping_province,
+            district_code: data.customer_shipping_district,
           };
           create_data.fulfillment_status = 'pending';
         }

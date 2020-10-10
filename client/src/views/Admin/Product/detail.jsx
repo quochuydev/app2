@@ -148,9 +148,12 @@ function ProductDetail(props) {
         <Button onClick={e => onShowVariant({ product: productUpdate, variant: edit, active: 'update' })}>
           <Icon type="edit" />
         </Button>
-        <Button onClick={e => removeVariant(edit, productUpdate)}>
-          <Icon type="close" />
-        </Button>
+        {
+          product.variants.length > 1 ?
+            <Button onClick={e => removeVariant(edit, productUpdate)}>
+              <Icon type="close" />
+            </Button> : null
+        }
       </div>
     },
   ];
