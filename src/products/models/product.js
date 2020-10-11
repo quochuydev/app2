@@ -30,6 +30,8 @@ const ProductSchema = new Schema({
   tags: { type: String, default: null },
   tags_array: [String],
   title: { type: String, default: null },
+  vendor_id: { type: Number, default: null },
+  collect_id: { type: Number, default: null },
   vendor: { type: String, default: null },
   collect: { type: String, default: null },
   body_html: { type: String, default: null },

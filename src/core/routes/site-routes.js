@@ -41,11 +41,6 @@ const routes = ({ app }) => {
     res.render(`site/${code}/templates/index`, result);
   });
 
-  function setBaseUrl({ result, domain }) {
-    result.base_url = !!domain ? domain : config.frontend_site;
-    return result;
-  }
-
   app.get('/pages', function (req, res) {
     res.render(`shops/${code}/pages`)
   });
@@ -132,9 +127,11 @@ const routes = ({ app }) => {
     });
 
   app.route('/checkouts/:checkout_token')
-    .get(function (req, res) {
+    .get(async function (req, res) {
+      let shop_id = req.shop_id;
       let cart_token = req.cookies.cart_token;
       let checkout_token = req.params.checkout_token;
+
       if (cart_token != checkout_token) {
         if (cart_token) {
           return res.redirect(`/checkouts/${cart_token}`);
@@ -142,7 +139,9 @@ const routes = ({ app }) => {
           return res.redirect(`/`);
         }
       }
+      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
       res.render(`site/${code}/templates/checkouts`, {
+        cart,
         code,
         settings,
       });
@@ -256,7 +255,12 @@ const routes = ({ app }) => {
       if (!order) {
         throw { message: `Đơn hàng không tồn tại ${token}` }
       }
-      res.json(order);
+
+      res.render(`site/${code}/templates/order`, {
+        order,
+        code,
+      });
+      // res.json(order);
     } catch (error) {
       res.render('404');
     }
@@ -409,6 +413,8 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
+
+    cart.items[line - 1].quantity = quantity;
     if (quantity == 0) {
       cart.items = cart.items.filter((e, i) => (i + 1) != line);
     }
@@ -434,4 +440,9 @@ function calculateLine({ item }) {
   item.line_price = item.price * item.quantity;
   item.line_price_orginal = item.price_original * item.quantity;
   return item;
+}
+
+function setBaseUrl({ result, domain }) {
+  result.base_url = !!domain ? domain : config.frontend_site;
+  return result;
 }

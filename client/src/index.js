@@ -20,6 +20,7 @@ import AppReducer from './views/Admin/App/reducers';
 import CoreReducer from './views/Admin/Core/reducers';
 import UserReducer from './views/Admin/User/reducers';
 import PermissionReducer from './views/Admin/Permission/reducers';
+import FileReducer from './views/Admin/File/reducers';
 import { Map } from 'immutable';
 
 const combinedReducers = combineReducers({
@@ -30,6 +31,7 @@ const combinedReducers = combineReducers({
   core: CoreReducer,
   users: UserReducer,
   permissions: PermissionReducer,
+  files: FileReducer,
 });
 
 const middleware = [thunk];
