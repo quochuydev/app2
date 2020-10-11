@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  app2:
+    image: app2
+    build: .
+    environment:
+      NODE_ENV: production

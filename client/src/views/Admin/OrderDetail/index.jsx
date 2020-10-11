@@ -57,7 +57,7 @@ function OrderDetailComponent(props) {
       render: edit => (
         <List.Item.Meta
           avatar={<Avatar shape="square" size={'large'} src={edit.image ? edit.image.src : null} />}
-          title={<Link to={`../../product/${edit.product_id}`}>
+          title={<Link to={`../product/${edit.product_id}`}>
             {[edit.title, edit.variant_title].join(' - ')}
           </Link>}
           description={[edit.sku, edit.barcode].join(' - ')}

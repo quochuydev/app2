@@ -20,6 +20,7 @@ const ERROR_ROUTE = `${SITE_ROUTE}/error`;
 
 const USER_ROUTE = `${SITE_ROUTE}/users`;
 const PERMISSION_ROUTE = `${SITE_ROUTE}/permissions`;
+const FILE_ROUTE = `${SITE_ROUTE}/files`;
 
 const PATHS = {
   SITE_ROUTE,
@@ -40,7 +41,8 @@ const PATHS = {
   LOGIN_GOOGLE_ROUTE,
   ERROR_ROUTE,
   USER_ROUTE,
-  PERMISSION_ROUTE
+  PERMISSION_ROUTE,
+  FILE_ROUTE
 };
 const MENU_DATA = [
   {
@@ -110,6 +112,13 @@ const MENU_DATA = [
     name: 'Nhóm quyền',
     is_open: true,
     icon: 'team'
+  },
+  {
+    path: FILE_ROUTE,
+    key: 'file',
+    name: 'Data',
+    is_open: true,
+    icon: 'file'
   }
 ]
 

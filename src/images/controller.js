@@ -8,8 +8,19 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 
 const config = require(path.resolve('./src/config/config'));
 const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
+const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 const Controller = {}
+
+Controller.loadImages = async function ({ query }) {
+  let { criteria, limit, skip, sort } = _parse(query);
+  let result = { images: [], total: 0 }
+  result.total = await ImageModel.count(criteria);
+  if (result.total) {
+    result.images = await ImageModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
+  }
+  return result;
+}
 
 Controller.getImage = async function (req, res) {
   let fileName = req.params.fileName;

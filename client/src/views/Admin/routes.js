@@ -11,6 +11,7 @@ import Authen from '../Admin/Authen/routes';
 import ErrorRoute from './ErrorPage/routes';
 import User from './User/routes';
 import Permission from './Permission/routes';
+import File from './File/routes';
 
 const routes = [
   ...Home,
@@ -26,6 +27,7 @@ const routes = [
   ...ErrorRoute,
   ...User,
   ...Permission,
+  ...File
 ];
 
 export default routes;
