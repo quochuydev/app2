@@ -205,15 +205,16 @@ function OrderDetailComponent(props) {
             />
           </Col>
           <Col xs={24} lg={4}>
-            <Popover key={1} placement="topRight" content={
-              <div style={{}}>
-                <a className="block" onClick={() => reOrder(order)}>Đặt lại đơn hàng</a>
-                <a className="block" onClick={() => cancelOrder(order)}>Hủy đơn</a>
+            <Popover placement="bottomLeft" content={
+              <div>
+                <Button type="link" size="large" className="block" onClick={() => reOrder(order)} >
+                  Đặt lại đơn hàng</Button>
+                <Button type="link" size="large" className="block" onClick={() => cancelOrder(order)} >
+                  Hủy đơn</Button>
               </div>
             } trigger="click">
               <Button icon="plus-circle" size="large" style={{ float: 'right' }} >
-                Thao tác
-                  </Button>
+                Thao tác</Button>
             </Popover>
             <ReactToPrint
               onBeforeGetContent={() => beforePrint()}
@@ -310,9 +311,34 @@ function OrderDetailComponent(props) {
           </Card>
           <Card className="m-t-10" title={<p className="ui-title-page">Thông tin Vận chuyển</p>}>
             <p className="ui-title-page">Thông tin giao hàng</p>
-            <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
-            <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
-            <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
+            {
+              (order.fulfillment_status == 'waiting_customer') ?
+                <p>Khách hàng nhận tại của hàng</p>
+                : <div>
+                  <p>Họ tên người nhận: {[order.shipping_address.first_name, order.shipping_address.last_name].join(' ')}</p>
+                  <p>Số điện thoại {_.get(order, 'shipping_address.phone')}</p>
+                  <p><strong>Địa chỉ giao hàng:</strong> {_.get(order, 'shipping_address.address1')}</p>
+                </div>
+            }
+            <p className="ui-title-page">Phương thức thanh toán</p>
+            <p>{common.formatGatewayCode(order.gateway_code)}</p>
+            {
+              order.gateway_code == 'code' ?
+                <div>
+                  <p className="ui-title-page">Trạng thái thu hộ COD</p>
+                  {
+                    order.carrier_cod_status_code != 'codreceipt' ?
+                      <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
+                      : null
+                  }
+                  {
+                    order.carrier_cod_status_code == 'codreceipt' ?
+                      <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
+                      : null
+                  }
+                </div>
+                : null
+            }
             <p className="ui-title-page m-b-10">Trạng thái vận chuyển</p>
             <Select value={order.fulfillment_status} className="block" name="fulfillment_status"
               onChange={e => actions.merge({ fulfillment_status: e })}>
@@ -320,19 +346,6 @@ function OrderDetailComponent(props) {
               <Option key={'delivered'} value={'delivered'}>{formatFulfillmentStatus('delivered')}</Option>
             </Select>
             <Button className="m-t-10" type="primary" onClick={() => updateFulfillmentStatus()}>Cập nhật</Button>
-
-            <p className="ui-title-page m-t-20">Trạng thái thu hộ COD</p>
-            {
-              order.carrier_cod_status_code != 'codreceipt' ?
-                <Button type="primary" size="large" onClick={() => updateCodeReceipt()}>Xác nhận nhận tiền</Button>
-                : null
-            }
-            {
-              order.carrier_cod_status_code == 'codreceipt' ?
-                <p><Icon style={{ color: '#1890ff' }} type="check-circle" theme="filled" /> Thông tin nhận tiền đã được xác nhận</p>
-                : null
-            }
-
           </Card>
         </Col>
       </Row >
@@ -343,7 +356,7 @@ function OrderDetailComponent(props) {
           }
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
