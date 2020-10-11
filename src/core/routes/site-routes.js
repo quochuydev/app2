@@ -16,6 +16,7 @@ const { CustomerModel } = require(path.resolve('./src/customers/models/customers
 
 let code = '1000';
 let settings = require('./settings').current;
+let amount = '{{amount}}';
 
 const routes = ({ app }) => {
   app.get('/', async function (req, res) {
@@ -25,6 +26,7 @@ const routes = ({ app }) => {
       code,
       settings,
       products,
+      amount,
       collections: {
         all: {
           products: []
@@ -82,7 +84,8 @@ const routes = ({ app }) => {
     let products = await ProductModel.find({ shop_id }).lean(true);
 
     let result = {
-      code, amount: 0,
+      code,
+      amount,
       product, products, settings
     }
     setBaseUrl({ result, domain: req.host });
@@ -97,6 +100,7 @@ const routes = ({ app }) => {
       code,
       settings,
       products,
+      amount,
     })
   });
 
@@ -111,7 +115,7 @@ const routes = ({ app }) => {
         }
       }
       res.render(`site/${code}/templates/cart`, {
-        amount: '{{amount}}',
+        amount,
         cart,
         code,
         settings,
