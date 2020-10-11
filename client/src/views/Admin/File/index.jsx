@@ -60,7 +60,7 @@ function Home(props) {
 
   let columns = [
     {
-      key: 'image', title: 'image', render: edit =>
+      key: 'image', title: 'image', width: 110, render: edit =>
         <Avatar shape="square" size={90} src={edit.src} />
     },
     {
@@ -97,7 +97,7 @@ function Home(props) {
                 <div className="ant-upload-text" style={{ width: 240 }}>Upload</div>
               </Upload>
 
-              <Table key="_id" columns={columns} dataSource={images} scroll={{ x: 1000 }} />
+              <Table key="_id" columns={columns} dataSource={images} scroll={{ x: 1200 }} />
             </Col>
           </Row>
         </Tabs.TabPane>
