@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Layout, message, Statistic, Icon, Row, Col, Card, Tabs,
-  Upload, Table, Button,
+  Upload, Table, Button, Avatar,
 } from 'antd';
 import {
   Link
@@ -52,13 +52,16 @@ function Home(props) {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
+    onSuccess: async function (result) {
+      actions.loadImages();
+      message.success(result.message);
+    }
   };
 
   let columns = [
     {
-      key: '_id', title: 'ID', render: edit => {
-        return edit._id
-      }
+      key: 'image', title: 'image', render: edit =>
+        <Avatar shape="square" size={90} src={edit.src} />
     },
     {
       key: 'filename', title: 'Filename', render: edit => {
@@ -94,7 +97,7 @@ function Home(props) {
                 <div className="ant-upload-text" style={{ width: 240 }}>Upload</div>
               </Upload>
 
-              <Table columns={columns} dataSource={images} />
+              <Table key="_id" columns={columns} dataSource={images} scroll={{ x: 1000 }} />
             </Col>
           </Row>
         </Tabs.TabPane>
