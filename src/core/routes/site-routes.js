@@ -142,6 +142,15 @@ const routes = ({ app }) => {
       }
     });
 
+  app.get('/checkout', function (req, res) {
+    let cart_token = req.cookies.cart_token;
+    if (cart_token) {
+      res.redirect(`/checkouts/${cart_token}`);
+    } else {
+      res.redirect(`/cart`);
+    }
+  });
+
   app.route('/checkouts/:checkout_token')
     .get(async function (req, res) {
       let shop_id = req.shop_id;
@@ -152,7 +161,7 @@ const routes = ({ app }) => {
         if (cart_token) {
           return res.redirect(`/checkouts/${cart_token}`);
         } else {
-          return res.redirect(`/`);
+          return res.redirect(`/cart`);
         }
       }
       let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
@@ -254,15 +263,6 @@ const routes = ({ app }) => {
         res.status(400).json(error);
       }
     })
-
-  app.get('/checkout', function (req, res) {
-    let cart_token = req.cookies.cart_token;
-    if (cart_token) {
-      res.redirect(`/checkouts/${cart_token}`);
-    } else {
-      res.redirect(`/`);
-    }
-  });
 
   app.get('/orders/:token', async function (req, res) {
     try {

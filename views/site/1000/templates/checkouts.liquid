@@ -643,26 +643,27 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr class="product" data-product-id="1026288829" data-variant-id="1058030689">
+										{% for item in cart.items %}
+										<tr class="product" data-product-id="{{item.product_id}}" data-variant-id="{{item.variant_id}}">
 											<td class="product-image">
 												<div class="product-thumbnail">
 													<div class="product-thumbnail-wrapper">
-														<img class="product-thumbnail-image" alt="Người Trong Muôn Nghề: Ngành IT có gì?"
-															src="//product.hstatic.net/200000123069/product/book123_minimal_e2ea02c39a17477a8b60a0edc5993c87_small.jpg" />
+														<img class="product-thumbnail-image" alt="{{item.title}}" src="{{item.image.src}}" />
 													</div>
-													<span class="product-thumbnail-quantity" aria-hidden="true">1</span>
+													<span class="product-thumbnail-quantity" aria-hidden="true">{{item.quantity}}</span>
 												</div>
 											</td>
 											<td class="product-description">
-												<span class="product-description-name order-summary-emphasis">Người Trong Muôn Nghề: Ngành IT có
-													gì?</span> <span class="product-description-variant order-summary-small-text">
-													Default Title / Nhóm tác giả / NXB Thế Giới
+												<span class="product-description-name order-summary-emphasis">{{item.title}}</span>
+												<span class="product-description-variant order-summary-small-text">
+													{{item.variant_title}}
 												</span> </td>
-											<td class="product-quantity visually-hidden">1</td>
+											<td class="product-quantity visually-hidden">{{item.quantity}}</td>
 											<td class="product-price">
-												<span class="order-summary-emphasis">152,000₫</span>
+												<span class="order-summary-emphasis">{{item.price}}</span>
 											</td>
 										</tr>
+										{% endfor %}
 									</tbody>
 								</table>
 							</div>
@@ -702,7 +703,7 @@
 											<td class="total-line-name">Tạm tính</td>
 											<td class="total-line-price">
 												<span class="order-summary-emphasis" data-checkout-subtotal-price-target="15200000">
-													152,000₫
+													{{cart.total_price}}
 												</span>
 											</td>
 										</tr>
@@ -720,8 +721,8 @@
 											</td>
 											<td class="total-line-name payment-due">
 												<span class="payment-due-currency">VND</span>
-												<span class="payment-due-price" data-checkout-payment-due-target="15200000">
-													152,000₫
+												<span class="payment-due-price" data-checkout-payment-due-target="{{cart.total_price}}">
+													{{cart.total_price}}
 												</span>
 											</td>
 										</tr>
