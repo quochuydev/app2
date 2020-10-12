@@ -72,12 +72,14 @@ Controller.removeImage = async function ({ image_id }) {
   if (!image_id || Number.isNaN(id)) {
     throw { message: `image_id ${image_id} không đúng định dạng` }
   }
-  let found_products = await ProductModel._find({ 'images.id': id });
 
+  let found_products = await ProductModel._find({ 'images.id': id });
   for (const product of found_products) {
     let update_images = product.images.filter(e => e.id != id);
     await ProductModel._update({ id: product.id }, { $set: { images: update_images } });
   }
+
+  await ImageModel._update({ id }, { $set: { is_deleted: true } });
 
   return { error: false, message: 'Xóa hình ảnh thành công' };
 }

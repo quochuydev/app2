@@ -19,6 +19,7 @@ const ImageSchema = new Schema({
     key: { type: String, default: null },
     value: { type: String, default: null },
   },
+  is_deleted: { type: Boolean, default: false },
   created_at: { type: Date, default: null },
   updated_at: { type: Date, default: null },
   shop_id: { type: Number, default: null },

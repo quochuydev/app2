@@ -256,7 +256,7 @@ Controller.importProducts = async function ({ file }) {
 
             let variants = await VariantModel.find({ product_id: item.product_id, is_deleted: false }).lean(true);
             await makeDataImages({ item });
-            await ProductModel._update({ id: found_product.id }, { $set: { variants }, $push: { images: item.images } });
+            await ProductModel._update({ id: found_product.id }, { $set: { variants }, $concat: { images: item.images } });
             result.product_updated++;
           } else {
             await makeDataImage({ item });
@@ -265,7 +265,11 @@ Controller.importProducts = async function ({ file }) {
             let newVariant = await VariantModel._create(variant);
             result.variant_created++;
             await makeDataImages({ item });
-            await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant, images: item.images } });
+            await ProductModel._update({ id: found_product.id },
+              {
+                $push: { variants: newVariant },
+                $concat: { images: item.images }
+              });
             result.product_updated++;
           }
         } else {
