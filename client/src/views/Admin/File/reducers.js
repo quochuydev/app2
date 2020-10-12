@@ -5,6 +5,7 @@ const initialState = Map({
   file: null,
   images: [],
   image: null,
+  total: 0,
 });
 
 function Reducer(state = initialState, { type, payload }) {

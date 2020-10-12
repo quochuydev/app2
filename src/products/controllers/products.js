@@ -15,7 +15,7 @@ const { ERR } = require(path.resolve('./src/core/lib/error.js'));
 let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 const {
-  makeDataProduct, makeDataVariant, makeDataVariants
+  makeDataProduct, makeDataVariant, makeDataVariants, makeDataImage, makeDataImages
 } = require('../business/make-data');
 
 let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
@@ -121,7 +121,7 @@ let productHeaders = [
   { header: 'Tên', key: 'title' },
   { header: 'Mô tả', key: 'body_html' },
   { header: 'Trích dẫn', key: 'xxxx' },
-  { header: 'Hãng', key: 'title' },
+  { header: 'Hãng', key: 'collect' },
   { header: 'Loại sản phẩm', key: 'product_type' },
   { header: 'Tags', key: 'tags' },
   { header: 'Hiển thị', key: 'published' }, //published_scope:'global' && published_at
@@ -248,24 +248,32 @@ Controller.importProducts = async function ({ file }) {
         if (criteria.sku || criteria.barcode) {
           let found_variant = await VariantModel.findOne({ ...criteria, product_id: item.product_id }).lean(true);
           if (found_variant) {
+            await makeDataImage({ item });
             let variant = makeDataVariant(item);
             variant.product_id = found_product.id;
             await VariantModel._update({ id: found_variant.id }, { $set: variant });
             result.variant_updated++;
 
             let variants = await VariantModel.find({ product_id: item.product_id, is_deleted: false }).lean(true);
-            await ProductModel._update({ id: found_product.id }, { $set: { variants } });
+            await makeDataImages({ item });
+            await ProductModel._update({ id: found_product.id }, { $set: { variants }, $concat: { images: item.images } });
             result.product_updated++;
           } else {
+            await makeDataImage({ item });
             let variant = makeDataVariant(item);
             variant.product_id = found_product.id;
             let newVariant = await VariantModel._create(variant);
             result.variant_created++;
-
-            await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant } });
+            await makeDataImages({ item });
+            await ProductModel._update({ id: found_product.id },
+              {
+                $push: { variants: newVariant },
+                $concat: { images: item.images }
+              });
             result.product_updated++;
           }
         } else {
+          await makeDataImage({ item });
           let variant = makeDataVariant(item);
           variant.product_id = found_product.id;
           let newVariant = await VariantModel._create(variant);
@@ -275,6 +283,7 @@ Controller.importProducts = async function ({ file }) {
           result.product_updated++;
         }
       } else {
+        await makeDataImages({ item });
         let product = makeDataProduct(item);
         product.variants = makeDataVariants([item]);
         await ProductService.create({ product });
