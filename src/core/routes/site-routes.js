@@ -241,7 +241,7 @@ const routes = ({ app }) => {
             image: e.image,
             product_id: e.product_id,
             title: e.title,
-            variant_id: e.id,
+            variant_id: e.variant_id,
             variant_title: e.title,
             sku: e.sku,
             barcode: e.barcode,
