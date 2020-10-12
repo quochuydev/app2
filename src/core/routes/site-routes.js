@@ -13,6 +13,7 @@ const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js')
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+const { CollectionModel } = require(path.resolve('./src/products/models/collection.js'));
 
 let code = '1000';
 let settings = require('./settings').current;
@@ -92,10 +93,21 @@ const routes = ({ app }) => {
     res.render(`site/${code}/templates/products`, result)
   });
 
-  app.get('/collections/:type', async function (req, res) {
-    let type = req.params.type;
+  app.get('/collections/:collect', async function (req, res) {
+    let collect = req.params.collect;
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let criteria = {
+      shop_id,
+    }
+    if (collect != 'all') {
+      let collection = await CollectionModel.findOne({ shop_id, handle: collect }).lean(true);
+      if (!collection) {
+        return res.render('404');
+      } else {
+        criteria.collect = collection.title;
+      }
+    }
+    let products = await ProductModel.find(criteria).lean(true);
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,

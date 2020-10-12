@@ -11,6 +11,7 @@ const cache = require('memory-cache');
 const VendorSchema = new Schema({
   id: { type: Number, default: null },
   code: { type: String, default: null },
+  handle: { type: String, default: null },
   title: { type: String, default: null },
   description: { type: String, default: null },
   updated_at: { type: Date, default: null },

@@ -12,6 +12,7 @@ const CollectionSchema = new Schema({
   id: { type: Number, default: null },
   title: { type: String, default: null },
   body_html: { type: String, default: null },
+  code: { type: String, default: null },
   handle: { type: String, default: null },
   image: {},
   published: { type: Boolean, default: true },
