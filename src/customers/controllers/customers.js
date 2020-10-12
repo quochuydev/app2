@@ -4,6 +4,7 @@ const moment = require('moment');
 
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
+const { ImageModel } = require(path.resolve('./src/images/model.js'));
 
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { syncCustomersHaravan, syncCustomersShopify, syncCustomersWoo } = require('../business/customers');

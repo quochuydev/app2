@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import {
   Layout, message, Statistic, Icon, Row, Col, Card, Tabs,
-  Upload, Table, Button, Avatar,
+  Upload, Table, Button, Avatar, Input, Tooltip,
 } from 'antd';
 import {
   Link
@@ -58,6 +58,15 @@ function Home(props) {
     }
   };
 
+  const textAreaRef = useRef(null);
+
+  function copyToClipboard(e) {
+    textAreaRef.current.select();
+    document.execCommand('copy');
+    e.target.focus();
+    message.success('Copied!')
+  }
+
   let columns = [
     {
       key: 'image', title: 'image', width: 110, render: edit =>
@@ -69,13 +78,19 @@ function Home(props) {
       }
     },
     {
-      key: 'src', title: 'src', render: edit => {
-        return edit.src
-      }
+      key: 'src', title: 'src', width: 500, render: edit =>
+        <Tooltip placement="top" title={edit.src}>
+          <Input addonAfter={
+            <Tooltip placement="top" title={'Copy'}>
+              <Icon type="copy" onClick={copyToClipboard}></Icon>
+            </Tooltip>
+          } ref={textAreaRef} value={edit.src} />
+        </Tooltip>
     },
     {
       key: 'option', title: '', render: edit =>
         <div>
+          <Button icon="edit" type="primary"></Button>
           <Button icon="close" type="danger"></Button>
         </div>
     }
@@ -87,11 +102,8 @@ function Home(props) {
         <Tabs.TabPane tab="Tổng quan" key="1">
           <Row gutter={[15, 0]}>
             <Col xs={12} lg={24}>
-              <Upload name="file"
-                listType="picture-card"
-                className="avatar-uploader"
-                beforeUpload={() => { return true; }}
-                fileList={[]}
+              <Upload name="file" listType="picture-card" className="avatar-uploader"
+                beforeUpload={() => { return true; }} fileList={[]}
                 {...uploadSetting}
               >
                 <div className="ant-upload-text" style={{ width: 240 }}>Upload</div>

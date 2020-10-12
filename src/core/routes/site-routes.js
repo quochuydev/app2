@@ -22,7 +22,7 @@ let amount = '{{amount}}';
 const routes = ({ app }) => {
   app.get('/', async function (req, res) {
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
     let result = {
       code,
       settings,
@@ -82,7 +82,7 @@ const routes = ({ app }) => {
       return res.json(product);
     }
 
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
 
     let result = {
       code,
@@ -98,6 +98,7 @@ const routes = ({ app }) => {
     let shop_id = req.shop_id;
     let criteria = {
       shop_id,
+      is_deleted: false,
     }
     if (collect != 'all') {
       let collection = await CollectionModel.findOne({ shop_id, handle: collect }).lean(true);
@@ -107,7 +108,7 @@ const routes = ({ app }) => {
         criteria.collect = collection.title;
       }
     }
-    let products = await ProductModel.find(criteria).lean(true);
+    let products = await ProductModel.find(criteria).sort({ created_at: -1 }).lean(true);
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,

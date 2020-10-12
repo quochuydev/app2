@@ -196,6 +196,7 @@ function Products(props) {
         onOk={() => { }}
         onCancel={() => setIsImportModal(false)}
       >
+        <Button type="link" href="#">Download file mẫu</Button>
         <Upload.Dragger {...uploadSetting}>
           <Icon type="upload" /> Upload
         </Upload.Dragger>
