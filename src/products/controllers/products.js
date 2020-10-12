@@ -248,24 +248,28 @@ Controller.importProducts = async function ({ file }) {
         if (criteria.sku || criteria.barcode) {
           let found_variant = await VariantModel.findOne({ ...criteria, product_id: item.product_id }).lean(true);
           if (found_variant) {
+            await makeDataImage({ item });
             let variant = makeDataVariant(item);
             variant.product_id = found_product.id;
             await VariantModel._update({ id: found_variant.id }, { $set: variant });
             result.variant_updated++;
 
             let variants = await VariantModel.find({ product_id: item.product_id, is_deleted: false }).lean(true);
-            await ProductModel._update({ id: found_product.id }, { $set: { variants } });
+            await makeDataImages({ item });
+            await ProductModel._update({ id: found_product.id }, { $set: { variants }, $push: { images: item.images } });
             result.product_updated++;
           } else {
+            await makeDataImage({ item });
             let variant = makeDataVariant(item);
             variant.product_id = found_product.id;
             let newVariant = await VariantModel._create(variant);
             result.variant_created++;
-
-            await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant } });
+            await makeDataImages({ item });
+            await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant, images: item.images } });
             result.product_updated++;
           }
         } else {
+          await makeDataImage({ item });
           let variant = makeDataVariant(item);
           variant.product_id = found_product.id;
           let newVariant = await VariantModel._create(variant);

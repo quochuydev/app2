@@ -58,15 +58,6 @@ function Home(props) {
     }
   };
 
-  const textAreaRef = useRef(null);
-
-  function copyToClipboard(e) {
-    textAreaRef.current.select();
-    document.execCommand('copy');
-    e.target.focus();
-    message.success('Copied!')
-  }
-
   let columns = [
     {
       key: 'image', title: 'image', width: 110, render: edit =>
@@ -78,13 +69,9 @@ function Home(props) {
       }
     },
     {
-      key: 'src', title: 'src', width: 500, render: edit =>
+      key: 'src', title: 'src', width: 550, render: edit =>
         <Tooltip placement="top" title={edit.src}>
-          <Input addonAfter={
-            <Tooltip placement="top" title={'Copy'}>
-              <Icon type="copy" onClick={copyToClipboard}></Icon>
-            </Tooltip>
-          } ref={textAreaRef} value={edit.src} />
+          <Input value={edit.src} />
         </Tooltip>
     },
     {

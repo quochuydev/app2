@@ -190,27 +190,18 @@ function Products(props) {
           />
         </Col>
       </Row>
-      <Modal
-        title="Import excel"
-        visible={isImportModal}
-        onOk={() => { }}
-        onCancel={() => setIsImportModal(false)}
-      >
+      <Modal title="Import excel" visible={isImportModal}
+        onOk={() => { }} onCancel={() => setIsImportModal(false)}      >
         <Button type="link" href="#">Download file mẫu</Button>
         <Upload.Dragger {...uploadSetting}>
           <Icon type="upload" /> Upload
         </Upload.Dragger>
       </Modal>
-      <Modal
-        title="Export excel"
-        visible={isExportModal}
-        onOk={() => exportProducts()}
-        onCancel={() => setIsExportModal(false)}
-      >
+      <Modal title="Export excel" visible={isExportModal}
+        onOk={() => exportProducts()} onCancel={() => setIsExportModal(false)}      >
         {
           downloadLink ? <a href={downloadLink}>{downloadLink}</a> : null
         }
-
       </Modal>
     </div>
   )
