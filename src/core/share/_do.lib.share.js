@@ -161,6 +161,11 @@
           str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
           str = str.replace(/đ/g, "d");
           return str;
+        },
+        makeHandle(str) {
+          let result = _do.removeAscent(str);
+          result = _.kebabCase(result, ' ', '-');
+          return result
         }
       };
 

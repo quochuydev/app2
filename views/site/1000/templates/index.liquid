@@ -76,7 +76,7 @@
                 <div class="tab-title">
                   <ul class="box-tabs nav-tabs tabbernav_product" id="ajax-tab-collection">
                     <li class="active">
-                      <a href="#tab1" data-toggle="tab" data-handle="hot-products">Sản phẩm nổi bật</a>
+                      <a href="#tab1" data-toggle="tab" data-handle="hot-products">Sản phẩm mới nhất</a>
                     </li>
                   </ul>
                 </div>
@@ -115,7 +115,8 @@
                                   title="{{product.title}}">{{product.title}}</a>
                               </h3>
                               <div class="box-pro-prices">
-                                <p class="pro-price highlight">{{product.variants[0].price}}
+                                <p class="pro-price highlight">
+                                  {{product.variants[0].price | money}}
                                   <span class="pro-price-del"><del
                                       class="compare-price">{{product.variants[0].price_orginal}}</del></span>
                                 </p>

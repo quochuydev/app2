@@ -5,6 +5,7 @@ const { CollectionModel } = require(path.resolve('./src/products/models/collecti
 const { TagModel } = require(path.resolve('./src/products/models/tag.js'));
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
+let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
 
 let Controller = {}
 
@@ -20,12 +21,14 @@ Controller.assertVendor = async function ({ data }) {
   }
   let found_vendor = await VendorModel._findOne({ title: data.title });
   let vendor = null;
+  let data_assert = {
+    title: data.title,
+    handle: _do.makeHandle(data.title)
+  }
   if (!found_vendor) {
-    vendor = await VendorModel._create({
-      title: data.title
-    });
+    vendor = await VendorModel._create(data_assert);
   } else {
-    vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data }, { new: true, lean: true });
+    vendor = await VendorModel.findOneAndUpdate({ id: found_vendor.id }, { $set: data_assert }, { new: true, lean: true });
   }
   return { vendor };
 }
@@ -46,12 +49,14 @@ Controller.assertCollection = async function ({ data }) {
   }
   let found_collection = await CollectionModel._findOne({ title: data.title });
   let collection = null;
+  let data_assert = {
+    title: data.title,
+    handle: _do.makeHandle(data.title)
+  }
   if (!found_collection) {
-    collection = await CollectionModel._create({
-      title: data.title
-    });
+    collection = await CollectionModel._create(data_assert);
   } else {
-    collection = await CollectionModel.findOneAndUpdate({ id: found_collection.id }, { $set: data }, { new: true, lean: true });
+    collection = await CollectionModel.findOneAndUpdate({ id: found_collection.id }, { $set: data_assert }, { new: true, lean: true });
   }
 
   return { collection };
