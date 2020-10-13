@@ -287,14 +287,19 @@ function OrderDetailComponent(props) {
         </Col>
 
         <Col xs={24} lg={8} >
-          <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
-            <p>Họ tên: <Link to={`../../customer/${customer.id}`}>
-              {[customer.last_name, customer.first_name].join(' ')}
-            </Link>
-            </p>
-            <p>Email: {_.get(customer, 'email')}</p>
-            <p>Số điện thoại: {_.get(customer, 'phone')}</p>
-            <p>Địa chỉ: {_.get(customer, 'address1')}</p>
+          <Card title={<p className="ui-title-page">Thông tin khách hàng {order.customer_id}</p>}>
+            {
+              !!order.customer_id ?
+                <div>
+                  <p>Họ tên: <Link to={`../../customer/${customer.id}`}>
+                    {[customer.last_name, customer.first_name].join(' ')}
+                  </Link>
+                  </p>
+                  <p>Email: {_.get(customer, 'email')}</p>
+                  <p>Số điện thoại: {_.get(customer, 'phone')}</p>
+                  <p>Địa chỉ: {_.get(customer, 'address1')}</p>
+                </div> : null
+            }
             <p className="ui-title-page">Thông tin đơn hàng</p>
             <p>Họ tên:
               {
