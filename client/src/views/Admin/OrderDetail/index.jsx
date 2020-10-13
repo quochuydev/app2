@@ -291,7 +291,7 @@ function OrderDetailComponent(props) {
             {
               !!order.customer_id ?
                 <div>
-                  <p>Họ tên: <Link to={`../../customer/${customer.id}`}>
+                  <p>Họ tên: <Link to={`../customer/${customer.id}`}>
                     {[customer.last_name, customer.first_name].join(' ')}
                   </Link>
                   </p>
@@ -304,7 +304,7 @@ function OrderDetailComponent(props) {
             <p>Họ tên:
               {
                 order.customer_id ?
-                  <Link to={`../../customer/${order.customer_id}`}>
+                  <Link to={`../customer/${order.customer_id}`}>
                     {[_.get(order, 'billing_address.last_name'), _.get(order, 'billing_address.first_name')].join(' ')}
                   </Link>
                   : [_.get(order, 'billing_address.last_name'), _.get(order, 'billing_address.first_name')].join(' ')
