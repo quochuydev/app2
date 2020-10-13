@@ -287,7 +287,7 @@ function OrderDetailComponent(props) {
         </Col>
 
         <Col xs={24} lg={8} >
-          <Card title={<p className="ui-title-page">Thông tin khách hàng {order.customer_id}</p>}>
+          <Card title={<p className="ui-title-page">Thông tin khách hàng</p>}>
             {
               !!order.customer_id ?
                 <div>
