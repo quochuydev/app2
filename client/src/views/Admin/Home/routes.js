@@ -6,9 +6,9 @@ const routes = [
   {
     path: SITE_ROUTE,
     component: HomePage,
-    permission:[],
-    breadcrumbText:'Trang chủ',
-    exact:true
+    permission: [],
+    breadcrumbText: 'Trang chủ',
+    exact: true
   }
 ];
 

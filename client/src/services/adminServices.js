@@ -214,12 +214,6 @@ async function removeVariant(data) {
   return await ApiClient.deleteData(url, null, data);
 }
 
-let Image = {
-  remove: async function removeImage(data) {
-    let url = compile('api/images/{id}', { id: data.id });
-    return await ApiClient.deleteData(url);
-  }
-}
 
 let Product = {
   loadVendors: async function (query) {
@@ -290,6 +284,25 @@ let Permission = {
   },
 }
 
+let Image = {
+  load: async function (query) {
+    return await ApiClient.getData('api/images', null, query);
+  },
+  get: async function (id) {
+    return await ApiClient.getData(`api/images/${id}`);
+  },
+  create: async function (data) {
+    return await ApiClient.postData(`api/images`, null, data);
+  },
+  update: async function (data) {
+    return await ApiClient.putData(`api/images/${data.id}`, null, data);
+  },
+  remove: async function (data) {
+    let url = compile('api/images/{id}', { id: data.id });
+    return await ApiClient.deleteData(url);
+  }
+}
+
 async function login(data) {
   return await ApiClient.postData(URLS.LOGIN, null, data);
 }
@@ -340,7 +353,7 @@ async function getWard(id) {
 }
 
 let Core = {
-  loadAdapters: async function(){
+  loadAdapters: async function () {
     return await ApiClient.getData('api/adapters', null, null);
   }
 }
@@ -360,6 +373,6 @@ export default {
   buildLinkMomoOrder, loadProducts, syncProducts, exportProducts, deleteProduct, getProduct, createProduct, updateProduct,
   createVariant, updateVariant, removeVariant,
   login, signup, changeShop, getUser,
-  Report, Image, Product, Order, Shop, Core, User, Permission,
+  Report, Image, Product, Order, Shop, Core, User, Permission, Image,
   listProvinces, getProvince, listDistricts, getDistrict, listWards, getWard
 }

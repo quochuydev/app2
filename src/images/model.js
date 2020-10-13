@@ -19,6 +19,7 @@ const ImageSchema = new Schema({
     key: { type: String, default: null },
     value: { type: String, default: null },
   },
+  is_deleted: { type: Boolean, default: false },
   created_at: { type: Date, default: null },
   updated_at: { type: Date, default: null },
   shop_id: { type: Number, default: null },
@@ -26,6 +27,12 @@ const ImageSchema = new Schema({
 
 ImageSchema.plugin(autoIncrement.plugin, { model: 'Image', field: 'id', startAt: 10000, incrementBy: 1 });
 
+ImageSchema.statics._find = async function (filter = {}) {
+  let _this = this;
+  filter.shop_id = cache.get('shop_id') || filter.shop_id;
+  let result = await _this.find(filter);
+  return result;
+}
 ImageSchema.statics._create = async function (data = {}) {
   let _this = this;
   data.shop_id = cache.get('shop_id');

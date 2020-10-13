@@ -137,11 +137,6 @@ async function signup(req, res, next) {
         return res.status(400).json({ message: 'Email không đúng định dạng' });
       }
 
-      let found_root_user = await UserMD.count({ email, is_root: true });
-      if (found_root_user) {
-        return res.status(400).json({ message: 'Email đã tồn tại' });
-      }
-
       let shop_data = {
         name, code, user_created: {
           email, phone

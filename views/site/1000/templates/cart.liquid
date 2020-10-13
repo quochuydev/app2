@@ -138,10 +138,10 @@
                         <div class="section section-collection">
                           <div class="wrapper-heading-home">
                             <h2>
-                              <a href="/collections/tu-sach-nhen"> Có thể bạn sẽ thích 2 </a>
+                              <a href="/collections/all"> Có thể bạn sẽ thích 2 </a>
                             </h2>
                             <div class="view-all">
-                              <a href="/collections/tu-sach-nhen">Xem Thêm</a>
+                              <a href="/collections/all">Xem Thêm</a>
                             </div>
                           </div>
                           <div class="row listProduct-cart content-product-list ">
@@ -189,7 +189,7 @@
                           <div class="summary-subtotal hidden">
                             <p class="subtotal">Tạm tính:
                               <span class="cart-total-price">
-                                811,800₫
+                                {{cart.total_price}}
                               </span>
                             </p>
                             <p class="shipping clearfix">Phí vận chuyển:
@@ -197,7 +197,7 @@
                             </p>
                           </div>
                           <div class="summary-total">
-                            <p>Tổng tiền: <span>811,800₫</span>
+                            <p>Tổng tiền: <span>{{cart.total_price}}</span>
                             </p>
                           </div>
                           <div class="summary-action">

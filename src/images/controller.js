@@ -8,8 +8,19 @@ const { VariantModel } = require(path.resolve('./src/products/models/variant.js'
 
 const config = require(path.resolve('./src/config/config'));
 const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
+const { _parse } = require(path.resolve('./src/core/lib/query'));
 
 const Controller = {}
+
+Controller.loadImages = async function ({ query }) {
+  let { criteria, limit, skip, sort } = _parse(query);
+  let result = { images: [], total: 0 }
+  result.total = await ImageModel.count(criteria);
+  if (result.total) {
+    result.images = await ImageModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
+  }
+  return result;
+}
 
 Controller.getImage = async function (req, res) {
   let fileName = req.params.fileName;
@@ -61,12 +72,14 @@ Controller.removeImage = async function ({ image_id }) {
   if (!image_id || Number.isNaN(id)) {
     throw { message: `image_id ${image_id} không đúng định dạng` }
   }
-  let found_products = await ProductModel._find({ 'images.id': id });
 
+  let found_products = await ProductModel._find({ 'images.id': id });
   for (const product of found_products) {
     let update_images = product.images.filter(e => e.id != id);
     await ProductModel._update({ id: product.id }, { $set: { images: update_images } });
   }
+
+  await ImageModel._update({ id }, { $set: { is_deleted: true } });
 
   return { error: false, message: 'Xóa hình ảnh thành công' };
 }

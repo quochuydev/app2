@@ -13,18 +13,21 @@ const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js')
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+const { CollectionModel } = require(path.resolve('./src/products/models/collection.js'));
 
 let code = '1000';
 let settings = require('./settings').current;
+let amount = '{{amount}}';
 
 const routes = ({ app }) => {
   app.get('/', async function (req, res) {
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
     let result = {
       code,
       settings,
       products,
+      amount,
       collections: {
         all: {
           products: []
@@ -40,11 +43,6 @@ const routes = ({ app }) => {
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/index`, result);
   });
-
-  function setBaseUrl({ result, domain }) {
-    result.base_url = !!domain ? domain : config.frontend_site;
-    return result;
-  }
 
   app.get('/pages', function (req, res) {
     res.render(`shops/${code}/pages`)
@@ -75,7 +73,7 @@ const routes = ({ app }) => {
       is_json_data = true;
     }
 
-    let product = await ProductModel.findOne({ shop_id, handle }).lean(true);
+    let product = await ProductModel.findOne({ shop_id, handle, is_deleted: false }).lean(true);
     if (!product) {
       return res.render('404');
     }
@@ -84,24 +82,38 @@ const routes = ({ app }) => {
       return res.json(product);
     }
 
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
 
     let result = {
-      code, amount: 0,
+      code,
+      amount,
       product, products, settings
     }
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/products`, result)
   });
 
-  app.get('/collections/:type', async function (req, res) {
-    let type = req.params.type;
+  app.get('/collections/:collect', async function (req, res) {
+    let collect = req.params.collect;
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id }).lean(true);
+    let criteria = {
+      shop_id,
+      is_deleted: false,
+    }
+    if (collect != 'all') {
+      let collection = await CollectionModel.findOne({ shop_id, handle: collect }).lean(true);
+      if (!collection) {
+        return res.render('404');
+      } else {
+        criteria.collect = collection.title;
+      }
+    }
+    let products = await ProductModel.find(criteria).sort({ created_at: -1 }).lean(true);
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,
       products,
+      amount,
     })
   });
 
@@ -116,7 +128,7 @@ const routes = ({ app }) => {
         }
       }
       res.render(`site/${code}/templates/cart`, {
-        amount: '{{amount}}',
+        amount,
         cart,
         code,
         settings,
@@ -131,18 +143,31 @@ const routes = ({ app }) => {
       }
     });
 
+  app.get('/checkout', function (req, res) {
+    let cart_token = req.cookies.cart_token;
+    if (cart_token) {
+      res.redirect(`/checkouts/${cart_token}`);
+    } else {
+      res.redirect(`/cart`);
+    }
+  });
+
   app.route('/checkouts/:checkout_token')
-    .get(function (req, res) {
+    .get(async function (req, res) {
+      let shop_id = req.shop_id;
       let cart_token = req.cookies.cart_token;
       let checkout_token = req.params.checkout_token;
+
       if (cart_token != checkout_token) {
         if (cart_token) {
           return res.redirect(`/checkouts/${cart_token}`);
         } else {
-          return res.redirect(`/`);
+          return res.redirect(`/cart`);
         }
       }
+      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
       res.render(`site/${code}/templates/checkouts`, {
+        cart,
         code,
         settings,
       });
@@ -217,8 +242,8 @@ const routes = ({ app }) => {
             image: e.image,
             product_id: e.product_id,
             title: e.title,
-            variant_id: e.id,
-            variant_title: e.title,
+            variant_id: e.variant_id,
+            variant_title: e.variant_title,
             sku: e.sku,
             barcode: e.barcode,
             price: e.price,
@@ -240,15 +265,6 @@ const routes = ({ app }) => {
       }
     })
 
-  app.get('/checkout', function (req, res) {
-    let cart_token = req.cookies.cart_token;
-    if (cart_token) {
-      res.redirect(`/checkouts/${cart_token}`);
-    } else {
-      res.redirect(`/`);
-    }
-  });
-
   app.get('/orders/:token', async function (req, res) {
     try {
       let token = req.params.token;
@@ -256,7 +272,12 @@ const routes = ({ app }) => {
       if (!order) {
         throw { message: `Đơn hàng không tồn tại ${token}` }
       }
-      res.json(order);
+
+      res.render(`site/${code}/templates/order`, {
+        order,
+        code,
+      });
+      // res.json(order);
     } catch (error) {
       res.render('404');
     }
@@ -409,6 +430,8 @@ const routes = ({ app }) => {
     if (!cart) {
       throw { message: 'Đã có lỗi xảy ra!' }
     }
+
+    cart.items[line - 1].quantity = quantity;
     if (quantity == 0) {
       cart.items = cart.items.filter((e, i) => (i + 1) != line);
     }
@@ -434,4 +457,9 @@ function calculateLine({ item }) {
   item.line_price = item.price * item.quantity;
   item.line_price_orginal = item.price_original * item.quantity;
   return item;
+}
+
+function setBaseUrl({ result, domain }) {
+  result.base_url = !!domain ? domain : config.frontend_site;
+  return result;
 }

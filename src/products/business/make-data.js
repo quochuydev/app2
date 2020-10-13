@@ -2,6 +2,27 @@
 let _ = require('lodash');
 let path = require('path');
 let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+const { ImageModel } = require(path.resolve('./src/images/model.js'));
+
+async function makeDataImage({ item }) {
+  if (item && item.image_src) {
+    let image_found = await ImageModel.findOne({ src: item.image_src }).lean(true);
+    if (image_found) {
+      item.image = image_found;
+    }
+  }
+  return item;
+}
+
+async function makeDataImages({ item }) {
+  if (item && item.image_src) {
+    let image_found = await ImageModel.findOne({ src: item.image_src }).lean(true);
+    if (image_found) {
+      item.images = [image_found]
+    }
+  }
+  return item;
+}
 
 function makeDataProduct(item) {
   let handle = _do.removeAscent(item.title);
@@ -29,7 +50,11 @@ function makeDataProduct(item) {
       name: item.option_3
     }],
     variants: item.variants,
-    images: item.images,
+    images: item.images.map(e => Object({
+      id: e.id,
+      filename: e.filename,
+      src: e.src,
+    })),
   }
 
   if (item.published == 'No') {
@@ -75,5 +100,7 @@ function makeDataVariant(item) {
 module.exports = {
   makeDataProduct,
   makeDataVariant,
-  makeDataVariants
+  makeDataVariants,
+  makeDataImage,
+  makeDataImages
 }
