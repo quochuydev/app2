@@ -306,7 +306,7 @@ Controller.deleteProduct = async function ({ product_id }) {
   }
 
   await ProductModel._findOneAndUpdate({ id: product_id }, { is_deleted: true });
-  await VariantModel._findOneAndUpdate({ product_id }, { is_deleted: true });
+  await VariantModel._update({ product_id }, { $set: { is_deleted: true } });
 
   return { message: 'Xóa sản phẩm thành công' }
 }
