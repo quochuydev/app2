@@ -42,22 +42,11 @@ common.cssProductType = (type) => {
   }
 }
 
-common.colorStatus = (status) => {
-  switch (status) {
-    case 'success': case 'delivered': case 'paid':
-      return 'green';
-    case 'fail':
-      return 'red';
-    default:
-      return 'blue';
-  }
-}
-
 common.cssStatus = (status) => {
   switch (status) {
-    case 'success': case 'delivered': case 'paid':
+    case 'success': case 'delivered': case 'paid': case 'codreceipt':
       return 'green';
-    case 'fail':
+    case 'fail': case 'codpending':
       return 'red';
     default:
       return 'blue';
