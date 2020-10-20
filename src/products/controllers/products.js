@@ -36,9 +36,12 @@ Controller.sync = async (req, res, next) => {
 }
 
 Controller.list = async (req, res) => {
-  let { limit, skip, criteria } = _parse(req.query);
+  let { limit, page, skip, sort, criteria } = _parse(req.query);
   let count = await ProductModel.count(criteria);
-  let products = await ProductModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+  let products = await ProductService.find({
+    filter: criteria,
+    limit, page, sort,
+  });
 
   for (const product of products) {
     product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })

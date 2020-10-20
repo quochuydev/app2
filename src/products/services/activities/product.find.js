@@ -1,19 +1,16 @@
-let path = require('path');
-const { remoteMongoJoin } = require(path.resolve('./src/core/businesses/common.js'));
+module.exports = ({ ProductModel, VariantModel }) => async function find({ filter, fields, page, limit, sort }) {
+  const skip = (page - 1) * limit;
 
-module.exports = ({ ProductModel, VariantModel }) => async function find({ filter = {}, fields = {} }) {
-  let result = {
-    products: [],
-    variants: [],
-  };
-  result.products = await ProductModel._find(filter);
-  if (result.products && Array.isArray(result.products)) {
-    let product_ids = result.products.map(e => e.id);
-    result.variants = await VariantModel._find({ product_id: { $in: product_ids }, is_deleted: false });
-    for (let i = 0; i < result.products.length; i++) {
-      const product = result.products[i];
-      product.variants = result.variants.filter(e => e.product_id == product.id);
+  let products = await ProductModel.find(filter).sort(sort).skip(skip).limit(limit).lean(true);
+
+  if (products && Array.isArray(products)) {
+    let product_ids = products.map(e => e.id);
+    let variants = await VariantModel._find({ product_id: { $in: product_ids }, is_deleted: false });
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      product.variants = variants.filter(e => e.product_id == product.id);
     }
   }
-  return result;
+
+  return products;
 }
