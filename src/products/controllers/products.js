@@ -18,7 +18,9 @@ const {
   makeDataProduct, makeDataVariant, makeDataVariants, makeDataImage, makeDataImages
 } = require('../business/make-data');
 
-let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
+let {
+  syncProductsHaravan, syncProductsShopify, syncProductsWoo
+} = require('../business/products');
 
 let Controller = {};
 
@@ -38,10 +40,7 @@ Controller.sync = async (req, res, next) => {
 Controller.list = async (req, res) => {
   let { limit, page, skip, sort, criteria } = _parse(req.query);
   let count = await ProductModel.count(criteria);
-  let products = await ProductService.find({
-    filter: criteria,
-    limit, page, sort,
-  });
+  let products = await ProductService.find({ filter: criteria, limit, page, sort, });
 
   for (const product of products) {
     product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
@@ -109,7 +108,6 @@ Controller.update = async function ({ product_id, data }) {
   }
 
   let found_variants = await VariantModel.find({ product_id, is_deleted: false }).lean(true);
-  let found_product = await ProductModel._findOne({ id: product_id });
   let product = makeDataProduct(data);
   product.variants = found_variants;
   result.product = await ProductModel._update({ id: product_id }, { $set: product });
