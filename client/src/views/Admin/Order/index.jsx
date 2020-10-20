@@ -68,7 +68,7 @@ function Orders(props) {
     },
     {
       title: 'COD', key: 'carrier_cod_status_code', render: edit => (
-        <Tag color={"magenta"}>{formatCodStatus(edit.carrier_cod_status_code)}</Tag>
+        <Tag color={cssStatus(edit.carrier_cod_status_code)}>{formatCodStatus(edit.carrier_cod_status_code)}</Tag>
       )
     },
     {
