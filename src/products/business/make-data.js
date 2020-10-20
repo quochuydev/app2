@@ -25,11 +25,9 @@ async function makeDataImages({ item }) {
 }
 
 function makeDataProduct(item) {
-  let handle = _do.removeAscent(item.title);
-  handle = _.kebabCase(handle, ' ', '-');
   let product = {
     title: item.title,
-    handle: item.handle ? item.handle : handle,
+    handle: item.handle ? item.handle : _do.makeHandle(item.title),
     body_html: item.body_html,
     tags: item.tags,
     tags_array: item.tags ? item.tags.split(',') : [],
