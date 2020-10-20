@@ -34,7 +34,6 @@ async function remodelProduct() {
       doc.variants[i].price_original = 0;
       doc.variants[i].product_id = doc.id;
     }
-    await ProductModel.update({ id: doc.id }, { $set: { variants: doc.variants } })
     console.log(doc.id, doc.handle, doc.title);
   }, { parallel: 10 });
 }
