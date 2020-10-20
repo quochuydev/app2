@@ -15,5 +15,6 @@ let di = { ERR, ProductModel, ProductService, VariantModel, OrderModel, Customer
 
 ProductService.create = require('./activities/product.create.js')(di)
 ProductService.find = require('./activities/product.find.js')(di)
+ProductService.findOne = require('./activities/product.find-one.js')(di)
 
 module.exports = { ProductService }
