@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NumberFormat from 'react-number-format';
@@ -400,8 +400,20 @@ function ProductDetail(props) {
       message.error(error.message);
     }
   }
+
+  let [redirect, setRedirect] = useState(false);
+  function deleteProduct(id) {
+    console.log(id);
+    message.success('Xóa sản phẩm thành công')
+    setRedirect(true);
+  }
+
   return (
     <div>
+      {
+        redirect ? <Redirect to={'../products'} /> : null
+      }
+
       <Form onSubmit={addProduct}>
         <Row>
           <Col span={5}>
@@ -433,7 +445,8 @@ function ProductDetail(props) {
                   </Col>
                   <Col xs={24} lg={8}>
                     <Form.Item label={'Nhà sản xuất'}>
-                      <Input.Group style={{ width: '100%', display: 'flex' }}>
+                      < Input.Group style={{ width: '100%', display: 'flex' }
+                      }>
                         <Select style={{ flex: 'auto' }} onChange={e => onChangeField('vendor', e)} name="vendor" value={productUpdate.vendor}>
                           <Option key={null} value={null}>-- Vui lòng chọn --</Option>
                           {
@@ -450,8 +463,8 @@ function ProductDetail(props) {
                         }
                         <Button type="primary" icon="plus" onClick={e => onModalVendor()}>
                         </Button>
-                      </Input.Group>
-                    </Form.Item>
+                      </Input.Group >
+                    </Form.Item >
                     <Form.Item label={'Nhóm sản phẩm'}>
                       <Input.Group style={{ width: '100%', display: 'flex' }}>
                         <Select style={{ flex: 'auto' }} onChange={e => onChangeField('collect', e)} name="collect" value={productUpdate.collect}>
@@ -494,11 +507,11 @@ function ProductDetail(props) {
                         </div>
                       </Upload>
                     </Card>
-                  </Col>
-                </Row>
-              </Tabs.TabPane>
-            </Tabs>
-          </Col>
+                  </Col >
+                </Row >
+              </Tabs.TabPane >
+            </Tabs >
+          </Col >
           <Col xs={24} lg={24}>
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Danh sách phiên bản sản phẩm" key="1">
@@ -515,11 +528,11 @@ function ProductDetail(props) {
           </Col>
           <Col xs={24} lg={24}>
             {
-              productUpdate.id ? <Button type="danger" onClick={e => { }}>Xóa sản phẩm</Button> : null
+              productUpdate.id ? <Button type="danger" onClick={e => { deleteProduct(productUpdate.id) }}>Xóa sản phẩm</Button> : null
             }
           </Col>
-        </Row>
-      </Form>
+        </Row >
+      </Form >
 
       <VariantDetail setShowVariantModel={setShowVariantModel} variantUpdate={variantModel} active={active}
         showVariantModel={showVariantModel} product={productUpdate} assertVariant={assertVariant} />

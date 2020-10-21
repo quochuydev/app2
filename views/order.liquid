@@ -1,0 +1,100 @@
+{% include '{{code}}/templates/head' %}
+<script>
+  var formatMoney = '{{amount}}₫';
+  var template = "index";
+</script>
+
+<body>
+  <div class="layout-info-account account-order">
+    <div class="title-infor-account text-center">
+      <h1>Chi tiết đơn hàng </h1>
+    </div>
+  </div>
+
+  <div class="header-page">
+    <h4 class="name-order">Đơn hàng: #100127, <span class="order_date">Đặt lúc &mdash; 10/10/2020,
+        06:36CH</span></h4>
+  </div>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12 content-page customer-table-wrap detail-table-order">
+      <div class="customer-table-bg">
+        <p class="title-detail">Chi tiết đơn hàng </p>
+        <div class="table-responsive">
+          <table id="order_details" class="table tableOrder">
+            <tr height="40px">
+              <th class="">Sản phẩm</th>
+              <th class="text-center">Mã sản phẩm</th>
+              <th class="text-center">Đơn giá</th>
+              <th class="text-center">Số lượng</th>
+              <th class="total text-right">Thành tiền</th>
+            </tr>
+            <tr height="40px" id="0" class="odd">
+              <td class="" style="max-width:300px">
+                <a href="/products/v5-2" title="">v5</a> <br />
+                <span class="variant_acc"> Free size / Cotton / Hồng </span> </td>
+              <td class="sku text-center">v51</td>
+              <td class="money text-center">500,000₫</td>
+              <td class="quantity center text-center">1</td>
+              <td class="total money text-right">500,000₫</td>
+            </tr>
+            <tr height="40px" id="0" class="even">
+              <td class="" style="max-width:300px">
+                <a href="/products/v5-2" title="">v5</a> <br />
+                <span class="variant_acc"> Free size / Cotton / Hồng </span> </td>
+              <td class="sku text-center">v51</td>
+              <td class="money text-center">0₫</td>
+              <td class="quantity center text-center">1</td>
+              <td class="total money text-right">0₫</td>
+            </tr>
+            <tr height="40px" class="order_summary">
+              <td class="text-right" colspan="4"><b>Giá sản phẩm</b></td>
+              <td class="total money text-right"><b>500,000₫</b></td>
+            </tr>
+            <tr height="40px" class="order_summary ">
+              <td class="text-right" colspan="4"><b>Nhận tại cửa hàng</b></td>
+              <td class="total money text-right"><b>0₫</b></td>
+            </tr>
+            <tr height="40px" class="order_summary order_total">
+              <td class="text-right" colspan="4"><b>Tổng tiền</b></td>
+              <td class="total money text-right"><b>500,000₫ </b></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 content-page">
+      <div class="row">
+        <div id="order_payment" class="col-md-6 col-sm-6">
+          <h3 class="order_section_title">Địa chỉ nhận thanh toán</h3>
+          <div class="alert alert-info">
+            <span class="text_status">Tình trạng thanh toán:</span> <span class="status_pending">pending</span>
+          </div>
+          <div class="address">
+            <p class="adressName ">Huy Phạm</p>
+            <p></p>
+            <p>55a đường 2 tháng 4 Thạnh Mỹ Đơn Dương</p>
+            <p></p>
+            <p> Hồ Chí Minh</p>
+            <p>Vietnam</p>
+            <p>0382986838</p>
+          </div>
+        </div>
+        <div id="order_shipping" class="col-md-6 col-sm-6">
+          <h3 class="order_section_title">Địa chỉ gửi hàng</h3>
+          <div class="alert alert-info">
+            <span class="text_status">Vận chuyển:</span> <span class="status_not fulfilled">not fulfilled</span>
+          </div>
+          <div class="address">
+            <p class="adressName "> </p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p> </p>
+            <p>Vietnam </p>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

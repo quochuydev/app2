@@ -18,7 +18,9 @@ const {
   makeDataProduct, makeDataVariant, makeDataVariants, makeDataImage, makeDataImages
 } = require('../business/make-data');
 
-let { syncProductsHaravan, syncProductsShopify, syncProductsWoo } = require('../business/products');
+let {
+  syncProductsHaravan, syncProductsShopify, syncProductsWoo
+} = require('../business/products');
 
 let Controller = {};
 
@@ -36,9 +38,9 @@ Controller.sync = async (req, res, next) => {
 }
 
 Controller.list = async (req, res) => {
-  let { limit, skip, criteria } = _parse(req.query);
+  let { limit, page, skip, sort, criteria } = _parse(req.query);
   let count = await ProductModel.count(criteria);
-  let products = await ProductModel.find(criteria).sort({ number: -1, created_at: -1 }).skip(skip).limit(limit).lean(true);
+  let products = await ProductService.find({ filter: criteria, limit, page, sort, });
 
   for (const product of products) {
     product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
@@ -49,9 +51,7 @@ Controller.list = async (req, res) => {
 
 Controller.getProduct = async function ({ product_id }) {
   let result = {}
-  result.product = await ProductModel._findOne({ id: product_id });
-  let variants = await VariantModel._find({ product_id, is_deleted: false });
-  result.product.variants = variants;
+  result.product = await ProductService.findOne({ filter: { id: product_id } });
   return result;
 }
 
@@ -108,7 +108,6 @@ Controller.update = async function ({ product_id, data }) {
   }
 
   let found_variants = await VariantModel.find({ product_id, is_deleted: false }).lean(true);
-  let found_product = await ProductModel._findOne({ id: product_id });
   let product = makeDataProduct(data);
   product.variants = found_variants;
   result.product = await ProductModel._update({ id: product_id }, { $set: product });
@@ -256,7 +255,7 @@ Controller.importProducts = async function ({ file }) {
 
             let variants = await VariantModel.find({ product_id: item.product_id, is_deleted: false }).lean(true);
             await makeDataImages({ item });
-            await ProductModel._update({ id: found_product.id }, { $set: { variants }, $concat: { images: item.images } });
+            await ProductModel._update({ id: found_product.id }, { $concat: { images: item.images } });
             result.product_updated++;
           } else {
             await makeDataImage({ item });
@@ -265,11 +264,7 @@ Controller.importProducts = async function ({ file }) {
             let newVariant = await VariantModel._create(variant);
             result.variant_created++;
             await makeDataImages({ item });
-            await ProductModel._update({ id: found_product.id },
-              {
-                $push: { variants: newVariant },
-                $concat: { images: item.images }
-              });
+            await ProductModel._update({ id: found_product.id }, { $concat: { images: item.images } });
             result.product_updated++;
           }
         } else {
@@ -278,8 +273,6 @@ Controller.importProducts = async function ({ file }) {
           variant.product_id = found_product.id;
           let newVariant = await VariantModel._create(variant);
           result.variant_created++;
-
-          await ProductModel._update({ id: found_product.id }, { $push: { variants: newVariant } });
           result.product_updated++;
         }
       } else {
@@ -313,7 +306,7 @@ Controller.deleteProduct = async function ({ product_id }) {
   }
 
   await ProductModel._findOneAndUpdate({ id: product_id }, { is_deleted: true });
-  await VariantModel._findOneAndUpdate({ product_id }, { is_deleted: true });
+  await VariantModel._update({ product_id }, { $set: { is_deleted: true } });
 
   return { message: 'Xóa sản phẩm thành công' }
 }

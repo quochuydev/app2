@@ -2,7 +2,6 @@ const path = require('path');
 
 const {
   list, getCustomer, sync, create, update, importExcel, exportExcel,
-  updateImage
 } = require('../controllers/customers');
 const { uploadToDisk } = require(path.resolve('./src/core/middlewares/upload'));
 
@@ -20,11 +19,6 @@ const router = ({ app }) => {
   });
   app.put('/api/customers/:id', function (req, res, next) {
     update({ body: req.body, customer_id: req.params.id })
-      .then(result => { res.json(result); })
-      .catch(error => { next(error); })
-  });
-  app.post('/api/customers/:id/images', function (req, res, next) {
-    updateImage({ body: req.body, customer_id: req.params.id })
       .then(result => { res.json(result); })
       .catch(error => { next(error); })
   });

@@ -15,14 +15,26 @@ const { OrderService } = require(path.resolve('./src/order/services/order-servic
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 const { CollectionModel } = require(path.resolve('./src/products/models/collection.js'));
 
+const { ProductService } = require(path.resolve('./src/products/services/product-service.js'));
+
 let code = '1000';
 let settings = require('./settings').current;
 let amount = '{{amount}}';
 
+function themeCode() {
+  let code = '1000'
+  let shop = cache.get(code);
+  if (shop && shop.theme_id) {
+    code = shop.theme_id;
+  }
+  return code;
+}
+
 const routes = ({ app }) => {
   app.get('/', async function (req, res) {
+    let code = themeCode();
     let shop_id = req.shop_id;
-    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
+    let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
     let result = {
       code,
       settings,
@@ -45,10 +57,12 @@ const routes = ({ app }) => {
   });
 
   app.get('/pages', function (req, res) {
+    let code = themeCode();
     res.render(`shops/${code}/pages`)
   });
 
   app.get('/blogs', function (req, res) {
+    let code = themeCode();
     res.render(`site/${code}/templates/blogs`, {
       blogs: []
     })
@@ -56,12 +70,15 @@ const routes = ({ app }) => {
 
   app.get('/pages/:page', function (req, res) {
     let page_handle = req.params.page;
+    let code = themeCode();
+
     res.render(`shops/${code}/pages`)
   });
 
   app.get('/products/:handle', async function (req, res) {
     let handle = req.params.handle;
     let shop_id = req.shop_id;
+    let code = themeCode();
 
     if (!handle) {
       return res.render('404');
@@ -73,7 +90,7 @@ const routes = ({ app }) => {
       is_json_data = true;
     }
 
-    let product = await ProductModel.findOne({ shop_id, handle, is_deleted: false }).lean(true);
+    let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
     if (!product) {
       return res.render('404');
     }
@@ -82,7 +99,7 @@ const routes = ({ app }) => {
       return res.json(product);
     }
 
-    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
+    let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
 
     let result = {
       code,
@@ -96,6 +113,8 @@ const routes = ({ app }) => {
   app.get('/collections/:collect', async function (req, res) {
     let collect = req.params.collect;
     let shop_id = req.shop_id;
+    let code = themeCode();
+
     let criteria = {
       shop_id,
       is_deleted: false,
@@ -108,7 +127,8 @@ const routes = ({ app }) => {
         criteria.collect = collection.title;
       }
     }
-    let products = await ProductModel.find(criteria).sort({ created_at: -1 }).lean(true);
+
+    let products = await ProductService.find({ filter: criteria, sort: { created_at: -1 } });
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,
@@ -121,6 +141,8 @@ const routes = ({ app }) => {
     .get(async function (req, res) {
       let cart_token = req.cookies.cart_token;
       let shop_id = req.shop_id;
+      let code = themeCode();
+
       let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
       if (!cart) {
         cart = {
@@ -157,6 +179,7 @@ const routes = ({ app }) => {
       let shop_id = req.shop_id;
       let cart_token = req.cookies.cart_token;
       let checkout_token = req.params.checkout_token;
+      let code = themeCode();
 
       if (cart_token != checkout_token) {
         if (cart_token) {
@@ -177,7 +200,6 @@ const routes = ({ app }) => {
         let cart_token = req.cookies.cart_token;
         let shop_id = req.shop_id;
         let data = req.query;
-        // return res.json(data);
 
         let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
         if (!cart) {
@@ -268,6 +290,8 @@ const routes = ({ app }) => {
   app.get('/orders/:token', async function (req, res) {
     try {
       let token = req.params.token;
+      let code = themeCode();
+
       let order = await OrderModel.findOne({ token }).lean(true);
       if (!order) {
         throw { message: `Đơn hàng không tồn tại ${token}` }

@@ -475,6 +475,7 @@ function Customer(props) {
                   <Radio.Group name="gateway_code" value={order.gateway_code}
                     onChange={e => setOrder({ gateway_code: e.target.value })}>
                     <Radio value={'cod'}>{formatGatewayCode('cod')}</Radio>
+                    <Radio value={'bankdeposit'}>{formatGatewayCode('bankdeposit')}</Radio>
                   </Radio.Group>
                 </Row>
                 <Row className="m-t-10">
@@ -488,7 +489,7 @@ function Customer(props) {
                   <Radio.Group name="fulfillment_status" value={order.fulfillment_status}
                     onChange={e => setOrder({ fulfillment_status: e.target.value })}>
                     <Radio value={'delivered'}>{formatFulfillmentStatus('delivered')}</Radio>
-                    <Radio value={'delivering'}>{formatFulfillmentStatus('delivering')}</Radio>
+                    <Radio value={'pending'}>{formatFulfillmentStatus('pending')}</Radio>
                   </Radio.Group>
                 </Row>
                 <Row className="m-t-10">

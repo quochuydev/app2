@@ -10,7 +10,11 @@ const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 const { ERR } = require(path.resolve('./src/core/lib/error.js'));
 
 let ProductService = {}
+
 let di = { ERR, ProductModel, ProductService, VariantModel, OrderModel, CustomerModel }
-ProductService.create = require('./activities/product.create')(di)
+
+ProductService.create = require('./activities/product.create.js')(di)
+ProductService.find = require('./activities/product.find.js')(di)
+ProductService.findOne = require('./activities/product.find-one.js')(di)
 
 module.exports = { ProductService }
