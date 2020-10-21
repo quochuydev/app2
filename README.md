@@ -14,6 +14,10 @@ https://crmdlc.herokuapp.com
 
 http://www.datedi.xyz/
 
+## Signup a shop
+
+https://posdlc.herokuapp.com/admin/signup
+
 ## Develop
 
 run reactjs
