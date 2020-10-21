@@ -150,7 +150,6 @@ async function updateImage({ file }) {
 
   let new_image = await ImageModel._create(data_update);
   new_image = new_image.toJSON();
-  await ProductModel._update({ id: product_id }, { $push: { images: new_image } });
 
   return { image: new_image }
 }

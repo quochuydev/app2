@@ -89,7 +89,7 @@ const routes = ({ app }) => {
       handle = handle.split('.json')[0];
       is_json_data = true;
     }
-    
+
     let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
     if (!product) {
       return res.render('404');
@@ -99,7 +99,7 @@ const routes = ({ app }) => {
       return res.json(product);
     }
 
-    let products = await ProductModel.find({ shop_id, is_deleted: false }).sort({ created_at: -1 }).lean(true);
+    let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
 
     let result = {
       code,
@@ -127,7 +127,8 @@ const routes = ({ app }) => {
         criteria.collect = collection.title;
       }
     }
-    let products = await ProductModel.find(criteria).sort({ created_at: -1 }).lean(true);
+
+    let products = await ProductService.find({ filter: criteria, sort: { created_at: -1 } });
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,

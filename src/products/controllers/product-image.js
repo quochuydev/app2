@@ -62,7 +62,6 @@ Controller.assert = async function ({ product_id, data, file }) {
   new_image = new_image.toJSON();
 
   await ImageModel.update({ id: new_image.id }, { $set: { product_id } });
-  await ProductModel._update({ id: product_id }, { $push: { images: new_image } });
 
   return { image: new_image }
 }
