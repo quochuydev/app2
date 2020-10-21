@@ -41,8 +41,30 @@ module.exports = (app, db) => {
 
   app.engine('liquid', engine.express());
 
+  function addCommas(str) {
+    var parts = (str + "").split("."),
+      main = parts[0],
+      len = main.length,
+      output = "",
+      i = len - 1; while (i >= 0) {
+        output = main.charAt(i) + output;
+        if ((len - i) % 3 === 0 && i > 0) {
+          output = "," + output;
+        }
+        --i;
+      }
+    // put decimal part back
+    if (parts.length > 1) {
+      output += "," + parts[1];
+    }
+    return output;
+  }
+
   engine.registerFilter('money', function (value) {
-    return util.format(String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ','), 'đ');
+    let price = parseFloat(value / 100).toFixed(2);
+    let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
+    currency = addCommas(currency);
+    return util.format(currency, 'đ');
   });
 
   app.set('views', [path.resolve('./views')]);

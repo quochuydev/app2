@@ -111,8 +111,8 @@
                         <h1>{{product.title}}</h1>
                       </div>
                       <div class="product-price" id="price-preview"> <span class="pro-sale">-10% </span> <span
-                          class="pro-price">{{product.variants[0].price}}</span>
-                        <del>{{product.variants[0].price_original}}</del> </div>
+                          class="pro-price">{{product.variants[0].price | money}}</span>
+                        <del>{{product.variants[0].price_original | money}}</del> </div>
                       <div class="product-taggia">
                         <b>Nhà sản xuất: </b> {{product.vendor}}
                       </div>
@@ -207,9 +207,9 @@
                                   {{product.title}}</a>
                               </h3>
                               <div class="box-pro-prices">
-                                <p class="pro-price highlight">{{product.variants[0].price}}
+                                <p class="pro-price highlight">{{product.variants[0].price | money}}
                                   <span class="pro-price-del">
-                                    <div class="compare-price">{{product.variants[0].price_original}}</div>
+                                    <div class="compare-price">{{product.variants[0].price_original | money}}</div>
                                   </span>
                                 </p>
                               </div>
