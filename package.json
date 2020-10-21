@@ -47,6 +47,7 @@
     "shopify_mono": "^1.0.0",
     "socket.io": "^2.3.0",
     "styled-components": "^5.2.0",
+    "util": "^0.12.3",
     "uuid": "^3.4.0",
     "wooapi": "^1.1.0",
     "woocommerce-api": "^1.5.0"

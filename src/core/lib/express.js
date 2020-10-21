@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
 const { Liquid } = require('liquidjs')
+const util = require('util')
 
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
@@ -30,13 +31,19 @@ module.exports = (app, db) => {
   app.use(cookieParser())
   // app.use(logger('tiny'));
 
-  app.engine('liquid', new Liquid({
+  let engine = new Liquid({
     extname: ".liquid",
     root: ["views/site"]
     // ENOENT: Failed to lookup
     // views => {% include './site/base/templates/products' %}
     // views/site => {% include './base/templates/products' %}
-  }).express());
+  });
+
+  app.engine('liquid', engine.express());
+
+  engine.registerFilter('money', function (value) {
+    return util.format(String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ','), 'đ');
+  });
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
