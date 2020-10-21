@@ -79,10 +79,18 @@ Controller.create = async function ({ data }) {
   }
 
   let product = makeDataProduct(data);
+
+  let found_product = await ProductModel._findOne({ handle: product.handle });
+  if (found_product) {
+    throw { message: 'URL đã tồn tại' }
+  }
+
   return await ProductService.create({ product });
 }
 
 Controller.update = async function ({ product_id, data }) {
+  product_id = Number(product_id);
+  
   let result = {};
 
   if (!data.title) {
@@ -107,9 +115,13 @@ Controller.update = async function ({ product_id, data }) {
     }
   }
 
-  let found_variants = await VariantModel.find({ product_id, is_deleted: false }).lean(true);
   let product = makeDataProduct(data);
-  product.variants = found_variants;
+
+  let found_product = await ProductModel._findOne({ handle: product.handle });
+  if (found_product && found_product.id != product_id) {
+    throw { message: 'URL đã tồn tại' }
+  }
+
   result.product = await ProductModel._update({ id: product_id }, { $set: product });
   result.message = 'Cập nhật sản phẩm thành công!';
   return result;
