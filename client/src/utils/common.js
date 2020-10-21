@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
 import NumberFormat from 'react-number-format';
 
+import data from './data';
+
 const common = {}
 
 common.compile = function compile(template, data) {
