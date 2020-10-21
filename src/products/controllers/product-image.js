@@ -58,12 +58,13 @@ Controller.assert = async function ({ product_id, data, file }) {
     data_update.variant_ids = data.variant_ids;
   }
 
+  data_update.product_id = product_id;
+  data_update.metafield = { key: 'product', value: product_id };
+
   let new_image = await ImageModel._create(data_update);
   new_image = new_image.toJSON();
 
-  await ImageModel.update({ id: new_image.id }, { $set: { product_id } });
-
-  return { image: new_image }
+  return { image: new_image };
 }
 
 Controller.upload = async function ({ }) {
