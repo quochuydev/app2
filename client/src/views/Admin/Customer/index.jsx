@@ -24,9 +24,9 @@ function Customer(props) {
 
   const columns = [
     {
-      title: 'Number', key: 'number', render: edit => (
+      title: 'ID', key: 'number', render: edit => (
         <Link to={`customer/${edit.id}`}>
-          {edit.number}
+          {edit.id}
         </Link>
       )
     },
@@ -62,17 +62,6 @@ function Customer(props) {
       ),
     },
   ];
-
-  const expended = edit => (
-    <div>
-      <p style={{ margin: 0 }}>{edit.type}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.first_name : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.last_name : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.phone : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.email : null}</p>
-      <p style={{ margin: 0 }}>{edit.default_address ? edit.default_address.address1 : null}</p>
-    </div>
-  );
 
   const uploadSetting = {
     multiple: false,
@@ -180,7 +169,7 @@ function Customer(props) {
         <Col span={24}>
           <Button className="hide" onClick={() => syncCustomers(true)}>Đồng bộ khách hàng</Button>
           <Table rowKey='id' dataSource={customers} columns={columns} pagination={false}
-            expandedRowRender={expended} scroll={{ x: 1000 }} size="small" />
+            scroll={{ x: 1000 }} size="small" />
           <Pagination style={{ paddingTop: 10 }} total={count} onChange={onChangePage} name="page"
             showTotal={(total, range) => `${total} sản phẩm`} current={query.page}
             defaultPageSize={query.limit} defaultCurrent={1} showSizeChanger
