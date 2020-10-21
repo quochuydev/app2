@@ -5,7 +5,7 @@ module.exports = ({ ProductModel, VariantModel }) => async function find({ filte
 
   if (products && Array.isArray(products)) {
     let product_ids = products.map(e => e.id);
-    let variants = await VariantModel._find({ product_id: { $in: product_ids }, is_deleted: false });
+    let variants = await VariantModel.find({ product_id: { $in: product_ids }, is_deleted: false });
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
       product.variants = variants.filter(e => e.product_id == product.id);

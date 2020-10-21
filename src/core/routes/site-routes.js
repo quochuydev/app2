@@ -89,8 +89,8 @@ const routes = ({ app }) => {
       handle = handle.split('.json')[0];
       is_json_data = true;
     }
-
-    let product = await ProductModel.findOne({ shop_id, handle, is_deleted: false }).lean(true);
+    
+    let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
     if (!product) {
       return res.render('404');
     }
