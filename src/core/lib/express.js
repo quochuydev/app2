@@ -61,7 +61,7 @@ module.exports = (app, db) => {
   }
 
   engine.registerFilter('money', function (value) {
-    let price = parseFloat(value / 100).toFixed(2);
+    let price = parseFloat(value).toFixed(2);
     let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
     currency = addCommas(currency);
     return util.format(currency, 'đ');
