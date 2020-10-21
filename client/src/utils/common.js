@@ -82,6 +82,7 @@ common.textFinancial = function (code) {
       return "Đã hoàn tiền";
     case "voided":
       return "Đã hủy";
+    case "waiting":
     default:
       return 'Chờ xử lý'
   }
