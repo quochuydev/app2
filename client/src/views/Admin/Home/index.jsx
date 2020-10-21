@@ -143,9 +143,9 @@ function Home(props) {
                 <Statistic value={OrdersGrowthLastday.total} suffix="đơn hàng" />
               </Card>
             </Col>
-            <Col xs={24} lg={12}>
+            {/* <Col xs={24} lg={12}>
               <HighchartsReact highcharts={Highcharts} options={options} />
-            </Col>
+            </Col> */}
             <Col xs={24} lg={12}>
               <HighchartsReact highcharts={Highcharts} options={options2} />
             </Col>
