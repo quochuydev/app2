@@ -161,9 +161,9 @@ function CustomerEdit(props) {
                     <Form.Item label="Số điện thoại" required>
                       <Input placeholder="0382986838" name="phone" onChange={onCustomerChange} value={customerUpdate.phone} />
                     </Form.Item>
-                    <Form.Item label="Ngày sinh" required onChange={onCustomerChange}>
+                    <Form.Item label="Ngày sinh" required>
                       <DatePicker name="birthday" onChange={(e) => onFieldChange('birthday', new Date(e))}
-                        defaultValue={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
+                        value={customerUpdate.birthday ? moment(customerUpdate.birthday, 'YYYY-MM-DD') : null} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>

@@ -16,8 +16,8 @@ Mongoose.connect()
     console.log('connect mongo success');
 
     await Promise.all([
-      // remodelProduct(),
-      remodelVariant(),
+      remodelProduct(),
+      // remodelVariant(),
     ])
 
     console.log('done')
@@ -30,10 +30,7 @@ Mongoose.connect()
 
 async function remodelProduct() {
   await ProductModel.find({}).cursor().eachAsync(async doc => {
-    for (let i = 0; i < doc.variants.length; i++) {
-      doc.variants[i].price_original = 0;
-      doc.variants[i].product_id = doc.id;
-    }
+    await ProductModel.update({ id: doc.id }, { $set: { variants: null } })
     console.log(doc.id, doc.handle, doc.title);
   }, { parallel: 10 });
 }
