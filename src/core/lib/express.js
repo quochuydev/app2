@@ -72,9 +72,10 @@ module.exports = (app, db) => {
 
   let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app });
   app.use('/', SiteMiddleware);
-
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes({ app });
+  let SiteErrorHandle = require(path.resolve('./src/core/middlewares/site-error-handle.js'))({ app });
+  app.use('/*', SiteErrorHandle)
 
   console.log(path.resolve('client', 'build'));
   app.use('/', express.static(path.resolve('client', 'build')))
