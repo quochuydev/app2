@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
 import NumberFormat from 'react-number-format';
 
+import data from './data';
+
 const common = {}
 
 common.compile = function compile(template, data) {
@@ -80,6 +82,7 @@ common.textFinancial = function (code) {
       return "Đã hoàn tiền";
     case "voided":
       return "Đã hủy";
+    case "waiting":
     default:
       return 'Chờ xử lý'
   }

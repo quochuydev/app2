@@ -48,11 +48,11 @@ function makeDataProduct(item) {
       name: item.option_3
     }],
     variants: item.variants,
-    images: item.images.map(e => Object({
+    images: item.images && Array.isArray(item.images) ? item.images.map(e => Object({
       id: e.id,
       filename: e.filename,
       src: e.src,
-    })),
+    })) : [],
   }
 
   if (item.published == 'No') {

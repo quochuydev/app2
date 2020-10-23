@@ -87,13 +87,13 @@
                                     </div>
                                     <div class="item-price">
                                       <p>
-                                        <span>{{item.price}}</span> <del>({{item.price_original}})</del>
+                                        <span>{{item.price | money}}</span> <del>({{item.price_original | money}})</del>
                                       </p>
                                     </div>
                                     <div class="item-total-price">
                                       <div class="price">
                                         <span class="text">Thành tiền:</span>
-                                        <span class="line-item-total">{{item.line_price}}</span>
+                                        <span class="line-item-total">{{item.line_price | money}}</span>
                                       </div>
                                       <div class="remove">
                                         <a href="/cart/change?line=1&quantity=0" class="cart">
@@ -197,7 +197,7 @@
                             </p>
                           </div>
                           <div class="summary-total">
-                            <p>Tổng tiền: <span>{{cart.total_price}}</span>
+                            <p>Tổng tiền: <span>{{cart.total_price | money}}</span>
                             </p>
                           </div>
                           <div class="summary-action">

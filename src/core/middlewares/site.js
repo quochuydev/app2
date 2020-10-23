@@ -36,7 +36,6 @@ function SiteMiddleware({ app }) {
     if (!code_by_domain) {
       if (isValidRoute({ url: req.url })) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
-        console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
         }

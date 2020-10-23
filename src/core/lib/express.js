@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
 const { Liquid } = require('liquidjs')
+const util = require('util')
 
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
@@ -30,22 +31,51 @@ module.exports = (app, db) => {
   app.use(cookieParser())
   // app.use(logger('tiny'));
 
-  app.engine('liquid', new Liquid({
+  let engine = new Liquid({
     extname: ".liquid",
     root: ["views/site"]
     // ENOENT: Failed to lookup
     // views => {% include './site/base/templates/products' %}
     // views/site => {% include './base/templates/products' %}
-  }).express());
+  });
+
+  app.engine('liquid', engine.express());
+
+  function addCommas(str) {
+    var parts = (str + "").split("."),
+      main = parts[0],
+      len = main.length,
+      output = "",
+      i = len - 1; while (i >= 0) {
+        output = main.charAt(i) + output;
+        if ((len - i) % 3 === 0 && i > 0) {
+          output = "," + output;
+        }
+        --i;
+      }
+    // put decimal part back
+    if (parts.length > 1) {
+      output += "," + parts[1];
+    }
+    return output;
+  }
+
+  engine.registerFilter('money', function (value) {
+    let price = parseFloat(value).toFixed(2);
+    let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
+    currency = addCommas(currency);
+    return util.format(currency, 'đ');
+  });
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
 
   let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app });
   app.use('/', SiteMiddleware);
-
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes({ app });
+  let SiteErrorHandle = require(path.resolve('./src/core/middlewares/site-error-handle.js'))({ app });
+  app.use('/*', SiteErrorHandle)
 
   console.log(path.resolve('client', 'build'));
   app.use('/', express.static(path.resolve('client', 'build')))

@@ -72,9 +72,6 @@ ProductSchema.statics._find = async function (filter = {}, populate = {}, option
 ProductSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.findOne(filter, populate, options);
-  if (!data) {
-    throw { message: 'Sản phẩm không còn tồn tại' }
-  }
   return data;
 }
 
