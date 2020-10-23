@@ -90,7 +90,7 @@ Controller.create = async function ({ data }) {
 
 Controller.update = async function ({ product_id, data }) {
   product_id = Number(product_id);
-  
+
   let result = {};
 
   if (!data.title) {
@@ -163,7 +163,7 @@ let productHeaders = [
 
 Controller.exportExcel = async ({ body }) => {
   let { limit, skip, criteria } = _parse(body);
-  let products = await ProductModel.find(criteria);
+  let products = await ProductService.find({ filter: criteria });
 
   const excel = await ExcelLib.init({
     host: config.app_host,
@@ -297,7 +297,7 @@ Controller.importProducts = async function ({ file }) {
       result.success++;
     } catch (error) {
       result.failed++;
-      logger(error);
+      console.log(error);
     }
   }
 
