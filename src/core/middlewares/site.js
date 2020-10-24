@@ -1,4 +1,3 @@
-const express = require('express');
 const cache = require('memory-cache');
 const path = require('path');
 
@@ -14,7 +13,7 @@ function isValidRoute({ url }) {
   return true;
 }
 
-function SiteMiddleware({ app }) {
+function SiteMiddleware({ app, express }) {
   return async function (req, res, next) {
     let url = req.url;
     let domain = req.host;
