@@ -1,7 +1,7 @@
 // const { makeDataProduct, makeDataVariant, makeDataVariants } = require(path.resolve('./src/products/business/make-data.js'));
 let _ = require('lodash');
 let path = require('path');
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
 
 async function makeDataImage({ item }) {

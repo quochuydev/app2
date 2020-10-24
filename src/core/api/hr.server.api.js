@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const path = require('path');
 const { injectConfig } = require('./call.server.api');
-let _is = require(path.resolve('./src/core/share/_is.lib.share.js'))
+let _is = require(path.resolve('./client/src/share/_is.lib.share.js'))
 const { ApiUtils } = require('./utils.server.api');
 const { ERR } = require('../libs/errors.server.lib');
 

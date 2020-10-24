@@ -1,4 +1,5 @@
-// let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+// let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
+// let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 (function () {
 

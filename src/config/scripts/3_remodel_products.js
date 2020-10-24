@@ -9,7 +9,7 @@ const { ProvinceModel } = require(path.resolve('./src/core/models/province.js'))
 const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 Mongoose.connect()
   .then(async db => {

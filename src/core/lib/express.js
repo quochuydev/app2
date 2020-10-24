@@ -13,7 +13,7 @@ const util = require('util')
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { errorHandle } = require('./errorHandle');
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const cache = require('memory-cache');
@@ -25,6 +25,7 @@ module.exports = (app, db) => {
   //   res.header('Access-Control-Allow-Headers', '*');
   //   next();
   // });
+
   cache.clear();
   app.use(cors());
   app.use(bodyParser.json({ limit: '50mb' }));
