@@ -111,7 +111,6 @@ function Home(props) {
     <div>
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Tổng quan" key="1">
-        {_CONST.IS.ALL}
           <Row gutter={[15, 0]}>
             <Col xs={12} lg={6}>
               <Card>
