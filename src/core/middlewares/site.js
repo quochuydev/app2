@@ -1,17 +1,8 @@
 const cache = require('memory-cache');
 const path = require('path');
-
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
-function isValidRoute({ url }) {
-  let out_of_scopes = ['/assets', '/images', '/static', '/api']
-  for (const e of out_of_scopes) {
-    if (url.includes(e)) {
-      return false;
-    }
-  }
-  return true;
-}
+module.exports = SiteMiddleware;
 
 function SiteMiddleware({ app, express }) {
   return async function (req, res, next) {
@@ -60,4 +51,12 @@ function SiteMiddleware({ app, express }) {
   }
 }
 
-module.exports = SiteMiddleware;
+function isValidRoute({ url }) {
+  let out_of_scopes = ['/assets', '/images', '/static', '/api']
+  for (const e of out_of_scopes) {
+    if (url.includes(e)) {
+      return false;
+    }
+  }
+  return true;
+}
