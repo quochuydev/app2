@@ -5,7 +5,6 @@ const appConfig = require(path.resolve('./config/config'));
 const stringify = require('json-stringify-safe');
 const request = require('request');
 const _ = require('lodash');
-const { asyncRetry } = require('x-retry');
 
 const f = {
   async callAPI(di, config, ...args) {
@@ -30,14 +29,6 @@ const f = {
     if (maxRetry > 0) {
       const timeout = data.timeout || config.timeout;
       const isRetry = data.isRetry || config.isRetry;
-
-      // return asyncRetry({
-      //   actor: 'API',
-      //   activity: 'call',
-      //   func: f._callAPI,
-      //   args: [di, config, it],
-      //   maxRetry, isRetry, timeout
-      // });
       return f._callAPI(di, config, it);
     }
     else {
