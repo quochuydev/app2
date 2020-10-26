@@ -44,7 +44,9 @@ const EventBus = {
         activeChannel.consume(eventName, async function (msg) {
           let data = JSON.parse(msg.content.toString());
           try {
-            if (!data.retry) { data.retry = 0; }
+            if (!data.retry) {
+              data.retry = 0;
+            }
             listen(data);
             channel.ack(msg);
           } catch (e) {
@@ -69,7 +71,7 @@ let test = async () => {
     console.log(data)
   })
   EventBus.on('QHDTEST2', (data) => {
-    console.log(data)
+    console.log(data);
   })
   EventBus.emit('QHDTEST', { test: 123123 })
 }

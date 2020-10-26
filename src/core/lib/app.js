@@ -15,6 +15,7 @@ let eventBus = async () => {
   if (Number(active)) {
     await EventBus.init({ url, user, pass, host, port, vhost });
     consumer();
+    EventBus.emit('QHDTEST', { test: 123123 })
   }
 }
 

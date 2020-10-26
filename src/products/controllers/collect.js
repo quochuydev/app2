@@ -5,7 +5,7 @@ const { CollectionModel } = require(path.resolve('./src/products/models/collecti
 const { TagModel } = require(path.resolve('./src/products/models/tag.js'));
 
 const { _parse } = require(path.resolve('./src/core/lib/query'));
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 let Controller = {}
 

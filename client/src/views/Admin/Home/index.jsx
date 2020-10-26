@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import 'antd/dist/antd.css';
+import _CONST from '../../../share/_CONST.lib.share'
 import * as orderActions from '../Order/actions';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
