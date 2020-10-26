@@ -10,8 +10,8 @@ const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/config/config'));
 let { clientId, clientSecret, redirectUrl } = google_app;
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
-let _is = require(path.resolve('./src/core/share/_is.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
+let _is = require(path.resolve('./client/src/share/_is.lib.share.js'))
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 
 const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);

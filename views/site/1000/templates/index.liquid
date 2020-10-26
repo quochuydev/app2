@@ -118,7 +118,7 @@
                                 <p class="pro-price highlight">
                                   {{product.variants[0].price | money}}
                                   <span class="pro-price-del"><del
-                                      class="compare-price">{{product.variants[0].price_orginal}}</del></span>
+                                      class="compare-price">{{product.variants[0].price_orginal | money}}</del></span>
                                 </p>
                               </div>
                             </div>
@@ -226,8 +226,7 @@
                           <a class="hover_icon" href="#">
                             <picture>
                               <source data-srcset="{{settings.blog2}}" media="(max-width: 500px)" />
-                              <img data-src="{{settings.blog2}}" class="lazyload" alt="" Du học ký: Vạn dặm có chi?" -
-                                Sách này có gì?" />
+                              <img data-src="{{settings.blog2}}" class="lazyload" />
                             </picture>
                           </a>
                         </div>

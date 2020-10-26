@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import 'antd/dist/antd.css';
+import _CONST from '../../../share/_CONST.lib.share'
 import * as orderActions from '../Order/actions';
 import Alert from '../../Components/Alert/index';
 import LoadingPage from '../../Components/Loading/index';
@@ -143,9 +144,9 @@ function Home(props) {
                 <Statistic value={OrdersGrowthLastday.total} suffix="đơn hàng" />
               </Card>
             </Col>
-            <Col xs={24} lg={12}>
+            {/* <Col xs={24} lg={12}>
               <HighchartsReact highcharts={Highcharts} options={options} />
-            </Col>
+            </Col> */}
             <Col xs={24} lg={12}>
               <HighchartsReact highcharts={Highcharts} options={options2} />
             </Col>

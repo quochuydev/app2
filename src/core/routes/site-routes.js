@@ -75,39 +75,44 @@ const routes = ({ app }) => {
     res.render(`shops/${code}/pages`)
   });
 
-  app.get('/products/:handle', async function (req, res) {
-    let handle = req.params.handle;
-    let shop_id = req.shop_id;
-    let code = themeCode();
+  app.get('/products/:handle', async function (req, res, next) {
+    try {
 
-    if (!handle) {
-      return res.render('404');
+      let handle = req.params.handle;
+      let shop_id = req.shop_id;
+      let code = themeCode();
+
+      if (!handle) {
+        return res.render('404');
+      }
+
+      let is_json_data = false;
+      if (_.endsWith(handle, '.json')) {
+        handle = handle.split('.json')[0];
+        is_json_data = true;
+      }
+
+      let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
+      if (!product) {
+        return res.render('404');
+      }
+
+      if (is_json_data) {
+        return res.json(product);
+      }
+
+      let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
+
+      let result = {
+        code,
+        amount,
+        product, products, settings
+      }
+      setBaseUrl({ result, domain: req.host });
+      res.render(`site/${code}/templates/products`, result)
+    } catch (error) {
+      next(error);
     }
-
-    let is_json_data = false;
-    if (_.endsWith(handle, '.json')) {
-      handle = handle.split('.json')[0];
-      is_json_data = true;
-    }
-
-    let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
-    if (!product) {
-      return res.render('404');
-    }
-
-    if (is_json_data) {
-      return res.json(product);
-    }
-
-    let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
-
-    let result = {
-      code,
-      amount,
-      product, products, settings
-    }
-    setBaseUrl({ result, domain: req.host });
-    res.render(`site/${code}/templates/products`, result)
   });
 
   app.get('/collections/:collect', async function (req, res) {

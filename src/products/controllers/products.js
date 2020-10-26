@@ -12,7 +12,7 @@ const { ExcelLib } = require(path.resolve('./src/core/lib/excel.lib'));
 const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const config = require(path.resolve('./src/config/config'));
 const { ERR } = require(path.resolve('./src/core/lib/error.js'));
-let _do = require(path.resolve('./src/core/share/_do.lib.share.js'))
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 const {
   makeDataProduct, makeDataVariant, makeDataVariants, makeDataImage, makeDataImages
@@ -79,10 +79,18 @@ Controller.create = async function ({ data }) {
   }
 
   let product = makeDataProduct(data);
+
+  let found_product = await ProductModel._findOne({ handle: product.handle });
+  if (found_product) {
+    throw { message: 'URL đã tồn tại' }
+  }
+
   return await ProductService.create({ product });
 }
 
 Controller.update = async function ({ product_id, data }) {
+  product_id = Number(product_id);
+
   let result = {};
 
   if (!data.title) {
@@ -107,9 +115,13 @@ Controller.update = async function ({ product_id, data }) {
     }
   }
 
-  let found_variants = await VariantModel.find({ product_id, is_deleted: false }).lean(true);
   let product = makeDataProduct(data);
-  product.variants = found_variants;
+
+  let found_product = await ProductModel._findOne({ handle: product.handle });
+  if (found_product && found_product.id != product_id) {
+    throw { message: 'URL đã tồn tại' }
+  }
+
   result.product = await ProductModel._update({ id: product_id }, { $set: product });
   result.message = 'Cập nhật sản phẩm thành công!';
   return result;
@@ -151,7 +163,7 @@ let productHeaders = [
 
 Controller.exportExcel = async ({ body }) => {
   let { limit, skip, criteria } = _parse(body);
-  let products = await ProductModel.find(criteria);
+  let products = await ProductService.find({ filter: criteria });
 
   const excel = await ExcelLib.init({
     host: config.app_host,
@@ -285,7 +297,7 @@ Controller.importProducts = async function ({ file }) {
       result.success++;
     } catch (error) {
       result.failed++;
-      logger(error);
+      console.log(error);
     }
   }
 

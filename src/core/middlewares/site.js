@@ -1,20 +1,10 @@
-const express = require('express');
 const cache = require('memory-cache');
 const path = require('path');
-
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
-function isValidRoute({ url }) {
-  let out_of_scopes = ['/assets', '/images', '/static', '/api']
-  for (const e of out_of_scopes) {
-    if (url.includes(e)) {
-      return false;
-    }
-  }
-  return true;
-}
+module.exports = SiteMiddleware;
 
-function SiteMiddleware({ app }) {
+function SiteMiddleware({ app, express }) {
   return async function (req, res, next) {
     let url = req.url;
     let domain = req.host;
@@ -36,7 +26,6 @@ function SiteMiddleware({ app }) {
     if (!code_by_domain) {
       if (isValidRoute({ url: req.url })) {
         let shop_found = await ShopModel.findOne({ domain }).lean(true);
-        console.log('phải found shop và put cache khi url=', req.url, 'req.host=', req.host)
         if (shop_found && shop_found.code && shop_found.id) {
           code = shop_found.code;
         }
@@ -62,4 +51,12 @@ function SiteMiddleware({ app }) {
   }
 }
 
-module.exports = SiteMiddleware;
+function isValidRoute({ url }) {
+  let out_of_scopes = ['/assets', '/images', '/static', '/api']
+  for (const e of out_of_scopes) {
+    if (url.includes(e)) {
+      return false;
+    }
+  }
+  return true;
+}

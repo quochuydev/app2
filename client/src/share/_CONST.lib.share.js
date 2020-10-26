@@ -1,3 +1,5 @@
+// let _CONST = require(path.resolve('./client/src/share/_CONST.lib.share.js'))
+
 (function () {
 
   const Module = {

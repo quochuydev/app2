@@ -8,10 +8,12 @@ const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')(session);
 const fs = require('fs');
 const { Liquid } = require('liquidjs')
+const util = require('util')
 
 const config = require(path.resolve('./src/config/config'));
 const log = require(path.resolve('./src/core/lib/logger'))(__dirname);
 const { errorHandle } = require('./errorHandle');
+let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const cache = require('memory-cache');
@@ -23,6 +25,7 @@ module.exports = (app, db) => {
   //   res.header('Access-Control-Allow-Headers', '*');
   //   next();
   // });
+
   cache.clear();
   app.use(cors());
   app.use(bodyParser.json({ limit: '50mb' }));
@@ -30,22 +33,32 @@ module.exports = (app, db) => {
   app.use(cookieParser())
   // app.use(logger('tiny'));
 
-  app.engine('liquid', new Liquid({
+  let engine = new Liquid({
     extname: ".liquid",
     root: ["views/site"]
     // ENOENT: Failed to lookup
     // views => {% include './site/base/templates/products' %}
     // views/site => {% include './base/templates/products' %}
-  }).express());
+  });
+
+  app.engine('liquid', engine.express());
+
+  engine.registerFilter('money', function (value) {
+    let price = parseFloat(value).toFixed(2);
+    let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
+    currency = _do.addCommas(currency);
+    return util.format(currency, 'đ');
+  });
 
   app.set('views', [path.resolve('./views')]);
   app.set('view engine', 'liquid');
 
-  let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app });
+  let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app, express });
   app.use('/', SiteMiddleware);
-
   const SiteRoutes = require(path.resolve('./src/core/routes/site-routes'))
   SiteRoutes({ app });
+  let SiteErrorHandle = require(path.resolve('./src/core/middlewares/site-error-handle.js'))({ app });
+  app.use('/*', SiteErrorHandle)
 
   console.log(path.resolve('client', 'build'));
   app.use('/', express.static(path.resolve('client', 'build')))

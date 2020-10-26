@@ -356,9 +356,9 @@
                                       </a>
                                     </h3>
                                     <div class="box-pro-prices">
-                                      <p class="pro-price highlight">{{product.variants[0].price}}
+                                      <p class="pro-price highlight">{{product.variants[0].price | money}}
                                         <span class="pro-price-del"><del
-                                            class="compare-price">{{product.variants[0].price_original}}</del></span>
+                                            class="compare-price">{{product.variants[0].price_original | money}}</del></span>
                                       </p>
                                     </div>
                                   </div>
