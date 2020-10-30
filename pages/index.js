@@ -35,7 +35,7 @@ export default class App extends Component {
                   style={{
                     margin: 10
                   }}>
-                  <Link href={`/cards?id=${card.id}`}>
+                  <Link href={`/cards/${card.id}`}>
                     <img src={card.imageUrl} className="img-responsive" />
                   </Link>
                 </div>

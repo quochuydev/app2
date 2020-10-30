@@ -20,7 +20,7 @@ const cache = require('memory-cache');
 
 module.exports = Express;
 
-function Express(app, db, handle, handler) {
+function Express(app, db, handle, appNext) {
   // app.use('/*', function (req, res, next) {
   //   res.header('Access-Control-Allow-Origin', '*');
   //   res.header('Access-Control-Allow-Methods', '*');
@@ -43,11 +43,15 @@ function Express(app, db, handle, handler) {
     // views/site => {% include './base/templates/products' %}
   });
 
-  app.get('*', (req, res) => {
-    return handle(req, res);
+  app.get('/cards/:id', (req, res) => {
+    const actualPage = '/card'
+    const queryParams = { id: req.params.id }
+    appNext.render(req, res, actualPage, queryParams);
   })
 
-  // app.use(handler);
+  app.get('*', (req, res) => {
+    return handle(req, res)
+  })
 
   app.engine('liquid', engine.express());
 

@@ -30,13 +30,9 @@ const App = {
         const dev = process.env.NODE_ENV !== 'production';
         const appNext = next({ dev });
         const handle = appNext.getRequestHandler();
-        // let route = routes()
-        //   .add('feed', '/feed/:id')
-        // const handler = route.getRequestHandler(appNext);
-        let handler = null;
         appNext.prepare()
           .then(() => {
-            Express(app, db, handle, handler);
+            Express(app, db, handle, appNext);
           })
           .catch(err => {
             console.log(err)
