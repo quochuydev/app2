@@ -18,7 +18,9 @@ let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 const cache = require('memory-cache');
 
-module.exports = (app, db) => {
+module.exports = Express;
+
+function Express(app, db, handle, handler) {
   // app.use('/*', function (req, res, next) {
   //   res.header('Access-Control-Allow-Origin', '*');
   //   res.header('Access-Control-Allow-Methods', '*');
@@ -40,6 +42,12 @@ module.exports = (app, db) => {
     // views => {% include './site/base/templates/products' %}
     // views/site => {% include './base/templates/products' %}
   });
+
+  app.get('*', (req, res) => {
+    return handle(req, res);
+  })
+
+  // app.use(handler);
 
   app.engine('liquid', engine.express());
 

@@ -9,3 +9,7 @@ package-lock.json
 .git
 /download/
 /uploads/
+
+# next.js
+.next/
+out/

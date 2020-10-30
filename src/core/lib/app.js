@@ -9,6 +9,7 @@ const socket = require('./socket');
 const { EventBus } = require('./rabbit/index');
 const { consumer } = require('./rabbit/consumer');
 const { Analyze } = require('./analyze');
+const next = require('next');
 
 let eventBus = async () => {
   let { active, url, user, pass, host, port, vhost } = config.rabbit;
@@ -26,7 +27,21 @@ const App = {
     Mongoose.connect()
       .then(async db => {
         console.log('connect mongo success');
-        Express(app, db);
+        const dev = process.env.NODE_ENV !== 'production';
+        const appNext = next({ dev });
+        const handle = appNext.getRequestHandler();
+        // let route = routes()
+        //   .add('feed', '/feed/:id')
+        // const handler = route.getRequestHandler(appNext);
+        let handler = null;
+        appNext.prepare()
+          .then(() => {
+            Express(app, db, handle, handler);
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
         Cron();
         if (process.env.NODE_ENV == 'production') {
           Analyze();
