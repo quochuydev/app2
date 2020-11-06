@@ -8,6 +8,14 @@ const routes = (app) => {
   app.get('/admin', (req, res, next) => {
     res.redirect(`${config.backend_admin}/`);
   });
+  
+  app.get('/oauth2callback', (req, res) => {
+    res.status(200).send(req.body)
+  });
+  
+  app.post('/oauth2callback', (req, res) => {
+    res.status(200).send(req.body)
+  });
 
   app.get('/auth', auth);
   app.post('/login', login);
