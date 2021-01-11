@@ -9,7 +9,6 @@ autoIncrement.initialize(mongoose.connection);
 
 let UserSchema = new Schema({
   id: { type: Number, default: null },
-  shop_id: { type: Number, default: null },
   is_root: { type: Boolean, default: false },
 
   phone: { type: String, trim: true, default: '' },
@@ -46,12 +45,10 @@ let UserSchema = new Schema({
 UserSchema.plugin(autoIncrement.plugin, { model: 'User', field: 'id', startAt: 10000, incrementBy: 1 });
 
 UserSchema.statics._count = async function (filter = {}) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   return await this.count(filter);
 }
 
 UserSchema.statics._create = async function (data = {}) {
-  data.shop_id = data.shop_id || cache.get('shop_id');
   return await this.create(data);
 }
 
@@ -77,7 +74,6 @@ UserSchema.statics.authenticate = function (user, password) {
 UserSchema.statics.user_system = {
   id: 1,
   first_name: 'Hệ thống',
-  shop_id: cache.get('shop_id')
 }
 
 let UserModel = mongoose.model('User', UserSchema);

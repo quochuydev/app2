@@ -55,27 +55,23 @@ ShopSchema.plugin(autoIncrement.plugin, { model: 'Shop', field: 'id', startAt: 1
 
 ShopSchema.statics._create = async function (data = {}) {
   let _this = this;
-  let id = cache.get('shop_id');
   let result = await _this.create({ ...data, id });
   return result;
 }
 
 ShopSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
   let _this = this;
-  filter.id = cache.get('shop_id');
   let data = await _this.findOne(filter, populate, options);
   return data;
 }
 
 ShopSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
   let _this = this;
-  filter.id = cache.get('shop_id');
   let data = await _this.findOneAndUpdate(filter, data_update, options);
   return data;
 }
 
 ShopSchema.statics._update = async function (filter = {}, data_update = {}) {
-  filter.id = cache.get('shop_id');
   let data = await this.update(filter, data_update);
   return data;
 }

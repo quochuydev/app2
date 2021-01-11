@@ -43,7 +43,7 @@ Controller.list = async (req, res) => {
   let products = await ProductService.find({ filter: criteria, limit, page, sort, });
 
   for (const product of products) {
-    product.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'line_items.product_id': product.id })
+    product.total_orders = await OrderModel.count({'line_items.product_id': product.id })
   }
 
   res.json({ error: false, count, products })

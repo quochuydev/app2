@@ -8,7 +8,6 @@ const MapCustomerShopify = require(path.resolve('./src/customers/repo/map_custom
 const MapCustomer = {
   gen(type, map_customer, shop) {
     let customer = { ...map_customer };
-    let shop_id = cache.get('shop_id');
     if (type == 'haravan') {
       customer = MapCustomerHaravan.gen(map_customer, shop);
     }
@@ -22,7 +21,6 @@ const MapCustomer = {
       customer.type = 'app';
     }
     if (!customer) console.log(123, customer)
-    customer.shop_id = shop_id;
     return customer;
   }
 }

@@ -20,14 +20,13 @@ function _parse(body, option = { writeLog: true, maxLimit: 500 }, defaults = { p
   }
   let query = body;
   let criteria = {
-    shop_id: cache.get('shop_id'),
     is_deleted: { $in: [null, false] }
   }
   if (option.no_check_delete) {
     delete criteria.is_deleted;
   }
   if (option.no_check_shop) {
-    delete criteria.shop_id;
+// 
   }
   for (field in query) {
     _.merge(criteria, formatCriteria(field, query[field]))

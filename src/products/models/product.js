@@ -52,7 +52,6 @@ const ProductSchema = new Schema({
     image: {},
   }],
   is_deleted: { type: Boolean, default: false },
-  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
@@ -61,7 +60,6 @@ ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'number', 
 ProductSchema.plugin(autoIncrement.plugin, { model: 'Product', field: 'id', startAt: 10000, incrementBy: 1 });
 
 ProductSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.find(filter, populate, options);
   if (!data) {
     throw { message: 'Sản phẩm không còn tồn tại' }
@@ -70,14 +68,12 @@ ProductSchema.statics._find = async function (filter = {}, populate = {}, option
 }
 
 ProductSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.findOne(filter, populate, options);
   return data;
 }
 
 ProductSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
   options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   data_update.updated_at = new Date();
   let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;
@@ -85,14 +81,12 @@ ProductSchema.statics._findOneAndUpdate = async function (filter = {}, data_upda
 
 ProductSchema.statics._create = async function (data) {
   let _this = this;
-  data.shop_id = cache.get('shop_id');
   let product = await _this.create(data);
   return product;
 }
 
 ProductSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
   let _this = this;
-  filter.shop_id = cache.get('shop_id');
   let data = await _this.update(filter, data_update, option);
   return data;
 }

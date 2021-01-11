@@ -22,10 +22,7 @@ const AuthenticationAdapterSchema = new Schema({
   status: { type: Number, default: 2 },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
-  shop_id: { type: Number, required: true },
 }, { versionKey: false, strict: false });
-
-AuthenticationAdapterSchema.index({ shop_id: 1 });
 
 AuthenticationAdapterSchema.statics.STATUS = {
   ACTIVE: 1,
@@ -44,7 +41,6 @@ AuthenticationAdapterSchema.statics.TYPE = {
 };
 
 AuthenticationAdapterSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.find(filter, populate, options);
   return data;
 }

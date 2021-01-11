@@ -125,7 +125,6 @@ const OrderSchema = new Schema({
   deleted_at: { type: Date, default: null },
   token: { type: String, default: null },
 
-  shop_id: { type: Number, default: null },
   detail: { type: Schema.Types.Mixed },
 })
 
@@ -144,7 +143,6 @@ OrderSchema.plugin(autoIncrement.plugin, {
 });
 
 OrderSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   let data = await this.findOne(filter, populate, options);
   if (!data) {
     throw { message: 'Đơn hàng không còn tồn tại' }
@@ -153,20 +151,17 @@ OrderSchema.statics._findOne = async function (filter = {}, populate = {}, optio
 }
 
 OrderSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   data_update.updated_at = new Date();
   let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;
 }
 
 OrderSchema.statics._update = async function (filter = {}, data_update = {}) {
-  filter.shop_id = cache.get('shop_id');
   let data = await this.update(filter, data_update);
   return data;
 }
 
 OrderSchema.statics._create = async function (data = {}) {
-  data.shop_id = cache.get('shop_id');
   let result = await this.create(data);
   return result;
 }

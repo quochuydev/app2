@@ -15,7 +15,7 @@ const routes = (app) => {
   app.post('/logout', logout);
   app.post('/signup', signup);
   app.post('/change-shop', function (req, res, next) {
-    changeShop({ user: req.body.user, shop_id: req.body.shop_id })
+    changeShop({ user: req.body.user,  })
       .then(result => res.json({ error: false, url: result.url }))
       .catch(error => next(error))
   });

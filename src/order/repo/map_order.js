@@ -10,7 +10,6 @@ const MapOrderApp = require(path.resolve('./src/order/repo/map_order_app'));
 const MapOrder = {
   gen(type, map_order, shop) {
     let order = { ...map_order };
-    let shop_id = cache.get('shop_id');
     if (type == 'haravan') {
       order = MapOrderHaravan.gen(order, shop);
     }
@@ -24,7 +23,6 @@ const MapOrder = {
       type = 'app';
     }
     order.type = type;
-    order.shop_id = shop_id;
     return order;
   }
 }

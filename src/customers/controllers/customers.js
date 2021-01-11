@@ -20,7 +20,7 @@ let list = async (req, res) => {
     let count = await CustomerModel._count(criteria);
     let customers = await CustomerModel.find(criteria).skip(skip).limit(limit).sort(sort).lean(true);
     for (const customer of customers) {
-      customer.total_orders = await OrderModel.count({ shop_id: req.shop_id, 'customer_id': customer.id })
+      customer.total_orders = await OrderModel.count({ 'customer_id': customer.id })
     }
     res.json({ error: false, count, customers })
   } catch (error) {

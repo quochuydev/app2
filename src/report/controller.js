@@ -24,7 +24,7 @@ module.exports = Controller;
 
 // setTimeout(async function () {
 //   let items = await OrderModel.aggregate([
-//     { $match: { shop_id: cache.get('shop_id'), created_at: { $gte: moment().startOf('day'), $lte: moment().endOf('day') } } },
+//     { $match: { created_at: { $gte: moment().startOf('day'), $lte: moment().endOf('day') } } },
 //     { $group: { _id: { $hour: '$created_at' }, total_price: { $sum: "$total_price" }, total: { $sum: 1 } } },
 //     { $sort: { _id: 1 } }
 //   ]);

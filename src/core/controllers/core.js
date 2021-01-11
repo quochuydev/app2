@@ -42,12 +42,10 @@ let auth = async (req, res) => {
       let new_user = {
         email,
         is_root: true,
-        shop_id: new_shop.id
       }
       user = await UserMD.create(new_user);
 
       let guest_customer = {
-        shop_id: new_shop.id,
         first_name: 'Khách hàng lẻ',
         type: 'GUEST',
       }
@@ -57,7 +55,6 @@ let auth = async (req, res) => {
     let user_gen_token = {
       id: user.id,
       email: user.email,
-      shop_id: user.shop_id,
       exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);
@@ -68,18 +65,16 @@ let auth = async (req, res) => {
   }
 }
 
-async function changeShop({ user, shop_id }) {
+async function changeShop({ user }) {
   let result = {};
-  let found_user = await UserMD.findOne({ email: user.email, shop_id }).lean(true);
+  let found_user = await UserMD.findOne({ email: user.email }).lean(true);
   if (!found_user) {
     throw { message: 'Không thể chuyển cửa hàng', code: 'USER_NOT_FOUND' }
   }
 
-  cache.put('shop_id', shop_id);
   let user_gen_token = {
     id: found_user.id,
     email: found_user.email,
-    shop_id: found_user.shop_id,
     exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
   }
 
@@ -95,21 +90,21 @@ async function checkUser({ body }) {
   }
   let group_users = await UserMD.aggregate([
     { $match: { email: verify_user.email, is_deleted: false } },
-    { $group: { "_id": "$email", shops: { $push: "$shop_id" } } }
+    { $group: { "_id": "$email" } }
   ]);
   if (!(group_users && group_users.length)) {
     throw { message: 'check user failed' }
   }
   let group_user = group_users[0];
   let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
-  let shop = await ShopModel.findOne({ shop_id: verify_user.shop_id }).lean(true);
+  let shop = await ShopModel.findOne({  }).lean(true);
   let user = { id: verify_user.id, email: group_user._id, shops, shop };
   return { error: false, user };
 }
 
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop, shop_id,
+    let { email, password, is_create_shop,
       username, name, code, phone } = req.body;
 
     if (!password) {
@@ -146,7 +141,6 @@ async function signup(req, res, next) {
       let new_user = {
         email, phone,
         username: phone,
-        shop_id: shop.id,
         first_name: email,
         last_name: email,
         password,
@@ -155,10 +149,7 @@ async function signup(req, res, next) {
       let user = await UserMD.create(new_user);
       return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
     } else {
-      if (!shop_id) {
-        return res.json({ message: 'Thiếu shop_id' });
-      }
-      let found_user = await UserMD.findOne({ email, shop_id }).lean(true);
+      let found_user = await UserMD.findOne({ email }).lean(true);
       if (found_user) {
         return res.json({ message: 'Email này đã tồn tại' })
       }
@@ -167,7 +158,7 @@ async function signup(req, res, next) {
         phone,
         first_name: email,
         last_name: email,
-        shop_id
+        
       }
       let user = await UserMD.create(new_user);
       return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_USER_SUCCESS' });
@@ -200,7 +191,6 @@ let login = async (req, res, next) => {
     let user_gen_token = {
       id: user.id,
       email: user.email,
-      shop_id: user.shop_id,
       exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
     }
     let userToken = jwt.sign(user_gen_token, hash_token);

@@ -44,7 +44,6 @@ function SiteMiddleware({ app, express }) {
       }
     }
 
-    req.shop_id = shop.id;
     let theme_id = shop.theme_id;
     app.use('/', express.static(path.resolve(`./views/site/${theme_id}`)));
     next();

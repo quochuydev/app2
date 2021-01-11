@@ -33,8 +33,7 @@ function themeCode() {
 const routes = ({ app }) => {
   app.get('/', async function (req, res) {
     let code = themeCode();
-    let shop_id = req.shop_id;
-    let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
+    let products = await ProductService.find({ filter: {  is_deleted: false }, sort: { created_at: -1 } });
     let result = {
       code,
       settings,
@@ -79,7 +78,6 @@ const routes = ({ app }) => {
     try {
 
       let handle = req.params.handle;
-      let shop_id = req.shop_id;
       let code = themeCode();
 
       if (!handle) {
@@ -92,7 +90,7 @@ const routes = ({ app }) => {
         is_json_data = true;
       }
 
-      let product = await ProductService.findOne({ filter: { shop_id, handle, is_deleted: false } });
+      let product = await ProductService.findOne({ filter: {  handle, is_deleted: false } });
       if (!product) {
         return res.render('404');
       }
@@ -101,7 +99,7 @@ const routes = ({ app }) => {
         return res.json(product);
       }
 
-      let products = await ProductService.find({ filter: { shop_id, is_deleted: false }, sort: { created_at: -1 } });
+      let products = await ProductService.find({ filter: {  is_deleted: false }, sort: { created_at: -1 } });
 
       let result = {
         code,
@@ -117,15 +115,13 @@ const routes = ({ app }) => {
 
   app.get('/collections/:collect', async function (req, res) {
     let collect = req.params.collect;
-    let shop_id = req.shop_id;
     let code = themeCode();
 
     let criteria = {
-      shop_id,
       is_deleted: false,
     }
     if (collect != 'all') {
-      let collection = await CollectionModel.findOne({ shop_id, handle: collect }).lean(true);
+      let collection = await CollectionModel.findOne({ handle: collect }).lean(true);
       if (!collection) {
         return res.render('404');
       } else {
@@ -145,10 +141,9 @@ const routes = ({ app }) => {
   app.route('/cart')
     .get(async function (req, res) {
       let cart_token = req.cookies.cart_token;
-      let shop_id = req.shop_id;
       let code = themeCode();
 
-      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
       if (!cart) {
         cart = {
           item_count: 0,
@@ -181,7 +176,6 @@ const routes = ({ app }) => {
 
   app.route('/checkouts/:checkout_token')
     .get(async function (req, res) {
-      let shop_id = req.shop_id;
       let cart_token = req.cookies.cart_token;
       let checkout_token = req.params.checkout_token;
       let code = themeCode();
@@ -193,7 +187,7 @@ const routes = ({ app }) => {
           return res.redirect(`/cart`);
         }
       }
-      let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+      let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
       res.render(`site/${code}/templates/checkouts`, {
         cart,
         code,
@@ -203,15 +197,13 @@ const routes = ({ app }) => {
     .post(async function (req, res) {
       try {
         let cart_token = req.cookies.cart_token;
-        let shop_id = req.shop_id;
         let data = req.query;
 
-        let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+        let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
         if (!cart) {
           throw { message: 'error' }
         }
         let create_data = {
-          shop_id,
           billing_address: {},
           customer: {}
         };
@@ -219,7 +211,7 @@ const routes = ({ app }) => {
 
         if (data.checkout_user.email) {
           create_data.email = data.checkout_user.email;
-          let found_customer = await CustomerModel.findOne({ email: data.checkout_user.email, shop_id }).lean(true);
+          let found_customer = await CustomerModel.findOne({ email: data.checkout_user.email,  }).lean(true);
           if (found_customer) {
             create_data.customer_id = found_customer.id;
             create_data.customer.address1 = found_customer.address1;
@@ -327,9 +319,8 @@ const routes = ({ app }) => {
 
   app.get('/cart.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
-    let shop_id = req.shop_id;
 
-    let cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+    let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
     if (!cart) {
       cart = {
         item_count: 0,
@@ -340,7 +331,6 @@ const routes = ({ app }) => {
 
   app.post('/cart/add.js', async function (req, res) {
     let cart_token = req.cookies.cart_token;
-    let shop_id = req.shop_id;
     let data = req.body;
 
     try {
@@ -351,15 +341,13 @@ const routes = ({ app }) => {
       if (!cart_token) {
         cart = await CartModel.create({
           token: uuid(),
-          shop_id
         })
         cart = cart.toJSON();
       } else {
-        cart = await CartModel.findOne({ token: cart_token, shop_id }).lean(true);
+        cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
         if (!cart) {
           cart = await CartModel.create({
             token: uuid(),
-            shop_id
           })
           cart = cart.toJSON();
         }
@@ -411,7 +399,7 @@ const routes = ({ app }) => {
       }
       calculateCart({ cart })
       delete cart._id;
-      let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token, shop_id }, { $set: cart }, { lean: true, new: true });
+      let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token,  }, { $set: cart }, { lean: true, new: true });
       let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
 
       res.json({

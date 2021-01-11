@@ -44,7 +44,6 @@ const CustomersSchema = new Schema({
   gender: { type: Number, default: null },
   last_order_date: { type: Date, default: null },
   is_deleted: { type: Boolean, default: false },
-  shop_id: { type: Number, default: null },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
 })
@@ -64,21 +63,18 @@ CustomersSchema.plugin(autoIncrement.plugin, {
 
 CustomersSchema.statics._count = async function (filter = {}) {
   let _this = this;
-  filter.shop_id = cache.get('shop_id');
   let data = await _this.count(filter);
   return data;
 }
 
 CustomersSchema.statics._findOne = async function (filter = {}, populate = {}) {
   let _this = this;
-  filter.shop_id = cache.get('shop_id');
   let data = await _this.findOne(filter, populate);
   return data;
 }
 
 CustomersSchema.statics._create = async function (data = {}) {
   let _this = this;
-  data.shop_id = cache.get('shop_id');
   if (!data.created_at) {
     data.created_at = new Date()
   }
@@ -91,7 +87,6 @@ CustomersSchema.statics._create = async function (data = {}) {
 
 CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
   options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
-  filter.shop_id = filter.shop_id || cache.get('shop_id');
   data_update.updated_at = new Date();
   let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
   return data;

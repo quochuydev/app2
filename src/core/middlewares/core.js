@@ -26,8 +26,6 @@ let Middleware = (req, res, next) => {
       throw { message: 'User invalid', user }
     }
     req.user = user;
-    req.shop_id = user.shop_id;
-    cache.put('shop_id', user.shop_id);
     next();
   } catch (error) {
     logger(error)

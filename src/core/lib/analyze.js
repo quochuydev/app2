@@ -7,9 +7,9 @@ const { ProductModel } = require(path.resolve('./src/products/models/product.js'
 async function Analyze() {
   let shops = await ShopModel.find({}).lean(true);
   for (const shop of shops) {
-    let order_count = await OrderModel.count({ shop_id: shop.id })
-    let product_count = await ProductModel.count({ shop_id: shop.id })
-    let customer_count = await CustomerModel.count({ shop_id: shop.id })
+    let order_count = await OrderModel.count({  })
+    let product_count = await ProductModel.count({  })
+    let customer_count = await CustomerModel.count({  })
     console.log(`shop [${shop.id}] [code: ${shop.code}] [url: ${shop.url}] [name: ${shop.name}]`);
     console.log(`${customer_count} khách hàng | ${product_count} sản phẩm | ${order_count} Đơn hàng`);
   }
