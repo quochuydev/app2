@@ -3,9 +3,9 @@ const md5 = require('md5');
 const uuid = require('uuid').v4;
 
 const config = require(path.resolve('./src/config/config'));
-const { AuthenticationAdapterModel } = require(path.resolve('./src/core/models/adapter.js'));
 const Mongoose = require(path.resolve('./src/core/lib/mongoose'));
 const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+const { UserModel } = require(path.resolve('./src/users/models/users'));
 
 function generateAuthApi() {
   return md5(uuid());
@@ -19,7 +19,9 @@ Mongoose.connect()
     const code ="base"
     const email ="quochuydev1@gmail.com"
     const phone ="0382986838"
-    const password ="123456"
+    const password ="quochuydev1@gmail.com"
+       await UserModel.remove({ id: 10000 });
+
       let shops = await ShopModel.find();
       console.log(shops)
 
@@ -38,7 +40,7 @@ Mongoose.connect()
       //   password,
       //   is_root: true
       // }
-      // let user = await ShopModel.create(new_user);
+      // let user = await UserModel.create(new_user);
     console.log('done')
     process.exit(0)
   })

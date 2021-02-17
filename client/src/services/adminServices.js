@@ -258,6 +258,10 @@ let User = {
   create: async function (data) {
     return await ApiClient.postData(`api/users`, null, data);
   },
+  changePassword: async function (id, data) {
+    return await ApiClient.postData(`api/users/${id}/change-password`, null, data);
+  },
+  
   update: async function (data) {
     return await ApiClient.putData(`api/users/${data.id}`, null, data);
   },

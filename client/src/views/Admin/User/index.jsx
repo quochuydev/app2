@@ -23,6 +23,9 @@ import AdminServices from './../../../services/adminServices';
 const apiUrl = `${config.backend_url}/api`;
 
 function User(props) {
+  const [password, setPassword] = useState('')
+  const [passwordType, setPasswordType] = useState(false)
+  
   const { Option } = Select;
   const { count, users, user, permissions, actions, permissionActions, coreActions, using_user, root_user } = props;
 
@@ -198,6 +201,17 @@ function User(props) {
             <Form.Item label="Số điện thoại" onChange={e => actions.setUser({ [e.target.name]: e.target.value })}>
               <Input name="phone" placeholder="input placeholder" value={user.phone} />
             </Form.Item>
+            
+            <hr />
+            <p>New password:</p>
+            <Form.Item label="Password" onChange={e => setPassword(e.target.value)}>
+              <Input prefix={<Icon type="eye" onClick={()=>setPasswordType(!passwordType)} />} name="password" 
+                type={passwordType ? 'text' : 'password' } placeholder="" value={password} />
+            </Form.Item>
+            <Button onClick={async ()=>{
+              await AdminServices.User.changePassword(user.id, {password})
+              message.success(`Success.`);
+            }}>Save</Button>
           </Col>
           <Col xs={24} lg={12}>
             <Card>

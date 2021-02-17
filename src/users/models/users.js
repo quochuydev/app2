@@ -52,6 +52,12 @@ UserSchema.statics._create = async function (data = {}) {
   return await this.create(data);
 }
 
+UserSchema.statics.changePassword = async function (user_id, password) {
+  const salt = crypto.randomBytes(16).toString('base64');
+  const hash_password = hashPassword(salt, password);
+  return await this.findOneAndUpdate({id: user_id}, { $set: { password: hash_password, salt } });
+}
+
 function hashPassword(salt, password) {
   return crypto.pbkdf2Sync(password, new Buffer(salt, 'base64'), 10000, 64, 'sha1').toString('base64');
 };

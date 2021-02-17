@@ -31,11 +31,18 @@ const router = ({ app }) => {
         email: data.email,
         phone: data.phone,
         roles: data.roles,
-        password: '@Test123',
+        password: data.password,
       }
       let user = await UserModel._create(data_update);
       res.json({ user });
     })
+    app.route('/api/users/:id/change-password')
+      .post(async function (req, res, next) {
+        let user_id = req.params.id;
+        let data = req.body;
+        let result = await UserModel.changePassword(user_id, data.password);
+        res.json(result);
+      })
   app.route('/api/users/:id')
     .get(async function (req, res, next) {
       let user_id = req.params.id;
