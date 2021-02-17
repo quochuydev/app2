@@ -206,7 +206,7 @@ function User(props) {
             <p>New password:</p>
             <Form.Item label="Password" onChange={e => setPassword(e.target.value)}>
               <Input prefix={<Icon type="eye" onClick={()=>setPasswordType(!passwordType)} />} name="password" 
-                type={passwordType ? 'text' : 'password' } placeholder="" value={password} />
+                type={passwordType ? 'text' : 'password' } placeholder="" value={password}  autoComplete="none"/>
             </Form.Item>
             <Button onClick={async ()=>{
               await AdminServices.User.changePassword(user.id, {password})
