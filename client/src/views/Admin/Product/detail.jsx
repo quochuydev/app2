@@ -296,7 +296,7 @@ function ProductDetail(props) {
 
   const uploadSetting = {
     multiple: true,
-    action: productUpdate.id ? compile(`${apiUrl}/products/{id}/images`, { id: productUpdate.id }) : `${apiUrl}/images`,
+    action: `${apiUrl}/images`,
     headers: ApiClient.getHeader(),
     onChange(info) {
       const { status } = info.file;
@@ -312,7 +312,6 @@ function ProductDetail(props) {
         productUpdate.images.push(result.image);
         setProduct({ images: productUpdate.images });
       }
-      onGetProduct();
       return;
     },
   };
@@ -417,7 +416,7 @@ function ProductDetail(props) {
       <Form onSubmit={addProduct}>
         <Row>
           <Col span={5}>
-            <button className="btn-primary w-100" type="submit">Accept</button>
+            <button className="btn-primary w-100 m-t-20" type="submit">Save</button>
           </Col>
           <Col xs={24} lg={24}>
             <Tabs defaultActiveKey="1">
