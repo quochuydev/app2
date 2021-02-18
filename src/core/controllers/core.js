@@ -1,80 +1,65 @@
 const path = require("path");
 const jwt = require("jsonwebtoken");
-const { google } = require("googleapis");
-let mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-let UserMD = mongoose.model("User");
+const UserMD = mongoose.model("User");
 const { ShopModel } = require(path.resolve("./src/shop/models/shop"));
 
-const { frontend_admin, google_app, hash_token } = require(path.resolve(
-  "./src/config/config"
-));
-let { clientId, clientSecret, redirectUrl } = google_app;
-const logger = require(path.resolve("./src/core/lib/logger"))(__dirname);
-let _do = require(path.resolve("./client/src/share/_do.lib.share.js"));
-let _is = require(path.resolve("./client/src/share/_is.lib.share.js"));
+const _is = require(path.resolve("./client/src/share/_is.lib.share.js"));
 const { CustomerModel } = require(path.resolve(
   "./src/customers/models/customers.js"
 ));
+// const { getToken, url } = require("./google");
+const config = require(path.resolve("./src/config/config"));
 
-const oauth2Client = new google.auth.OAuth2(
-  clientId,
-  clientSecret,
-  redirectUrl
-);
-const scopes = ["email", "profile", "openid"];
-const url = oauth2Client.generateAuthUrl({
-  access_type: "offline",
-  scope: scopes,
-});
+async function assertUserShop(email) {
+  let user = await UserMD.findOne({ email }).lean(true);
+  if (!user) {
+    let shop_data = {
+      name: email,
+      code: email,
+      google_info: userAuth,
+      user_created: {
+        email,
+      },
+    };
+    let new_shop = await ShopModel.create(shop_data);
+    let new_user = {
+      email,
+      is_root: true,
+    };
+    user = await UserMD.create(new_user);
+
+    let guest_customer = {
+      first_name: "Khách hàng lẻ",
+      type: "GUEST",
+    };
+    await CustomerModel.create(guest_customer);
+  }
+  return user;
+}
 
 let auth = async (req, res) => {
   try {
-    let { code } = req.query;
-    const { tokens } = await oauth2Client.getToken(code);
-    let userAuth = jwt.decode(tokens.id_token);
-    let { email } = userAuth;
-    if (!email) {
-      return res.sendStatus(401);
-    }
-    let user = await UserMD.findOne({ email }).lean(true);
-    // if (!user) {
+    // let { code } = req.query;
+    // const { tokens } = await getToken(code);
+    // let userAuth = jwt.decode(tokens.id_token);
+    // let { email } = userAuth;
+    // if (!email) {
     //   return res.sendStatus(401);
     // }
-    if (!user) {
-      let shop_data = {
-        name: email,
-        code: email,
-        google_info: userAuth,
-        user_created: {
-          email,
-        },
-      };
-      let new_shop = await ShopModel.create(shop_data);
-      let new_user = {
-        email,
-        is_root: true,
-      };
-      user = await UserMD.create(new_user);
-
-      let guest_customer = {
-        first_name: "Khách hàng lẻ",
-        type: "GUEST",
-      };
-      await CustomerModel.create(guest_customer);
-    }
-
-    let user_gen_token = {
-      id: user.id,
-      email: user.email,
-      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
-    };
-    let userToken = jwt.sign(user_gen_token, hash_token);
-    res.redirect(`${frontend_admin}/loading?token=${userToken}`);
+    // let user = await assertUserShop(email);
+    // let user_gen_token = {
+    //   id: user.id,
+    //   email: user.email,
+    //   exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
+    // };
+    // let userToken = jwt.sign(user_gen_token, config.hash_token);
+    // res.redirect(`${config.frontend_admin}/loading?token=${userToken}`);
   } catch (error) {
     console.log(error);
     res.redirect(
-      `${frontend_admin}/login?message=${encodeURIComponent(
+      `${config.frontend_admin}/login?message=${encodeURIComponent(
         "Something errror!"
       )}`
     );
@@ -94,13 +79,13 @@ async function changeShop({ user }) {
     exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
   };
 
-  let userToken = jwt.sign(user_gen_token, hash_token);
-  result.url = `${frontend_admin}/loading?token=${userToken}`;
+  let userToken = jwt.sign(user_gen_token, config.hash_token);
+  result.url = `${config.frontend_admin}/loading?token=${userToken}`;
   return result;
 }
 
 async function checkUser({ body }) {
-  let verify_user = jwt.verify(body.token, hash_token);
+  let verify_user = jwt.verify(body.token, config.hash_token);
   if (!verify_user.email) {
     throw { message: "check user failed" };
   }
@@ -122,15 +107,7 @@ async function checkUser({ body }) {
 
 async function signup(req, res, next) {
   try {
-    let {
-      email,
-      password,
-      is_create_shop,
-      username,
-      name,
-      code,
-      phone,
-    } = req.body;
+    let { email, password, is_create_shop, name, code, phone } = req.body;
 
     if (!password) {
       return res.status(400).json({ message: "Nhập mật khẩu" });
@@ -238,11 +215,11 @@ let login = async (req, res, next) => {
       email: user.email,
       exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
     };
-    let userToken = jwt.sign(user_gen_token, hash_token);
+    let userToken = jwt.sign(user_gen_token, config.hash_token);
     res.json({
       error: false,
       token: userToken,
-      url: `${frontend_admin}/loading?token=${userToken}`,
+      url: `${config.frontend_admin}/loading?token=${userToken}`,
     });
   } catch (error) {
     next(error);
@@ -258,7 +235,7 @@ let logout = (req, res) => {
 };
 
 let logout_redirect = (req, res) => {
-  res.redirect(`${frontend_admin}/logout`);
+  res.redirect(`${config.frontend_admin}/logout`);
 };
 
 module.exports = {

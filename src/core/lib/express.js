@@ -33,25 +33,27 @@ module.exports = (app, db) => {
   app.use(cookieParser());
   // app.use(logger('tiny'));
 
-  let engine = new Liquid({
-    extname: ".liquid",
-    root: ["views/site"],
-    // ENOENT: Failed to lookup
-    // views => {% include './site/base/templates/products' %}
-    // views/site => {% include './base/templates/products' %}
-  });
+  // --------------------------------- SETUP LIQUID
 
-  app.engine("liquid", engine.express());
+  // let engine = new Liquid({
+  //   extname: ".liquid",
+  //   root: ["views/site"],
+  //   // ENOENT: Failed to lookup
+  //   // views => {% include './site/base/templates/products' %}
+  //   // views/site => {% include './base/templates/products' %}
+  // });
 
-  engine.registerFilter("money", function (value) {
-    let price = parseFloat(value).toFixed(2);
-    let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
-    currency = _do.addCommas(currency);
-    return util.format(currency, "đ");
-  });
+  // app.engine("liquid", engine.express());
 
-  app.set("views", [path.resolve("./views")]);
-  app.set("view engine", "liquid");
+  // engine.registerFilter("money", function (value) {
+  //   let price = parseFloat(value).toFixed(2);
+  //   let currency = Number(price.replace(/[^0-9\.-]+/g, ""));
+  //   currency = _do.addCommas(currency);
+  //   return util.format(currency, "đ");
+  // });
+
+  // app.set("views", [path.resolve("./views")]);
+  // app.set("view engine", "liquid");
 
   // let SiteMiddleware = require(path.resolve('./src/core/middlewares/site.js'))({ app, express });
   // app.use('/', SiteMiddleware);
@@ -63,31 +65,33 @@ module.exports = (app, db) => {
   // app.use("/*", SiteErrorHandle);
 
   console.log(path.resolve("client", "build"));
-  app.use("/", express.static(path.resolve("client", "build")));
-  app.get("/admin/*", (req, res) => {
-    res.sendFile(path.resolve("client/build", "index.html"));
-  });
+  if (process.env.NODE_ENV == "production") {
+    app.use("/", express.static(path.resolve("client", "build")));
+    app.get("/admin/*", (req, res) => {
+      res.sendFile(path.resolve("client/build", "index.html"));
+    });
+  }
 
-  app.use(
-    session({
-      name: config.appslug,
-      key: config.appslug,
-      secret: process.env.SESSION_SECRET || config.appslug,
-      resave: true,
-      rolling: true,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: false,
-      },
-      store: new MongoStore({
-        mongooseConnection: db.connection,
-        collection: "sessions",
-        stringify: false,
-      }),
-    })
-  );
+  // app.use(
+  //   session({
+  //     name: config.appslug,
+  //     key: config.appslug,
+  //     secret: process.env.SESSION_SECRET || config.appslug,
+  //     resave: true,
+  //     rolling: true,
+  //     saveUninitialized: true,
+  //     cookie: {
+  //       maxAge: 30 * 24 * 60 * 60 * 1000,
+  //       httpOnly: true,
+  //       secure: false,
+  //     },
+  //     store: new MongoStore({
+  //       mongooseConnection: db.connection,
+  //       collection: "sessions",
+  //       stringify: false,
+  //     }),
+  //   })
+  // );
 
   const Routes = require(path.resolve("./src/core/routes/routes"));
   Routes(app);
