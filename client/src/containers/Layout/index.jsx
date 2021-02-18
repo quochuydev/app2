@@ -20,6 +20,8 @@ import {
   Dropdown,
   Modal,
   Upload,
+  Card,
+  Avatar,
 } from "antd";
 import "./style.css";
 
@@ -41,11 +43,14 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const { MENU_DATA, PATHS } = Constants;
 const { LOGIN_ROUTE } = PATHS;
-let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-  navigator.userAgent
-);
 
-function LayoutContainer({ CoreActions, shop, userActions }) {
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+}
+
+function LayoutContainer({ CoreActions, shop, userActions, using_user }) {
   const [isShowDrawer, setIsShowDrawer] = useState(false);
   let menuName = "Menu";
 
@@ -136,7 +141,7 @@ function LayoutContainer({ CoreActions, shop, userActions }) {
       <div style={{ display: props.display }}>
         {token && (
           <Sider
-            collapsible={!isMobile}
+            collapsible={!isMobile()}
             style={{ width: "100%" }}
             defaultCollapsed={false}
             style={{ background: "#fff" }}
@@ -199,14 +204,14 @@ function LayoutContainer({ CoreActions, shop, userActions }) {
         onClose={() => {
           setIsShowDrawer(false);
         }}
-        visible={isShowDrawer && isMobile}
+        visible={isShowDrawer && isMobile()}
         bodyStyle={{ padding: 0 }}
       >
-        <LeftMenu display={_display(isMobile)} />
+        <LeftMenu display={_display(isMobile())} />
       </Drawer>
 
       <Layout style={{ background: "#fff" }}>
-        <LeftMenu display={_display(!isMobile)} />
+        <LeftMenu display={_display(!isMobile())} />
         <Layout.Content style={{ padding: "0 5px" }}>
           <PageHeader
             title={
@@ -220,9 +225,73 @@ function LayoutContainer({ CoreActions, shop, userActions }) {
                 {menuName}
               </Button>
             }
-            style={{ padding: 0, display: _display(isMobile && !!token) }}
+            style={{ padding: 0, display: _display(isMobile() && !!token) }}
           ></PageHeader>
-
+          <PageHeader
+            className="m-t-10 m-b-20"
+            extra={[
+              <Popover
+                // placement="right"
+                content={
+                  <div>
+                    <List size="small" bordered={false}>
+                      {user && user.shops
+                        ? user.shops.map((e) => (
+                            <List.Item key={e.id}>
+                              <a
+                                key={e.id}
+                                onClick={() =>
+                                  changeShop({
+                                    user: { email: user.email },
+                                    shop_id: e.id,
+                                  })
+                                }
+                              >
+                                {e.id} - {e.name}
+                              </a>
+                            </List.Item>
+                          ))
+                        : null}
+                      <List.Item key={"change_logo"}>
+                        <a onClick={() => changeLogo()}>Đổi logo cửa hàng</a>
+                      </List.Item>
+                      <List.Item key={"logout"}>
+                        <a onClick={() => logout()}>Đăng xuất </a>
+                      </List.Item>
+                    </List>
+                  </div>
+                }
+                trigger="click"
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      style={{
+                        backgroundColor: "#7265e6",
+                        verticalAlign: "middle",
+                        margin: 0,
+                      }}
+                      // shape="square"
+                      size={45}
+                    >
+                      {using_user.first_name}
+                    </Avatar>
+                  }
+                  title={
+                    <span>
+                      {[using_user.first_name, using_user.last_name].join(" ")}
+                    </span>
+                  }
+                  description={
+                    <span>
+                      <Icon type="mail" /> {using_user.email}
+                    </span>
+                  }
+                />
+              </Popover>,
+            ]}
+            style={{ padding: 0, display: _display(!isMobile() && !!token) }}
+          />
           <Switch>
             <Middleware>
               {RouteList.map((props, index) => (
@@ -253,6 +322,7 @@ function LayoutContainer({ CoreActions, shop, userActions }) {
 }
 
 const mapStateToProps = (state) => ({
+  using_user: state.core.get("using_user"),
   shop: state.core.get("shop"),
 });
 
