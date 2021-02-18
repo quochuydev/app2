@@ -9,11 +9,7 @@ const { OrderModel } = require(path.resolve("./src/order/models/order.js"));
 const { ImageModel } = require(path.resolve("./src/images/model.js"));
 
 const logger = require(path.resolve("./src/core/lib/logger"))(__dirname);
-const {
-  syncCustomersHaravan,
-  syncCustomersShopify,
-  syncCustomersWoo,
-} = require("../business/customers");
+
 const { ExcelLib } = require(path.resolve("./src/core/lib/excel.lib"));
 const config = require(path.resolve("./src/config/config"));
 const { appslug, app_host } = config;
@@ -51,11 +47,6 @@ async function getCustomer({ customer_id }) {
 
 let sync = async (req, res) => {
   try {
-    await Promise.all([
-      syncCustomersHaravan(),
-      syncCustomersWoo(),
-      syncCustomersShopify(),
-    ]);
     res.json({ error: false });
   } catch (error) {
     console.log(error);
