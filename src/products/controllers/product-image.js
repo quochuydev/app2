@@ -1,36 +1,38 @@
 // const { ProductImage } = require(path.resolve('./src/products/controllers/product-image.js'));
 
-const path = require('path');
-const uuid = require('uuid/v4');
+const path = require("path");
+const uuid = require("uuid/v4");
 
-const { ImageModel } = require(path.resolve('./src/images/model.js'));
-const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
-const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
+const { ImageModel } = require(path.resolve("./src/images/model.js"));
+const { ProductModel } = require(path.resolve(
+  "./src/products/models/product.js"
+));
+const { VariantModel } = require(path.resolve(
+  "./src/products/models/variant.js"
+));
 
-const config = require(path.resolve('./src/config/config'));
-const { uploadToFlirk } = require(path.resolve('./src/core/lib/file-flirk.js'));
+const config = require(path.resolve("./src/config/config"));
 
-const Controller = {}
+const Controller = {};
 
 Controller.asserts = async function ({ images, product_id }) {
-
   for (let i = 0; i < images.length; i++) {
     const image = images[i];
     await Controller.assert({ product_id, data: image });
   }
 
-  return { ok: true }
-}
+  return { ok: true };
+};
 
 Controller.assert = async function ({ product_id, data, file }) {
   if (!product_id) {
-    throw { message: 'Chưa có thông tin product id' }
+    throw { message: "Chưa có thông tin product id" };
   }
 
   let data_update = {
     created_at: new Date(),
     updated_at: new Date(),
-  }
+  };
 
   if (file && file.path) {
     let filename = null;
@@ -40,7 +42,7 @@ Controller.assert = async function ({ product_id, data, file }) {
       filename = `${uuid()}.jpg`;
     }
     if (config.file_cloud.active) {
-      data_update.src = await uploadToFlirk({ file })
+      //
     } else {
       data_update.src = `${config.app_host}/images/${filename}`;
     }
@@ -59,17 +61,16 @@ Controller.assert = async function ({ product_id, data, file }) {
   }
 
   data_update.product_id = product_id;
-  data_update.metafield = { key: 'product', value: product_id };
+  data_update.metafield = { key: "product", value: product_id };
 
   let new_image = await ImageModel._create(data_update);
   new_image = new_image.toJSON();
 
   return { image: new_image };
-}
+};
 
-Controller.upload = async function ({ }) {
+Controller.upload = async function ({}) {
+  return { ok: true };
+};
 
-  return { ok: true }
-}
-
-module.exports = { ProductImage: Controller }
+module.exports = { ProductImage: Controller };

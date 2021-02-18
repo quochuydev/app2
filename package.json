@@ -16,10 +16,9 @@
     "exceljs": "^3.10.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "flickrapi": "^0.6.2",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
-    "googleapis": "^47.0.0",
+    "googleapis": "^67.1.0",
     "haravan_api": "^1.0.11",
     "highcharts": "^8.2.0",
     "highcharts-react-official": "^2.2.2",
@@ -52,10 +51,9 @@
     "wooapi": "^1.1.0",
     "woocommerce-api": "^1.5.0"
   },
-  "devDependencies": {},
   "scripts": {
     "client": "cd client && npm start",
-    "client-dev": "cd client && npm test",
+    "dev:web": "cd client && npm test",
     "server": "node server",
     "test": "cd server/src/core/lib && node event",
     "start": "npm run server",

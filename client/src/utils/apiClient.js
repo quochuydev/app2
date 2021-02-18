@@ -1,20 +1,21 @@
-import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
-import Exception from './exception';
-import config from './config';
+import fetch from "isomorphic-fetch";
+import _ from "lodash";
+import Exception from "./exception";
+import config from "./config";
 const basedUrl = config.backend_url;
-let token = localStorage.getItem('AccessToken');
+const token = localStorage.getItem("AccessToken");
+
 const baseHeaders = {
-  'AccessToken': token ? token : null,
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  AccessToken: token ? token : null,
+  Accept: "application/json",
+  "Content-Type": "application/json",
 };
 
 function getHeader(option = {}) {
   let base = {
-    'AccessToken': token ? token : null,
+    AccessToken: token ? token : null,
   };
-  return _.assign({}, base, option)
+  return _.assign({}, base, option);
 }
 
 function getUrl(url) {
@@ -38,8 +39,8 @@ async function responseHandler(response) {
       error.message = jsonData.message;
       throw error;
     }
-    if(!jsonData.message){
-      jsonData.message = 'Cập nhật thành công'
+    if (!jsonData.message) {
+      jsonData.message = "Cập nhật thành công";
     }
     return jsonData;
   } else {
@@ -59,65 +60,67 @@ function checkUnauthorized(e) {
   if (!_.isEmpty(e)) {
     if (e.code === 401) {
       localStorage.clear();
-      window.location.href = '/admin/logout';
+      window.location.href = "/admin/logout";
     } else if (e.data === 403) {
       localStorage.clear();
-      window.location.href = '/admin/permission';
+      window.location.href = "/admin/permission";
     }
   }
 }
 async function getData(url, headers, objQuery) {
   if (objQuery) {
-    let query = Object.keys(objQuery).map(key => key + '=' + objQuery[key]).join('&');
+    let query = Object.keys(objQuery)
+      .map((key) => key + "=" + objQuery[key])
+      .join("&");
     url = `${url}?${query}`;
   }
-  const request = createRequest('GET', url, headers);
+  const request = createRequest("GET", url, headers);
   return await fetch(request)
     .then(responseHandler)
-    .catch(e => {
+    .catch((e) => {
       checkUnauthorized(e);
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
 }
 async function postData(url, headers, data) {
-  const request = createRequest('POST', url, headers, data);
+  const request = createRequest("POST", url, headers, data);
   return await fetch(request)
     .then(responseHandler)
-    .catch(e => {
+    .catch((e) => {
       checkUnauthorized(e);
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
 }
 async function putData(url, headers, data) {
-  const request = createRequest('PUT', url, headers, data);
+  const request = createRequest("PUT", url, headers, data);
   return await fetch(request)
     .then(responseHandler)
-    .catch(e => {
+    .catch((e) => {
       checkUnauthorized(e);
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
 }
 async function deleteData(url, headers, data) {
-  const request = createRequest('DELETE', url, headers, data);
+  const request = createRequest("DELETE", url, headers, data);
   return await fetch(request)
     .then(responseHandler)
-    .catch(e => {
+    .catch((e) => {
       checkUnauthorized(e);
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
 }
-async function sendData(url, token, method = 'GET') {
+async function sendData(url, token, method = "GET") {
   const headerData = {
-    'AccessToken': token,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+    AccessToken: token,
+    Accept: "application/json",
+    "Content-Type": "application/json",
   };
   const apiUrl = getUrl(url);
   const options = { headers: headerData, method };
   const request = new Request(apiUrl, options);
   const result = await fetch(request)
     .then(responseHandler)
-    .catch(e => {
+    .catch((e) => {
       checkUnauthorized(e);
       throw new Exception(Exception.TYPES.API, e.message, e.isError);
     });
