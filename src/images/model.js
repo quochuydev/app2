@@ -2,11 +2,10 @@
 const { ImageModel } = require(path.resolve('./src/images/model.js'));
 */
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
-const cache = require('memory-cache');
 
 const ImageSchema = new Schema({
   id: { type: Number, default: null },
@@ -22,27 +21,36 @@ const ImageSchema = new Schema({
   is_deleted: { type: Boolean, default: false },
   created_at: { type: Date, default: null },
   updated_at: { type: Date, default: null },
-})
+});
 
-ImageSchema.plugin(autoIncrement.plugin, { model: 'Image', field: 'id', startAt: 10000, incrementBy: 1 });
+ImageSchema.plugin(autoIncrement.plugin, {
+  model: "Image",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
 
 ImageSchema.statics._find = async function (filter = {}) {
   let _this = this;
   let result = await _this.find(filter);
   return result;
-}
+};
 ImageSchema.statics._create = async function (data = {}) {
   let _this = this;
   let result = await _this.create(data);
   return result;
-}
+};
 
-ImageSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
+ImageSchema.statics._update = async function (
+  filter = {},
+  data_update = {},
+  option = { multi: true }
+) {
   let _this = this;
   let data = await _this.update(filter, data_update, option);
   return data;
-}
+};
 
-let ImageModel = mongoose.model('Image', ImageSchema);
+let ImageModel = mongoose.model("Image", ImageSchema);
 
-module.exports = { ImageModel }
+module.exports = { ImageModel };

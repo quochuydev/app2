@@ -2,12 +2,11 @@
 const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
 */
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
-const cache = require('memory-cache');
-const uuid = require('uuid').v4;
+const uuid = require("uuid").v4;
 
 const CartItemSchema = new Schema({
   cart_id: { type: Number, default: null },
@@ -48,42 +47,67 @@ const CartItemSchema = new Schema({
   is_deleted: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: null },
-})
+});
 
-CartItemSchema.plugin(autoIncrement.plugin, { model: 'Cart', field: 'id', startAt: 10000, incrementBy: 1 });
+CartItemSchema.plugin(autoIncrement.plugin, {
+  model: "Cart",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
 
 CartItemSchema.statics._create = async function (data = {}) {
   let _this = this;
   data.token = uuid();
   let result = await _this.create(data);
   return result;
-}
+};
 
-CartItemSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
+CartItemSchema.statics._update = async function (
+  filter = {},
+  data_update = {},
+  option = { multi: true }
+) {
   let _this = this;
   let data = await _this.update(filter, data_update, option);
   return data;
-}
+};
 
-CartItemSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+CartItemSchema.statics._find = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.find(filter, populate, options);
   return data;
-}
+};
 
-CartItemSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+CartItemSchema.statics._findOne = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.findOne(filter, populate, options);
   if (!data) {
-    throw { message: 'Biến thể không còn tồn tại' }
+    throw { message: "Biến thể không còn tồn tại" };
   }
   return data;
-}
+};
 
-CartItemSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+CartItemSchema.statics._findOneAndUpdate = async function (
+  filter = {},
+  data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }
+) {
   data_update.updated_at = new Date();
-  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  let data = await this.findOneAndUpdate(
+    filter,
+    { $set: data_update },
+    options
+  );
   return data;
-}
+};
 
-let CartItemModel = mongoose.model('CartItem', CartItemSchema);
+let CartItemModel = mongoose.model("CartItem", CartItemSchema);
 
-module.exports = { CartItemModel }
+module.exports = { CartItemModel };

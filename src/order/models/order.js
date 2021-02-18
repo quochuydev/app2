@@ -2,9 +2,8 @@
 const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
 */
 
-const mongoose = require('mongoose');
-const cache = require('memory-cache');
-const autoIncrement = require('mongoose-auto-increment');
+const mongoose = require("mongoose");
+const autoIncrement = require("mongoose-auto-increment");
 const { Schema } = mongoose;
 autoIncrement.initialize(mongoose.connection);
 
@@ -71,22 +70,24 @@ const OrderSchema = new Schema({
     email: { type: String, default: null },
     phone: { type: String, default: null },
   },
-  line_items: [{
-    product_id: { type: Number, default: null },
-    title: { type: String, default: null },
-    sku: { type: String, default: null },
-    barcode: { type: String, default: null },
-    variant_id: { type: Number, default: null },
-    variant_title: { type: String, default: null },
-    quantity: { type: Number, default: null },
-    price: { type: Number, default: null },
-    total: { type: Number, default: null },
-    image: {
-      id: { type: String, default: null },
-      src: { type: String, default: null },
-      filename: { type: String, default: null },
+  line_items: [
+    {
+      product_id: { type: Number, default: null },
+      title: { type: String, default: null },
+      sku: { type: String, default: null },
+      barcode: { type: String, default: null },
+      variant_id: { type: Number, default: null },
+      variant_title: { type: String, default: null },
+      quantity: { type: Number, default: null },
+      price: { type: Number, default: null },
+      total: { type: Number, default: null },
+      image: {
+        id: { type: String, default: null },
+        src: { type: String, default: null },
+        filename: { type: String, default: null },
+      },
     },
-  }],
+  ],
   products: [],
 
   total_price: { type: Number, default: 0 },
@@ -107,10 +108,13 @@ const OrderSchema = new Schema({
   updated_at: { type: Date, default: Date.now },
   currency: { type: String, default: null },
   attributes: {
-    type: [{
-      name: { type: String, default: null },
-      value: { type: String, default: null },
-    }], default: []
+    type: [
+      {
+        name: { type: String, default: null },
+        value: { type: String, default: null },
+      },
+    ],
+    default: [],
   },
   note: { type: String, default: null },
   customer_id: { type: Number, default: null },
@@ -126,46 +130,58 @@ const OrderSchema = new Schema({
   token: { type: String, default: null },
 
   detail: { type: Schema.Types.Mixed },
-})
-
-OrderSchema.plugin(autoIncrement.plugin, {
-  model: 'Order',
-  field: 'number',
-  startAt: 10000,
-  incrementBy: 1
 });
 
 OrderSchema.plugin(autoIncrement.plugin, {
-  model: 'Order',
-  field: 'id',
+  model: "Order",
+  field: "number",
   startAt: 10000,
-  incrementBy: 1
+  incrementBy: 1,
 });
 
-OrderSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+OrderSchema.plugin(autoIncrement.plugin, {
+  model: "Order",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
+
+OrderSchema.statics._findOne = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.findOne(filter, populate, options);
   if (!data) {
-    throw { message: 'Đơn hàng không còn tồn tại' }
+    throw { message: "Đơn hàng không còn tồn tại" };
   }
   return data;
-}
+};
 
-OrderSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
+OrderSchema.statics._findOneAndUpdate = async function (
+  filter = {},
+  data_update = {},
+  options = { lean: true, new: true }
+) {
   data_update.updated_at = new Date();
-  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  let data = await this.findOneAndUpdate(
+    filter,
+    { $set: data_update },
+    options
+  );
   return data;
-}
+};
 
 OrderSchema.statics._update = async function (filter = {}, data_update = {}) {
   let data = await this.update(filter, data_update);
   return data;
-}
+};
 
 OrderSchema.statics._create = async function (data = {}) {
   let result = await this.create(data);
   return result;
-}
+};
 
-let OrderModel = mongoose.model('Order', OrderSchema);
+let OrderModel = mongoose.model("Order", OrderSchema);
 
-module.exports = { OrderModel }
+module.exports = { OrderModel };

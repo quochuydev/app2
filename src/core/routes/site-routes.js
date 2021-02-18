@@ -1,39 +1,50 @@
-const path = require('path')
-const _ = require('lodash')
-const cache = require('memory-cache');
-const uuid = require('uuid').v4;
-const request = require('request');
+const path = require("path");
+const _ = require("lodash");
+const uuid = require("uuid").v4;
 
-const config = require(path.resolve('./src/config/config'));
-const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
-const { ProductModel } = require(path.resolve('./src/products/models/product.js'));
-const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
-const { CartModel } = require(path.resolve('./src/cart/models/cart.js'));
-const { CartItemModel } = require(path.resolve('./src/cart/models/cart-item.js'));
-const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
-const { OrderService } = require(path.resolve('./src/order/services/order-service.js'));
-const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
-const { CollectionModel } = require(path.resolve('./src/products/models/collection.js'));
+const config = require(path.resolve("./src/config/config"));
+const { ShopModel } = require(path.resolve("./src/shop/models/shop"));
+const { ProductModel } = require(path.resolve(
+  "./src/products/models/product.js"
+));
+const { VariantModel } = require(path.resolve(
+  "./src/products/models/variant.js"
+));
+const { CartModel } = require(path.resolve("./src/cart/models/cart.js"));
+const { CartItemModel } = require(path.resolve(
+  "./src/cart/models/cart-item.js"
+));
+const { OrderModel } = require(path.resolve("./src/order/models/order.js"));
+const { OrderService } = require(path.resolve(
+  "./src/order/services/order-service.js"
+));
+const { CustomerModel } = require(path.resolve(
+  "./src/customers/models/customers.js"
+));
+const { CollectionModel } = require(path.resolve(
+  "./src/products/models/collection.js"
+));
 
-const { ProductService } = require(path.resolve('./src/products/services/product-service.js'));
+const { ProductService } = require(path.resolve(
+  "./src/products/services/product-service.js"
+));
 
-let code = '1000';
-let settings = require('./settings').current;
-let amount = '{{amount}}';
+let code = "1000";
+let settings = require("./settings").current;
+let amount = "{{amount}}";
 
 function themeCode() {
-  let code = '1000'
-  let shop = cache.get(code);
-  if (shop && shop.theme_id) {
-    code = shop.theme_id;
-  }
+  let code = "1000";
   return code;
 }
 
 const routes = ({ app }) => {
-  app.get('/', async function (req, res) {
+  app.get("/", async function (req, res) {
     let code = themeCode();
-    let products = await ProductService.find({ filter: {  is_deleted: false }, sort: { created_at: -1 } });
+    let products = await ProductService.find({
+      filter: { is_deleted: false },
+      sort: { created_at: -1 },
+    });
     let result = {
       code,
       settings,
@@ -41,113 +52,125 @@ const routes = ({ app }) => {
       amount,
       collections: {
         all: {
-          products: []
+          products: [],
         },
         frontpage: {
-          products: []
+          products: [],
         },
         onsale: {
-          products: []
+          products: [],
         },
-      }
-    }
+      },
+    };
     setBaseUrl({ result, domain: req.host });
     res.render(`site/${code}/templates/index`, result);
   });
 
-  app.get('/pages', function (req, res) {
+  app.get("/pages", function (req, res) {
     let code = themeCode();
-    res.render(`shops/${code}/pages`)
+    res.render(`shops/${code}/pages`);
   });
 
-  app.get('/blogs', function (req, res) {
+  app.get("/blogs", function (req, res) {
     let code = themeCode();
     res.render(`site/${code}/templates/blogs`, {
-      blogs: []
-    })
+      blogs: [],
+    });
   });
 
-  app.get('/pages/:page', function (req, res) {
+  app.get("/pages/:page", function (req, res) {
     let page_handle = req.params.page;
     let code = themeCode();
 
-    res.render(`shops/${code}/pages`)
+    res.render(`shops/${code}/pages`);
   });
 
-  app.get('/products/:handle', async function (req, res, next) {
+  app.get("/products/:handle", async function (req, res, next) {
     try {
-
       let handle = req.params.handle;
       let code = themeCode();
 
       if (!handle) {
-        return res.render('404');
+        return res.render("404");
       }
 
       let is_json_data = false;
-      if (_.endsWith(handle, '.json')) {
-        handle = handle.split('.json')[0];
+      if (_.endsWith(handle, ".json")) {
+        handle = handle.split(".json")[0];
         is_json_data = true;
       }
 
-      let product = await ProductService.findOne({ filter: {  handle, is_deleted: false } });
+      let product = await ProductService.findOne({
+        filter: { handle, is_deleted: false },
+      });
       if (!product) {
-        return res.render('404');
+        return res.render("404");
       }
 
       if (is_json_data) {
         return res.json(product);
       }
 
-      let products = await ProductService.find({ filter: {  is_deleted: false }, sort: { created_at: -1 } });
+      let products = await ProductService.find({
+        filter: { is_deleted: false },
+        sort: { created_at: -1 },
+      });
 
       let result = {
         code,
         amount,
-        product, products, settings
-      }
+        product,
+        products,
+        settings,
+      };
       setBaseUrl({ result, domain: req.host });
-      res.render(`site/${code}/templates/products`, result)
+      res.render(`site/${code}/templates/products`, result);
     } catch (error) {
       next(error);
     }
   });
 
-  app.get('/collections/:collect', async function (req, res) {
+  app.get("/collections/:collect", async function (req, res) {
     let collect = req.params.collect;
     let code = themeCode();
 
     let criteria = {
       is_deleted: false,
-    }
-    if (collect != 'all') {
-      let collection = await CollectionModel.findOne({ handle: collect }).lean(true);
+    };
+    if (collect != "all") {
+      let collection = await CollectionModel.findOne({ handle: collect }).lean(
+        true
+      );
       if (!collection) {
-        return res.render('404');
+        return res.render("404");
       } else {
         criteria.collect = collection.title;
       }
     }
 
-    let products = await ProductService.find({ filter: criteria, sort: { created_at: -1 } });
+    let products = await ProductService.find({
+      filter: criteria,
+      sort: { created_at: -1 },
+    });
     res.render(`site/${code}/templates/collections`, {
       code,
       settings,
       products,
       amount,
-    })
+    });
   });
 
-  app.route('/cart')
+  app
+    .route("/cart")
     .get(async function (req, res) {
       let cart_token = req.cookies.cart_token;
       let code = themeCode();
 
-      let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
+      let cart = await CartModel.findOne({ token: cart_token }).lean(true);
       if (!cart) {
         cart = {
           item_count: 0,
-        }
+        };
       }
       res.render(`site/${code}/templates/cart`, {
         amount,
@@ -165,7 +188,7 @@ const routes = ({ app }) => {
       }
     });
 
-  app.get('/checkout', function (req, res) {
+  app.get("/checkout", function (req, res) {
     let cart_token = req.cookies.cart_token;
     if (cart_token) {
       res.redirect(`/checkouts/${cart_token}`);
@@ -174,7 +197,8 @@ const routes = ({ app }) => {
     }
   });
 
-  app.route('/checkouts/:checkout_token')
+  app
+    .route("/checkouts/:checkout_token")
     .get(async function (req, res) {
       let cart_token = req.cookies.cart_token;
       let checkout_token = req.params.checkout_token;
@@ -187,7 +211,7 @@ const routes = ({ app }) => {
           return res.redirect(`/cart`);
         }
       }
-      let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
+      let cart = await CartModel.findOne({ token: cart_token }).lean(true);
       res.render(`site/${code}/templates/checkouts`, {
         cart,
         code,
@@ -199,19 +223,21 @@ const routes = ({ app }) => {
         let cart_token = req.cookies.cart_token;
         let data = req.query;
 
-        let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
+        let cart = await CartModel.findOne({ token: cart_token }).lean(true);
         if (!cart) {
-          throw { message: 'error' }
+          throw { message: "error" };
         }
         let create_data = {
           billing_address: {},
-          customer: {}
+          customer: {},
         };
         create_data.note = data.note;
 
         if (data.checkout_user.email) {
           create_data.email = data.checkout_user.email;
-          let found_customer = await CustomerModel.findOne({ email: data.checkout_user.email,  }).lean(true);
+          let found_customer = await CustomerModel.findOne({
+            email: data.checkout_user.email,
+          }).lean(true);
           if (found_customer) {
             create_data.customer_id = found_customer.id;
             create_data.customer.address1 = found_customer.address1;
@@ -227,16 +253,19 @@ const routes = ({ app }) => {
 
         if (data.billing_address) {
           create_data.billing_address.address1 = data.billing_address.address1;
-          create_data.billing_address.province_code = data.billing_address.city[0];
-          create_data.billing_address.district_code = data.billing_address.city[1];
-          create_data.billing_address.first_name = data.billing_address.full_name;
+          create_data.billing_address.province_code =
+            data.billing_address.city[0];
+          create_data.billing_address.district_code =
+            data.billing_address.city[1];
+          create_data.billing_address.first_name =
+            data.billing_address.full_name;
           create_data.billing_address.phone = data.billing_address.phone;
           create_data.billing_address.email = data.checkout_user.email;
         }
 
-        if (data.customer_pick_at_location == 'true') {
+        if (data.customer_pick_at_location == "true") {
           create_data.shipping_address = null;
-          create_data.fulfillment_status = 'waiting_customer';
+          create_data.fulfillment_status = "waiting_customer";
         } else {
           create_data.shipping_address = {
             phone: data.billing_address.phone,
@@ -244,19 +273,18 @@ const routes = ({ app }) => {
             province_code: data.customer_shipping_province,
             district_code: data.customer_shipping_district,
           };
-          create_data.fulfillment_status = 'pending';
+          create_data.fulfillment_status = "pending";
         }
 
         create_data.gateway_code = data.payment_method_id;
-        create_data.financial_status = 'pending';
+        create_data.financial_status = "pending";
 
-        if (create_data.gateway_code == 'cod') {
-          create_data.carrier_cod_status_code = 'codpending';
+        if (create_data.gateway_code == "cod") {
+          create_data.carrier_cod_status_code = "codpending";
         } else {
-
         }
 
-        create_data.line_items = cart.items.map(e => {
+        create_data.line_items = cart.items.map((e) => {
           return Object({
             image: e.image,
             product_id: e.product_id,
@@ -269,29 +297,29 @@ const routes = ({ app }) => {
             price_original: e.price_original,
             quantity: e.quantity,
             total: e.line_price,
-          })
+          });
         });
         create_data.token = cart.token;
         create_data.total_price = cart.total_price;
         create_data.total_items = cart.item_count;
 
         let result = await OrderService.create({ data: create_data });
-        res.clearCookie('cart_token');
-        res.json(result)
+        res.clearCookie("cart_token");
+        res.json(result);
       } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(400).json(error);
       }
-    })
+    });
 
-  app.get('/orders/:token', async function (req, res) {
+  app.get("/orders/:token", async function (req, res) {
     try {
       let token = req.params.token;
       let code = themeCode();
 
       let order = await OrderModel.findOne({ token }).lean(true);
       if (!order) {
-        throw { message: `Đơn hàng không tồn tại ${token}` }
+        throw { message: `Đơn hàng không tồn tại ${token}` };
       }
 
       res.render(`site/${code}/templates/order`, {
@@ -300,36 +328,39 @@ const routes = ({ app }) => {
       });
       // res.json(order);
     } catch (error) {
-      res.render('404');
+      res.render("404");
     }
   });
 
-  app.get('/set-domain', function (req, res) {
+  app.get("/set-domain", function (req, res) {
     if (!req.query.domain) {
-      return res.json({ error: true })
+      return res.json({ error: true });
     }
-    res.cookie('domain', req.query.domain, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
-    res.redirect('/');
-  })
+    res.cookie("domain", req.query.domain, {
+      maxAge: 1000 * 60 * 60 * 12,
+      httpOnly: true,
+    });
+    res.redirect("/");
+  });
 
-  app.get('/clear-domain', function (req, res) {
-    res.clearCookie('domain');
-    res.redirect('/');
-  })
+  app.get("/clear-domain", function (req, res) {
+    res.clearCookie("domain");
+    res.redirect("/");
+  });
 
-  app.get('/cart.js', async function (req, res) {
+  app.get("/cart.js", async function (req, res) {
     let cart_token = req.cookies.cart_token;
 
-    let cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
+    let cart = await CartModel.findOne({ token: cart_token }).lean(true);
     if (!cart) {
       cart = {
         item_count: 0,
-      }
+      };
     }
     res.status(200).json(cart);
   });
 
-  app.post('/cart/add.js', async function (req, res) {
+  app.post("/cart/add.js", async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let data = req.body;
 
@@ -341,31 +372,40 @@ const routes = ({ app }) => {
       if (!cart_token) {
         cart = await CartModel.create({
           token: uuid(),
-        })
+        });
         cart = cart.toJSON();
       } else {
-        cart = await CartModel.findOne({ token: cart_token,  }).lean(true);
+        cart = await CartModel.findOne({ token: cart_token }).lean(true);
         if (!cart) {
           cart = await CartModel.create({
             token: uuid(),
-          })
+          });
           cart = cart.toJSON();
         }
       }
-      res.cookie('cart_token', cart.token, { maxAge: 1000 * 60 * 60 * 12, httpOnly: true });
+      res.cookie("cart_token", cart.token, {
+        maxAge: 1000 * 60 * 60 * 12,
+        httpOnly: true,
+      });
 
-      let index = cart.items.findIndex(e => e.variant_id == variant_id);
+      let index = cart.items.findIndex((e) => e.variant_id == variant_id);
       if (index != -1) {
         cart.items[index].quantity += quantity;
         calculateLine({ item: cart.items[index] });
       } else {
         let variant = await VariantModel.findOne({ id: variant_id }).lean(true);
         if (!variant) {
-          return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_VARIANT' });
+          return res
+            .status(400)
+            .send({ message: "Đã có lỗi xảy ra", error: "NOT_FOUND_VARIANT" });
         }
-        let product = await ProductModel.findOne({ id: variant.product_id }).lean(true);
+        let product = await ProductModel.findOne({
+          id: variant.product_id,
+        }).lean(true);
         if (!product) {
-          return res.status(400).send({ message: 'Đã có lỗi xảy ra', error: 'NOT_FOUND_PRODUCT' });
+          return res
+            .status(400)
+            .send({ message: "Đã có lỗi xảy ra", error: "NOT_FOUND_PRODUCT" });
         }
 
         let item = {
@@ -389,32 +429,38 @@ const routes = ({ app }) => {
           product_title: product.title,
           product_description: product.body_html,
           vendor: product.vendor,
-          variant_options: [variant.option1, variant.option2, variant.option3]
-        }
+          variant_options: [variant.option1, variant.option2, variant.option3],
+        };
         calculateLine({ item });
         cart.items.push(item);
         let cart_item = _.cloneDeep(item);
         cart_item.cart_id = cart.id;
         let new_cart_item = await CartItemModel.create(cart_item);
       }
-      calculateCart({ cart })
+      calculateCart({ cart });
       delete cart._id;
-      let updated_cart = await CartModel.findOneAndUpdate({ token: cart.token,  }, { $set: cart }, { lean: true, new: true });
-      let cart_item = updated_cart.items.find(e => e.variant_id == variant_id);
+      let updated_cart = await CartModel.findOneAndUpdate(
+        { token: cart.token },
+        { $set: cart },
+        { lean: true, new: true }
+      );
+      let cart_item = updated_cart.items.find(
+        (e) => e.variant_id == variant_id
+      );
 
       res.json({
         cart_item,
-        message: 'Cập nhật giỏ hàng',
+        message: "Cập nhật giỏ hàng",
         status: cart_item.total_price,
-        description: 'Thành công'
+        description: "Thành công",
       });
     } catch (error) {
       console.log(error);
-      return res.status(400).send({ message: 'Đã có lỗi xảy ra', error });
+      return res.status(400).send({ message: "Đã có lỗi xảy ra", error });
     }
   });
 
-  app.post('/cart/update.js', async function (req, res) {
+  app.post("/cart/update.js", async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let data = req.body;
 
@@ -423,7 +469,7 @@ const routes = ({ app }) => {
 
     let cart = await CartModel.findOne({ token: cart_token }).lean(true);
     if (!cart) {
-      throw { message: 'Đã có lỗi xảy ra!' }
+      throw { message: "Đã có lỗi xảy ra!" };
     }
 
     cart.note = note;
@@ -436,7 +482,7 @@ const routes = ({ app }) => {
     res.json(cart);
   });
 
-  app.post('/cart/change.js', async function (req, res) {
+  app.post("/cart/change.js", async function (req, res) {
     let cart_token = req.cookies.cart_token;
     let data = req.body;
 
@@ -445,17 +491,21 @@ const routes = ({ app }) => {
 
     let cart = await CartModel.findOne({ token: cart_token }).lean(true);
     if (!cart) {
-      throw { message: 'Đã có lỗi xảy ra!' }
+      throw { message: "Đã có lỗi xảy ra!" };
     }
 
     cart.items[line - 1].quantity = quantity;
     if (quantity == 0) {
-      cart.items = cart.items.filter((e, i) => (i + 1) != line);
+      cart.items = cart.items.filter((e, i) => i + 1 != line);
     }
-    let update_cart = await CartModel.findOneAndUpdate({ token: cart_token }, { $set: cart }, { lean: true, new: true });
+    let update_cart = await CartModel.findOneAndUpdate(
+      { token: cart_token },
+      { $set: cart },
+      { lean: true, new: true }
+    );
     res.json(update_cart);
   });
-}
+};
 
 module.exports = routes;
 

@@ -1,28 +1,38 @@
-const path = require('path');
-const jwt = require('jsonwebtoken');
-const { google } = require('googleapis');
-let mongoose = require('mongoose');
-let cache = require('memory-cache');
+const path = require("path");
+const jwt = require("jsonwebtoken");
+const { google } = require("googleapis");
+let mongoose = require("mongoose");
 
-let UserMD = mongoose.model('User');
-const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
+let UserMD = mongoose.model("User");
+const { ShopModel } = require(path.resolve("./src/shop/models/shop"));
 
-const { frontend_admin, google_app, hash_token } = require(path.resolve('./src/config/config'));
+const { frontend_admin, google_app, hash_token } = require(path.resolve(
+  "./src/config/config"
+));
 let { clientId, clientSecret, redirectUrl } = google_app;
-const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
-let _do = require(path.resolve('./client/src/share/_do.lib.share.js'))
-let _is = require(path.resolve('./client/src/share/_is.lib.share.js'))
-const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
+const logger = require(path.resolve("./src/core/lib/logger"))(__dirname);
+let _do = require(path.resolve("./client/src/share/_do.lib.share.js"));
+let _is = require(path.resolve("./client/src/share/_is.lib.share.js"));
+const { CustomerModel } = require(path.resolve(
+  "./src/customers/models/customers.js"
+));
 
-const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUrl);
-const scopes = ['email', 'profile', 'openid'];
-const url = oauth2Client.generateAuthUrl({ access_type: 'offline', scope: scopes });
+const oauth2Client = new google.auth.OAuth2(
+  clientId,
+  clientSecret,
+  redirectUrl
+);
+const scopes = ["email", "profile", "openid"];
+const url = oauth2Client.generateAuthUrl({
+  access_type: "offline",
+  scope: scopes,
+});
 
 let auth = async (req, res) => {
   try {
     let { code } = req.query;
-    const { tokens } = await oauth2Client.getToken(code)
-    let userAuth = jwt.decode(tokens.id_token)
+    const { tokens } = await oauth2Client.getToken(code);
+    let userAuth = jwt.decode(tokens.id_token);
     let { email } = userAuth;
     if (!email) {
       return res.sendStatus(401);
@@ -33,82 +43,97 @@ let auth = async (req, res) => {
     // }
     if (!user) {
       let shop_data = {
-        name: email, code: email, google_info: userAuth,
+        name: email,
+        code: email,
+        google_info: userAuth,
         user_created: {
-          email
-        }
-      }
+          email,
+        },
+      };
       let new_shop = await ShopModel.create(shop_data);
       let new_user = {
         email,
         is_root: true,
-      }
+      };
       user = await UserMD.create(new_user);
 
       let guest_customer = {
-        first_name: 'Khách hàng lẻ',
-        type: 'GUEST',
-      }
+        first_name: "Khách hàng lẻ",
+        type: "GUEST",
+      };
       await CustomerModel.create(guest_customer);
     }
 
     let user_gen_token = {
       id: user.id,
       email: user.email,
-      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
-    }
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
+    };
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.redirect(`${frontend_admin}/loading?token=${userToken}`)
+    res.redirect(`${frontend_admin}/loading?token=${userToken}`);
   } catch (error) {
     console.log(error);
-    res.redirect(`${frontend_admin}/login?message=${encodeURIComponent('Something errror!')}`)
+    res.redirect(
+      `${frontend_admin}/login?message=${encodeURIComponent(
+        "Something errror!"
+      )}`
+    );
   }
-}
+};
 
 async function changeShop({ user }) {
   let result = {};
   let found_user = await UserMD.findOne({ email: user.email }).lean(true);
   if (!found_user) {
-    throw { message: 'Không thể chuyển cửa hàng', code: 'USER_NOT_FOUND' }
+    throw { message: "Không thể chuyển cửa hàng", code: "USER_NOT_FOUND" };
   }
 
   let user_gen_token = {
     id: found_user.id,
     email: found_user.email,
-    exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
-  }
+    exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
+  };
 
   let userToken = jwt.sign(user_gen_token, hash_token);
-  result.url = `${frontend_admin}/loading?token=${userToken}`
+  result.url = `${frontend_admin}/loading?token=${userToken}`;
   return result;
 }
 
 async function checkUser({ body }) {
   let verify_user = jwt.verify(body.token, hash_token);
   if (!verify_user.email) {
-    throw { message: 'check user failed' }
+    throw { message: "check user failed" };
   }
   let group_users = await UserMD.aggregate([
     { $match: { email: verify_user.email, is_deleted: false } },
-    { $group: { "_id": "$email" } }
+    { $group: { _id: "$email" } },
   ]);
   if (!(group_users && group_users.length)) {
-    throw { message: 'check user failed' }
+    throw { message: "check user failed" };
   }
   let group_user = group_users[0];
-  let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(true);
-  let shop = await ShopModel.findOne({  }).lean(true);
+  let shops = await ShopModel.find({ id: { $in: group_user.shops } }).lean(
+    true
+  );
+  let shop = await ShopModel.findOne({}).lean(true);
   let user = { id: verify_user.id, email: group_user._id, shops, shop };
   return { error: false, user };
 }
 
 async function signup(req, res, next) {
   try {
-    let { email, password, is_create_shop,
-      username, name, code, phone } = req.body;
+    let {
+      email,
+      password,
+      is_create_shop,
+      username,
+      name,
+      code,
+      phone,
+    } = req.body;
 
     if (!password) {
-      return res.status(400).json({ message: 'Nhập mật khẩu' });
+      return res.status(400).json({ message: "Nhập mật khẩu" });
     }
 
     let count_shop_by_code = await ShopModel.count({ code });
@@ -118,50 +143,67 @@ async function signup(req, res, next) {
 
     if (is_create_shop) {
       if (!name) {
-        return res.status(400).json({ message: 'Thiếu thông tin tên cửa hàng', code: 'name_required' });
+        return res.status(400).json({
+          message: "Thiếu thông tin tên cửa hàng",
+          code: "name_required",
+        });
       }
       if (!code) {
-        return res.status(400).json({ message: 'Thiếu mã code' });
+        return res.status(400).json({ message: "Thiếu mã code" });
       }
 
       if (!email) {
-        return res.status(400).json({ message: 'Thiếu thông tin Email', code: 'email_required' });
+        return res
+          .status(400)
+          .json({ message: "Thiếu thông tin Email", code: "email_required" });
       }
 
       if (email && !_is.email(email)) {
-        return res.status(400).json({ message: 'Email không đúng định dạng' });
+        return res.status(400).json({ message: "Email không đúng định dạng" });
       }
 
       let shop_data = {
-        name, code, user_created: {
-          email, phone
-        }
-      }
+        name,
+        code,
+        user_created: {
+          email,
+          phone,
+        },
+      };
       let shop = await ShopModel.create(shop_data);
       let new_user = {
-        email, phone,
+        email,
+        phone,
         username: phone,
         first_name: email,
         last_name: email,
         password,
-        is_root: true
-      }
+        is_root: true,
+      };
       let user = await UserMD.create(new_user);
-      return res.json({ message: 'Đăng ký thành công', shop, user, code: 'CREATE_NEW_SHOP_SUCCESS' });
+      return res.json({
+        message: "Đăng ký thành công",
+        shop,
+        user,
+        code: "CREATE_NEW_SHOP_SUCCESS",
+      });
     } else {
       let found_user = await UserMD.findOne({ email }).lean(true);
       if (found_user) {
-        return res.json({ message: 'Email này đã tồn tại' })
+        return res.json({ message: "Email này đã tồn tại" });
       }
       let new_user = {
         email,
         phone,
         first_name: email,
         last_name: email,
-        
-      }
+      };
       let user = await UserMD.create(new_user);
-      return res.json({ message: 'Đăng ký thành công', user, code: 'CREATE_NEW_USER_SUCCESS' });
+      return res.json({
+        message: "Đăng ký thành công",
+        user,
+        code: "CREATE_NEW_USER_SUCCESS",
+      });
     }
   } catch (error) {
     console.log(error);
@@ -173,12 +215,12 @@ let login = async (req, res, next) => {
   try {
     let { user_login, password } = req.body;
     if (!user_login) {
-      throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` }
+      throw { message: `Vui lòng nhập 'email' hoặc 'Số điện thoại'!` };
     }
     let user = null;
     let users = await UserMD.find({ email: user_login }).lean(true);
     if (!(users && users.length)) {
-      throw { message: `User này không tồn tại` }
+      throw { message: `User này không tồn tại` };
     }
     for (const user_found of users) {
       if (UserMD.authenticate(user_found, password)) {
@@ -186,37 +228,46 @@ let login = async (req, res, next) => {
       }
     }
     if (!user) {
-      throw { statusCode: 401, message: `Mật khẩu không đúng hoặc Tài khoản không tồn tại` }
+      throw {
+        statusCode: 401,
+        message: `Mật khẩu không đúng hoặc Tài khoản không tồn tại`,
+      };
     }
     let user_gen_token = {
       id: user.id,
       email: user.email,
-      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000
-    }
+      exp: (Date.now() + 8 * 60 * 60 * 1000) / 1000,
+    };
     let userToken = jwt.sign(user_gen_token, hash_token);
-    res.json({ error: false, token: userToken, url: `${frontend_admin}/loading?token=${userToken}` });
+    res.json({
+      error: false,
+      token: userToken,
+      url: `${frontend_admin}/loading?token=${userToken}`,
+    });
   } catch (error) {
     next(error);
   }
-}
-
-function resetPassword(req, res) {
-
-}
+};
 
 function loginGoogle(req, res) {
   res.json({ error: false, url });
 }
 
 let logout = (req, res) => {
-  res.json({ error: false, code: 'LOGOUT' });
-}
+  res.json({ error: false, code: "LOGOUT" });
+};
 
 let logout_redirect = (req, res) => {
   res.redirect(`${frontend_admin}/logout`);
-}
+};
 
 module.exports = {
-  auth, login, loginGoogle,
-  logout, logout_redirect, signup, changeShop, checkUser
-}
+  auth,
+  login,
+  loginGoogle,
+  logout,
+  logout_redirect,
+  signup,
+  changeShop,
+  checkUser,
+};

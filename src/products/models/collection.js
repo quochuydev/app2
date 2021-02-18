@@ -2,11 +2,10 @@
 const { CollectionModel } = require(path.resolve('./src/products/models/collection.js'));
 */
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
-const cache = require('memory-cache');
 
 const CollectionSchema = new Schema({
   id: { type: Number, default: null },
@@ -24,32 +23,49 @@ const CollectionSchema = new Schema({
   created_at: { type: Date, default: Date.now },
   products_count: { type: Number, default: 0 },
   is_deleted: { type: Boolean, default: false },
-})
+});
 
-CollectionSchema.plugin(autoIncrement.plugin, { model: 'Collection', field: 'id', startAt: 10000, incrementBy: 1 });
+CollectionSchema.plugin(autoIncrement.plugin, {
+  model: "Collection",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
 
-CollectionSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+CollectionSchema.statics._find = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.find(filter, populate, options);
   return data;
-}
+};
 
-CollectionSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+CollectionSchema.statics._findOne = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.findOne(filter, populate, options);
   return data;
-}
+};
 
 CollectionSchema.statics._create = async function (data = {}) {
   let _this = this;
   let result = await _this.create(data);
   return result;
-}
+};
 
-CollectionSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
+CollectionSchema.statics._update = async function (
+  filter = {},
+  data_update = {},
+  option = { multi: true }
+) {
   let _this = this;
   let data = await _this.update(filter, data_update, option);
   return data;
-}
+};
 
-let CollectionModel = mongoose.model('Collection', CollectionSchema);
+let CollectionModel = mongoose.model("Collection", CollectionSchema);
 
-module.exports = { CollectionModel }
+module.exports = { CollectionModel };

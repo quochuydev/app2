@@ -2,17 +2,16 @@
 const { CustomerModel } = require(path.resolve('./src/customers/models/customers.js'));
 */
 
-const mongoose = require('mongoose');
-const cache = require('memory-cache');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
 
 const CustomersSchema = new Schema({
   number: { type: Number, default: null },
   code: { type: String, default: null },
   type: { type: String, default: null },
-  
+
   id: { type: Number, default: null },
   accepts_marketing: { type: Boolean, default: false },
   addresses: [],
@@ -46,53 +45,59 @@ const CustomersSchema = new Schema({
   is_deleted: { type: Boolean, default: false },
   url: { type: String, default: null },
   detail: { type: Schema.Types.Mixed },
-})
+});
 
 CustomersSchema.plugin(autoIncrement.plugin, {
-  model: 'Customer',
-  field: 'number',
+  model: "Customer",
+  field: "number",
   startAt: 10000,
-  incrementBy: 1
+  incrementBy: 1,
 });
 CustomersSchema.plugin(autoIncrement.plugin, {
-  model: 'Customer',
-  field: 'id',
+  model: "Customer",
+  field: "id",
   startAt: 10000,
-  incrementBy: 1
+  incrementBy: 1,
 });
 
 CustomersSchema.statics._count = async function (filter = {}) {
   let _this = this;
   let data = await _this.count(filter);
   return data;
-}
+};
 
 CustomersSchema.statics._findOne = async function (filter = {}, populate = {}) {
   let _this = this;
   let data = await _this.findOne(filter, populate);
   return data;
-}
+};
 
 CustomersSchema.statics._create = async function (data = {}) {
   let _this = this;
   if (!data.created_at) {
-    data.created_at = new Date()
+    data.created_at = new Date();
   }
   if (!data.type) {
-    data.type = 'app'
+    data.type = "app";
   }
   let result = await _this.create(data);
   return result;
-}
+};
 
-CustomersSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {},
-  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+CustomersSchema.statics._findOneAndUpdate = async function (
+  filter = {},
+  data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }
+) {
   data_update.updated_at = new Date();
-  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  let data = await this.findOneAndUpdate(
+    filter,
+    { $set: data_update },
+    options
+  );
   return data;
-}
+};
 
+let CustomerModel = mongoose.model("Customer", CustomersSchema);
 
-let CustomerModel = mongoose.model('Customer', CustomersSchema);
-
-module.exports = { CustomerModel }
+module.exports = { CustomerModel };

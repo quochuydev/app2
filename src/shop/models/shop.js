@@ -1,9 +1,8 @@
 // const { ShopModel } = require(path.resolve('./src/shop/models/shop'));
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const cache = require('memory-cache');
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
 
 const ShopSchema = new Schema({
@@ -48,34 +47,47 @@ const ShopSchema = new Schema({
     hrv_customers_at: { type: Date, default: null },
     shopify_customers_at: { type: Date, default: null },
   },
-  google_info: {}
-})
+  google_info: {},
+});
 
-ShopSchema.plugin(autoIncrement.plugin, { model: 'Shop', field: 'id', startAt: 10000, incrementBy: 1 });
+ShopSchema.plugin(autoIncrement.plugin, {
+  model: "Shop",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
 
 ShopSchema.statics._create = async function (data = {}) {
   let _this = this;
   let result = await _this.create({ ...data, id });
   return result;
-}
+};
 
-ShopSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+ShopSchema.statics._findOne = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let _this = this;
   let data = await _this.findOne(filter, populate, options);
   return data;
-}
+};
 
-ShopSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true }) {
+ShopSchema.statics._findOneAndUpdate = async function (
+  filter = {},
+  data_update = {},
+  options = { lean: true, new: true }
+) {
   let _this = this;
   let data = await _this.findOneAndUpdate(filter, data_update, options);
   return data;
-}
+};
 
 ShopSchema.statics._update = async function (filter = {}, data_update = {}) {
   let data = await this.update(filter, data_update);
   return data;
-}
+};
 
-let ShopModel = mongoose.model('Shop', ShopSchema);
+let ShopModel = mongoose.model("Shop", ShopSchema);
 
-module.exports = { ShopModel }
+module.exports = { ShopModel };

@@ -2,11 +2,10 @@
 const { VariantModel } = require(path.resolve('./src/products/models/variant.js'));
 */
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const autoIncrement = require('mongoose-auto-increment');
+const autoIncrement = require("mongoose-auto-increment");
 autoIncrement.initialize(mongoose.connection);
-const cache = require('memory-cache');
 
 const VariantSchema = new Schema({
   id: { type: Number, default: null },
@@ -32,41 +31,66 @@ const VariantSchema = new Schema({
   is_deleted: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: null },
-})
+});
 
-VariantSchema.plugin(autoIncrement.plugin, { model: 'Variant', field: 'id', startAt: 10000, incrementBy: 1 });
+VariantSchema.plugin(autoIncrement.plugin, {
+  model: "Variant",
+  field: "id",
+  startAt: 10000,
+  incrementBy: 1,
+});
 
 VariantSchema.statics._create = async function (data = {}) {
   let _this = this;
   let result = await _this.create(data);
   return result;
-}
+};
 
-VariantSchema.statics._update = async function (filter = {}, data_update = {}, option = { multi: true }) {
+VariantSchema.statics._update = async function (
+  filter = {},
+  data_update = {},
+  option = { multi: true }
+) {
   let _this = this;
   let data = await _this.update(filter, data_update, option);
   return data;
-}
+};
 
-VariantSchema.statics._find = async function (filter = {}, populate = {}, options = { lean: true }) {
+VariantSchema.statics._find = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.find(filter, populate, options);
   return data;
-}
+};
 
-VariantSchema.statics._findOne = async function (filter = {}, populate = {}, options = { lean: true }) {
+VariantSchema.statics._findOne = async function (
+  filter = {},
+  populate = {},
+  options = { lean: true }
+) {
   let data = await this.findOne(filter, populate, options);
   if (!data) {
-    throw { message: 'Biến thể không còn tồn tại' }
+    throw { message: "Biến thể không còn tồn tại" };
   }
   return data;
-}
+};
 
-VariantSchema.statics._findOneAndUpdate = async function (filter = {}, data_update = {}, options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }) {
+VariantSchema.statics._findOneAndUpdate = async function (
+  filter = {},
+  data_update = {},
+  options = { lean: true, new: true, upsert: true, setDefaultsOnInsert: true }
+) {
   data_update.updated_at = new Date();
-  let data = await this.findOneAndUpdate(filter, { $set: data_update }, options);
+  let data = await this.findOneAndUpdate(
+    filter,
+    { $set: data_update },
+    options
+  );
   return data;
-}
+};
 
-let VariantModel = mongoose.model('Variant', VariantSchema);
+let VariantModel = mongoose.model("Variant", VariantSchema);
 
-module.exports = { VariantModel }
+module.exports = { VariantModel };

@@ -1,24 +1,23 @@
-const path = require('path');
-const _ = require('lodash');
-const moment = require('moment');
-const cache = require('memory-cache');
+const path = require("path");
+const _ = require("lodash");
+const moment = require("moment");
 
-const { OrderModel } = require(path.resolve('./src/order/models/order.js'));
+const { OrderModel } = require(path.resolve("./src/order/models/order.js"));
 
-const logger = require(path.resolve('./src/core/lib/logger'))(__dirname);
-const { _parse, _aggregate } = require(path.resolve('./src/core/lib/query'));
+const logger = require(path.resolve("./src/core/lib/logger"))(__dirname);
+const { _parse, _aggregate } = require(path.resolve("./src/core/lib/query"));
 
-let Controller = {}
+let Controller = {};
 
 Controller.aggregateX = async function ({ data }) {
-  let { queryDSL } = _aggregate({ aggregate: data.aggregate })
-  let result = { items: [], count: 0 }
+  let { queryDSL } = _aggregate({ aggregate: data.aggregate });
+  let result = { items: [], count: 0 };
   let items = await OrderModel.aggregate(queryDSL);
   result.items = items;
-  result.total = _.sum(items.map(e => e.count));
-  result.total_price = _.sum(items.map(e => e.total_price));
+  result.total = _.sum(items.map((e) => e.count));
+  result.total_price = _.sum(items.map((e) => e.total_price));
   return result;
-}
+};
 
 module.exports = Controller;
 
