@@ -9,3 +9,4 @@ package-lock.json
 .git
 /download/
 /uploads/
+/data
