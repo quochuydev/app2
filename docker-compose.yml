@@ -1,8 +1,14 @@
 version: '3.4'
 
 services:
-  app2:
-    image: app2
+  app1:
+    image: app1:latest
+    container_name: app1
     build: .
     environment:
+      PORT: 5001
+      APP_HOST: http://localhost:5001
       NODE_ENV: production
+      MONGOHQ_URL: mongodb+srv://quochuydev:Quochuydev548!@cluster0.stlus.mongodb.net/qhdapp?retryWrites=true&w=majority
+    ports:
+      - 5001:5001

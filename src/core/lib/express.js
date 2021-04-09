@@ -65,6 +65,11 @@ module.exports = (app, db) => {
   // app.use("/*", SiteErrorHandle);
 
   console.log(path.resolve("client", "build"));
+  if (fs.existsSync(path.resolve("client/build", "index.html"))) {
+    console.log("exist");
+  } else {
+    console.log("not exist");
+  }
   if (process.env.NODE_ENV == "production") {
     app.use("/", express.static(path.resolve("client", "build")));
     app.get("/admin/*", (req, res) => {

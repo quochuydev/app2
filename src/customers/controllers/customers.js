@@ -12,7 +12,6 @@ const logger = require(path.resolve("./src/core/lib/logger"))(__dirname);
 
 const { ExcelLib } = require(path.resolve("./src/core/lib/excel.lib"));
 const config = require(path.resolve("./src/config/config"));
-const { appslug, app_host } = config;
 const { _parse } = require(path.resolve("./src/core/lib/query"));
 
 let list = async (req, res) => {

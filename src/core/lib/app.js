@@ -8,6 +8,8 @@ const PORT = config.port;
 const socket = require("./socket");
 const { Analyze } = require("./analyze");
 
+require("dotenv").config();
+
 const App = {
   init: (app) => {
     Mongoose.load();
