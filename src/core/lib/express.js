@@ -64,7 +64,7 @@ module.exports = (app, db) => {
   // ))({ app });
   // app.use("/*", SiteErrorHandle);
 
-  console.log(path.resolve("client", "build"));
+  console.log(123, path.resolve("client", "build"));
   if (fs.existsSync(path.resolve("client/build", "index.html"))) {
     console.log("exist");
   } else {
