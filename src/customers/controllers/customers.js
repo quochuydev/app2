@@ -87,10 +87,10 @@ let create = async ({ body }) => {
       last_name: default_address.last_name,
       phone: default_address.phone,
       zip: default_address.zip,
-      address1: default_address.address1,
-      district_code: default_address.district_code,
-      province_code: default_address.province_code,
-      ward_code: default_address.ward_code,
+      address1: default_address?.address1,
+      district_code: default_address?.district_code,
+      province_code: default_address?.province_code,
+      ward_code: default_address?.ward_code,
     },
   };
 
@@ -125,10 +125,10 @@ let update = async ({ body, customer_id }) => {
       last_name: default_address.last_name,
       phone: default_address.phone,
       zip: default_address.zip,
-      address1: default_address.address1,
-      district_code: default_address.district_code,
-      province_code: default_address.province_code,
-      ward_code: default_address.ward_code,
+      address1: default_address?.address1,
+      district_code: default_address?.district_code,
+      province_code: default_address?.province_code,
+      ward_code: default_address?.ward_code,
     },
   };
 

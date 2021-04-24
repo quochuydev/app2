@@ -18,7 +18,7 @@ function Staffs(props) {
     { title: 'Ngày sinh', dataIndex: 'birthday', key: 'birth', },
     { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone', },
     { title: 'Email', dataIndex: 'email', key: 'email', },
-    { title: 'Address1', dataIndex: 'default_address.address1', key: 'address', },
+    { title: 'Address1', dataIndex: 'default_address?.address1', key: 'address', },
     { title: 'Shop', dataIndex: 'shop', key: 'shop', },
     {
       title: 'Edit', key: 'edit',

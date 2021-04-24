@@ -82,20 +82,20 @@ function CustomerEdit(props) {
   }, []);
 
   useEffect(() => {
-    if (customerUpdate.default_address.province_code) {
+    if (customerUpdate.default_address?.province_code) {
       CoreActions.listDistricts({
-        province_code: customerUpdate.default_address.province_code,
+        province_code: customerUpdate.default_address?.province_code,
       });
     }
-  }, [customerUpdate.default_address.province_code]);
+  }, [customerUpdate.default_address?.province_code]);
 
   useEffect(() => {
-    if (customerUpdate.default_address.district_code) {
+    if (customerUpdate.default_address?.district_code) {
       CoreActions.listWards({
-        district_code: customerUpdate.default_address.district_code,
+        district_code: customerUpdate.default_address?.district_code,
       });
     }
-  }, [customerUpdate.default_address.district_code]);
+  }, [customerUpdate.default_address?.district_code]);
 
   function onCustomerChange(e) {
     setCustomerUpdate({ ...customerUpdate, [e.target.name]: e.target.value });

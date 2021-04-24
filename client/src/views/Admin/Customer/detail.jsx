@@ -62,20 +62,20 @@ function CustomerDetail(props) {
   }, []);
 
   useEffect(() => {
-    if (customer.default_address.province_code) {
+    if (customer.default_address?.province_code) {
       CoreActions.listDistricts({
-        province_code: customer.default_address.province_code,
+        province_code: customer.default_address?.province_code,
       });
     }
-  }, [customer.default_address.province_code]);
+  }, [customer.default_address?.province_code]);
 
   useEffect(() => {
-    if (customer.default_address.district_code) {
+    if (customer.default_address?.district_code) {
       CoreActions.listWards({
-        district_code: customer.default_address.district_code,
+        district_code: customer.default_address?.district_code,
       });
     }
-  }, [customer.default_address.district_code]);
+  }, [customer.default_address?.district_code]);
 
   function onCustomerChange(e) {
     actions.setCustomer({ [e.target.name]: e.target.value });
@@ -237,7 +237,7 @@ function CustomerDetail(props) {
                       <Form.Item label="Tỉnh" onChange={onAddressChange}>
                         <Select
                           showSearch
-                          value={customer.default_address.province_code}
+                          value={customer.default_address?.province_code}
                         >
                           {provinces.map((item) => (
                             <Option key={item.id} value={item.code}>
@@ -251,7 +251,7 @@ function CustomerDetail(props) {
                       <Form.Item label="Huyện" onChange={onAddressChange}>
                         <Select
                           showSearch
-                          value={customer.default_address.district_code}
+                          value={customer.default_address?.district_code}
                         >
                           {districts.map((item) => (
                             <Option key={item.id} value={item.code}>
@@ -265,7 +265,7 @@ function CustomerDetail(props) {
                       <Form.Item label="Xã" onChange={onAddressChange}>
                         <Select
                           showSearch
-                          value={customer.default_address.ward_code}
+                          value={customer.default_address?.ward_code}
                         >
                           {wards.map((item) => (
                             <Option key={item.id} value={item.code}>
@@ -280,7 +280,7 @@ function CustomerDetail(props) {
                         <Input
                           name="address1"
                           placeholder="Nhập địa chỉ khách hàng"
-                          value={customer.default_address.address1}
+                          value={customer.default_address?.address1}
                         />
                       </Form.Item>
                     </Col>

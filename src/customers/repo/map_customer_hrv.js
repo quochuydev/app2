@@ -17,7 +17,7 @@ const MapCustomerHaravan = {
         "first_name": customer_hrv.default_address.first_name,
         "last_name": customer_hrv.default_address.last_name,
         "company": customer_hrv.default_address.company,
-        "address1": customer_hrv.default_address.address1,
+        "address1": customer_hrv.default_address?.address1,
         "address2": customer_hrv.default_address.address2,
         "city": customer_hrv.default_address.city,
         "country": customer_hrv.default_address.country,
